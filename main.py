@@ -63,23 +63,9 @@ class MainWindow(QMainWindow):
         print(data_neuronal_activity.shape)
         self.data_neuronal_activity = data_neuronal_activity
 
-        # Create QGraphicsScene
-        #self.scene = QGraphicsScene()
-        #self.neuronal_raster_plot.setScene(self.scene)
-        #plot_raster(self)
-
-        # a figure instance to plot on
-        #self.figure = plt.figure()
-        #self.canvas = FigureCanvas(self.figure)
-        #self.toolbar = NavigationToolbar(self.canvas, self)
-
         self.plot_widget = self.findChild(MatplotlibWidget, 'neuronal_raster_plot')
-        # Example data to plot
-        x = [0, 1, 2, 3, 4]
-        y = [0, 1, 4, 9, 16]
-
         # Plot the data
-        self.plot_widget.plot(x, y)
+        self.plot_widget.raster_plot(data_neuronal_activity)
 
 
 app = QtWidgets.QApplication(sys.argv)
