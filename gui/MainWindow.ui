@@ -39,6 +39,12 @@
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="1" rowspan="2">
          <widget class="QGroupBox" name="groupBox_3">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="title">
            <string>Input data preview</string>
           </property>
@@ -52,11 +58,73 @@
               <number>9</number>
              </property>
              <property name="text">
-              <string>Neuronal activity</string>
+              <string>Select variable to visualize</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QFrame" name="frame">
+             <property name="frameShape">
+              <enum>QFrame::StyledPanel</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <widget class="QPushButton" name="pushButton_6">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>dFFo/FFo</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_7">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Binary neuronal activity</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_9">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Coodinates</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_10">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Stimulation data</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_8">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Behavior data</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
@@ -77,46 +145,6 @@
               <size>
                <width>16777215</width>
                <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Stimulation</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGraphicsView" name="stimulation_raster_plot">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>150</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Behavioral activity</string>
-             </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGraphicsView" name="behavior_plot">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>150</height>
               </size>
              </property>
             </widget>
@@ -172,41 +200,29 @@
             <widget class="QTreeView" name="tree_view"/>
            </item>
            <item>
+            <widget class="QLineEdit" name="browser_var_info">
+             <property name="inputMask">
+              <string/>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="placeholderText">
+              <string>Select a variable to get description</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QGroupBox" name="groupBox_8">
              <property name="title">
               <string>Set the selected variable as</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
-              <item row="1" column="4">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>Nothing</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QPushButton" name="pushButton_2">
-                <property name="text">
-                 <string>Stimulation data</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>Nothing</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="pushButton_4">
-                <property name="text">
-                 <string>dFFo/dFF</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_6">
+              <item row="2" column="4">
+               <widget class="QLabel" name="lbl_behavior_select">
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -214,34 +230,77 @@
               </item>
               <item row="0" column="1">
                <widget class="QPushButton" name="btn_set_neuronal_activity">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Binary neuronal activity</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="lbl_neuronal_activity_selected">
-                <property name="text">
-                 <string>Nothing selected</string>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="btn_set_dFFo">
+                <property name="enabled">
+                 <bool>false</bool>
                 </property>
-               </widget>
-              </item>
-              <item row="0" column="4">
-               <widget class="QPushButton" name="pushButton_3">
                 <property name="text">
-                 <string>Behavior data</string>
+                 <string>dFFo/FFo</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QPushButton" name="pushButton_5">
+               <widget class="QPushButton" name="btn_set_coordinates">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
                  <string>Coordinates</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_10">
+              <item row="0" column="3">
+               <widget class="QPushButton" name="btn_set_stim_data">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Stimulation data</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QPushButton" name="btn_set_behavior_data">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Behavior data</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QLabel" name="lbl_coordinates_select">
+                <property name="text">
+                 <string>Nothing</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="lbl_dffo_select">
+                <property name="text">
+                 <string>Nothing</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="lbl_neuronal_activity_select">
+                <property name="text">
+                 <string>Nothing selected</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="QLabel" name="lbl_stimulation_select">
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -545,6 +604,12 @@
     </item>
     <item>
      <widget class="QPlainTextEdit" name="console_log">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>100</height>
+       </size>
+      </property>
       <property name="readOnly">
        <bool>true</bool>
       </property>
