@@ -19,9 +19,9 @@ class FileTreeItem:
                 for key, val in obj.items():
                     self.child_items.append(FileTreeItem(key, val, mdl_type, self))
             elif isinstance(obj, h5py.Dataset):
-                if len(obj.shape) == 1 or len(obj.shape) == 0:
+                if len(obj.shape) == 0:
                     self.obj_type = "Scalar"
-                    self.obj_size = -1
+                    self.obj_size = np.array(obj)
                 else:
                     self.obj_type = "Dataset"
                     self.obj_size = obj.shape
@@ -46,7 +46,7 @@ class FileTreeItem:
                 elif obj.size == 1:  # Scalar
                     # This is a scalar.
                     self.obj_type = "Scalar"
-                    self.obj_size = -1
+                    self.obj_size = obj[0]
                 else:
                     # This is an array or matrix.
                     self.obj_type = "Dataset"
@@ -76,7 +76,7 @@ class FileTreeItem:
                 # Count the remaining rows
                 for _ in csvreader:
                     num_rows += 1
-                self.obj_size = (num_columns, num_rows)
+                self.obj_size = (num_rows, num_columns)
 
     def child(self, row):
         return self.child_items[row]
