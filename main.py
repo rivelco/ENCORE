@@ -26,7 +26,26 @@ class MainWindow(QMainWindow):
         self.browseFile.clicked.connect(self.browse_files)
 
         ## Set the activity variables
+        self.btn_set_dFFo.clicked.connect(self.set_dFFo)
         self.btn_set_neuronal_activity.clicked.connect(self.set_neuronal_activity)
+        self.btn_set_coordinates.clicked.connect(self.set_coordinates)
+        self.btn_set_stim.clicked.connect(self.set_stims)
+        self.btn_set_behavior.clicked.connect(self.set_behavior)
+
+        ## Set the clear buttons
+        self.btn_clear_dFFo.clicked.connect(self.clear_dFFo)
+        self.btn_clear_neuronal_activity.clicked.connect(self.clear_neuronal_activity)
+        self.btn_clear_coordinates.clicked.connect(self.clear_coordinates)
+        self.btn_clear_stim.clicked.connect(self.clear_stims)
+        self.btn_clear_behavior.clicked.connect(self.clear_behavior)
+
+        ## Set the clear buttons
+        self.btn_view_dFFo.clicked.connect(self.view_dFFo)
+        self.btn_view_neuronal_activity.clicked.connect(self.view_neuronal_activity)
+        self.btn_view_coordinates.clicked.connect(self.view_coordinates)
+        self.btn_view_stim.clicked.connect(self.view_stims)
+        self.btn_view_behavior.clicked.connect(self.view_behavior)
+
         # Connect the clicked signal of the tree view to a slot
         self.tree_view.clicked.connect(self.item_clicked)
 
@@ -96,28 +115,112 @@ class MainWindow(QMainWindow):
             self.btn_set_dFFo.setEnabled(True)
             self.btn_set_neuronal_activity.setEnabled(True)
             self.btn_set_coordinates.setEnabled(True)
-            self.btn_set_stim_data.setEnabled(True)
-            self.btn_set_behavior_data.setEnabled(True)
+            self.btn_set_stim.setEnabled(True)
+            self.btn_set_behavior.setEnabled(True)
         else:
             self.btn_set_dFFo.setEnabled(False)
             self.btn_set_neuronal_activity.setEnabled(False)
             self.btn_set_coordinates.setEnabled(False)
-            self.btn_set_stim_data.setEnabled(False)
-            self.btn_set_behavior_data.setEnabled(False)
+            self.btn_set_stim.setEnabled(False)
+            self.btn_set_behavior.setEnabled(False)
 
         # Store data description temporally
         self.file_selected_var_path = item_path
         self.file_selected_var_type = item_type
         self.file_selected_var_size = item_size
-
+        self.file_selected_var_name = item_name
+    
+    ## Set variables from input file
+    def set_dFFo(self):
+        data_dFFo = assign_data_from_file(self)
+        self.data_dFFo = data_dFFo
+        self.btn_clear_dFFo.setEnabled(True)
+        self.btn_view_dFFo.setEnabled(True)
+        self.lbl_dffo_select.setText("Assigned")
+        self.lbl_dffo_select_name.setText(self.file_selected_var_name)
     def set_neuronal_activity(self):
         data_neuronal_activity = assign_data_from_file(self)
         self.data_neuronal_activity = data_neuronal_activity
+        self.btn_clear_neuronal_activity.setEnabled(True)
+        self.btn_view_neuronal_activity.setEnabled(True)
+        self.lbl_neuronal_activity_select.setText("Assigned")
+        self.lbl_neuronal_activity_select_name.setText(self.file_selected_var_name)
+    def set_coordinates(self):
+        data_coordinates = assign_data_from_file(self)
+        self.data_coordinates = data_coordinates
+        self.btn_clear_coordinates.setEnabled(True)
+        self.btn_view_coordinates.setEnabled(True)
+        self.lbl_coordinates_select.setText("Assigned")
+        self.lbl_coordinates_select_name.setText(self.file_selected_var_name)
+    def set_stims(self):
+        data_stims = assign_data_from_file(self)
+        self.data_stims = data_stims
+        self.btn_clear_stim.setEnabled(True)
+        self.btn_view_stim.setEnabled(True)
+        self.lbl_stim_select.setText("Assigned")
+        self.lbl_stim_select_name.setText(self.file_selected_var_name)
+    def set_behavior(self):
+        data_behavior = assign_data_from_file(self)
+        self.data_behavior = data_behavior
+        self.btn_clear_behavior.setEnabled(True)
+        self.btn_view_behavior.setEnabled(True)
+        self.lbl_behavior_select.setText("Assigned")
+        self.lbl_behavior_select_name.setText(self.file_selected_var_name)
+    
+    ## Clear variables 
+    def clear_dFFo(self):
+        self.data_dFFo = []
+        self.btn_clear_dFFo.setEnabled(False)
+        self.btn_view_dFFo.setEnabled(False)
+        self.lbl_dffo_select.setText("Nothing")
+        self.lbl_dffo_select_name.setText("")
+    def clear_neuronal_activity(self):
+        self.data_neuronal_activity = []
+        self.btn_clear_neuronal_activity.setEnabled(False)
+        self.btn_view_neuronal_activity.setEnabled(False)
+        self.lbl_neuronal_activity_select.setText("Nothing")
+        self.lbl_neuronal_activity_select_name.setText("")
+    def clear_coordinates(self):
+        self.data_coordinates = []
+        self.btn_clear_coordinates.setEnabled(False)
+        self.btn_view_coordinates.setEnabled(False)
+        self.lbl_coordinates_select.setText("Nothing")
+        self.lbl_coordinates_select_name.setText("")
+    def clear_stims(self):
+        self.data_stims = []
+        self.btn_clear_stim.setEnabled(False)
+        self.btn_view_stim.setEnabled(False)
+        self.lbl_stim_select.setText("Nothing")
+        self.lbl_stim_select_name.setText("")
+    def clear_behavior(self):
+        self.data_behavior = []
+        self.btn_clear_behavior.setEnabled(False)
+        self.btn_view_behavior.setEnabled(False)
+        self.lbl_behavior_select.setText("Nothing")
+        self.lbl_behavior_select_name.setText("")
 
-        new_text = "Assigned"
-        self.lbl_neuronal_activity_select.setText(new_text)
+    ## Set variables from input file
+    def view_dFFo(self):
+        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        self.plot_widget.preview_dataset(self.data_dFFo)
         
-        #self.plot_widget = self.findChild(MatplotlibWidget, 'neuronal_raster_plot')
+        
+    def view_neuronal_activity(self):
+        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        # Plot the data
+        self.plot_widget.raster_plot(self.data_neuronal_activity)
+        
+    def view_coordinates(self):
+        self.data_coordinates = []
+        
+    def view_stims(self):
+        self.data_stims = []
+        
+    def view_behavior(self):
+        self.data_behavior = []
+        
+
+        #self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         # Plot the data
         #self.plot_widget.raster_plot(data_neuronal_activity)
 

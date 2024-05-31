@@ -17,6 +17,23 @@ class MatplotlibWidget(QWidget):
         self.axes.axis('off')
         self.canvas.figure.tight_layout()
 
+    def preview_dataset(self, dataset):
+        self.axes.clear()
+        n, t = dataset.shape
+        self.axes.imshow(dataset, cmap='hot', interpolation='nearest', aspect='auto')
+        #self.axes.colorbar()  # Add a colorbar to show the scale
+        #self.axes.set_title('Heatmap using Matplotlib')
+        self.axes.set_xlabel('Time')
+        self.axes.set_ylabel('Data')
+        self.axes.set_xlim([0, t])
+        self.axes.set_ylim([0, n])
+        self.axes.set_xticks([])
+        self.axes.set_yticks([])
+        for side in ['left', 'top', 'right', 'bottom']:
+            self.axes.spines[side].set_visible(False)
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
     def raster_plot(self, data_neuronal_activity):
         self.axes.clear()
         
