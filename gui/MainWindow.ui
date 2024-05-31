@@ -25,12 +25,12 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="main_tabs">
       <property name="toolTipDuration">
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -152,27 +152,16 @@
            <item>
             <widget class="QGroupBox" name="groupBox_5">
              <property name="title">
-              <string>Neuronal activity</string>
+              <string>Edit selection</string>
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_3">
               <item>
-               <widget class="QLabel" name="label_5">
-                <property name="text">
-                 <string>Time axis</string>
+               <widget class="QPushButton" name="btn_edit_transpose">
+                <property name="enabled">
+                 <bool>false</bool>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QRadioButton" name="radioButton_2">
                 <property name="text">
-                 <string>Columns</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QRadioButton" name="radioButton">
-                <property name="text">
-                 <string>Rows</string>
+                 <string>Transpose dataset</string>
                 </property>
                </widget>
               </item>
@@ -266,6 +255,9 @@
                 <property name="text">
                  <string>Nothing</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
@@ -282,6 +274,9 @@
                <widget class="QLabel" name="lbl_stim_select">
                 <property name="text">
                  <string>Nothing</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -300,12 +295,18 @@
                 <property name="text">
                  <string>Nothing</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item row="2" column="2">
                <widget class="QLabel" name="lbl_coordinates_select">
                 <property name="text">
                  <string>Nothing</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -334,12 +335,18 @@
                 <property name="text">
                  <string>Nothing</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item row="3" column="0">
                <widget class="QLabel" name="lbl_dffo_select_name">
                 <property name="text">
                  <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -348,12 +355,18 @@
                 <property name="text">
                  <string/>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item row="3" column="3">
                <widget class="QLabel" name="lbl_stim_select_name">
                 <property name="text">
                  <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -362,12 +375,18 @@
                 <property name="text">
                  <string/>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
               <item row="3" column="1">
                <widget class="QLabel" name="lbl_neuronal_activity_select_name">
                 <property name="text">
                  <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
@@ -428,11 +447,6 @@
          </widget>
         </item>
        </layout>
-      </widget>
-      <widget class="QWidget" name="tab_2">
-       <attribute name="title">
-        <string>Preprocessing</string>
-       </attribute>
       </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
@@ -510,21 +524,21 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLabel" name="label_19">
+               <widget class="QLabel" name="lbl_sdv_spikes_selected">
                 <property name="text">
                  <string>Nothing selected</string>
                 </property>
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QLabel" name="label_20">
+               <widget class="QLabel" name="lbl_sdv_coordinates_selected">
                 <property name="text">
                  <string>Nothing selected</string>
                 </property>
                </widget>
               </item>
               <item row="8" column="1">
-               <widget class="QLabel" name="label_21">
+               <widget class="QLabel" name="lbl_sdv_dFFo_selected">
                 <property name="text">
                  <string>Nothing selected</string>
                 </property>
@@ -675,6 +689,11 @@
         <string>Analysis Compare</string>
        </attribute>
       </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Preprocessing</string>
+       </attribute>
+      </widget>
      </widget>
     </item>
     <item>
@@ -688,7 +707,7 @@
      </widget>
     </item>
     <item>
-     <widget class="QPlainTextEdit" name="console_log">
+     <widget class="QTextEdit" name="console_log">
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -708,7 +727,7 @@
      <x>0</x>
      <y>0</y>
      <width>1182</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

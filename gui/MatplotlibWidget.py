@@ -21,14 +21,28 @@ class MatplotlibWidget(QWidget):
         self.axes.clear()
         n, t = dataset.shape
         self.axes.imshow(dataset, cmap='hot', interpolation='nearest', aspect='auto')
-        #self.axes.colorbar()  # Add a colorbar to show the scale
         #self.axes.set_title('Heatmap using Matplotlib')
         self.axes.set_xlabel('Time')
         self.axes.set_ylabel('Data')
         self.axes.set_xlim([0, t])
-        self.axes.set_ylim([0, n])
-        self.axes.set_xticks([])
-        self.axes.set_yticks([])
+        self.axes.set_ylim([0, n-1])
+        #self.axes.set_xticks([])
+        #self.axes.set_yticks([])
+        for side in ['left', 'top', 'right', 'bottom']:
+            self.axes.spines[side].set_visible(False)
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def preview_coordinates2D(self, dataset):
+        self.axes.clear()
+        self.axes.scatter(dataset[:,0], dataset[:,1], c='blue', marker='o')
+        
+        self.axes.set_xlabel('X coordinates')
+        self.axes.set_ylabel('Y coordinates')
+        self.axes.set_xlim([min(dataset[:,0]) - 10, max(dataset[:,0]) + 10])
+        self.axes.set_ylim([min(dataset[:,1]) - 10, max(dataset[:,1]) + 10])
+        #self.axes.set_xticks([])
+        #self.axes.set_yticks([])
         for side in ['left', 'top', 'right', 'bottom']:
             self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
