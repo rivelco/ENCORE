@@ -25,6 +25,16 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Console log</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QTabWidget" name="main_tabs">
       <property name="toolTipDuration">
        <number>4</number>
@@ -509,13 +519,6 @@
                 </property>
                </widget>
               </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="text">
-                 <string>Coordinates</string>
-                </property>
-               </widget>
-              </item>
               <item row="8" column="0">
                <widget class="QLabel" name="label_11">
                 <property name="text">
@@ -525,13 +528,6 @@
               </item>
               <item row="1" column="1">
                <widget class="QLabel" name="lbl_sdv_spikes_selected">
-                <property name="text">
-                 <string>Nothing selected</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLabel" name="lbl_sdv_coordinates_selected">
                 <property name="text">
                  <string>Nothing selected</string>
                 </property>
@@ -548,6 +544,20 @@
                <widget class="QLabel" name="label_23">
                 <property name="text">
                  <string>Optional data</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="text">
+                 <string>Coordinates</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLabel" name="lbl_sdv_coordinates_selected">
+                <property name="text">
+                 <string>Nothing selected</string>
                 </property>
                </widget>
               </item>
@@ -606,43 +616,61 @@
                 </property>
                </widget>
               </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="label_17">
-                <property name="text">
-                 <string>Perform TF-IDF</string>
-                </property>
-               </widget>
-              </item>
-              <item row="10" column="0">
-               <widget class="QLabel" name="label_18">
-                <property name="text">
-                 <string>Identify cycles</string>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit"/>
+               <widget class="QLineEdit" name="lineEdit">
+                <property name="text">
+                 <string>3</string>
+                </property>
+                <property name="clearButtonEnabled">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_2"/>
+               <widget class="QLineEdit" name="lineEdit_2">
+                <property name="text">
+                 <string>0.22</string>
+                </property>
+                <property name="clearButtonEnabled">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QLineEdit" name="lineEdit_3"/>
+               <widget class="QLineEdit" name="lineEdit_3">
+                <property name="text">
+                 <string>0.22</string>
+                </property>
+               </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QLineEdit" name="lineEdit_4"/>
+               <widget class="QLineEdit" name="lineEdit_4">
+                <property name="text">
+                 <string>6</string>
+                </property>
+               </widget>
               </item>
               <item row="8" column="1">
                <widget class="QCheckBox" name="checkBox">
                 <property name="text">
-                 <string>CheckBox</string>
+                 <string>Perform TF-IDF normalization</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
               <item row="10" column="1">
                <widget class="QCheckBox" name="checkBox_2">
                 <property name="text">
-                 <string>CheckBox</string>
+                 <string>Identify cycles</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="1">
+               <widget class="QPushButton" name="pushButton">
+                <property name="text">
+                 <string>Load default values</string>
                 </property>
                </widget>
               </item>
@@ -650,7 +678,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="btn_svd_run">
              <property name="text">
               <string>Perform analysis</string>
              </property>
@@ -670,6 +698,65 @@
           <property name="title">
            <string>Plots</string>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QTabWidget" name="tabWidget">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="tab_7">
+              <attribute name="title">
+               <string>Similarity map</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_8">
+              <attribute name="title">
+               <string>Binarized simimarity map</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_9">
+              <attribute name="title">
+               <string>Singular values</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_10">
+              <attribute name="title">
+               <string>Components</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_11">
+              <attribute name="title">
+               <string>Ensembles timecourse</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_12">
+              <attribute name="title">
+               <string>Population activity per frame</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_13">
+              <attribute name="title">
+               <string>Cross correlations</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_14">
+              <attribute name="title">
+               <string>AUC-ROC</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_15">
+              <attribute name="title">
+               <string>Spatial distribution</string>
+              </attribute>
+             </widget>
+             <widget class="QWidget" name="tab_16">
+              <attribute name="title">
+               <string>FFo for each ensemble</string>
+              </attribute>
+             </widget>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -694,16 +781,6 @@
         <string>Preprocessing</string>
        </attribute>
       </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Console log</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
      </widget>
     </item>
     <item>

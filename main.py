@@ -8,7 +8,7 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QFileDialog, QMainWindow, QGraphicsScene
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
-from PyQt6.QtGui import QStandardItemModel, QTextCursor, QColor
+from PyQt6.QtGui import QTextCursor, QDoubleValidator
 
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
@@ -18,6 +18,9 @@ from gui.MatplotlibWidget import MatplotlibWidget
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
+import matlab.engine
+from matlab import double as matlab_double
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -55,6 +58,15 @@ class MainWindow(QMainWindow):
 
         ## Edit actions
         self.btn_edit_transpose.clicked.connect(self.edit_transpose)
+
+        ## Numeric validator
+        double_validator = QDoubleValidator()
+        double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
+        double_validator.setRange(-1000000.0, 1000000.0, 10)
+        
+        ## SVD analysis
+        self.btn_svd_run.clicked.connect(self.run_svd)
+        
 
     def update_console_log(self, message, msg_type="log"):
         color_map = {"log": "#000000", "error": "#da1e28", "warning": "#ff832b", "complete": "#198038"}
@@ -157,6 +169,13 @@ class MainWindow(QMainWindow):
                 self.lbl_sdv_dFFo_selected.setText(f"Loaded")
             else:
                 self.lbl_sdv_dFFo_selected.setText(f"Nothing selected")
+
+            needed_data = ["data_neuronal_activity", "data_coordinates"]
+            valid_data = True
+            for req in needed_data:
+                if not hasattr(self, req):
+                    valid_data = False
+            self.btn_svd_run.setEnabled(valid_data)
 
     ## Set variables from input file
     def set_dFFo(self):
@@ -280,6 +299,57 @@ class MainWindow(QMainWindow):
         elif to_edit == "behavior":
             self.data_behavior = self.data_behavior.T
             self.view_behavior()
+
+    def is_number(self, s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+        
+    def run_svd(self):
+        # Prepare data
+        data = self.data_neuronal_activity
+        spikes = matlab.double(data.tolist())
+        data = self.data_coordinates
+        coords = matlab.double(data.tolist())
+        data = self.data_dFFo
+        FFo = matlab.double(data.tolist())
+
+        text1 = self.line_edit1.text()
+        text2 = self.line_edit2.text()
+
+        if self.is_number(text1) and self.is_number(text2):
+            # Convert to numbers (float)
+            num1 = float(text1)
+            num2 = float(text2)
+
+            # Use the numbers for further processing
+            self.use_numbers(num1, num2)
+        else:
+            # Show an error message box if any value is not numeric
+            self.update_console_log("Invalid input ...")
+            QMessageBox.critical(self, "Invalid Input", "Please enter valid numbers.")
+
+
+
+        self.update_console_log("Starting MATLAB engine...")
+        eng = matlab.engine.start_matlab()
+        self.update_console_log("Loaded MATLAB engine.", "complete")
+
+        # Adding to path
+        relative_folder_path = 'analysis/SVD'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+
+        
+
+        self.update_console_log("Performing SVD...")
+
+        answer = eng.Stoixeion(spikes, coords, FFo)
+        self.update_console_log("Done.", "complete")
+        print(answer)
 
 
 app = QtWidgets.QApplication(sys.argv)
