@@ -3,9 +3,10 @@ import h5py
 import os
 import csv
 import scipy.io 
+import math
 import numpy as np
 from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QFileDialog, QMainWindow, QGraphicsScene
+from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QGridLayout, QGraphicsScene
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
 from PyQt6.QtGui import QTextCursor, QDoubleValidator
@@ -63,7 +64,13 @@ class MainWindow(QMainWindow):
         double_validator = QDoubleValidator()
         double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
         double_validator.setRange(-1000000.0, 1000000.0, 10)
-        
+
+        # Set validators to QLineEdit widgets
+        self.svd_edit_pks.setValidator(double_validator)
+        self.svd_edit_scut.setValidator(double_validator)
+        self.svd_edit_hcut.setValidator(double_validator)
+        self.svd_edit_statecut.setValidator(double_validator)
+
         ## SVD analysis
         self.btn_svd_run.clicked.connect(self.run_svd)
         
@@ -299,13 +306,19 @@ class MainWindow(QMainWindow):
         elif to_edit == "behavior":
             self.data_behavior = self.data_behavior.T
             self.view_behavior()
-
-    def is_number(self, s):
-        try:
-            float(s)
-            return True
-        except ValueError:
-            return False
+        
+    def add_matplotlib_widgets_to_tab(self, n, tab_index):
+        # Access the tab at index tab_index
+        tab = self.tabWidget.widget(tab_index)
+        # Create a layout for the tab
+        layout = QVBoxLayout(tab)
+        # Create and add n MatplotlibWidgets to the layout
+        for i in range(n):
+            mw = MatplotlibWidget()
+            mw.setObjectName(f"svd_plot_components_{i+1}")
+            layout.addWidget(mw)
+        # Set the layout for the tab
+        tab.setLayout(layout)
         
     def run_svd(self):
         # Prepare data
@@ -313,25 +326,24 @@ class MainWindow(QMainWindow):
         spikes = matlab.double(data.tolist())
         data = self.data_coordinates
         coords = matlab.double(data.tolist())
-        data = self.data_dFFo
+
+        if hasattr(self, 'FFo'):
+            data = self.data_dFFo
+        else:
+            data = np.array([])
         FFo = matlab.double(data.tolist())
 
-        text1 = self.line_edit1.text()
-        text2 = self.line_edit2.text()
+        input_value = self.svd_edit_pks.text()
+        val_pks = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
+        input_value = self.svd_edit_scut.text()
+        val_scut = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
+        input_value = self.svd_edit_hcut.text()
+        val_hcut = float(input_value) if len(input_value) > 0 else 0.20
+        input_value = self.svd_edit_statecut.text()
+        val_statecut = float(input_value) if len(input_value) > 0 else 6
+        val_idtfd = self.svd_check_tfidf.isChecked()
 
-        if self.is_number(text1) and self.is_number(text2):
-            # Convert to numbers (float)
-            num1 = float(text1)
-            num2 = float(text2)
-
-            # Use the numbers for further processing
-            self.use_numbers(num1, num2)
-        else:
-            # Show an error message box if any value is not numeric
-            self.update_console_log("Invalid input ...")
-            QMessageBox.critical(self, "Invalid Input", "Please enter valid numbers.")
-
-
+        print([val_pks, val_scut, val_hcut, val_statecut, val_idtfd])
 
         self.update_console_log("Starting MATLAB engine...")
         eng = matlab.engine.start_matlab()
@@ -343,13 +355,58 @@ class MainWindow(QMainWindow):
         folder_path_with_subfolders = eng.genpath(folder_path)
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
-        
-
         self.update_console_log("Performing SVD...")
-
-        answer = eng.Stoixeion(spikes, coords, FFo)
+        answer = eng.Stoixeion(spikes, coords, FFo, val_pks, val_scut, val_hcut, val_statecut, val_idtfd)
         self.update_console_log("Done.", "complete")
-        print(answer)
+
+        # Create plots for every result
+        keys_list = list(answer.keys())
+        print(keys_list)
+
+        # Similarity map
+        simmap = np.array(answer['S_index_ti'])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_similaritymap')
+        self.plot_widget.preview_dataset(simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='jet', aspect='equal')
+        # Binary similarity map
+        bin_simmap = np.array(answer['S_indexp'])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap')
+        self.plot_widget.preview_dataset(bin_simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='gray', aspect='equal')
+        # Singular values plot
+        singular_vals = np.array(answer['S_svd'])
+        num_state = int(answer['num_state'])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_singularvalues')
+        self.plot_widget.plot_singular_values(singular_vals, num_state)
+
+        # Components from the descomposition
+        singular_vals = np.array(answer['svd_sig'])
+        tab_index = 3 # Tab index within the tabs of SVD results
+        tab = self.tabWidget.widget(tab_index)
+        layout = QGridLayout()
+        rows = math.ceil(math.sqrt(num_state))
+        cols = math.ceil(num_state / rows)
+        for state_idx in range(num_state):
+            curent_comp = singular_vals[:, :, state_idx]
+            row = state_idx // cols
+            col = state_idx % cols
+            mw = MatplotlibWidget()
+            mw.setObjectName(f"svd_plot_components_{state_idx+1}")
+            layout.addWidget(mw, row, col)
+            mw.plot_states_from_svd(curent_comp, state_idx)
+        tab.setLayout(layout)
+            
+        # Plot the ensembles timecourse
+        Pks_Frame = np.array(answer['Pks_Frame'])
+        sec_Pk_Frame = np.array(answer['sec_Pk_Frame'])
+        frames = self.data_neuronal_activity.shape[1]
+        ensembles_timecourse = np.zeros((num_state, frames))
+        framesActiv = Pks_Frame.shape[1]
+        for it in range(framesActiv):
+            currentFrame = int(Pks_Frame[0, it])
+            currentEns = int(sec_Pk_Frame[it, 0])
+            if currentEns != 0: 
+                ensembles_timecourse[currentEns-1, currentFrame-1] = 1
+        self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_timecourse')
+        self.plot_widget.plot_ensembles_timecourse(ensembles_timecourse)
 
 
 app = QtWidgets.QApplication(sys.argv)

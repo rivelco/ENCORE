@@ -1,4 +1,5 @@
-function [stoixeion_results] = Stoixeion(Spikes,Coord_active,FFo)
+function [stoixeion_results] = Stoixeion(Spikes,Coord_active,FFo,...
+                                        pks, scut, hcut, statecut, tf_idf_norm)
 disp(" -> Running Stoixeion")
 % Find ensembles using SVD method.
 % INPUT:
@@ -25,7 +26,7 @@ disp(" -> Running Stoixeion")
 %% set parameters
 % significant level of spike count per frame
 
-pks = [3]; % default 4, leave it empty if you want an automated threshold
+%pks = [3]; % default 4, leave it empty if you want an automated threshold
 
 % This is a threshold of coactivity. Suggested range is 0.22-0.25
 % X_pks = 150 * pks / size (Spikes, 1);
@@ -36,13 +37,13 @@ pks = [3]; % default 4, leave it empty if you want an automated threshold
 % This means that the peaks that make up the states at least share 6 cells
 % The scut function is a second-order exponential
 % Scut (percentage of cells) Specify the percentage of cells in the total that form an edo
-scut = [0.22];%0.20; %0.22; % leave it empty if you want an automated threshold
+%scut = [0.22];%0.20; %0.22; % leave it empty if you want an automated threshold
 
 % another threshold for coactivity: further removes noise
-hcut = 0.22; %You have to change 70% of the elements to turn it into another state
+%hcut = 0.22; %You have to change 70% of the elements to turn it into another state
 
 % To perform or not the tf_idf normalization
-tf_idf_norm = true;
+%tf_idf_norm = true;
 
 % To perform or not the search of cycles
 cycles_search = false;
@@ -52,7 +53,7 @@ cycles_search = false;
 % edos_svd_cut = 0.75; % SVD factor cut-off
 % rep_svd = 20^2-1; % ? an ensemble core cell has to appear this amount of frames to be considered significant
 %Encuentra los repetidos mas de n veces; n sale de plot(svd_fac_mag)LCR dic15
-state_cut = round(size(Spikes,1)/6); % maximum number of states is a fraction of total number of cells LCR
+state_cut = round(size(Spikes,1)/statecut); % maximum number of states is a fraction of total number of cells LCR
 
 % Percent cut to determine the cells that weigh more in each state. 
 % 0.25 gives me ~ 15 cells in the largest state
@@ -66,7 +67,11 @@ csi_vec = csi_vec_start:csi_vec_step:csi_vec_end;
 
 %% find similarity structure
 % find high-activity frames
+if isempty(pks)
+    disp("Calculating pks...")
+end
 [Rasterbin,Pks_Frame,pks] = findHighactFrames(Spikes,pks);
+fprintf("###  pks calculated: %d", pks)
 
 % run tf-idf - make this into a function
 
@@ -100,15 +105,15 @@ H_indexb = 1-Hdist((H_index>hcut)*1); %LC03Feb14
 S_indexp = (H_indexb>hcut)*1; %Second Moment (Hamilton's Similarity). Defines structures better and removes noise
 
 % visualize similarity structures before and after binarization
-figure(1);clf
-imagesc(S_index_ti); xlabel('frame'); ylabel('frame'); title('similarity matrix')
-figure(2);clf
-imagesc(S_indexp==0); colormap(gray)
-xlabel('frame'); ylabel('frame'); title('binarized similarity matrix')
+%figure(1);clf
+%imagesc(S_index_ti); xlabel('frame'); ylabel('frame'); title('similarity matrix')
+%figure(2);clf
+%imagesc(S_indexp==0); colormap(gray)
+%xlabel('frame'); ylabel('frame'); title('binarized similarity matrix')
 
 %% do SVD, find states and cells
 % Find the peaks in the states and the cells in the states
-[C_edos,sec_Pk_edos] = Edos_from_Sindex_svd(S_indexp,state_cut); %,edos_size_cut,edos_svd_cut,rep_svd);
+[C_edos,sec_Pk_edos, S_svd, num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut); %,edos_size_cut,edos_svd_cut,rep_svd);
 % the returned C_edos is a binary num_sig_frame-by-num_state matrix, where
 % 1s indicate the timing of corresponding state; sec_Pk_edos is a
 % 1-by-num_sig_frame vector, containing numbers indicating the active state
@@ -141,7 +146,7 @@ end
 % plot ensemble states
 sec_Pk_frames = sum(C_edos_temp,2);
 
-HistEdos(Spikes,Pks_Frame,sec_Pk_frames,pks); 
+%HistEdos(Spikes,Pks_Frame,sec_Pk_frames,pks); 
 
 % Saving time course to use with CRF program
 % disp("Saving time course...")
@@ -201,6 +206,7 @@ xlabel('ensembles'); ylabel('cell index'); title('ensemble cells')
 [Cells_coords,Pools_coords] = Search_edos_coords(Cells_edos,sis_query,Coord_active);
 
 %% Pack the parameters and results
+% Parameters
 stoixeion_results.pks = pks;
 stoixeion_results.scut = scut;
 stoixeion_results.hcut = hcut;
@@ -209,6 +215,14 @@ stoixeion_results.state_cut = state_cut;
 stoixeion_results.csi_vec_start = csi_vec_start;
 stoixeion_results.csi_vec_step = csi_vec_step;
 stoixeion_results.csi_vec_end = csi_vec_end;
+% Similarity maps
+stoixeion_results.S_index_ti = S_index_ti;
+stoixeion_results.S_indexp = S_indexp==0;
+% Singular values
+stoixeion_results.S_svd = S_svd;
+stoixeion_results.num_state = num_state;
+stoixeion_results.svd_sig = svd_sig;
+
 stoixeion_results.Pools_coords = Pools_coords;
 stoixeion_results.Pks_Frame = Pks_Frame;
 stoixeion_results.sec_Pk_Frame = sec_Pk_frames;

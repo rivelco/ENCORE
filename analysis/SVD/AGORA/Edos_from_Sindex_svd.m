@@ -1,4 +1,4 @@
-function [C_edos,sec_Pk_edos] = Edos_from_Sindex_svd(S_indexp,state_cut)
+function [C_edos,sec_Pk_edos,S_svd,num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut)
 % 
 %LC2014. Feb 7
 %Deteccion de estados usando conceptos de algebra lineal
@@ -84,21 +84,21 @@ while dlt > 0
     
 end
 
-figure(12)
-singulars = diag(S_svd);
-semilogx(singulars)
-hold on
-plot([num_state, num_state], ylim, 'r--', 'LineWidth', 2);
-xlabel('Singular value');
-ylabel('Singular values idx');
-title('Singular values');
+% figure(12)
+% singulars = diag(S_svd);
+% semilogx(singulars)
+% hold on
+% plot([num_state, num_state], ylim, 'r--', 'LineWidth', 2);
+% xlabel('Singular value');
+% ylabel('Singular values idx');
+% title('Singular values');
 
 % Plot the projection of the identified main singular values
-for n = 1:num_state
-    figure(12+n);
-    imagesc(svd_sig(:,:,n)==0);colormap(gray)
-    xlabel('frame'); ylabel('frame'); title(['Components ensemble ' num2str(n)])
-end
+% for n = 1:num_state
+%     figure(12+n);
+%     imagesc(svd_sig(:,:,n)==0);colormap(gray)
+%     xlabel('frame'); ylabel('frame'); title(['Components ensemble ' num2str(n)])
+% end
 
 %fac_cut=0.85;
 
@@ -135,15 +135,15 @@ for epii = 1:edos_rep %Numero estados
 end
 
 % plot identified states
-figure(3);
-imagesc(edos_pks_num_sort_n==0);colormap(gray)
-xlabel('frame'); ylabel('ensemble index'); title('ensemble activity')
+%figure(3);
+%imagesc(edos_pks_num_sort_n==0);colormap(gray)
+%xlabel('frame'); ylabel('ensemble index'); title('ensemble activity')
 
 edos_pks_numb = edos_pks_num';
 C_edos_svd = zeros(size(edos_pks_numb));
 for epix = 1:size(edos_pks_numb,1)
     C_edos_svd(epix,:) = edos_pks_numb(epix,:)*epix;
-end;
+end
 
 C_edos = edos_pks_num_sort';
 sec_Pk_edos = sum(edos_pks_num_sort_n);

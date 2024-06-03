@@ -25,16 +25,6 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Console log</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QTabWidget" name="main_tabs">
       <property name="toolTipDuration">
        <number>4</number>
@@ -589,35 +579,35 @@
              </property>
              <layout class="QFormLayout" name="formLayout">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_13">
+               <widget class="QLabel" name="svd_lbl_pks">
                 <property name="text">
                  <string>pks</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QLabel" name="label_14">
+               <widget class="QLabel" name="svd_lbl_scut">
                 <property name="text">
                  <string>scut</string>
                 </property>
                </widget>
               </item>
               <item row="4" column="0">
-               <widget class="QLabel" name="label_15">
+               <widget class="QLabel" name="svd_lbl_hcut">
                 <property name="text">
                  <string>hcut</string>
                 </property>
                </widget>
               </item>
               <item row="6" column="0">
-               <widget class="QLabel" name="label_16">
+               <widget class="QLabel" name="svd_lbl_statecut">
                 <property name="text">
                  <string>state_cut</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="lineEdit">
+               <widget class="QLineEdit" name="svd_edit_pks">
                 <property name="text">
                  <string>3</string>
                 </property>
@@ -627,7 +617,7 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_2">
+               <widget class="QLineEdit" name="svd_edit_scut">
                 <property name="text">
                  <string>0.22</string>
                 </property>
@@ -637,21 +627,21 @@
                </widget>
               </item>
               <item row="4" column="1">
-               <widget class="QLineEdit" name="lineEdit_3">
+               <widget class="QLineEdit" name="svd_edit_hcut">
                 <property name="text">
                  <string>0.22</string>
                 </property>
                </widget>
               </item>
               <item row="6" column="1">
-               <widget class="QLineEdit" name="lineEdit_4">
+               <widget class="QLineEdit" name="svd_edit_statecut">
                 <property name="text">
                  <string>6</string>
                 </property>
                </widget>
               </item>
               <item row="8" column="1">
-               <widget class="QCheckBox" name="checkBox">
+               <widget class="QCheckBox" name="svd_check_tfidf">
                 <property name="text">
                  <string>Perform TF-IDF normalization</string>
                 </property>
@@ -668,7 +658,7 @@
                </widget>
               </item>
               <item row="11" column="1">
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="svd_btn_defaults">
                 <property name="text">
                  <string>Load default values</string>
                 </property>
@@ -702,22 +692,37 @@
            <item>
             <widget class="QTabWidget" name="tabWidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>5</number>
              </property>
              <widget class="QWidget" name="tab_7">
               <attribute name="title">
                <string>Similarity map</string>
               </attribute>
+              <layout class="QHBoxLayout" name="horizontalLayout_4">
+               <item>
+                <widget class="MatplotlibWidget" name="svd_plot_similaritymap"/>
+               </item>
+              </layout>
              </widget>
              <widget class="QWidget" name="tab_8">
               <attribute name="title">
                <string>Binarized simimarity map</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_6">
+               <item>
+                <widget class="MatplotlibWidget" name="svd_plot_binarysimmap"/>
+               </item>
+              </layout>
              </widget>
              <widget class="QWidget" name="tab_9">
               <attribute name="title">
                <string>Singular values</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_5">
+               <item>
+                <widget class="MatplotlibWidget" name="svd_plot_singularvalues"/>
+               </item>
+              </layout>
              </widget>
              <widget class="QWidget" name="tab_10">
               <attribute name="title">
@@ -728,11 +733,11 @@
               <attribute name="title">
                <string>Ensembles timecourse</string>
               </attribute>
-             </widget>
-             <widget class="QWidget" name="tab_12">
-              <attribute name="title">
-               <string>Population activity per frame</string>
-              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_7">
+               <item>
+                <widget class="MatplotlibWidget" name="svd_plot_timecourse"/>
+               </item>
+              </layout>
              </widget>
              <widget class="QWidget" name="tab_13">
               <attribute name="title">
@@ -781,6 +786,16 @@
         <string>Preprocessing</string>
        </attribute>
       </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Console log</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
      </widget>
     </item>
     <item>
