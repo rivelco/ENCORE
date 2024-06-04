@@ -66,13 +66,27 @@ class MainWindow(QMainWindow):
         double_validator.setRange(-1000000.0, 1000000.0, 10)
 
         # Set validators to QLineEdit widgets
+        # For the SVD analysis
         self.svd_edit_pks.setValidator(double_validator)
         self.svd_edit_scut.setValidator(double_validator)
         self.svd_edit_hcut.setValidator(double_validator)
         self.svd_edit_statecut.setValidator(double_validator)
+        # For the PCA analysis
+        self.pca_edit_dc.setValidator(double_validator)
+        self.pca_edit_npcs.setValidator(double_validator)
+        self.pca_edit_minspk.setValidator(double_validator)
+        self.pca_edit_nsur.setValidator(double_validator)
+        self.pca_edit_prct.setValidator(double_validator)
+        self.pca_edit_centthr.setValidator(double_validator)
+        self.pca_edit_innercorr.setValidator(double_validator)
+        self.pca_edit_minsize.setValidator(double_validator)
+        
 
         ## SVD analysis
         self.btn_svd_run.clicked.connect(self.run_svd)
+
+        ## PCA analysis
+        self.btn_run_pca.clicked.connect(self.run_PCA)
         
 
     def update_console_log(self, message, msg_type="log"):
@@ -253,17 +267,17 @@ class MainWindow(QMainWindow):
         self.lbl_behavior_select.setText("Nothing")
         self.lbl_behavior_select_name.setText("")
 
-    ## Set variables from input file
+    ## Visualize variables from input file
     def view_dFFo(self):
         self.currently_visualizing = "dFFo"
         self.btn_edit_transpose.setEnabled(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.preview_dataset(self.data_dFFo)
+        self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Neuron')
     def view_neuronal_activity(self):
         self.currently_visualizing = "neuronal_activity"
         self.btn_edit_transpose.setEnabled(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.raster_plot(self.data_neuronal_activity)
+        self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Neuron', cmap='gray')
     def view_coordinates(self):
         self.currently_visualizing = "coordinates"
         self.btn_edit_transpose.setEnabled(True)
@@ -277,7 +291,7 @@ class MainWindow(QMainWindow):
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
-        self.plot_widget.preview_dataset(preview_data)
+        self.plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray')
     def view_behavior(self):
         self.currently_visualizing = "behavior"
         self.btn_edit_transpose.setEnabled(True)
@@ -327,7 +341,7 @@ class MainWindow(QMainWindow):
         data = self.data_coordinates
         coords = matlab.double(data.tolist())
 
-        if hasattr(self, 'FFo'):
+        if hasattr(self, 'data_dFFo'):
             data = self.data_dFFo
         else:
             data = np.array([])
@@ -408,6 +422,102 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_timecourse')
         self.plot_widget.plot_ensembles_timecourse(ensembles_timecourse)
 
+    def run_PCA(self):
+        data = self.data_neuronal_activity
+        raster = matlab.double(data.tolist())
+
+        input_value = self.pca_edit_dc.text()
+        dc = float(input_value) if len(input_value) > 0 else 0.02
+        input_value = self.pca_edit_npcs.text()
+        npcs = float(input_value) if len(input_value) > 0 else 3
+        input_value = self.pca_edit_minspk.text()
+        minspk = float(input_value) if len(input_value) > 0 else 3
+        input_value = self.pca_edit_nsur.text()
+        nsur = float(input_value) if len(input_value) > 0 else 1000
+        input_value = self.pca_edit_prct.text()
+        prct = float(input_value) if len(input_value) > 0 else 99.9
+        input_value = self.pca_edit_centthr.text()
+        cent_thr = float(input_value) if len(input_value) > 0 else 99.9
+        input_value = self.pca_edit_innercorr.text()
+        inner_corr = float(input_value) if len(input_value) > 0 else 5
+        input_value = self.pca_edit_minsize.text()
+        minsize = float(input_value) if len(input_value) > 0 else 3
+
+        # Pack data
+        pars = {
+            'dc': dc,
+            'npcs': npcs,
+            'minspk': minspk,
+            'nsur': nsur,
+            'prct': prct,
+            'cent_thr': cent_thr,
+            'inner_corr': inner_corr,
+            'minsize': minsize
+        }
+
+        pars_matlab = {key: matlab.double([value]) if isinstance(value, (int, float)) else value for key, value in pars.items()}
+
+        self.update_console_log("Starting MATLAB engine...")
+        eng = matlab.engine.start_matlab()
+        self.update_console_log("Loaded MATLAB engine.", "complete")
+
+        # Adding to path
+        relative_folder_path = 'analysis/NeuralEnsembles'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+
+        self.update_console_log("Performing PCA...")
+        answer = eng.raster2ens_by_density(raster, pars_matlab)
+        self.update_console_log("Done.", "complete")
+
+        # Create plots for every result
+        keys_list = list(answer.keys())
+        print(keys_list)
+
+        ## Plot the results
+        ## Plot the eigs
+        eigs = np.array(answer['exp_var'])
+        seleig = int(pars['npcs'])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_eigs')
+        self.plot_widget.plot_eigs(eigs, seleig)
+
+        # Plot the PCA
+        pcs = np.array(answer['pcs'])
+        labels = np.array(answer['labels'])[0]
+        Nens = int(answer['Nens'])
+        ens_cols = plt.cm.tab10(range(Nens * 2))
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_pca')
+        self.plot_widget.plot_pca(pcs, ens_labs=labels, ens_cols = ens_cols)
+
+        # Plot the rhos vs deltas
+        rho = np.array(answer['rho'])
+        delta = np.array(answer['delta'])
+        cents = np.array(answer['cents'])
+        predbounds = np.array(answer['predbounds'])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_rhodelta')
+        self.plot_widget.plot_delta_rho(rho, delta, cents, predbounds, ens_cols)
+        
+        # Plot corr(n,e)
+        ens_cel_corr = np.array(answer['ens_cel_corr'])
+        ens_cel_corr_min = np.min(ens_cel_corr)
+        ens_cel_corr_max = np.max(ens_cel_corr)
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_corrne')
+        self.plot_widget.plot_core_cells(ens_cel_corr, [ens_cel_corr_min, ens_cel_corr_max])
+
+        # Plot core cells
+        core_cells = np.array(answer['core_cells'])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_corecells')
+        self.plot_widget.plot_core_cells(core_cells, [-1, 1])
+
+        # Plot core cells
+        ens_corr = np.array(answer["ens_corr"])[0]
+        corr_thr = np.array(answer["corr_thr"])
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_innerens')
+        self.plot_widget.plot_ens_corr(ens_corr, corr_thr, ens_cols)
+
+        
+    
 
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()

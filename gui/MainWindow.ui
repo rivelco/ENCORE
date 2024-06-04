@@ -30,7 +30,7 @@
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -686,13 +686,13 @@
            </sizepolicy>
           </property>
           <property name="title">
-           <string>Plots</string>
+           <string>Results visualization</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_4">
            <item>
             <widget class="QTabWidget" name="tabWidget">
              <property name="currentIndex">
-              <number>5</number>
+              <number>4</number>
              </property>
              <widget class="QWidget" name="tab_7">
               <attribute name="title">
@@ -749,15 +749,279 @@
                <string>AUC-ROC</string>
               </attribute>
              </widget>
-             <widget class="QWidget" name="tab_15">
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_6">
+       <attribute name="title">
+        <string>PCA</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QGroupBox" name="groupBox_4">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>370</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Analysis data</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9">
+           <item>
+            <widget class="QGroupBox" name="groupBox_6">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Input data</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_3">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Needed data</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_4">
+                <property name="text">
+                 <string>Spikes</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLabel" name="label_5">
+                <property name="text">
+                 <string>Loaded</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_7">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Parameters to adjust</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_4">
+              <item row="0" column="0">
+               <widget class="QLabel" name="pca_lbl_dc">
+                <property name="text">
+                 <string>dc</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="pca_edit_dc">
+                <property name="text">
+                 <string>0.01</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="pca_lbl_npcs">
+                <property name="text">
+                 <string>Num. of principal components</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="pca_edit_npcs">
+                <property name="text">
+                 <string>3</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="pca_lbl_minspk">
+                <property name="text">
+                 <string>Min population spike</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="pca_edit_minspk">
+                <property name="text">
+                 <string>3</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="pca_lbl_nsur">
+                <property name="text">
+                 <string>Number of surrogates</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="pca_edit_nsur">
+                <property name="text">
+                 <string>1000</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="pca_lbl_prct">
+                <property name="text">
+                 <string>Percentile for core-cells</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="pca_edit_prct">
+                <property name="text">
+                 <string>99.9</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="pca_lbl_centthr">
+                <property name="text">
+                 <string>Centroid detection threshold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="pca_edit_centthr">
+                <property name="text">
+                 <string>99.9</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="pca_lbl_innercorr">
+                <property name="text">
+                 <string>Inter-assembly correlation threshold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="pca_edit_innercorr">
+                <property name="text">
+                 <string>5</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="pca_lbl_minsize">
+                <property name="text">
+                 <string>Min assembly size</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="pca_edit_minsize">
+                <property name="text">
+                 <string>3</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_run_pca">
+             <property name="text">
+              <string>Perform analysis</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_9">
+          <property name="title">
+           <string>Results visualization</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <widget class="QTabWidget" name="tabWidget_2">
+             <property name="currentIndex">
+              <number>1</number>
+             </property>
+             <widget class="QWidget" name="tab_12">
               <attribute name="title">
-               <string>Spatial distribution</string>
+               <string>Eigen values</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_10">
+               <item>
+                <widget class="MatplotlibWidget" name="pca_plot_eigs"/>
+               </item>
+              </layout>
              </widget>
-             <widget class="QWidget" name="tab_16">
+             <widget class="QWidget" name="tab_17">
               <attribute name="title">
-               <string>FFo for each ensemble</string>
+               <string>Principal components</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_11">
+               <item>
+                <widget class="MatplotlibWidget" name="pca_plot_pca"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_20">
+              <attribute name="title">
+               <string>rho vs delta</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_13">
+               <item>
+                <widget class="MatplotlibWidget" name="pca_plot_rhodelta"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_21">
+              <attribute name="title">
+               <string>Corr n,e</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_14">
+               <item>
+                <widget class="MatplotlibWidget" name="pca_plot_corrne"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_22">
+              <attribute name="title">
+               <string>Core cells</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_15">
+               <item>
+                <widget class="MatplotlibWidget" name="pca_plot_corecells"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_23">
+              <attribute name="title">
+               <string>Inner ensemble correlations</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_16">
+               <item>
+                <widget class="MatplotlibWidget" name="pca_plot_innerens"/>
+               </item>
+              </layout>
              </widget>
             </widget>
            </item>
@@ -771,14 +1035,9 @@
         <string>SGC</string>
        </attribute>
       </widget>
-      <widget class="QWidget" name="tab_6">
-       <attribute name="title">
-        <string>PCA</string>
-       </attribute>
-      </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
-        <string>Analysis Compare</string>
+        <string>Performance Comparison</string>
        </attribute>
       </widget>
       <widget class="QWidget" name="tab_2">
