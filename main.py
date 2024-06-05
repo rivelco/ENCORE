@@ -21,7 +21,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 import matlab.engine
-from matlab import double as matlab_double
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -81,12 +80,14 @@ class MainWindow(QMainWindow):
         self.pca_edit_innercorr.setValidator(double_validator)
         self.pca_edit_minsize.setValidator(double_validator)
         
-
         ## SVD analysis
         self.btn_svd_run.clicked.connect(self.run_svd)
 
         ## PCA analysis
         self.btn_run_pca.clicked.connect(self.run_PCA)
+
+        # Store analysis results
+        self.results = {}
         
 
     def update_console_log(self, message, msg_type="log"):
@@ -175,65 +176,82 @@ class MainWindow(QMainWindow):
         self.file_selected_var_size = item_size
         self.file_selected_var_name = item_name
     
+    def validate_needed_data(self, needed_data):
+        valid_data = True
+        for req in needed_data:
+            if not hasattr(self, req):
+                valid_data = False
+        return valid_data
+        
     ## Identify the tab changes
     def onTabChange(self, index):
-        if index == 1: # SVD tab
+        if index > 0: # SVD tab
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
+                self.lbl_pca_spikes_selected.setText(f"Loaded")
             else:
                 self.lbl_sdv_spikes_selected.setText(f"Nothing selected")
-            if hasattr(self, "data_coordinates"):
-                self.lbl_sdv_coordinates_selected.setText(f"Loaded")
-            else:
-                self.lbl_sdv_coordinates_selected.setText(f"Nothing selected")
-            if hasattr(self, "data_dFFo"):
-                self.lbl_sdv_dFFo_selected.setText(f"Loaded")
-            else:
-                self.lbl_sdv_dFFo_selected.setText(f"Nothing selected")
+                self.lbl_pca_spikes_selected.setText(f"Nothing selected")
 
-            needed_data = ["data_neuronal_activity", "data_coordinates"]
-            valid_data = True
-            for req in needed_data:
-                if not hasattr(self, req):
-                    valid_data = False
-            self.btn_svd_run.setEnabled(valid_data)
+            # Validate data for SVD
+            needed_data = ["data_neuronal_activity"]
+            self.btn_svd_run.setEnabled(self.validate_needed_data(needed_data))
+
+            # Validate needed data for PCA
+            needed_data = ["data_neuronal_activity"]
+            self.btn_run_pca.setEnabled(self.validate_needed_data(needed_data))
 
     ## Set variables from input file
     def set_dFFo(self):
         data_dFFo = assign_data_from_file(self)
         self.data_dFFo = data_dFFo
+        neus, frames = data_dFFo.shape
         self.btn_clear_dFFo.setEnabled(True)
         self.btn_view_dFFo.setEnabled(True)
         self.lbl_dffo_select.setText("Assigned")
         self.lbl_dffo_select_name.setText(self.file_selected_var_name)
+        self.update_console_log(f"Set dFFo dataset - Identified {neus} cells and {frames} time points. Please, verify the data preview.", msg_type="complete")
+        self.view_dFFo()
     def set_neuronal_activity(self):
         data_neuronal_activity = assign_data_from_file(self)
         self.data_neuronal_activity = data_neuronal_activity
+        self.cant_neurons, self.cant_timepoints = data_neuronal_activity.shape
         self.btn_clear_neuronal_activity.setEnabled(True)
         self.btn_view_neuronal_activity.setEnabled(True)
         self.lbl_neuronal_activity_select.setText("Assigned")
         self.lbl_neuronal_activity_select_name.setText(self.file_selected_var_name)
+        self.update_console_log(f"Set Binary Neuronal Activity dataset - Identified {self.cant_neurons} cells and {self.cant_timepoints} time points. Please, verify the data preview.", msg_type="complete")
+        self.view_neuronal_activity()
     def set_coordinates(self):
         data_coordinates = assign_data_from_file(self)
         self.data_coordinates = data_coordinates[:, 0:2]
+        neus, dims = self.data_coordinates.shape
         self.btn_clear_coordinates.setEnabled(True)
         self.btn_view_coordinates.setEnabled(True)
         self.lbl_coordinates_select.setText("Assigned")
         self.lbl_coordinates_select_name.setText(self.file_selected_var_name)
+        self.update_console_log(f"Set Coordinates dataset - Identified {neus} cells and {dims} dimentions. Please, verify the data preview.", msg_type="complete")
+        self.view_coordinates()
     def set_stims(self):
         data_stims = assign_data_from_file(self)
         self.data_stims = data_stims
+        stims, timepoints = data_stims.shape
         self.btn_clear_stim.setEnabled(True)
         self.btn_view_stim.setEnabled(True)
         self.lbl_stim_select.setText("Assigned")
         self.lbl_stim_select_name.setText(self.file_selected_var_name)
+        self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
+        self.view_stims()
     def set_behavior(self):
         data_behavior = assign_data_from_file(self)
         self.data_behavior = data_behavior
+        behaviors, timepoints = data_behavior.shape
         self.btn_clear_behavior.setEnabled(True)
         self.btn_view_behavior.setEnabled(True)
         self.lbl_behavior_select.setText("Assigned")
         self.lbl_behavior_select_name.setText(self.file_selected_var_name)
+        self.update_console_log(f"Set Behavior dataset - Identified {behaviors} behaviors and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
+        self.view_behavior()
     
     ## Clear variables 
     def clear_dFFo(self):
@@ -242,30 +260,35 @@ class MainWindow(QMainWindow):
         self.btn_view_dFFo.setEnabled(False)
         self.lbl_dffo_select.setText("Nothing")
         self.lbl_dffo_select_name.setText("")
+        self.update_console_log(f"Deleted dFFo dataset", msg_type="complete")       
     def clear_neuronal_activity(self):
         delattr(self, "data_neuronal_activity")
         self.btn_clear_neuronal_activity.setEnabled(False)
         self.btn_view_neuronal_activity.setEnabled(False)
         self.lbl_neuronal_activity_select.setText("Nothing")
         self.lbl_neuronal_activity_select_name.setText("")
+        self.update_console_log(f"Deleted Binary Neuronal Activity dataset", msg_type="complete")
     def clear_coordinates(self):
         delattr(self, "data_coordinates")
         self.btn_clear_coordinates.setEnabled(False)
         self.btn_view_coordinates.setEnabled(False)
         self.lbl_coordinates_select.setText("Nothing")
         self.lbl_coordinates_select_name.setText("")
+        self.update_console_log(f"Deleted Coordinates dataset", msg_type="complete")
     def clear_stims(self):
         delattr(self, "data_stims")
         self.btn_clear_stim.setEnabled(False)
         self.btn_view_stim.setEnabled(False)
         self.lbl_stim_select.setText("Nothing")
         self.lbl_stim_select_name.setText("")
+        self.update_console_log(f"Deleted Stimuli dataset", msg_type="complete")
     def clear_behavior(self):
         delattr(self, "data_behavior")
         self.btn_clear_behavior.setEnabled(False)
         self.btn_view_behavior.setEnabled(False)
         self.lbl_behavior_select.setText("Nothing")
         self.lbl_behavior_select_name.setText("")
+        self.update_console_log(f"Deleted Behavior dataset", msg_type="complete")
 
     ## Visualize variables from input file
     def view_dFFo(self):
@@ -307,18 +330,25 @@ class MainWindow(QMainWindow):
         to_edit = self.currently_visualizing
         if to_edit == "dFFo":
             self.data_dFFo = self.data_dFFo.T
+            self.update_console_log(f"Updated dFFo dataset. Please, verify the data preview.", msg_type="complete")
             self.view_dFFo()
         elif to_edit == "neuronal_activity":
             self.data_neuronal_activity = self.data_neuronal_activity.T
+            self.cant_neurons = self.data_neuronal_activity.shape[0]
+            self.cant_timepoints = self.data_neuronal_activity.shape[1]
+            self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", msg_type="complete")
             self.view_neuronal_activity()
         elif to_edit == "coordinates":
             self.data_coordinates = self.data_coordinates.T
+            self.update_console_log(f"Updated Coordinates dataset. Please, verify the data preview.", msg_type="complete")
             self.view_coordinates()
         elif to_edit == "stims":
             self.data_stims = self.data_stims.T
+            self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", msg_type="complete")
             self.view_stims()
         elif to_edit == "behavior":
             self.data_behavior = self.data_behavior.T
+            self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", msg_type="complete")
             self.view_behavior()
         
     def add_matplotlib_widgets_to_tab(self, n, tab_index):
@@ -338,8 +368,9 @@ class MainWindow(QMainWindow):
         # Prepare data
         data = self.data_neuronal_activity
         spikes = matlab.double(data.tolist())
-        data = self.data_coordinates
-        coords = matlab.double(data.tolist())
+        #data = self.data_coordinates
+        data = np.zeros((self.cant_neurons,2))
+        coords_foo = matlab.double(data.tolist())
 
         if hasattr(self, 'data_dFFo'):
             data = self.data_dFFo
@@ -357,7 +388,7 @@ class MainWindow(QMainWindow):
         val_statecut = float(input_value) if len(input_value) > 0 else 6
         val_idtfd = self.svd_check_tfidf.isChecked()
 
-        print([val_pks, val_scut, val_hcut, val_statecut, val_idtfd])
+        #print([val_pks, val_scut, val_hcut, val_statecut, val_idtfd])
 
         self.update_console_log("Starting MATLAB engine...")
         eng = matlab.engine.start_matlab()
@@ -370,7 +401,7 @@ class MainWindow(QMainWindow):
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
         self.update_console_log("Performing SVD...")
-        answer = eng.Stoixeion(spikes, coords, FFo, val_pks, val_scut, val_hcut, val_statecut, val_idtfd)
+        answer = eng.Stoixeion(spikes, coords_foo, FFo, val_pks, val_scut, val_hcut, val_statecut, val_idtfd)
         self.update_console_log("Done.", "complete")
 
         # Create plots for every result
@@ -386,7 +417,7 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap')
         self.plot_widget.preview_dataset(bin_simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='gray', aspect='equal')
         # Singular values plot
-        singular_vals = np.array(answer['S_svd'])
+        singular_vals = np.diagonal(np.array(answer['S_svd']))
         num_state = int(answer['num_state'])
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_singularvalues')
         self.plot_widget.plot_singular_values(singular_vals, num_state)
@@ -411,8 +442,7 @@ class MainWindow(QMainWindow):
         # Plot the ensembles timecourse
         Pks_Frame = np.array(answer['Pks_Frame'])
         sec_Pk_Frame = np.array(answer['sec_Pk_Frame'])
-        frames = self.data_neuronal_activity.shape[1]
-        ensembles_timecourse = np.zeros((num_state, frames))
+        ensembles_timecourse = np.zeros((num_state, self.cant_timepoints))
         framesActiv = Pks_Frame.shape[1]
         for it in range(framesActiv):
             currentFrame = int(Pks_Frame[0, it])
@@ -421,6 +451,26 @@ class MainWindow(QMainWindow):
                 ensembles_timecourse[currentEns-1, currentFrame-1] = 1
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_timecourse')
         self.plot_widget.plot_ensembles_timecourse(ensembles_timecourse)
+
+        # Save the results
+        self.results['svd'] = {}
+        self.results['svd']['timecourse'] = ensembles_timecourse
+        self.results['svd']['ensembles_cant'] = ensembles_timecourse.shape[0]
+        Pools_coords = np.array(answer['Pools_coords'])
+        # Identify the neurons that belongs to each ensamble
+        neurons_in_ensembles = np.zeros((self.results['svd']['ensembles_cant'], self.cant_neurons))
+        for ens in range(self.results['svd']['ensembles_cant']):
+            cells_in_ens = Pools_coords[:, :, ens]
+            for neu in range(self.cant_neurons):
+                cell_id = int(cells_in_ens[neu][2])
+                if cell_id == 0:
+                    break
+                else:
+                    neurons_in_ensembles[ens, cell_id-1] = 1
+        self.results['svd']['neus_in_ens'] = neurons_in_ensembles
+
+        self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
+        self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles)
 
     def run_PCA(self):
         data = self.data_neuronal_activity
@@ -472,8 +522,8 @@ class MainWindow(QMainWindow):
         self.update_console_log("Done.", "complete")
 
         # Create plots for every result
-        keys_list = list(answer.keys())
-        print(keys_list)
+        #keys_list = list(answer.keys())
+        #print(keys_list)
 
         ## Plot the results
         ## Plot the eigs
@@ -516,7 +566,17 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_innerens')
         self.plot_widget.plot_ens_corr(ens_corr, corr_thr, ens_cols)
 
-        
+        # Save the results
+        self.results['PCA'] = {}
+        self.results['PCA']['ensembles_cant'] = Nens
+        self.results['PCA']['timecourse'] = np.array(answer["sel_ensmat_out"])
+        self.results['PCA']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
+
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_timecourse')
+        self.plot_widget.plot_ensembles_timecourse(self.results['PCA']['timecourse'])
+
+        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_cellsinens')
+        self.plot_widget.plot_ensembles_timecourse(self.results['PCA']['neus_in_ens'])
     
 
 app = QtWidgets.QApplication(sys.argv)
