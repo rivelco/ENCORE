@@ -21,15 +21,16 @@ class MatplotlibWidget(QWidget):
         self.axes.axis('off')
         self.canvas.figure.tight_layout()
 
-    def preview_dataset(self, dataset, xlabel='Frame', ylabel='Data', cmap='hot', aspect='auto'):
+    def preview_dataset(self, dataset, xlabel='Frame', ylabel='Data', title=None, cmap='hot', aspect='auto'):
         self.axes.clear()
         n, t = dataset.shape
         self.axes.imshow(dataset, cmap=cmap, interpolation='nearest', aspect=aspect)
-        #self.axes.set_title('Heatmap using Matplotlib')
+        if title != None:
+            self.axes.set_title(title)
         self.axes.set_xlabel(xlabel)
         self.axes.set_ylabel(ylabel)
         self.axes.set_xlim([0, t])
-        self.axes.set_ylim([0, n-1])
+        self.axes.set_ylim([-0.5, n-0.5])
         #self.axes.set_xticks([])
         #self.axes.set_yticks([])
         for side in ['left', 'top', 'right', 'bottom']:
@@ -121,6 +122,30 @@ class MatplotlibWidget(QWidget):
         self.axes.set_xlim([0, frames_cant]) # Set the x axis limit
         self.axes.set_ylabel('Ensemble') 
 
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def plot_ens_seq(self, tt, ens_labs, ens_cols, sellabs):
+        self.axes.clear()
+        nens = np.max(ens_labs)
+        try:
+            if nens == 0:
+                self.axes.plot([tt[0], tt[-1]], [0, 0], 'k-')
+                return
+            else:
+                self.axes.plot(tt, ens_labs, 'k--')
+                self.axes.plot(tt[ens_labs == 0], ens_labs[ens_labs == 0], 'ko')
+                for e in range(1, nens + 1):
+                    self.axes.plot(tt[ens_labs == e], ens_labs[ens_labs == e], '.', markersize=25, color=ens_cols[e-1])
+                self.axes.set_ylim([0, nens * 1.1])
+        except Exception as e:
+            print(f"Error occurred: {e}")
+            self.axes.plot([tt[0], tt[-1]], [0, 0], 'k-')
+
+        self.axes.set_xlabel('Time (s)')
+        self.axes.set_ylabel('Ensemble')
+        self.axes.set_yticks(range(1, nens + 1))
+        self.axes.set_yticklabels(sellabs)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
