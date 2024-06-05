@@ -162,7 +162,7 @@ end
 % find most significant cells for each state
 % csi_num_temp: columns indicate neuron members of each state
 csi_num_temp = zeros(size(Cells_edos));
-figure(6); clf; set(gcf,'color','w')
+%#figure(6); clf; set(gcf,'color','w')
 N = ceil(sqrt(edos));
 M = ceil(edos/N);
 cc = jet(length(csi_vec));
@@ -173,18 +173,18 @@ for csi=1:edos
     tf_idf_csi_hist_norm=tf_idf_csi_hist/max(tf_idf_csi_hist); %Noramliza a 1 para tener solo un parametro de corte
     
     % cross-validate csi_cut with cosine similarity
-    subplot(M,N,csi); hold on
+    %#subplot(M,N,csi); hold on
     auc = zeros(size(csi_vec));
     for n = 1:length(csi_vec)
         core_vec = zeros(size(Rasterbin,1),1);
         core_vec(tf_idf_csi_hist_norm>csi_vec(n)) = 1;
         sim_core = 1-pdist2(Rasterbin',core_vec','cosine')';
         [xx,yy,~,auc(n)] = perfcurve(double(sec_Pk_edos==csi),sim_core,1);
-        plot(xx,yy,'color',cc(n,:),'linewidth',1);
+        %#plot(xx,yy,'color',cc(n,:),'linewidth',1);
     end
-    plot([0 1],[0 1],'k--')
-    xlim([0 1]); ylim([0 1])
-    xlabel('FPR'); ylabel('TPR'); title(['state ' num2str(csi)])
+    %#plot([0 1],[0 1],'k--')
+    %#xlim([0 1]); ylim([0 1])
+    %#xlabel('FPR'); ylabel('TPR'); title(['state ' num2str(csi)])
     [~,best_indx] = max(auc);
     csi_cut = csi_vec(best_indx);
     csix=find(tf_idf_csi_hist_norm>csi_cut);
@@ -195,11 +195,11 @@ end
 csi_ren=max(sum(csi_num_temp>0));
 csi_num=csi_num_temp(1:csi_ren,:); %Celulas mas representativas de cada estado
 [S_index_significant, sis_query]=Search_significant(csi_num,tf_idf_Rasterbin,Rasterbin);
-figure(7); clf; plot(S_index_significant'); xlim([1 length(Pks_Frame)]);
-xlabel('frame'); ylabel('similarity'); title('ensemble similarity with each frame'); legend('show')
+%#figure(7); clf; plot(S_index_significant'); xlim([1 length(Pks_Frame)]);
+%#xlabel('frame'); ylabel('similarity'); title('ensemble similarity with each frame'); legend('show')
 % figure; imagesc(sortrows(sis_query)); 
-figure(8); clf; imagesc(sis_query==0); colormap(gray)
-xlabel('ensembles'); ylabel('cell index'); title('ensemble cells')
+%#figure(8); clf; imagesc(sis_query==0); colormap(gray)
+%#xlabel('ensembles'); ylabel('cell index'); title('ensemble cells')
 
 %% Find the coordinates of the cells that belong to each state and
 % the most representative pools
@@ -228,58 +228,58 @@ stoixeion_results.Pks_Frame = Pks_Frame;
 stoixeion_results.sec_Pk_Frame = sec_Pk_frames;
 
 % plot cross-correlations within and between ensembles
-t_lag = 200;
-states_corr = xcorr_states(Pools_coords,Spikes,t_lag);
-sequences_corr = xcorr_sequences(Pools_coords,Spikes,t_lag);
-figure(9); clf; set(gcf,'color','w')
-subplot(2,1,1);plot(-t_lag:t_lag,states_corr');
-xlabel('time (frame)'); ylabel('cross-correlation');
-title('cell cross-correlation within each ensemble'); legend('show')
-subplot(2,1,2); plot(-t_lag:t_lag,sequences_corr');
-xlabel('time (frame)'); ylabel('cross-correlation');
-title('cell cross-correlation between different ensembles')
+%#t_lag = 200;
+%#states_corr = xcorr_states(Pools_coords,Spikes,t_lag);
+%#sequences_corr = xcorr_sequences(Pools_coords,Spikes,t_lag);
+%#figure(9); clf; set(gcf,'color','w')
+%#subplot(2,1,1);plot(-t_lag:t_lag,states_corr');
+%#xlabel('time (frame)'); ylabel('cross-correlation');
+%#title('cell cross-correlation within each ensemble'); legend('show')
+%#subplot(2,1,2); plot(-t_lag:t_lag,sequences_corr');
+%#xlabel('time (frame)'); ylabel('cross-correlation');
+%#title('cell cross-correlation between different ensembles')
 
 % plot ensemble component cells
-cc_lr = [1 0.8 0.8]; % light red
-cc_r = [1 0.2 0.2]; % red
-mksz = 30;
-figure(10); clf; set(gcf,'color','w')
-for n = 1:edos
-    subplot(M,N,n); hold on
-    scatter(Coord_active(:,1),-Coord_active(:,2),mksz,'k');
-    scatter(Cells_coords(:,1,n),-Cells_coords(:,2,n),mksz,cc_lr,'filled');
-    scatter(Pools_coords(:,1,n),-Pools_coords(:,2,n),mksz,cc_r,'filled');
-    title(['ensemble #' num2str(n)]);
-    axis off equal
-end
+%#cc_lr = [1 0.8 0.8]; % light red
+%#cc_r = [1 0.2 0.2]; % red
+%#mksz = 30;
+%#figure(10); clf; set(gcf,'color','w')
+%#for n = 1:edos
+%#    subplot(M,N,n); hold on
+%#    scatter(Coord_active(:,1),-Coord_active(:,2),mksz,'k');
+%#    scatter(Cells_coords(:,1,n),-Cells_coords(:,2,n),mksz,cc_lr,'filled');
+%#    scatter(Pools_coords(:,1,n),-Pools_coords(:,2,n),mksz,cc_r,'filled');
+%#    title(['ensemble #' num2str(n)]);
+%#    axis off equal
+%#end
 
 %% plot calcium transients of core cells
 %FFo [frames, cells] LCR.
 %FFo=FFo';
-if ~isempty(FFo) 
-    figure(11); clf; set(gcf,'color','w')
-    Fmi = min(FFo(:));
-    Fma = max(FFo(:));
-    for n = 1:edos
-%         subplot(M,N,n); hold on
-        subplot(1,edos,n); hold on
-        core = Pools_coords(:,3,n);
-        core = core(core~=0);
-        cc = jet(min(length(core),64));
-        cc = max(cc-0.3,0);
-        for ii = 1:length(core)
-            f = FFo(core(ii),:);
-            f = (f-Fmi)/(Fma-Fmi);
-            plot(1:size(Spikes,2),ii+f,'color',cc(ii-floor(ii/65)*64,:),...
-                'linewidth',1);
-            text(size(Spikes,2)+size(Spikes,2)*0.02,ii,num2str(core(ii)));
-        end
-        xlim([1 size(Spikes,2)]); ylim([0 ii+1])
-        xlabel('time (frame)'); ylabel('cell #'); 
-        box on
-        title(['core #' num2str(n)]);
-        set(gca,'ytick',[]);
-    end
-end
+%#if ~isempty(FFo) 
+%#    figure(11); clf; set(gcf,'color','w')
+%#    Fmi = min(FFo(:));
+%#    Fma = max(FFo(:));
+%#    for n = 1:edos
+%#        %subplot(M,N,n); hold on
+%#        subplot(1,edos,n); hold on
+%#        core = Pools_coords(:,3,n);
+%#        core = core(core~=0);
+%#        cc = jet(min(length(core),64));
+%#        cc = max(cc-0.3,0);
+%#        for ii = 1:length(core)
+%#            f = FFo(core(ii),:);
+%#            f = (f-Fmi)/(Fma-Fmi);
+%#            plot(1:size(Spikes,2),ii+f,'color',cc(ii-floor(ii/65)*64,:),...
+%#                'linewidth',1);
+%#            text(size(Spikes,2)+size(Spikes,2)*0.02,ii,num2str(core(ii)));
+%#        end
+%#        xlim([1 size(Spikes,2)]); ylim([0 ii+1])
+%#        xlabel('time (frame)'); ylabel('cell #'); 
+%#        box on
+%#        title(['core #' num2str(n)]);
+%#        set(gca,'ytick',[]);
+%#    end
+%#end
 disp(" -> Done with Stoixeion")
 end
