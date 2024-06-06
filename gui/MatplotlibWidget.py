@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class MatplotlibWidget(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, rows=1, cols=1, parent=None):
         super().__init__(parent)
         self.canvas = FigureCanvas(Figure())
         self.canvas.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
@@ -17,9 +17,30 @@ class MatplotlibWidget(QWidget):
         layout.addWidget(self.canvas)
         layout.addWidget(self.toolbar)
         self.setLayout(layout)
-        self.axes = self.canvas.figure.add_subplot(111)
-        self.axes.axis('off')
-        self.canvas.figure.tight_layout()
+        #self.axes = self.canvas.figure.add_subplot(111)
+        # Create subplots based on rows and cols
+        self.set_subplots(rows, cols)
+
+    def set_subplots(self, rows, cols):
+        # Clear existing subplots
+        self.canvas.figure.clf()
+        # Create new subplots
+        self.axes = self.canvas.figure.subplots(rows, cols)
+        if rows == 1 and cols == 1:
+            self.axes.axis('off')
+        elif rows == 1 or cols == 1:
+            tmp = max(rows, cols)
+            for idx in range(tmp):
+                self.axes[idx].axis('off')
+        elif rows > 1 and cols > 1:
+            for row in range(rows):
+                for col in range(cols):
+                    self.axes[row][col].axis('off')
+        # Adjust layout
+        #self.canvas.figure.tight_layout()
+    
+    def reset(self, rows=1, cols=1):
+        self.set_subplots(rows, cols)
 
     def preview_dataset(self, dataset, xlabel='Frame', ylabel='Data', title=None, cmap='hot', aspect='auto'):
         self.axes.clear()
@@ -89,26 +110,21 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_states_from_svd(self, svd_sig, comp_n):
-        self.axes.clear()
-
+    def plot_states_from_svd(self, svd_sig, comp_n, row, col):
+        self.axes[row][col].clear()
         # Plot the image, where svd_sig[:,:,n]==0 is the condition to be checked
-        self.axes.imshow(svd_sig == 0, cmap='gray', aspect='equal')
-
+        self.axes[row][col].imshow(svd_sig == 0, cmap='gray', aspect='equal')
         # Set the labels and title
-        self.axes.set_xlabel('frame')
-        self.axes.set_ylabel('frame')
-        self.axes.set_title(f'Components ensemble {comp_n+1}')
-
+        self.axes[row][col].set_xlabel('frame')
+        self.axes[row][col].set_ylabel('frame')
+        self.axes[row][col].set_title(f'Components ensemble {comp_n+1}')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
     def plot_ensembles_timecourse(self, timecourse):
         self.axes.clear()
-
         ensembles_cant = timecourse.shape[0]
         frames_cant = timecourse.shape[1]
-
         for ens in range(ensembles_cant):
             for frame in range(frames_cant):
                 if timecourse[ens, frame]:
@@ -204,91 +220,106 @@ class MatplotlibWidget(QWidget):
 
     def plot_delta_rho(self, rho, delta, cents, predbounds, ens_cols):
         self.axes.clear()
-
         # Sort pred_id based on the first column of predbounds
         pred_id = np.argsort(predbounds[:, 0])
-
         # Plot pred bounds
         self.axes.plot(predbounds[pred_id, 0], predbounds[pred_id, 1], 'b--', linewidth=2)
-
         # Plot delta rho
         self.axes.plot(rho, delta, 'k.')
-        
         # Plot points based on the cluster centers (cents)
         nens = np.sum(cents > 0)
         for e in range(1, nens + 1):
             self.axes.plot(rho[cents == e], delta[cents == e], '.', markersize=25, color=ens_cols[e - 1])
             for r, d in zip(rho[cents == e], delta[cents == e]):
                 self.axes.text(r * 1.01, d * 1.01, str(e), fontsize=12)
-        
         # Set x and y limits
         self.axes.set_xlim([0, np.max(rho[~np.isinf(rho)]) * 1.1])
         self.axes.set_ylim([0, np.max(delta[~np.isinf(delta)]) * 1.1])
-        
         # Set labels
         self.axes.set_xlabel(r'$\rho$')
         self.axes.set_ylabel(r'$\delta$')
-
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
     def plot_core_cells(self, core_cells, clims):
         # Clear the axes
         self.axes.clear()
-
         # Determine the size of core_cells
         N, nens = core_cells.shape
-
         # Plot the image
         cax = self.axes.imshow(core_cells, aspect='auto', cmap='bwr', vmin=clims[0], vmax=clims[1])
-
         # Set the color limits
         cax.set_clim(clims)
-
         # Set axis limits
         self.axes.set_xlim([0, nens])
         self.axes.set_ylim([0, N])
-
         # Draw the lines
         for e in range(nens + 1):
             self.axes.plot([e - 0.5, e - 0.5], [0, N], 'k-')
-
         # Remove y-axis labels and ticks
         self.axes.set_yticks([])
         self.axes.set_yticklabels([])
-        
         # Set y-axis label
         self.axes.set_ylabel('')
-        
         # Add a box around the plot
         self.axes.spines['top'].set_visible(True)
         self.axes.spines['right'].set_visible(True)
         self.axes.spines['bottom'].set_visible(True)
         self.axes.spines['left'].set_visible(True)
-
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
     def plot_ens_corr(self, ens_corr, corr_thr, ens_cols):
         # Clear the axes
         self.axes.clear()
-        
         nens = len(ens_corr)
-
         # Plot bars
         for e in range(nens):
             self.axes.bar(e + 1, ens_corr[e], color=ens_cols[e], edgecolor=ens_cols[e])
-
         # Plot threshold line
         self.axes.plot([0.5, nens + 0.5], [corr_thr, corr_thr], 'r--')
-
         # Set x and y limits
         self.axes.set_xlim([0.5, nens + 0.5])
         self.axes.set_ylim([0, max(max(ens_corr), corr_thr) * 1.1])
-
         # Set labels
         self.axes.set_xlabel('Ensemble Id.')
         self.axes.set_ylabel('Core-Cells Mean Correlation')
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives):
+        self.axes.clear()
+
+        # Plot all cells
+        self.axes.scatter(coordinates[:, 0], coordinates[:, 1], c='blue')
+        # Highlight cells in ensemble
+        self.axes.scatter(coordinates[highlight_idxs, 0], coordinates[highlight_idxs, 1], c='red', label='Cells in ensemble')
+        # Highlight the exclusive cells 
+        self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', label='Exclusive cells')
+
+        # Label all cells with their indices
+        for i in range(coordinates.shape[0]):
+            self.axes.text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='right')
+
+        # Add legend
+        self.axes.legend()
+
+        # Set labels and title
+        self.axes.set_xlabel('X coordinate')
+        self.axes.set_ylabel('Y coordinate')
+        self.axes.set_aspect('equal', adjustable='box')
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+
+    def plot_ensemble_dFFo(self, cell_idx, self_name, dFFo):
+        self.axes[cell_idx].clear()
+        self.axes[cell_idx].plot(dFFo)
+        self.axes[cell_idx].set_ylabel(f"{self_name}")
+        self.axes[cell_idx].set_xticks([])
+        self.axes[cell_idx].set_yticks([])
+        for side in ['left', 'top', 'right', 'bottom']:
+            self.axes[cell_idx].spines[side].set_visible(False)
+        #self.axes[cell_idx].axis('off')
+        self.canvas.draw()
+
