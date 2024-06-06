@@ -56,10 +56,10 @@ for qq=1:edos
 end;
 %-----------------------------------------------------------%
 
-for iis=1:edos
-    fprintf('State: %d elements \n',iis);
-    fprintf('%d_',Pk_edos(:,iis));
-    fprintf('\n\n');
-   
-end;
+%# for iis=1:edos
+%#    fprintf('State: %d elements \n',iis);
+%#    fprintf('%d_',Pk_edos(:,iis));
+%#    fprintf('\n\n');
+%#   
+%# end;
 
