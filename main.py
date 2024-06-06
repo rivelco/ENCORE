@@ -6,7 +6,7 @@ import scipy.io
 import math
 import numpy as np
 from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QGridLayout, QGraphicsScene
+from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QGridLayout, QWidget, QVBoxLayout, QSizePolicy
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
 from PyQt6.QtGui import QTextCursor, QDoubleValidator
@@ -85,6 +85,11 @@ class MainWindow(QMainWindow):
 
         ## PCA analysis
         self.btn_run_pca.clicked.connect(self.run_PCA)
+
+        ## Ensembles visualizer
+        self.ensvis_btn_svd.clicked.connect(self.vis_ensembles_svd)
+        self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
+        self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
 
         # Store analysis results
         self.results = {}
@@ -183,6 +188,12 @@ class MainWindow(QMainWindow):
                 valid_data = False
         return valid_data
         
+    def format_nums_to_string(self, numbers_list):
+        txt = f""
+        for member_id in range(len(numbers_list)):
+            txt += f"{numbers_list[member_id]}, " if member_id < len(numbers_list)-1 else f"{numbers_list[member_id]}"
+        return txt
+
     ## Identify the tab changes
     def onTabChange(self, index):
         if index > 0: # SVD tab
@@ -424,20 +435,15 @@ class MainWindow(QMainWindow):
 
         # Components from the descomposition
         singular_vals = np.array(answer['svd_sig'])
-        tab_index = 3 # Tab index within the tabs of SVD results
-        tab = self.tabWidget.widget(tab_index)
-        layout = QGridLayout()
+        self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_components')
         rows = math.ceil(math.sqrt(num_state))
         cols = math.ceil(num_state / rows)
+        self.plot_widget.set_subplots(rows, cols)
         for state_idx in range(num_state):
             curent_comp = singular_vals[:, :, state_idx]
             row = state_idx // cols
             col = state_idx % cols
-            mw = MatplotlibWidget()
-            mw.setObjectName(f"svd_plot_components_{state_idx+1}")
-            layout.addWidget(mw, row, col)
-            mw.plot_states_from_svd(curent_comp, state_idx)
-        tab.setLayout(layout)
+            self.plot_widget.plot_states_from_svd(curent_comp, state_idx, row, col)
             
         # Plot the ensembles timecourse
         Pks_Frame = np.array(answer['Pks_Frame'])
@@ -468,6 +474,8 @@ class MainWindow(QMainWindow):
                 else:
                     neurons_in_ensembles[ens, cell_id-1] = 1
         self.results['svd']['neus_in_ens'] = neurons_in_ensembles
+        self.ensvis_btn_svd.setEnabled(True)
+        self.performance_check_svd.setEnabled(True)
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
         self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles)
@@ -567,17 +575,92 @@ class MainWindow(QMainWindow):
         self.plot_widget.plot_ens_corr(ens_corr, corr_thr, ens_cols)
 
         # Save the results
-        self.results['PCA'] = {}
-        self.results['PCA']['ensembles_cant'] = Nens
-        self.results['PCA']['timecourse'] = np.array(answer["sel_ensmat_out"])
-        self.results['PCA']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
+        self.results['pca'] = {}
+        self.results['pca']['ensembles_cant'] = Nens
+        self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
+        self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
+        self.ensvis_btn_pca.setEnabled(True)
+        self.performance_check_svd.setEnabled(True)
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_timecourse')
-        self.plot_widget.plot_ensembles_timecourse(self.results['PCA']['timecourse'])
+        self.plot_widget.plot_ensembles_timecourse(self.results['pca']['timecourse'])
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_cellsinens')
-        self.plot_widget.plot_ensembles_timecourse(self.results['PCA']['neus_in_ens'])
+        self.plot_widget.plot_ensembles_timecourse(self.results['pca']['neus_in_ens'])
     
+    def vis_ensembles_svd(self):
+        if hasattr(self, "results"):
+            self.ensemble_currently_shown = "svd"
+            # Show the number of identifies ensembles
+            self.ensvis_edit_numens.setText(f"{self.results['svd']['ensembles_cant']}")
+            # Activate the slider
+            self.envis_slide_selectedens.setEnabled(True)
+            # Update the slider used to select the ensemble to visualize
+            self.envis_slide_selectedens.setMinimum(1)   # Set the minimum value
+            self.envis_slide_selectedens.setMaximum(self.results['svd']['ensembles_cant']) # Set the maximum value
+            self.envis_slide_selectedens.setValue(1)
+            self.ensvis_lbl_currentens.setText(f"{1}")
+            self.update_ensemble_visualization(1)
+    
+    def vis_ensembles_pca(self):
+        if hasattr(self, "results"):
+            self.ensemble_currently_shown = "pca"
+            # Show the number of identifies ensembles
+            self.ensvis_edit_numens.setText(f"{self.results['pca']['ensembles_cant']}")
+            # Activate the slider
+            self.envis_slide_selectedens.setEnabled(True)
+            # Update the slider used to select the ensemble to visualize
+            self.envis_slide_selectedens.setMinimum(1)   # Set the minimum value
+            self.envis_slide_selectedens.setMaximum(self.results['pca']['ensembles_cant']) # Set the maximum value
+            self.envis_slide_selectedens.setValue(1)
+            self.ensvis_lbl_currentens.setText(f"{1}")
+            self.update_ensemble_visualization(1)
+
+
+    def update_ensemble_visualization(self, value):
+        curr_analysis = self.ensemble_currently_shown
+        curr_ensemble = value
+        self.ensvis_lbl_currentens.setText(f"{curr_ensemble}")
+
+        # Get the members of this ensemble
+        members = []
+        ensemble = self.results[curr_analysis]['neus_in_ens'][value-1,:]
+        members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
+        members_txt = self.format_nums_to_string(members)
+        self.ensvis_edit_members.setText(members_txt)
+
+        # Get the exclusive members of this ensemble
+        ens_mat = self.results[curr_analysis]['neus_in_ens']
+        mask_e = ensemble == 1
+        sum_mask = np.sum(ens_mat, axis=0)
+        exc_elems = [cell+1 for cell in range(len(mask_e)) if mask_e[cell] and sum_mask[cell] == 1]
+        exclusive_txt = self.format_nums_to_string(exc_elems)
+        self.ensvis_edit_exclusive.setText(exclusive_txt)
+
+        # Timepoints of activation
+        ensemble_timecourse = self.results[curr_analysis]['timecourse'][curr_ensemble-1,:]
+        ens_timepoints = [frame+1 for frame in range(len(ensemble_timecourse)) if ensemble_timecourse[frame]]
+        ens_timepoints_txt = self.format_nums_to_string(ens_timepoints)
+        self.ensvis_edit_timepoints.setText(ens_timepoints_txt)
+
+        idx_corrected_members = [idx-1 for idx in members]
+        idx_corrected_exclusive = [idx-1 for idx in exc_elems]
+        
+        if hasattr(self, "data_coordinates"):
+            self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_map')
+            self.plot_widget.plot_coordinates2D_highlight(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive)
+
+        if hasattr(self, "data_dFFo"):
+            self.plot_widget = self.findChild(QWidget, 'ensvis_plot_raster')
+            self.plot_widget.set_subplots(len(idx_corrected_members), 1)
+            for cell_idx in range(len(idx_corrected_members)):
+                cell_name = idx_corrected_members[cell_idx]
+                cell_dFFo = self.data_dFFo[cell_name,:]
+                self.plot_widget.plot_ensemble_dFFo(cell_idx, cell_name+1, cell_dFFo)
+            
+
+            
+
 
 app = QtWidgets.QApplication(sys.argv)
 window = MainWindow()
