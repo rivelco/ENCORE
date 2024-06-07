@@ -60,7 +60,7 @@ if isempty(pks)
         cd = cumsum(cd/sum(cd));
         scut = bins(find(cd>p,1));
             if  mean(S_index(:))>scut         
-                pks = n
+                pks = n;
                 break;
             end
     end
