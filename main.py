@@ -6,14 +6,16 @@ import scipy.io
 import math
 import numpy as np
 from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QGridLayout, QWidget, QVBoxLayout, QSizePolicy
+from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QVBoxLayout
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
 from PyQt6.QtGui import QTextCursor, QDoubleValidator
 
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
-from plots.plots import plot_raster
+
+import utils.metrics as metrics
+
 from gui.MatplotlibWidget import MatplotlibWidget
 
 import matplotlib.pyplot as plt
@@ -90,6 +92,9 @@ class MainWindow(QMainWindow):
         self.ensvis_btn_svd.clicked.connect(self.vis_ensembles_svd)
         self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
+
+        ## Performance
+        self.performance_btn_compare.clicked.connect(self.performance_compare)
 
         # Store analysis results
         self.results = {}
@@ -416,8 +421,8 @@ class MainWindow(QMainWindow):
         self.update_console_log("Done.", "complete")
 
         # Create plots for every result
-        keys_list = list(answer.keys())
-        print(keys_list)
+        #keys_list = list(answer.keys())
+        #print(keys_list)
 
         # Similarity map
         simmap = np.array(answer['S_index_ti'])
@@ -474,11 +479,10 @@ class MainWindow(QMainWindow):
                 else:
                     neurons_in_ensembles[ens, cell_id-1] = 1
         self.results['svd']['neus_in_ens'] = neurons_in_ensembles
-        self.ensvis_btn_svd.setEnabled(True)
-        self.performance_check_svd.setEnabled(True)
+        self.we_have_results()
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
-        self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles)
+        self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Neuron")
 
     def run_PCA(self):
         data = self.data_neuronal_activity
@@ -576,46 +580,60 @@ class MainWindow(QMainWindow):
 
         # Save the results
         self.results['pca'] = {}
-        self.results['pca']['ensembles_cant'] = Nens
         self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
+        self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
         self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
-        self.ensvis_btn_pca.setEnabled(True)
-        self.performance_check_svd.setEnabled(True)
+        self.we_have_results()
 
+        # Plot ensembles timecourse
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_timecourse')
         self.plot_widget.plot_ensembles_timecourse(self.results['pca']['timecourse'])
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_cellsinens')
         self.plot_widget.plot_ensembles_timecourse(self.results['pca']['neus_in_ens'])
-    
+
+    def we_have_results(self):
+        self.performance_btn_compare.setEnabled(True)
+        for analysis_name in self.results.keys():
+            if analysis_name == 'svd':
+                self.ensvis_btn_svd.setEnabled(True)
+                self.performance_check_svd.setEnabled(True)
+            elif analysis_name == 'pca':
+                self.ensvis_btn_pca.setEnabled(True)
+                self.performance_check_pca.setEnabled(True)
+
     def vis_ensembles_svd(self):
         if hasattr(self, "results"):
             self.ensemble_currently_shown = "svd"
-            # Show the number of identifies ensembles
-            self.ensvis_edit_numens.setText(f"{self.results['svd']['ensembles_cant']}")
-            # Activate the slider
-            self.envis_slide_selectedens.setEnabled(True)
-            # Update the slider used to select the ensemble to visualize
-            self.envis_slide_selectedens.setMinimum(1)   # Set the minimum value
-            self.envis_slide_selectedens.setMaximum(self.results['svd']['ensembles_cant']) # Set the maximum value
-            self.envis_slide_selectedens.setValue(1)
-            self.ensvis_lbl_currentens.setText(f"{1}")
-            self.update_ensemble_visualization(1)
+            self.update_analysis_results()
     
     def vis_ensembles_pca(self):
         if hasattr(self, "results"):
             self.ensemble_currently_shown = "pca"
-            # Show the number of identifies ensembles
-            self.ensvis_edit_numens.setText(f"{self.results['pca']['ensembles_cant']}")
-            # Activate the slider
-            self.envis_slide_selectedens.setEnabled(True)
-            # Update the slider used to select the ensemble to visualize
-            self.envis_slide_selectedens.setMinimum(1)   # Set the minimum value
-            self.envis_slide_selectedens.setMaximum(self.results['pca']['ensembles_cant']) # Set the maximum value
-            self.envis_slide_selectedens.setValue(1)
-            self.ensvis_lbl_currentens.setText(f"{1}")
-            self.update_ensemble_visualization(1)
+            self.update_analysis_results()
 
+    def update_analysis_results(self):
+        self.initialize_ensemble_view()
+        self.update_ensvis_allbinary()
+        self.update_ensvis_allens()
+        if hasattr(self, "data_dFFo"):
+            self.update_ensvis_alldFFo()
+        if hasattr(self, "data_coordinates"):
+            self.update_ensvis_allcoords()
+
+    def initialize_ensemble_view(self):
+        curr_show = self.ensemble_currently_shown 
+        self.ensvis_lbl_currently.setText(f"{curr_show}".upper())
+        # Show the number of identifies ensembles
+        self.ensvis_edit_numens.setText(f"{self.results[curr_show]['ensembles_cant']}")
+        # Activate the slider
+        self.envis_slide_selectedens.setEnabled(True)
+        # Update the slider used to select the ensemble to visualize
+        self.envis_slide_selectedens.setMinimum(1)   # Set the minimum value
+        self.envis_slide_selectedens.setMaximum(self.results[curr_show]['ensembles_cant']) # Set the maximum value
+        self.envis_slide_selectedens.setValue(1)
+        self.ensvis_lbl_currentens.setText(f"{1}")
+        self.update_ensemble_visualization(1)
 
     def update_ensemble_visualization(self, value):
         curr_analysis = self.ensemble_currently_shown
@@ -651,15 +669,110 @@ class MainWindow(QMainWindow):
             self.plot_widget.plot_coordinates2D_highlight(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive)
 
         if hasattr(self, "data_dFFo"):
-            self.plot_widget = self.findChild(QWidget, 'ensvis_plot_raster')
-            self.plot_widget.set_subplots(len(idx_corrected_members), 1)
-            for cell_idx in range(len(idx_corrected_members)):
-                cell_name = idx_corrected_members[cell_idx]
-                cell_dFFo = self.data_dFFo[cell_name,:]
-                self.plot_widget.plot_ensemble_dFFo(cell_idx, cell_name+1, cell_dFFo)
-            
+            self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
+            dFFo_ens = self.data_dFFo[idx_corrected_members, :]
+            self.plot_widget.plot_ensemble_dFFo(dFFo_ens, idx_corrected_members, ensemble_timecourse)
 
+    def update_ensvis_alldFFo(self):
+        curr_analysis = self.ensemble_currently_shown
+        cant_ensembles = self.results[curr_analysis]['ensembles_cant']
+
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_alldffo')
+        self.plot_widget.set_subplots(1, cant_ensembles)
+        for current_ens in range(cant_ensembles):
+            # Create subplot for each core
+            ensemble = self.results[curr_analysis]['neus_in_ens'][current_ens,:]
+            members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
+            idx_corrected_members = [idx-1 for idx in members]
+            dFFo_ens = self.data_dFFo[idx_corrected_members, :]
+            self.plot_widget.plot_all_dFFo(dFFo_ens, idx_corrected_members, current_ens)
+
+    def update_ensvis_allcoords(self):
+        curr_analysis = self.ensemble_currently_shown
+        cant_ensembles = self.results[curr_analysis]['ensembles_cant']
+        
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allspatial')
+        
+        rows = math.ceil(math.sqrt(cant_ensembles))
+        cols = math.ceil(cant_ensembles / rows)
+        self.plot_widget.set_subplots(rows, cols)
+
+        for current_ens in range(cant_ensembles):
+            row = current_ens // cols
+            col = current_ens % cols
+            # Create subplot for each core
+            ensemble = self.results[curr_analysis]['neus_in_ens'][current_ens,:]
+            members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
+            idx_corrected_members = [idx-1 for idx in members]
+
+            ens_mat = self.results[curr_analysis]['neus_in_ens']
+            mask_e = ensemble == 1
+            sum_mask = np.sum(ens_mat, axis=0)
+            exc_elems = [cell+1 for cell in range(len(mask_e)) if mask_e[cell] and sum_mask[cell] == 1]
+            idx_corrected_exclusive = [idx-1 for idx in exc_elems]
             
+            self.plot_widget.plot_all_coords(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive, row, col)
+
+    def update_ensvis_allbinary(self):
+        curr_analysis = self.ensemble_currently_shown
+        cant_ensembles = self.results[curr_analysis]['ensembles_cant']
+        
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allbinary')
+        self.plot_widget.set_subplots(1, cant_ensembles)
+        for current_ens in range(cant_ensembles):
+            ensemble = self.results[curr_analysis]['neus_in_ens'][current_ens,:]
+            members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
+            idx_corrected_members = [idx-1 for idx in members]
+            activity = self.data_neuronal_activity[idx_corrected_members, :] == 0
+            self.plot_widget.plot_all_binary(activity, members, current_ens, current_ens)
+
+    def update_ensvis_allens(self):
+        curr_analysis = self.ensemble_currently_shown
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allens')
+        self.plot_widget.plot_ensembles_timecourse(self.results[curr_analysis]['timecourse'])
+
+    def performance_compare(self):
+        methods_to_compare = []
+        if self.performance_check_svd.isChecked():
+            methods_to_compare.append("svd")
+        if self.performance_check_pca.isChecked():
+            methods_to_compare.append("pca")
+        if self.performance_check_ica.isChecked():
+            methods_to_compare.append("ica")
+        if self.performance_check_sgc.isChecked():
+            methods_to_compare.append("sgc")
+
+        cant_methods_compare = len(methods_to_compare)
+
+        if hasattr(self, "data_stims"):
+            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
+            plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+            self.plot_widget.set_subplots(1, plot_colums)
+
+            for m_idx, method in enumerate(methods_to_compare):
+                # Calculate correlation with stimuli
+                timecourse = self.results[method]['timecourse']
+                stims = self.data_stims
+                correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+                self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
+        
+        # Plot the correlation of cells between themselves
+        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
+        plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+        self.plot_widget.set_subplots(1, plot_colums)
+        for m_idx, method in enumerate(methods_to_compare):
+            cant_ens = self.results[method]['ensembles_cant']
+            for ens_id, ens in enumerate(self.results[method]['neus_in_ens']):
+                members = [c_idx for c_idx in range(len(ens)) if ens[c_idx] == 1]
+                activity_neus_in_ens = self.data_neuronal_activity[members, :]
+                correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
+
+                self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
+        
+                
+                #neus_in_ens = self.results[method]['neus_in_ens'][m_idx, :]
+
+        # Get the algorithms to compare
 
 
 app = QtWidgets.QApplication(sys.argv)
