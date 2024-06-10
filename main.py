@@ -5,6 +5,8 @@ import csv
 import scipy.io 
 import math
 import numpy as np
+import scipy.stats as stats
+
 from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QVBoxLayout
 from PyQt6.uic import loadUi
@@ -88,9 +90,13 @@ class MainWindow(QMainWindow):
         ## PCA analysis
         self.btn_run_pca.clicked.connect(self.run_PCA)
 
+        ## ICA analysis
+        self.btn_run_ica.clicked.connect(self.run_ICA)
+
         ## Ensembles visualizer
         self.ensvis_btn_svd.clicked.connect(self.vis_ensembles_svd)
         self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
+        self.ensvis_btn_ica.clicked.connect(self.vis_ensembles_ica)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
 
         ## Performance
@@ -113,11 +119,66 @@ class MainWindow(QMainWindow):
         self.console_log.moveCursor(QTextCursor.MoveOperation.End)
         self.console_log.repaint()
 
+    def reset_gui(self):
+        # Delete all previous results
+        self.results = {}
+        
+        # Initialize buttons
+        self.btn_svd_run.setEnabled(False)
+        self.btn_run_pca.setEnabled(False)
+        self.btn_run_ica.setEnabled(False)
+
+        self.ensvis_btn_svd.setEnabled(False)
+        self.ensvis_btn_pca.setEnabled(False)
+        self.ensvis_btn_ica.setEnabled(False)
+        self.ensvis_btn_sgc.setEnabled(False)
+
+        self.performance_check_svd.setEnabled(False)
+        self.performance_check_pca.setEnabled(False)
+        self.performance_check_ica.setEnabled(False)
+        self.performance_check_sgc.setEnabled(False)
+        self.performance_btn_compare.setEnabled(False)
+
+        # Clear the figures
+        self.findChild(MatplotlibWidget, 'svd_plot_similaritymap').reset()
+        self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap').reset()
+        self.findChild(MatplotlibWidget, 'svd_plot_singularvalues').reset()
+        self.findChild(MatplotlibWidget, 'svd_plot_components').reset()
+        self.findChild(MatplotlibWidget, 'svd_plot_timecourse').reset()
+        self.findChild(MatplotlibWidget, 'svd_plot_cellsinens').reset()
+
+        self.findChild(MatplotlibWidget, 'pca_plot_eigs').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_pca').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_rhodelta').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_corrne').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_corecells').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_innerens').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_timecourse').reset()
+        self.findChild(MatplotlibWidget, 'pca_plot_cellsinens').reset()
+
+        self.findChild(MatplotlibWidget, 'ica_plot_assemblys').reset()
+        self.findChild(MatplotlibWidget, 'ica_plot_activity').reset()
+        self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns').reset()
+        self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies').reset()
+
+        self.findChild(MatplotlibWidget, 'ensvis_plot_map').reset()
+        self.findChild(MatplotlibWidget, 'ensvis_plot_raster').reset()
+
+        self.findChild(MatplotlibWidget, 'ensvis_plot_allspatial').reset()
+        self.findChild(MatplotlibWidget, 'ensvis_plot_allbinary').reset()
+        self.findChild(MatplotlibWidget, 'ensvis_plot_alldffo').reset()
+        self.findChild(MatplotlibWidget, 'ensvis_plot_allens').reset()
+
+        self.findChild(MatplotlibWidget, 'performance_plot_corrstims').reset()
+        self.findChild(MatplotlibWidget, 'performance_plot_corrcells').reset()
+        self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').reset()
+
     def browse_files(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file')
         self.filenamePlain.setText(fname)
         self.update_console_log("Loading file...")
         if fname:
+            self.reset_gui()
             self.source_filename = fname
             file_extension = os.path.splitext(fname)[1]
             if file_extension == '.h5' or file_extension == '.hdf5' or file_extension == ".nwb":
@@ -205,9 +266,11 @@ class MainWindow(QMainWindow):
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
                 self.lbl_pca_spikes_selected.setText(f"Loaded")
+                self.lbl_ica_spikes_selected.setText(f"Loaded")
             else:
                 self.lbl_sdv_spikes_selected.setText(f"Nothing selected")
                 self.lbl_pca_spikes_selected.setText(f"Nothing selected")
+                self.lbl_ica_spikes_selected.setText(f"Nothing selected")
 
             # Validate data for SVD
             needed_data = ["data_neuronal_activity"]
@@ -216,6 +279,10 @@ class MainWindow(QMainWindow):
             # Validate needed data for PCA
             needed_data = ["data_neuronal_activity"]
             self.btn_run_pca.setEnabled(self.validate_needed_data(needed_data))
+
+            # Validate needed data for ICA
+            needed_data = ["data_neuronal_activity"]
+            self.btn_run_ica.setEnabled(self.validate_needed_data(needed_data))
 
     ## Set variables from input file
     def set_dFFo(self):
@@ -384,16 +451,11 @@ class MainWindow(QMainWindow):
         # Prepare data
         data = self.data_neuronal_activity
         spikes = matlab.double(data.tolist())
-        #data = self.data_coordinates
+        #Prepare dummy data
         data = np.zeros((self.cant_neurons,2))
         coords_foo = matlab.double(data.tolist())
 
-        if hasattr(self, 'data_dFFo'):
-            data = self.data_dFFo
-        else:
-            data = np.array([])
-        FFo = matlab.double(data.tolist())
-
+        # Prepare parameters
         input_value = self.svd_edit_pks.text()
         val_pks = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
         input_value = self.svd_edit_scut.text()
@@ -404,7 +466,15 @@ class MainWindow(QMainWindow):
         val_statecut = float(input_value) if len(input_value) > 0 else 6
         val_idtfd = self.svd_check_tfidf.isChecked()
 
-        #print([val_pks, val_scut, val_hcut, val_statecut, val_idtfd])
+        # Pack parameters
+        pars = {
+            'pks': val_pks,
+            'scut': val_scut,
+            'hcut': val_hcut,
+            'statecut': val_statecut,
+            'tf_idf_norm': val_idtfd
+        }
+        pars_matlab = {key: matlab.double([value]) if isinstance(value, (int, float)) else value for key, value in pars.items()}
 
         self.update_console_log("Starting MATLAB engine...")
         eng = matlab.engine.start_matlab()
@@ -417,13 +487,19 @@ class MainWindow(QMainWindow):
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
         self.update_console_log("Performing SVD...")
-        answer = eng.Stoixeion(spikes, coords_foo, FFo, val_pks, val_scut, val_hcut, val_statecut, val_idtfd)
+        answer = eng.Stoixeion(spikes, coords_foo, pars_matlab)
         self.update_console_log("Done.", "complete")
 
         # Create plots for every result
         #keys_list = list(answer.keys())
         #print(keys_list)
 
+        # Plotting results
+        self.update_console_log("Plotting results...")
+        self.plot_SVD_results(answer)
+        self.update_console_log("Done plotting...")
+
+    def plot_SVD_results(self, answer):
         # Similarity map
         simmap = np.array(answer['S_index_ti'])
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_similaritymap')
@@ -485,9 +561,11 @@ class MainWindow(QMainWindow):
         self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Neuron")
 
     def run_PCA(self):
+        # Prepare data
         data = self.data_neuronal_activity
         raster = matlab.double(data.tolist())
 
+        # Prepare parameters
         input_value = self.pca_edit_dc.text()
         dc = float(input_value) if len(input_value) > 0 else 0.02
         input_value = self.pca_edit_npcs.text()
@@ -529,8 +607,20 @@ class MainWindow(QMainWindow):
         folder_path_with_subfolders = eng.genpath(folder_path)
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
+        # Clean all the figures in case there was something previously
+        if hasattr(self, 'results'):
+            if 'pca' in self.results:
+                del self.results['pca']
+        algorithm_figs = ["pca_plot_eigs", "pca_plot_pca", "pca_plot_rhodelta", "pca_plot_corrne", "pca_plot_corecells", "pca_plot_innerens", "pca_plot_timecourse", "pca_plot_cellsinens"] 
+        for fig_name in algorithm_figs:
+            self.findChild(MatplotlibWidget, fig_name).reset()
+
         self.update_console_log("Performing PCA...")
-        answer = eng.raster2ens_by_density(raster, pars_matlab)
+        try:
+            answer = eng.raster2ens_by_density(raster, pars_matlab)
+        except:
+            self.update_console_log("An error occurred while excecuting the algorithm. Check the python console for more info.", msg_type="error")
+            answer = None
         self.update_console_log("Done.", "complete")
 
         # Create plots for every result
@@ -538,6 +628,21 @@ class MainWindow(QMainWindow):
         #print(keys_list)
 
         ## Plot the results
+        if answer != None:
+            self.update_console_log("Plotting results...")
+            self.plot_PCA_results(pars, answer)
+            self.update_console_log("Done plotting.", "complete")
+
+            # Save the results
+            self.update_console_log("Saving results...")
+            self.results['pca'] = {}
+            self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
+            self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
+            self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
+            self.we_have_results()
+            self.update_console_log("Done saving", "complete")
+
+    def plot_PCA_results(self, pars, answer):
         ## Plot the eigs
         eigs = np.array(answer['exp_var'])
         seleig = int(pars['npcs'])
@@ -546,7 +651,8 @@ class MainWindow(QMainWindow):
 
         # Plot the PCA
         pcs = np.array(answer['pcs'])
-        labels = np.array(answer['labels'])[0]
+        labels = np.array(answer['labels'])
+        labels = labels[0] if len(labels) else None
         Nens = int(answer['Nens'])
         ens_cols = plt.cm.tab10(range(Nens * 2))
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_pca')
@@ -561,11 +667,14 @@ class MainWindow(QMainWindow):
         self.plot_widget.plot_delta_rho(rho, delta, cents, predbounds, ens_cols)
         
         # Plot corr(n,e)
-        ens_cel_corr = np.array(answer['ens_cel_corr'])
-        ens_cel_corr_min = np.min(ens_cel_corr)
-        ens_cel_corr_max = np.max(ens_cel_corr)
-        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_corrne')
-        self.plot_widget.plot_core_cells(ens_cel_corr, [ens_cel_corr_min, ens_cel_corr_max])
+        try:
+            ens_cel_corr = np.array(answer['ens_cel_corr'])
+            ens_cel_corr_min = np.min(ens_cel_corr)
+            ens_cel_corr_max = np.max(ens_cel_corr)
+            self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_corrne')
+            self.plot_widget.plot_core_cells(ens_cel_corr, [ens_cel_corr_min, ens_cel_corr_max])
+        except:
+            print("Error plotting the correlation of cells vs ensembles. Check the other plots and console for more info.")
 
         # Plot core cells
         core_cells = np.array(answer['core_cells'])
@@ -573,25 +682,136 @@ class MainWindow(QMainWindow):
         self.plot_widget.plot_core_cells(core_cells, [-1, 1])
 
         # Plot core cells
-        ens_corr = np.array(answer["ens_corr"])[0]
-        corr_thr = np.array(answer["corr_thr"])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_innerens')
-        self.plot_widget.plot_ens_corr(ens_corr, corr_thr, ens_cols)
-
-        # Save the results
-        self.results['pca'] = {}
-        self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
-        self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
-        self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
-        self.we_have_results()
+        try:
+            ens_corr = np.array(answer["ens_corr"])[0]
+            corr_thr = np.array(answer["corr_thr"])
+            self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_innerens')
+            self.plot_widget.plot_ens_corr(ens_corr, corr_thr, ens_cols)
+        except:
+            print("Error plotting the core cells. Check the other plots and console for more info.")
 
         # Plot ensembles timecourse
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_timecourse')
-        self.plot_widget.plot_ensembles_timecourse(self.results['pca']['timecourse'])
+        self.plot_widget.plot_ensembles_timecourse(np.array(answer["sel_ensmat_out"]))
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_cellsinens')
-        self.plot_widget.plot_ensembles_timecourse(self.results['pca']['neus_in_ens'])
+        self.plot_widget.plot_ensembles_timecourse(np.array(answer["sel_core_cells"]).T)
 
+    def dict_to_matlab_struct(self, d):
+        matlab_struct = {}
+        for key, value in d.items():
+            if isinstance(value, dict):
+                matlab_struct[key] = self.dict_to_matlab_struct(value)
+            elif isinstance(value, (int, float)):
+                matlab_struct[key] = matlab.double([value])
+            else:
+                matlab_struct[key] = value
+        return matlab_struct
+    
+    def run_ICA(self):
+        # Prepare data
+        data = self.data_neuronal_activity
+        spikes = matlab.double(data.tolist())
+
+        # Prepare parameters
+        if self.ica_radio_method_marcenko.isChecked():
+            threshold_method = "MarcenkoPastur"
+        elif self.ica_radio_method_shuffling.isChecked():
+            threshold_method = "binshuffling"
+        elif self.ica_radio_method_shift.isChecked():
+            threshold_method = "circularshift"
+
+        input_value = self.ica_edit_perpercentile.text()
+        val_per_percentile = float(input_value) if len(input_value) > 0 else 95
+        input_value = self.ica_edit_percant.text()
+        val_per_cant = float(input_value) if len(input_value) > 0 else 20
+
+        if self.ica_radio_method_ica.isChecked():
+            patterns_method = "ICA"
+        elif self.ica_radio_method_pca.isChecked():
+            patterns_method = "PCA"
+        input_value = self.ica_edit_iterations.text()
+        val_iteartions = float(input_value) if len(input_value) > 0 else 500
+
+        # Pack parameters
+        pars = {
+            'threshold': {
+                'method': threshold_method,
+                'permutations_percentile': val_per_percentile,
+                'number_of_permutations': val_per_cant
+            },
+            'Patterns': {
+                'method': patterns_method,
+                'number_of_iterations': val_iteartions
+            }
+        }
+        pars_matlab = self.dict_to_matlab_struct(pars)
+
+        self.update_console_log("Starting MATLAB engine...")
+        eng = matlab.engine.start_matlab()
+        self.update_console_log("Loaded MATLAB engine.", "complete")
+
+        # Adding to path
+        relative_folder_path = 'analysis/Cell-Assembly-Detection'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+
+        self.update_console_log("Performing ICA...")
+        self.update_console_log("Looking for patterns...")
+        answer = eng.assembly_patterns(spikes, pars_matlab)
+        self.update_console_log("Done looking for patterns...", "complete")
+        assembly_templates = np.array(answer['AssemblyTemplates']).T
+
+        self.update_console_log("Looking for assembly activity...")
+        answer = eng.assembly_activity(answer['AssemblyTemplates'],spikes)
+        self.update_console_log("Done looking for assembly activity...", "complete")
+
+        time_projection = np.array(answer["time_projection"])
+        self.update_console_log("Done.", "complete")
+
+        ## Identify the significative values to binarize the matrix
+        threshold = 1.96    # p < 0.05 for the z-score
+        binary_assembly_templates = np.zeros(assembly_templates.shape)
+        for a_idx, assembly in enumerate(assembly_templates):
+            z_scores = stats.zscore(assembly)
+            tmp = np.abs(z_scores) > threshold
+            binary_assembly_templates[a_idx,:] = [int(v) for v in tmp]
+
+        binary_time_projection = np.zeros(time_projection.shape)
+        for a_idx, assembly in enumerate(time_projection):
+            z_scores = stats.zscore(assembly)
+            tmp = np.abs(z_scores) > threshold
+            binary_time_projection[a_idx,:] = [int(v) for v in tmp]
+
+        self.plot_ICA_results(assembly_templates, time_projection, binary_assembly_templates, binary_time_projection)
+
+        self.update_console_log("Saving results...")
+        self.results['ica'] = {}
+        self.results['ica']['timecourse'] = binary_time_projection
+        self.results['ica']['ensembles_cant'] = binary_time_projection.shape[0]
+        self.results['ica']['neus_in_ens'] = binary_assembly_templates
+        self.we_have_results()
+        self.update_console_log("Done saving", "complete")
+
+    def plot_ICA_results(self, assembly_templates, time_projection, binary_assembly_templates, binary_time_projection):
+        # Plot the assembly templates
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_assemblys')
+        self.plot_widget.set_subplots(assembly_templates.shape[0], 1)
+        for e_idx, ens in enumerate(assembly_templates):
+            self.plot_widget.plot_assembly_patterns(ens, e_idx)
+
+        # Plot the time projection
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_activity')
+        self.plot_widget.plot_cell_assemblies_activity(time_projection)
+
+        # Plot binary assembly templates
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns')
+        self.plot_widget.plot_ensembles_timecourse(binary_assembly_templates, xlabel="Cell")
+
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies')
+        self.plot_widget.plot_ensembles_timecourse(binary_time_projection, xlabel="Timepoint")
+        
     def we_have_results(self):
         self.performance_btn_compare.setEnabled(True)
         for analysis_name in self.results.keys():
@@ -601,6 +821,9 @@ class MainWindow(QMainWindow):
             elif analysis_name == 'pca':
                 self.ensvis_btn_pca.setEnabled(True)
                 self.performance_check_pca.setEnabled(True)
+            elif analysis_name == 'ica':
+                self.ensvis_btn_ica.setEnabled(True)
+                self.performance_check_ica.setEnabled(True)
 
     def vis_ensembles_svd(self):
         if hasattr(self, "results"):
@@ -610,6 +833,11 @@ class MainWindow(QMainWindow):
     def vis_ensembles_pca(self):
         if hasattr(self, "results"):
             self.ensemble_currently_shown = "pca"
+            self.update_analysis_results()
+
+    def vis_ensembles_ica(self):
+        if hasattr(self, "results"):
+            self.ensemble_currently_shown = "ica"
             self.update_analysis_results()
 
     def update_analysis_results(self):
@@ -732,6 +960,7 @@ class MainWindow(QMainWindow):
         self.plot_widget.plot_ensembles_timecourse(self.results[curr_analysis]['timecourse'])
 
     def performance_compare(self):
+        # Get the algorithms to compare
         methods_to_compare = []
         if self.performance_check_svd.isChecked():
             methods_to_compare.append("svd")
@@ -745,34 +974,50 @@ class MainWindow(QMainWindow):
         cant_methods_compare = len(methods_to_compare)
 
         if hasattr(self, "data_stims"):
+            # Calculate correlation with stimuli
             self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
             plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
             self.plot_widget.set_subplots(1, plot_colums)
-
             for m_idx, method in enumerate(methods_to_compare):
-                # Calculate correlation with stimuli
                 timecourse = self.results[method]['timecourse']
                 stims = self.data_stims
                 correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
                 self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
-        
+
+            # Calculate cross-correlation
+            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensstim')
+            max_ens = 0
+            for method in methods_to_compare:
+                max_ens = max(self.results[method]['ensembles_cant'], max_ens)
+            self.plot_widget.canvas.setFixedHeight(400*max_ens)
+            self.plot_widget.set_subplots(max_ens, plot_colums)
+            for m_idx, method in enumerate(methods_to_compare):
+                for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
+                    cross_corrs = []
+                    for stimtime in self.data_stims:
+                        cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
+                        cross_corrs.append(cross_corr)
+                    self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper())          
+
         # Plot the correlation of cells between themselves
         self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
-        self.plot_widget.set_subplots(1, plot_colums)
-        for m_idx, method in enumerate(methods_to_compare):
-            cant_ens = self.results[method]['ensembles_cant']
-            for ens_id, ens in enumerate(self.results[method]['neus_in_ens']):
+        # Find the greatest number of ensembles
+        max_ens = 0
+        for method in methods_to_compare:
+            max_ens = max(self.results[method]['ensembles_cant'], max_ens)
+        self.plot_widget.canvas.setFixedHeight(450*max_ens)
+
+        self.plot_widget.set_subplots(max_ens, plot_colums)
+        for col_idx, method in enumerate(methods_to_compare):
+            for row_idx, ens in enumerate(self.results[method]['neus_in_ens']):
                 members = [c_idx for c_idx in range(len(ens)) if ens[c_idx] == 1]
                 activity_neus_in_ens = self.data_neuronal_activity[members, :]
+                cells_names = [member+1 for member in members]
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
+                self.plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
-                self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
         
-                
-                #neus_in_ens = self.results[method]['neus_in_ens'][m_idx, :]
-
-        # Get the algorithms to compare
 
 
 app = QtWidgets.QApplication(sys.argv)
