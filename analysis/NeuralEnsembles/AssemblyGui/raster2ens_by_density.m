@@ -34,16 +34,19 @@ if ~isfield(pars,'inner_corr') || isempty(pars.inner_corr)
 end
 
 % 2.- Selection of bins
+disp("> Selecting timepoints...")
 [N,T] = size(raster);
 selbins = sum(raster)>pars.minspk;
 ras=raster(:,selbins)*1;
 
 % 3.- pca and distance matrix
+disp("> Calculating PCA and distance matrix...")
 [~,pcs,~,~,exp_var] = pca(ras'); % pca with npcs num components
 pcs = pcs(:,1:pars.npcs);
 bincor = pdist2(pcs,pcs); % euclidean distance on principal component space
 
 % 4.- rho and delta computation
+disp("> Rho and delta computation...")
 [~, rho] = paraSetv2(bincor, pars.dc);
 delta = delta_from_dist_mat(bincor, rho);
 [Nens,cents,predbounds] = cluster_by_pow_fit(delta,rho,pars.cent_thr);
@@ -55,18 +58,22 @@ else
 end
 
 % 5.- ensemble raster
+disp("> Calculating ensemble raster...")
 ensmat_out = zeros(Nens,T);
 ensmat_out(:,selbins) = bsxfun(@eq,labels',(1:Nens))';
 
 % 6.- core-cells computation
+disp("> Core-cells computation...")
 [core_cells,~,ens_cel_corr,sur_cel_cor] = find_core_cells_by_correlation(raster,ensmat_out,pars.nsur,pars.prct);
 id_sel_core = sum(core_cells,1)>pars.minsize;
 
 % 7.- filtering core cells
+disp("> Filtering core cells...")
 [ens_corr,corr_thr,corr_selection] = filter_ens_by_inner_corr(raster,core_cells,pars.inner_corr);
 final_sel_ens = corr_selection & id_sel_core;
 
 % 8.- final ensemble outputs
+disp("> Final ensemble filtering...")
 sel_ensmat_out = ensmat_out(final_sel_ens,:); % filtering by magnitude &  inner cell correlation
 sel_core_cells = core_cells(:,final_sel_ens);
 Nens_final = size(sel_ensmat_out,1);
@@ -77,6 +84,7 @@ else
 end
 
 % Pack results
+disp("> Packing final results...")
 % Remove low magnitude pop events
 results.active_raster = ras;
 results.selbins = selbins;
