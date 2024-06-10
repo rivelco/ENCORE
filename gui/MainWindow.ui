@@ -907,6 +907,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="btn_svd_run">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="text">
               <string>Perform analysis</string>
              </property>
@@ -930,7 +933,7 @@
            <item>
             <widget class="QTabWidget" name="tabWidget">
              <property name="currentIndex">
-              <number>0</number>
+              <number>5</number>
              </property>
              <property name="movable">
               <bool>true</bool>
@@ -1222,7 +1225,7 @@
            <item>
             <widget class="QTabWidget" name="tabWidget_2">
              <property name="currentIndex">
-              <number>0</number>
+              <number>7</number>
              </property>
              <property name="movable">
               <bool>true</bool>
@@ -1351,7 +1354,7 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLabel" name="label_7">
+               <widget class="QLabel" name="lbl_ica_spikes_selected">
                 <property name="text">
                  <string>Nothing selected</string>
                 </property>
@@ -1385,21 +1388,24 @@
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_17">
                     <item>
-                     <widget class="QRadioButton" name="radioButton">
+                     <widget class="QRadioButton" name="ica_radio_method_marcenko">
                       <property name="text">
                        <string>MarcenkoPastur</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QRadioButton" name="radioButton_2">
+                     <widget class="QRadioButton" name="ica_radio_method_shuffling">
                       <property name="text">
                        <string>binshuffling</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QRadioButton" name="radioButton_3">
+                     <widget class="QRadioButton" name="ica_radio_method_shift">
                       <property name="text">
                        <string>circularshift</string>
                       </property>
@@ -1425,7 +1431,11 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QLineEdit" name="lineEdit"/>
+                     <widget class="QLineEdit" name="ica_edit_perpercentile">
+                      <property name="text">
+                       <string>95</string>
+                      </property>
+                     </widget>
                     </item>
                     <item row="1" column="0">
                      <widget class="QLabel" name="label_13">
@@ -1435,7 +1445,11 @@
                      </widget>
                     </item>
                     <item row="1" column="1">
-                     <widget class="QLineEdit" name="lineEdit_2"/>
+                     <widget class="QLineEdit" name="ica_edit_percant">
+                      <property name="text">
+                       <string>20</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -1456,14 +1470,17 @@
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_18">
                     <item>
-                     <widget class="QRadioButton" name="radioButton_5">
+                     <widget class="QRadioButton" name="ica_radio_method_ica">
                       <property name="text">
                        <string>ICA</string>
+                      </property>
+                      <property name="checked">
+                       <bool>true</bool>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QRadioButton" name="radioButton_4">
+                     <widget class="QRadioButton" name="ica_radio_method_pca">
                       <property name="text">
                        <string>PCA</string>
                       </property>
@@ -1489,7 +1506,11 @@
                      </widget>
                     </item>
                     <item row="0" column="1">
-                     <widget class="QLineEdit" name="lineEdit_3"/>
+                     <widget class="QLineEdit" name="ica_edit_iterations">
+                      <property name="text">
+                       <string>500</string>
+                      </property>
+                     </widget>
                     </item>
                    </layout>
                   </widget>
@@ -1501,7 +1522,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pushButton">
+            <widget class="QPushButton" name="btn_run_ica">
              <property name="text">
               <string>Run analysis</string>
              </property>
@@ -1515,6 +1536,55 @@
           <property name="title">
            <string>Output data</string>
           </property>
+          <layout class="QVBoxLayout" name="verticalLayout_37">
+           <item>
+            <widget class="QTabWidget" name="tabWidget_5">
+             <property name="currentIndex">
+              <number>3</number>
+             </property>
+             <widget class="QWidget" name="tab_13">
+              <attribute name="title">
+               <string>Assembly patterns</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_38">
+               <item>
+                <widget class="MatplotlibWidget" name="ica_plot_assemblys"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_14">
+              <attribute name="title">
+               <string>Activity of cell assemblies</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_39">
+               <item>
+                <widget class="MatplotlibWidget" name="ica_plot_activity"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_33">
+              <attribute name="title">
+               <string>Binary assembly patterns</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_40">
+               <item>
+                <widget class="MatplotlibWidget" name="ica_plot_binary_patterns"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_34">
+              <attribute name="title">
+               <string>Binary cell assemblies</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_41">
+               <item>
+                <widget class="MatplotlibWidget" name="ica_plot_binary_assemblies"/>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
@@ -1627,7 +1697,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget_3">
           <property name="currentIndex">
-           <number>0</number>
+           <number>4</number>
           </property>
           <property name="movable">
            <bool>true</bool>
@@ -1892,7 +1962,7 @@
         <item>
          <widget class="QTabWidget" name="tabWidget_4">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="movable">
            <bool>true</bool>
@@ -1913,14 +1983,74 @@
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_15">
             <item>
-             <widget class="MatplotlibWidget" name="performance_plot_corrcells"/>
+             <widget class="QScrollArea" name="scrollArea">
+              <property name="mouseTracking">
+               <bool>true</bool>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>1114</width>
+                 <height>479</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_34">
+                <item>
+                 <widget class="MatplotlibWidget" name="performance_plot_corrcells">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
             </item>
            </layout>
           </widget>
           <widget class="QWidget" name="tab_30">
            <attribute name="title">
-            <string>Correlation between ensembles</string>
+            <string>Cross correlation ensembles and stimuli</string>
            </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_35">
+            <item>
+             <widget class="QScrollArea" name="scrollArea_2">
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_2">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>1114</width>
+                 <height>479</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_36">
+                <item>
+                 <widget class="MatplotlibWidget" name="performance_plot_crossensstim">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
           </widget>
           <widget class="QWidget" name="tab_32">
            <attribute name="title">

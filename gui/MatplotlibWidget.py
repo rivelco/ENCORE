@@ -39,6 +39,7 @@ class MatplotlibWidget(QWidget):
     
     def reset(self, rows=1, cols=1):
         self.set_subplots(rows, cols)
+        self.canvas.draw()
 
     def preview_dataset(self, dataset, xlabel='Frame', ylabel='Data', title=None, cmap='hot', aspect='auto'):
         self.axes.clear()
@@ -289,6 +290,24 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
+    def plot_assembly_patterns(self, Patterns, row_idx, title=None):
+        self.axes[row_idx].clear()
+        self.axes[row_idx].stem(Patterns)
+        if title != None:
+            self.axes[row_idx].set_title(f"{title}")
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def plot_cell_assemblies_activity(self, activities):
+        self.axes.clear()
+
+        for e_idx, ensemble in enumerate(activities):
+            self.axes.plot(ensemble, label=f"Ensemble {e_idx+1}")
+
+        self.axes.legend()
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
     def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives):
         self.axes.clear()
 
@@ -428,28 +447,79 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_perf_correlations_ens_stim(self, correlations, plot_idx, title=None):
-        self.axes[plot_idx].clear()
+    def plot_perf_correlations_ens_stim(self, correlations, col_idx, title=None):
+        self.axes[col_idx].clear()
 
         # Plot the correlation matrix as a heatmap
-        self.axes[plot_idx].imshow(correlations, cmap='coolwarm', vmin=-1, vmax=1)
-        self.axes[plot_idx].set_xlabel('Ensembles')
-        self.axes[plot_idx].set_ylabel('Stims')
+        cax = self.axes[col_idx].imshow(correlations, cmap='coolwarm', vmin=-1, vmax=1)
+        self.axes[col_idx].set_xlabel('Ensembles')
+        self.axes[col_idx].set_ylabel('Stims')
+
+        self.canvas.figure.colorbar(cax, ax=self.axes[col_idx], orientation='vertical')
 
         if title != None:
-            self.axes[plot_idx].set_title(f"{title}")
+            self.axes[col_idx].set_title(f"{title}")
 
         num_ens = correlations.shape[0]
         num_stim = correlations.shape[1]
-        self.axes[plot_idx].set_xticks(range(num_stim))
-        self.axes[plot_idx].set_yticks(range(num_ens))
-        self.axes[plot_idx].set_xticklabels(range(1, num_stim+1))
-        self.axes[plot_idx].set_yticklabels(range(1, num_ens+1))
+        self.axes[col_idx].set_xticks(range(num_stim))
+        self.axes[col_idx].set_yticks(range(num_ens))
+        self.axes[col_idx].set_xticklabels(range(1, num_stim+1))
+        self.axes[col_idx].set_yticklabels(range(1, num_ens+1))
 
-        for ens in range(num_ens):
-            for stim in range(num_stim):
-                self.axes[plot_idx].text(stim, ens, f"{correlations[ens, stim]:.2f}",
-                            ha="center", va="center", color="black" if abs(correlations[ens, stim]) < 0.5 else "white")
+        #for ens in range(num_ens):
+        #    for stim in range(num_stim):
+        #        self.axes[col_idx].text(stim, ens, f"{correlations[ens, stim]:.2f}",
+        #                    ha="center", va="center", color="black" if abs(correlations[ens, stim]) < 0.5 else "white")
+        
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+    
+    def plot_perf_correlations_cells(self, correlations, cells_names, col_idx, row_idx, title=None):
+        self.axes[row_idx][col_idx].clear()
+
+        # Plot the correlation matrix as a heatmap
+        cax = self.axes[row_idx][col_idx].imshow(correlations, cmap='coolwarm', vmin=-1, vmax=1)
+        self.axes[row_idx][col_idx].set_xlabel('Cell')
+        self.axes[row_idx][col_idx].set_ylabel('Cell')
+
+        self.canvas.figure.colorbar(cax, ax=self.axes[row_idx][col_idx], orientation='vertical')
+
+        if title != None:
+            self.axes[row_idx][col_idx].set_title(f"{title}")
+
+        num_cells = correlations.shape[0]
+        self.axes[row_idx][col_idx].set_xticks(range(num_cells))
+        self.axes[row_idx][col_idx].set_yticks(range(num_cells))
+        self.axes[row_idx][col_idx].set_xticklabels(cells_names)
+        self.axes[row_idx][col_idx].set_yticklabels(cells_names)
+
+        #for ens in range(num_cells):
+        #    for stim in range(num_cells):
+        #        self.axes[row_idx][col_idx].text(stim, ens, f"{correlations[ens, stim]:.2f}",
+        #                    ha="center", va="center", color="black" if abs(correlations[ens, stim]) < 0.5 else "white")
+        
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def plot_perf_cross_ens_stims(self, cross_corrs, lags, col_idx, row_idx, title=None):
+        self.axes[row_idx][col_idx].clear()
+
+        # Plot the correlation matrix as a heatmap
+        for c_idx, cross_corr in enumerate(cross_corrs):
+            self.axes[row_idx][col_idx].plot(lags, cross_corr, label=f"Stim {c_idx+1}")
+        self.axes[row_idx][col_idx].axhline(0, color='black', linestyle='--', linewidth=0.5)
+        self.axes[row_idx][col_idx].set_xlabel('Lag')
+        self.axes[row_idx][col_idx].set_ylabel('Cross correlation')
+        self.axes[row_idx][col_idx].legend()
+
+        if title != None:
+            self.axes[row_idx][col_idx].set_title(f"{title}")
+
+        #for ens in range(num_ens):
+        #    for stim in range(num_stim):
+        #        self.axes[row_idx][col_idx].text(stim, ens, f"{correlations[ens, stim]:.2f}",
+        #                    ha="center", va="center", color="black" if abs(correlations[ens, stim]) < 0.5 else "white")
         
         self.canvas.figure.tight_layout()
         self.canvas.draw()
