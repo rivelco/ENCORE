@@ -1,5 +1,4 @@
-function [stoixeion_results] = Stoixeion(Spikes,Coord_active,FFo,...
-                                        pks, scut, hcut, statecut, tf_idf_norm)
+function [stoixeion_results] = Stoixeion(Spikes,Coord_active,pars)
 disp(" -> Running Stoixeion")
 % Find ensembles using SVD method.
 % INPUT:
@@ -25,6 +24,13 @@ disp(" -> Running Stoixeion")
 % 
 %% set parameters
 % significant level of spike count per frame
+
+% Unpack parameters from GUI
+pks = pars.pks;
+scut = pars.scut;
+hcut = pars.hcut;
+statecut = pars.statecut;
+tf_idf_norm = pars.tf_idf_norm;
 
 %pks = [3]; % default 4, leave it empty if you want an automated threshold
 
