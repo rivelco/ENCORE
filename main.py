@@ -1,14 +1,12 @@
 import sys
 import h5py
 import os
-import csv
 import scipy.io 
 import math
 import numpy as np
 import scipy.stats as stats
 
-from PyQt6 import QtWidgets
-from PyQt6.QtWidgets import QFileDialog, QMainWindow, QVBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
 from PyQt6.QtGui import QTextCursor, QDoubleValidator
@@ -21,8 +19,6 @@ import utils.metrics as metrics
 from gui.MatplotlibWidget import MatplotlibWidget
 
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 
 import matlab.engine
 
@@ -31,6 +27,9 @@ class MainWindow(QMainWindow):
         super().__init__(*args, **kwargs)
         loadUi("gui/MainWindow.ui", self)
         self.setWindowTitle('Ensembles GUI')
+
+        # Initialize the GUI
+        self.reset_gui()
         ## Browse files
         self.browseFile.clicked.connect(self.browse_files)
         # Connect the clicked signal of the tree view to a slot
@@ -44,6 +43,7 @@ class MainWindow(QMainWindow):
         self.btn_set_neuronal_activity.clicked.connect(self.set_neuronal_activity)
         self.btn_set_coordinates.clicked.connect(self.set_coordinates)
         self.btn_set_stim.clicked.connect(self.set_stims)
+        self.btn_set_cells.clicked.connect(self.set_cells)
         self.btn_set_behavior.clicked.connect(self.set_behavior)
 
         ## Set the clear buttons
@@ -51,17 +51,52 @@ class MainWindow(QMainWindow):
         self.btn_clear_neuronal_activity.clicked.connect(self.clear_neuronal_activity)
         self.btn_clear_coordinates.clicked.connect(self.clear_coordinates)
         self.btn_clear_stim.clicked.connect(self.clear_stims)
+        self.btn_clear_cells.clicked.connect(self.clear_cells)
         self.btn_clear_behavior.clicked.connect(self.clear_behavior)
 
-        ## Set the clear buttons
+        ## Set the preview buttons
         self.btn_view_dFFo.clicked.connect(self.view_dFFo)
         self.btn_view_neuronal_activity.clicked.connect(self.view_neuronal_activity)
         self.btn_view_coordinates.clicked.connect(self.view_coordinates)
         self.btn_view_stim.clicked.connect(self.view_stims)
+        self.btn_view_cells.clicked.connect(self.view_cells)
         self.btn_view_behavior.clicked.connect(self.view_behavior)
 
         ## Edit actions
         self.btn_edit_transpose.clicked.connect(self.edit_transpose)
+
+        ## Set feault values for analysis
+        defaults = {
+            'pks': 3,
+            'scut': 0.22,
+            'hcut': 0.22,
+            'state_cut': 6,
+            'tf_idf_norm': True
+        }
+        self.svd_defaults = defaults
+        defaults = {
+            'dc': 0.01,
+            'npcs': 3,
+            'minspk': 3,
+            'nsur': 1000,
+            'prct': 99.9,
+            'cent_thr': 99.9,
+            'inner_corr': 5,
+            'minsize': 3
+        }
+        self.pca_defaults = defaults
+        defaults = {
+            'threshold': {
+                'method': 'MarcenkoPastur',
+                'permutations_percentile': 95,
+                'number_of_permutations': 20
+            },
+            'Patterns': {
+                'method': 'ICA',
+                'number_of_iterations': 500
+            }
+        }
+        self.ica_defaults = defaults
 
         ## Numeric validator
         double_validator = QDoubleValidator()
@@ -85,12 +120,15 @@ class MainWindow(QMainWindow):
         self.pca_edit_minsize.setValidator(double_validator)
         
         ## SVD analysis
+        self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
         self.btn_svd_run.clicked.connect(self.run_svd)
 
         ## PCA analysis
+        self.pca_btn_defaults.clicked.connect(self.load_defaults_pca)
         self.btn_run_pca.clicked.connect(self.run_PCA)
 
         ## ICA analysis
+        self.ica_btn_defaults.clicked.connect(self.load_defaults_ica)
         self.btn_run_ica.clicked.connect(self.run_ICA)
 
         ## Ensembles visualizer
@@ -100,12 +138,11 @@ class MainWindow(QMainWindow):
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
 
         ## Performance
+        self.performance_check_svd.stateChanged.connect(self.performance_check_change)
+        self.performance_check_pca.stateChanged.connect(self.performance_check_change)
+        self.performance_check_ica.stateChanged.connect(self.performance_check_change)
         self.performance_btn_compare.clicked.connect(self.performance_compare)
-
-        # Store analysis results
-        self.results = {}
         
-
     def update_console_log(self, message, msg_type="log"):
         color_map = {"log": "#000000", "error": "#da1e28", "warning": "#ff832b", "complete": "#198038"}
         current_date_time = QDateTime.currentDateTime().toString(Qt.DateFormat.ISODateWithMs)
@@ -139,39 +176,63 @@ class MainWindow(QMainWindow):
         self.performance_check_sgc.setEnabled(False)
         self.performance_btn_compare.setEnabled(False)
 
+        # Clear the preview plots
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+
         # Clear the figures
-        self.findChild(MatplotlibWidget, 'svd_plot_similaritymap').reset()
-        self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap').reset()
-        self.findChild(MatplotlibWidget, 'svd_plot_singularvalues').reset()
-        self.findChild(MatplotlibWidget, 'svd_plot_components').reset()
-        self.findChild(MatplotlibWidget, 'svd_plot_timecourse').reset()
-        self.findChild(MatplotlibWidget, 'svd_plot_cellsinens').reset()
+        default_txt = "Perform the SVD analysis to see results"
+        self.findChild(MatplotlibWidget, 'svd_plot_similaritymap').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'svd_plot_singularvalues').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'svd_plot_components').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'svd_plot_timecourse').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'svd_plot_cellsinens').reset(default_txt)
 
-        self.findChild(MatplotlibWidget, 'pca_plot_eigs').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_pca').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_rhodelta').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_corrne').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_corecells').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_innerens').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_timecourse').reset()
-        self.findChild(MatplotlibWidget, 'pca_plot_cellsinens').reset()
+        default_txt = "Perform the PCA analysis to see results"
+        self.findChild(MatplotlibWidget, 'pca_plot_eigs').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_pca').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_rhodelta').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_corrne').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_corecells').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_innerens').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_timecourse').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'pca_plot_cellsinens').reset(default_txt)
 
-        self.findChild(MatplotlibWidget, 'ica_plot_assemblys').reset()
-        self.findChild(MatplotlibWidget, 'ica_plot_activity').reset()
-        self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns').reset()
-        self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies').reset()
+        default_txt = "Perform the ICA analysis to see results"
+        self.findChild(MatplotlibWidget, 'ica_plot_assemblys').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'ica_plot_activity').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies').reset(default_txt)
 
-        self.findChild(MatplotlibWidget, 'ensvis_plot_map').reset()
-        self.findChild(MatplotlibWidget, 'ensvis_plot_raster').reset()
+        self.envis_slide_selectedens.setMaximum(2)
+        self.envis_slide_selectedens.setValue(1)
+        self.ensvis_lbl_currentens.setText(f"{1}")
+        self.ensvis_edit_members.setText("")
+        self.ensvis_edit_exclusive.setText("")
+        self.ensvis_edit_timepoints.setText("")
+        
+        default_txt = "Perform an ensemble analysis first\nAnd load coordinates\nto see this panel"
+        self.findChild(MatplotlibWidget, 'ensvis_plot_map').reset(default_txt)
+        default_txt = "Perform an ensemble analysis first\nAnd load dFFo\nto see this panel"
+        self.findChild(MatplotlibWidget, 'ensvis_plot_raster').reset(default_txt)
+        default_txt = "Perform any analysis to see the identified ensembles\nAnd load coordinates\nto see this panel"
+        self.findChild(MatplotlibWidget, 'ensvis_plot_allspatial').reset(default_txt)
+        default_txt = "Perform any ensemble analysis\nto see the binary activity of the cells"
+        self.findChild(MatplotlibWidget, 'ensvis_plot_allbinary').reset(default_txt)
+        default_txt = "Perform any analysis to see the identified ensembles\nAnd load dFFo data\nto see this panel"
+        self.findChild(MatplotlibWidget, 'ensvis_plot_alldffo').reset(default_txt)
+        default_txt = "Perform any ensemble analysis\nto see the binary activity of the ensembles"
+        self.findChild(MatplotlibWidget, 'ensvis_plot_allens').reset(default_txt)
 
-        self.findChild(MatplotlibWidget, 'ensvis_plot_allspatial').reset()
-        self.findChild(MatplotlibWidget, 'ensvis_plot_allbinary').reset()
-        self.findChild(MatplotlibWidget, 'ensvis_plot_alldffo').reset()
-        self.findChild(MatplotlibWidget, 'ensvis_plot_allens').reset()
-
-        self.findChild(MatplotlibWidget, 'performance_plot_corrstims').reset()
-        self.findChild(MatplotlibWidget, 'performance_plot_corrcells').reset()
-        self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').reset()
+        default_txt = "Perform and select at least one analysis\nand load stimulation data\nto see the metrics"
+        self.findChild(MatplotlibWidget, 'performance_plot_corrstims').reset(default_txt)
+        default_txt = "Perform and select at least one analysis\nto see the metrics"
+        self.findChild(MatplotlibWidget, 'performance_plot_corrcells').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'performance_plot_corrcells').canvas.setFixedHeight(400)
+        default_txt = "Perform and select at least one analysis\nand load stimulation data\nto see the metrics"
+        self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').canvas.setFixedHeight(400)
 
     def browse_files(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file')
@@ -226,7 +287,7 @@ class MainWindow(QMainWindow):
         self.browser_var_info.setText(new_text)
 
         # Enable or disable the assign buttons
-        if item_type == "Dataset":
+        if item_type == "Dataset" and len(item_size) < 3:
             valid = item_size[0] > 1
             self.btn_set_dFFo.setEnabled(valid)
             self.btn_set_neuronal_activity.setEnabled(valid)
@@ -234,12 +295,14 @@ class MainWindow(QMainWindow):
             self.btn_set_coordinates.setEnabled(valid)
             self.btn_set_stim.setEnabled(True)
             self.btn_set_behavior.setEnabled(True)
+            self.btn_set_cells.setEnabled(True)
         else:
             self.btn_set_dFFo.setEnabled(False)
             self.btn_set_neuronal_activity.setEnabled(False)
             self.btn_set_coordinates.setEnabled(False)
             self.btn_set_stim.setEnabled(False)
             self.btn_set_behavior.setEnabled(False)
+            self.btn_set_cells.setEnabled(False)
 
         # Store data description temporally
         self.file_selected_var_path = item_path
@@ -325,6 +388,16 @@ class MainWindow(QMainWindow):
         self.lbl_stim_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_stims()
+    def set_cells(self):
+        data_cells = assign_data_from_file(self)
+        self.data_cells = data_cells
+        stims, cells = data_cells.shape
+        self.btn_clear_cells.setEnabled(True)
+        self.btn_view_cells.setEnabled(True)
+        self.lbl_cells_select.setText("Assigned")
+        self.lbl_cells_select_name.setText(self.file_selected_var_name)
+        self.update_console_log(f"Set Selected cells dataset - Identified {stims} groups and {cells} cells. Please, verify the data preview.", msg_type="complete")
+        self.view_cells()
     def set_behavior(self):
         data_behavior = assign_data_from_file(self)
         self.data_behavior = data_behavior
@@ -343,6 +416,8 @@ class MainWindow(QMainWindow):
         self.btn_view_dFFo.setEnabled(False)
         self.lbl_dffo_select.setText("Nothing")
         self.lbl_dffo_select_name.setText("")
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted dFFo dataset", msg_type="complete")       
     def clear_neuronal_activity(self):
         delattr(self, "data_neuronal_activity")
@@ -350,6 +425,8 @@ class MainWindow(QMainWindow):
         self.btn_view_neuronal_activity.setEnabled(False)
         self.lbl_neuronal_activity_select.setText("Nothing")
         self.lbl_neuronal_activity_select_name.setText("")
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Binary Neuronal Activity dataset", msg_type="complete")
     def clear_coordinates(self):
         delattr(self, "data_coordinates")
@@ -357,6 +434,8 @@ class MainWindow(QMainWindow):
         self.btn_view_coordinates.setEnabled(False)
         self.lbl_coordinates_select.setText("Nothing")
         self.lbl_coordinates_select_name.setText("")
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Coordinates dataset", msg_type="complete")
     def clear_stims(self):
         delattr(self, "data_stims")
@@ -364,13 +443,26 @@ class MainWindow(QMainWindow):
         self.btn_view_stim.setEnabled(False)
         self.lbl_stim_select.setText("Nothing")
         self.lbl_stim_select_name.setText("")
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Stimuli dataset", msg_type="complete")
+    def clear_cells(self):
+        delattr(self, "data_cells")
+        self.btn_clear_cells.setEnabled(False)
+        self.btn_view_cells.setEnabled(False)
+        self.lbl_cells_select.setText("Nothing")
+        self.lbl_cells_select_name.setText("")
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+        self.update_console_log(f"Deleted Selected cells dataset", msg_type="complete")
     def clear_behavior(self):
         delattr(self, "data_behavior")
         self.btn_clear_behavior.setEnabled(False)
         self.btn_view_behavior.setEnabled(False)
         self.lbl_behavior_select.setText("Nothing")
         self.lbl_behavior_select_name.setText("")
+        default_txt = "Load or select a variable\nto see a preview here"
+        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Behavior dataset", msg_type="complete")
 
     ## Visualize variables from input file
@@ -378,12 +470,12 @@ class MainWindow(QMainWindow):
         self.currently_visualizing = "dFFo"
         self.btn_edit_transpose.setEnabled(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Neuron')
+        self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell')
     def view_neuronal_activity(self):
         self.currently_visualizing = "neuronal_activity"
         self.btn_edit_transpose.setEnabled(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Neuron', cmap='gray')
+        self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray')
     def view_coordinates(self):
         self.currently_visualizing = "coordinates"
         self.btn_edit_transpose.setEnabled(True)
@@ -398,6 +490,15 @@ class MainWindow(QMainWindow):
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray')
+    def view_cells(self):
+        self.currently_visualizing = "cells"
+        self.btn_edit_transpose.setEnabled(True)
+        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        preview_data = self.data_cells
+        if len(preview_data.shape) == 1:
+            zeros_array = np.zeros_like(preview_data)
+            preview_data = np.row_stack((preview_data, zeros_array))
+        self.plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray')
     def view_behavior(self):
         self.currently_visualizing = "behavior"
         self.btn_edit_transpose.setEnabled(True)
@@ -413,40 +514,50 @@ class MainWindow(QMainWindow):
         to_edit = self.currently_visualizing
         if to_edit == "dFFo":
             self.data_dFFo = self.data_dFFo.T
-            self.update_console_log(f"Updated dFFo dataset. Please, verify the data preview.", msg_type="complete")
+            self.update_console_log(f"Updated dFFo dataset. Please, verify the data preview.", "warning")
             self.view_dFFo()
         elif to_edit == "neuronal_activity":
             self.data_neuronal_activity = self.data_neuronal_activity.T
             self.cant_neurons = self.data_neuronal_activity.shape[0]
             self.cant_timepoints = self.data_neuronal_activity.shape[1]
-            self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", msg_type="complete")
+            self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", "warning")
             self.view_neuronal_activity()
         elif to_edit == "coordinates":
             self.data_coordinates = self.data_coordinates.T
-            self.update_console_log(f"Updated Coordinates dataset. Please, verify the data preview.", msg_type="complete")
+            self.update_console_log(f"Updated Coordinates dataset. Please, verify the data preview.", "warning")
             self.view_coordinates()
         elif to_edit == "stims":
             self.data_stims = self.data_stims.T
-            self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", msg_type="complete")
+            self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", "warning")
             self.view_stims()
+        elif to_edit == "cells":
+            self.data_cells = self.data_cells.T
+            self.update_console_log(f"Updated Selected Cells dataset. Please, verify the data preview.", "warning")
+            self.view_cells()
         elif to_edit == "behavior":
             self.data_behavior = self.data_behavior.T
-            self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", msg_type="complete")
+            self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
             self.view_behavior()
         
-    def add_matplotlib_widgets_to_tab(self, n, tab_index):
-        # Access the tab at index tab_index
-        tab = self.tabWidget.widget(tab_index)
-        # Create a layout for the tab
-        layout = QVBoxLayout(tab)
-        # Create and add n MatplotlibWidgets to the layout
-        for i in range(n):
-            mw = MatplotlibWidget()
-            mw.setObjectName(f"svd_plot_components_{i+1}")
-            layout.addWidget(mw)
-        # Set the layout for the tab
-        tab.setLayout(layout)
-        
+    def dict_to_matlab_struct(self, pars_dict):
+        matlab_struct = {}
+        for key, value in pars_dict.items():
+            if isinstance(value, dict):
+                matlab_struct[key] = self.dict_to_matlab_struct(value)
+            elif isinstance(value, (int, float)):
+                matlab_struct[key] = matlab.double([value])
+            else:
+                matlab_struct[key] = value
+        return matlab_struct
+
+    def load_defaults_svd(self):
+        defaults = self.svd_defaults
+        self.svd_edit_pks.setText(f"{defaults['pks']}")
+        self.svd_edit_scut.setText(f"{defaults['scut']}")
+        self.svd_edit_hcut.setText(f"{defaults['hcut']}")
+        self.svd_edit_statecut.setText(f"{defaults['state_cut']}")
+        self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
+        self.update_console_log("Loaded default SVD parameter values", "complete")
     def run_svd(self):
         # Prepare data
         data = self.data_neuronal_activity
@@ -461,9 +572,17 @@ class MainWindow(QMainWindow):
         input_value = self.svd_edit_scut.text()
         val_scut = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
         input_value = self.svd_edit_hcut.text()
-        val_hcut = float(input_value) if len(input_value) > 0 else 0.20
+        if len(input_value) > 0:
+            val_hcut = float(input_value) 
+        else:
+            val_hcut = self.svd_defaults['hcut']
+            self.svd_edit_hcut.setText(f"{val_hcut}")
         input_value = self.svd_edit_statecut.text()
-        val_statecut = float(input_value) if len(input_value) > 0 else 6
+        if len(input_value) > 0:
+            val_statecut = float(input_value)
+        else:
+            val_statecut = self.svd_defaults['statecut']
+            self.svd_edit_statecut.setText(f"{val_statecut}")
         val_idtfd = self.svd_check_tfidf.isChecked()
 
         # Pack parameters
@@ -474,7 +593,7 @@ class MainWindow(QMainWindow):
             'statecut': val_statecut,
             'tf_idf_norm': val_idtfd
         }
-        pars_matlab = {key: matlab.double([value]) if isinstance(value, (int, float)) else value for key, value in pars.items()}
+        pars_matlab = self.dict_to_matlab_struct(pars)
 
         self.update_console_log("Starting MATLAB engine...")
         eng = matlab.engine.start_matlab()
@@ -486,19 +605,32 @@ class MainWindow(QMainWindow):
         folder_path_with_subfolders = eng.genpath(folder_path)
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
+        # Clean all the figures in case there was something previously
+        if 'svd' in self.results:
+            del self.results['svd']
+        algorithm_figs = ["svd_plot_similaritymap", "svd_plot_binarysimmap", "svd_plot_singularvalues", "svd_plot_components", "svd_plot_timecourse", "svd_plot_cellsinens"] 
+        for fig_name in algorithm_figs:
+            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
+
         self.update_console_log("Performing SVD...")
-        answer = eng.Stoixeion(spikes, coords_foo, pars_matlab)
+        self.update_console_log("Look in the Python console for additional logs.", "warning")
+        try:
+            answer = eng.Stoixeion(spikes, coords_foo, pars_matlab)
+        except:
+            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            answer = None
         self.update_console_log("Done.", "complete")
 
-        # Create plots for every result
-        #keys_list = list(answer.keys())
-        #print(keys_list)
+        if answer != None:
+            # Update pks and scut in case of automatic calculation
+            self.svd_edit_pks.setText(f"{int(answer['pks'])}")
+            self.svd_edit_scut.setText(f"{answer['scut']}")
 
-        # Plotting results
-        self.update_console_log("Plotting results...")
-        self.plot_SVD_results(answer)
-        self.update_console_log("Done plotting...")
-
+            # Plotting results
+            self.update_console_log("Plotting and saving results...")
+            # For this method the saving occurs in the same plotting function to avoid recomputation
+            self.plot_SVD_results(answer)
+            self.update_console_log("Done plotting and saving...")
     def plot_SVD_results(self, answer):
         # Similarity map
         simmap = np.array(answer['S_index_ti'])
@@ -558,8 +690,19 @@ class MainWindow(QMainWindow):
         self.we_have_results()
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
-        self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Neuron")
+        self.plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Cell")
 
+    def load_defaults_pca(self):
+        defaults = self.pca_defaults
+        self.pca_edit_dc.setText(f"{defaults['dc']}")
+        self.pca_edit_npcs.setText(f"{defaults['npcs']}")
+        self.pca_edit_minspk.setText(f"{defaults['minspk']}")
+        self.pca_edit_nsur.setText(f"{defaults['nsur']}")
+        self.pca_edit_prct.setText(f"{defaults['prct']}")
+        self.pca_edit_centthr.setText(f"{defaults['cent_thr']}")
+        self.pca_edit_innercorr.setText(f"{defaults['inner_corr']}")
+        self.pca_edit_minsize.setText(f"{defaults['minsize']}")
+        self.update_console_log("Loaded default PCA parameter values", "complete")
     def run_PCA(self):
         # Prepare data
         data = self.data_neuronal_activity
@@ -567,21 +710,21 @@ class MainWindow(QMainWindow):
 
         # Prepare parameters
         input_value = self.pca_edit_dc.text()
-        dc = float(input_value) if len(input_value) > 0 else 0.02
+        dc = float(input_value) if len(input_value) > 0 else self.pca_defaults['dc']
         input_value = self.pca_edit_npcs.text()
-        npcs = float(input_value) if len(input_value) > 0 else 3
+        npcs = float(input_value) if len(input_value) > 0 else self.pca_defaults['npcs']
         input_value = self.pca_edit_minspk.text()
-        minspk = float(input_value) if len(input_value) > 0 else 3
+        minspk = float(input_value) if len(input_value) > 0 else self.pca_defaults['minspk']
         input_value = self.pca_edit_nsur.text()
-        nsur = float(input_value) if len(input_value) > 0 else 1000
+        nsur = float(input_value) if len(input_value) > 0 else self.pca_defaults['nsur']
         input_value = self.pca_edit_prct.text()
-        prct = float(input_value) if len(input_value) > 0 else 99.9
+        prct = float(input_value) if len(input_value) > 0 else self.pca_defaults['prct']
         input_value = self.pca_edit_centthr.text()
-        cent_thr = float(input_value) if len(input_value) > 0 else 99.9
+        cent_thr = float(input_value) if len(input_value) > 0 else self.pca_defaults['cent_thr']
         input_value = self.pca_edit_innercorr.text()
-        inner_corr = float(input_value) if len(input_value) > 0 else 5
+        inner_corr = float(input_value) if len(input_value) > 0 else self.pca_defaults['inner_corr']
         input_value = self.pca_edit_minsize.text()
-        minsize = float(input_value) if len(input_value) > 0 else 3
+        minsize = float(input_value) if len(input_value) > 0 else self.pca_defaults['minsize']
 
         # Pack data
         pars = {
@@ -594,8 +737,7 @@ class MainWindow(QMainWindow):
             'inner_corr': inner_corr,
             'minsize': minsize
         }
-
-        pars_matlab = {key: matlab.double([value]) if isinstance(value, (int, float)) else value for key, value in pars.items()}
+        pars_matlab = self.dict_to_matlab_struct(pars)
 
         self.update_console_log("Starting MATLAB engine...")
         eng = matlab.engine.start_matlab()
@@ -608,24 +750,20 @@ class MainWindow(QMainWindow):
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
         # Clean all the figures in case there was something previously
-        if hasattr(self, 'results'):
-            if 'pca' in self.results:
-                del self.results['pca']
+        if 'pca' in self.results:
+            del self.results['pca']
         algorithm_figs = ["pca_plot_eigs", "pca_plot_pca", "pca_plot_rhodelta", "pca_plot_corrne", "pca_plot_corecells", "pca_plot_innerens", "pca_plot_timecourse", "pca_plot_cellsinens"] 
         for fig_name in algorithm_figs:
-            self.findChild(MatplotlibWidget, fig_name).reset()
+            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
 
         self.update_console_log("Performing PCA...")
+        self.update_console_log("Look in the Python console for additional logs.", "warning")
         try:
             answer = eng.raster2ens_by_density(raster, pars_matlab)
         except:
-            self.update_console_log("An error occurred while excecuting the algorithm. Check the python console for more info.", msg_type="error")
+            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
             answer = None
         self.update_console_log("Done.", "complete")
-
-        # Create plots for every result
-        #keys_list = list(answer.keys())
-        #print(keys_list)
 
         ## Plot the results
         if answer != None:
@@ -641,7 +779,6 @@ class MainWindow(QMainWindow):
             self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
             self.we_have_results()
             self.update_console_log("Done saving", "complete")
-
     def plot_PCA_results(self, pars, answer):
         ## Plot the eigs
         eigs = np.array(answer['exp_var'])
@@ -697,17 +834,14 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_cellsinens')
         self.plot_widget.plot_ensembles_timecourse(np.array(answer["sel_core_cells"]).T)
 
-    def dict_to_matlab_struct(self, d):
-        matlab_struct = {}
-        for key, value in d.items():
-            if isinstance(value, dict):
-                matlab_struct[key] = self.dict_to_matlab_struct(value)
-            elif isinstance(value, (int, float)):
-                matlab_struct[key] = matlab.double([value])
-            else:
-                matlab_struct[key] = value
-        return matlab_struct
-    
+    def load_defaults_ica(self):
+        defaults = self.ica_defaults
+        self.ica_radio_method_marcenko.setChecked(True)
+        self.ica_edit_perpercentile.setText(f"{defaults['threshold']['permutations_percentile']}")
+        self.ica_edit_percant.setText(f"{defaults['threshold']['number_of_permutations']}")
+        self.ica_radio_method_ica.setChecked(True)
+        self.ica_edit_iterations.setText(f"{defaults['Patterns']['number_of_iterations']}")
+        self.update_console_log("Loaded default ICA parameter values", "complete")
     def run_ICA(self):
         # Prepare data
         data = self.data_neuronal_activity
@@ -722,16 +856,16 @@ class MainWindow(QMainWindow):
             threshold_method = "circularshift"
 
         input_value = self.ica_edit_perpercentile.text()
-        val_per_percentile = float(input_value) if len(input_value) > 0 else 95
+        val_per_percentile = float(input_value) if len(input_value) > 0 else self.ica_defaults['threshold']['permutations_percentile']
         input_value = self.ica_edit_percant.text()
-        val_per_cant = float(input_value) if len(input_value) > 0 else 20
+        val_per_cant = float(input_value) if len(input_value) > 0 else self.ica_defaults['threshold']['number_of_permutations']
 
         if self.ica_radio_method_ica.isChecked():
             patterns_method = "ICA"
         elif self.ica_radio_method_pca.isChecked():
             patterns_method = "PCA"
         input_value = self.ica_edit_iterations.text()
-        val_iteartions = float(input_value) if len(input_value) > 0 else 500
+        val_iteartions = float(input_value) if len(input_value) > 0 else self.ica_defaults['Patterns']['number_of_iterations']
 
         # Pack parameters
         pars = {
@@ -757,63 +891,87 @@ class MainWindow(QMainWindow):
         folder_path_with_subfolders = eng.genpath(folder_path)
         eng.addpath(folder_path_with_subfolders, nargout=0)
 
+        # Clean all the figures in case there was something previously
+        if 'ica' in self.results:
+            del self.results['ica']
+        algorithm_figs = ["ica_plot_assemblys", "ica_plot_activity", "ica_plot_binary_patterns", "ica_plot_binary_assemblies"] 
+        for fig_name in algorithm_figs:
+            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
+
         self.update_console_log("Performing ICA...")
         self.update_console_log("Looking for patterns...")
-        answer = eng.assembly_patterns(spikes, pars_matlab)
+        try:
+            answer = eng.assembly_patterns(spikes, pars_matlab)
+        except:
+            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            answer = None
         self.update_console_log("Done looking for patterns...", "complete")
-        assembly_templates = np.array(answer['AssemblyTemplates']).T
 
-        self.update_console_log("Looking for assembly activity...")
-        answer = eng.assembly_activity(answer['AssemblyTemplates'],spikes)
-        self.update_console_log("Done looking for assembly activity...", "complete")
+        if answer != None:
+            assembly_templates = np.array(answer['AssemblyTemplates']).T
 
-        time_projection = np.array(answer["time_projection"])
+            self.update_console_log("Looking for assembly activity...")
+            try:
+                answer = eng.assembly_activity(answer['AssemblyTemplates'],spikes)
+            except:
+                self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+                answer = None
+            self.update_console_log("Done looking for assembly activity...", "complete")
         self.update_console_log("Done.", "complete")
 
-        ## Identify the significative values to binarize the matrix
-        threshold = 1.96    # p < 0.05 for the z-score
-        binary_assembly_templates = np.zeros(assembly_templates.shape)
-        for a_idx, assembly in enumerate(assembly_templates):
-            z_scores = stats.zscore(assembly)
-            tmp = np.abs(z_scores) > threshold
-            binary_assembly_templates[a_idx,:] = [int(v) for v in tmp]
+        if answer != None:
+            time_projection = np.array(answer["time_projection"])
+            
+            ## Identify the significative values to binarize the matrix
+            threshold = 1.96    # p < 0.05 for the z-score
+            binary_assembly_templates = np.zeros(assembly_templates.shape)
+            for a_idx, assembly in enumerate(assembly_templates):
+                z_scores = stats.zscore(assembly)
+                tmp = np.abs(z_scores) > threshold
+                binary_assembly_templates[a_idx,:] = [int(v) for v in tmp]
 
-        binary_time_projection = np.zeros(time_projection.shape)
-        for a_idx, assembly in enumerate(time_projection):
-            z_scores = stats.zscore(assembly)
-            tmp = np.abs(z_scores) > threshold
-            binary_time_projection[a_idx,:] = [int(v) for v in tmp]
+            binary_time_projection = np.zeros(time_projection.shape)
+            for a_idx, assembly in enumerate(time_projection):
+                z_scores = stats.zscore(assembly)
+                tmp = np.abs(z_scores) > threshold
+                binary_time_projection[a_idx,:] = [int(v) for v in tmp]
 
-        self.plot_ICA_results(assembly_templates, time_projection, binary_assembly_templates, binary_time_projection)
+            answer = {
+                'assembly_templates': assembly_templates,
+                'time_projection': time_projection,
+                'binary_assembly_templates': binary_assembly_templates,
+                'binary_time_projection': binary_time_projection
+            }
+            self.plot_ICA_results(answer)
 
-        self.update_console_log("Saving results...")
-        self.results['ica'] = {}
-        self.results['ica']['timecourse'] = binary_time_projection
-        self.results['ica']['ensembles_cant'] = binary_time_projection.shape[0]
-        self.results['ica']['neus_in_ens'] = binary_assembly_templates
-        self.we_have_results()
-        self.update_console_log("Done saving", "complete")
-
-    def plot_ICA_results(self, assembly_templates, time_projection, binary_assembly_templates, binary_time_projection):
+            self.update_console_log("Saving results...")
+            self.results['ica'] = {}
+            self.results['ica']['timecourse'] = binary_time_projection
+            self.results['ica']['ensembles_cant'] = binary_time_projection.shape[0]
+            self.results['ica']['neus_in_ens'] = binary_assembly_templates
+            self.we_have_results()
+            self.update_console_log("Done saving", "complete")
+    def plot_ICA_results(self, answer):
         # Plot the assembly templates
         self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_assemblys')
-        self.plot_widget.set_subplots(assembly_templates.shape[0], 1)
-        for e_idx, ens in enumerate(assembly_templates):
-            self.plot_widget.plot_assembly_patterns(ens, e_idx)
+        self.plot_widget.set_subplots(answer['assembly_templates'].shape[0], 1)
+        total_assemblies = answer['assembly_templates'].shape[0]
+        for e_idx, ens in enumerate(answer['assembly_templates']):
+            plot_xaxis = e_idx == total_assemblies-1
+            self.plot_widget.plot_assembly_patterns(ens, e_idx, title=f"Ensemble {e_idx+1}", plot_xaxis=plot_xaxis)
 
         # Plot the time projection
         self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_activity')
-        self.plot_widget.plot_cell_assemblies_activity(time_projection)
+        self.plot_widget.plot_cell_assemblies_activity(answer['time_projection'])
 
         # Plot binary assembly templates
         self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns')
-        self.plot_widget.plot_ensembles_timecourse(binary_assembly_templates, xlabel="Cell")
+        self.plot_widget.plot_ensembles_timecourse(answer['binary_assembly_templates'], xlabel="Cell")
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies')
-        self.plot_widget.plot_ensembles_timecourse(binary_time_projection, xlabel="Timepoint")
-        
+        self.plot_widget.plot_ensembles_timecourse(answer['binary_time_projection'], xlabel="Timepoint")
+      
     def we_have_results(self):
-        self.performance_btn_compare.setEnabled(True)
         for analysis_name in self.results.keys():
             if analysis_name == 'svd':
                 self.ensvis_btn_svd.setEnabled(True)
@@ -826,19 +984,14 @@ class MainWindow(QMainWindow):
                 self.performance_check_ica.setEnabled(True)
 
     def vis_ensembles_svd(self):
-        if hasattr(self, "results"):
-            self.ensemble_currently_shown = "svd"
-            self.update_analysis_results()
-    
+        self.ensemble_currently_shown = "svd"
+        self.update_analysis_results()
     def vis_ensembles_pca(self):
-        if hasattr(self, "results"):
-            self.ensemble_currently_shown = "pca"
-            self.update_analysis_results()
-
+        self.ensemble_currently_shown = "pca"
+        self.update_analysis_results()
     def vis_ensembles_ica(self):
-        if hasattr(self, "results"):
-            self.ensemble_currently_shown = "ica"
-            self.update_analysis_results()
+        self.ensemble_currently_shown = "ica"
+        self.update_analysis_results()
 
     def update_analysis_results(self):
         self.initialize_ensemble_view()
@@ -959,6 +1112,21 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allens')
         self.plot_widget.plot_ensembles_timecourse(self.results[curr_analysis]['timecourse'])
 
+    def performance_check_change(self):
+        methods_to_compare = []
+        if self.performance_check_svd.isChecked():
+            methods_to_compare.append("svd")
+        if self.performance_check_pca.isChecked():
+            methods_to_compare.append("pca")
+        if self.performance_check_ica.isChecked():
+            methods_to_compare.append("ica")
+        if self.performance_check_sgc.isChecked():
+            methods_to_compare.append("sgc")
+        if len(methods_to_compare) > 0:
+            self.performance_btn_compare.setEnabled(True)
+        else:
+            self.performance_btn_compare.setEnabled(False)
+
     def performance_compare(self):
         # Get the algorithms to compare
         methods_to_compare = []
@@ -1017,10 +1185,8 @@ class MainWindow(QMainWindow):
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
                 self.plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
-        
 
-
-app = QtWidgets.QApplication(sys.argv)
+app = QApplication(sys.argv)
 window = MainWindow()
 window.show()
 app.exec()  
