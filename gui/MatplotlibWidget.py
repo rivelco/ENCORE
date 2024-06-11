@@ -37,11 +37,17 @@ class MatplotlibWidget(QWidget):
                     self.axes[row][col].axis('off')
             self.canvas.figure.tight_layout()
     
-    def reset(self, rows=1, cols=1):
+    def reset(self, default_text="Nothing to show", rows=1, cols=1):
         self.set_subplots(rows, cols)
+        self.axes.text(0.5, 0.5, f'{default_text}', 
+        horizontalalignment='center', 
+        verticalalignment='center', 
+        fontsize=8, 
+        transform=self.axes.transAxes)
+        self.axes.set_axis_off()
         self.canvas.draw()
 
-    def preview_dataset(self, dataset, xlabel='Frame', ylabel='Data', title=None, cmap='hot', aspect='auto'):
+    def preview_dataset(self, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto'):
         self.axes.clear()
         n, t = dataset.shape
         self.axes.imshow(dataset, cmap=cmap, interpolation='nearest', aspect=aspect)
@@ -51,8 +57,6 @@ class MatplotlibWidget(QWidget):
         self.axes.set_ylabel(ylabel)
         self.axes.set_xlim([0, t])
         self.axes.set_ylim([-0.5, n-0.5])
-        #self.axes.set_xticks([])
-        #self.axes.set_yticks([])
         for side in ['left', 'top', 'right', 'bottom']:
             self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
@@ -96,17 +100,21 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    # Plot singular values
+    # Plots for the SVD analysis
     def plot_singular_values(self, singulars, num_states):
         self.axes.clear()
         self.axes.semilogx(singulars, marker='o', linestyle='-', label='Singular values')
         # Add a vertical red dashed line at num_state
-        self.axes.axvline(x=num_states, color='r', linestyle='--', linewidth=2, label=f'num_state = {num_states}')
+        self.axes.plot(num_states, singulars[num_states], 'rs', markersize=10, label=f"Cutoff at {num_states}")
+        #self.axes.axvline(x=num_states, color='r', linestyle='--', linewidth=2, label=f'Cutoff at {num_states}')
         # Label the axes
-        self.axes.set_xlabel('Singular value')
-        self.axes.set_ylabel('Singular values idx')
+        self.axes.set_xlabel('log(singular value)')
+        self.axes.set_ylabel('Magnitude')
         # Set the title
         self.axes.set_title('Singular values')
+        self.axes.legend()
+        for side in ['top', 'right']:
+            self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
@@ -115,8 +123,8 @@ class MatplotlibWidget(QWidget):
         # Plot the image, where svd_sig[:,:,n]==0 is the condition to be checked
         self.axes[row][col].imshow(svd_sig == 0, cmap='gray', aspect='equal')
         # Set the labels and title
-        self.axes[row][col].set_xlabel('frame')
-        self.axes[row][col].set_ylabel('frame')
+        self.axes[row][col].set_xlabel('Population vector')
+        self.axes[row][col].set_ylabel('Population vector')
         self.axes[row][col].set_title(f'Components ensemble {comp_n+1}')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
@@ -165,23 +173,28 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
+    # Plots for the PCA 
     def plot_eigs(self, eigs, seleig):
         self.axes.clear()
 
-        self.axes.plot(np.arange(1, len(eigs) + 1), eigs, 'o--')
-        self.axes.plot(seleig, eigs[seleig - 1], 'rs', markersize=10)
+        self.axes.plot(np.arange(1, len(eigs) + 1), eigs, 'o--', label="Principal components")
+        self.axes.plot(seleig, eigs[seleig - 1], 'rs', markersize=10, label=f"Cutoff at {seleig}")
         self.axes.set_xscale('log')
         self.axes.set_yscale('linear')
         self.axes.set_xlim(1, len(eigs))
-        self.axes.set_xlabel('PCs')
+        self.axes.set_xlabel('Principal components')
         self.axes.set_ylabel('% var')
-        self.axes.grid(True)
+        self.axes.legend()
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
     def plot_pca(self, pcs, ens_labs=None, ens_cols=None):
         self.axes.clear()
+        for side in ['left', 'top', 'right', 'bottom']:
+            self.axes.spines[side].set_visible(False)
+        self.axes.set_yticks([])
+        self.axes.set_xticks([])
         np = pcs.shape[1]
         if ens_labs is None or ens_cols is None:  # plots raster with no color
             if np > 2:
@@ -262,7 +275,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_xticks(range(0, nens))
         self.axes.set_xticklabels(range(1, nens+1))
         # Set y-axis label
-        self.axes.set_ylabel('Neurons')
+        self.axes.set_ylabel('Cells')
         self.axes.set_xlabel('Ensemble')
         # Add a box around the plot
         self.axes.spines['top'].set_visible(True)
@@ -290,12 +303,23 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_assembly_patterns(self, Patterns, row_idx, title=None):
+    # Plots for the ICA
+    def plot_assembly_patterns(self, Patterns, row_idx, title=None, plot_xaxis=False):
         self.axes[row_idx].clear()
         self.axes[row_idx].stem(Patterns)
         if title != None:
             self.axes[row_idx].set_title(f"{title}")
-        self.canvas.figure.tight_layout()
+
+        self.axes[row_idx].set_ylabel('Weight')
+        for side in ['top', 'right', 'bottom']:
+            self.axes[row_idx].spines[side].set_visible(False)
+        if plot_xaxis:
+            self.axes[row_idx].spines['bottom'].set_visible(True)
+            self.axes[row_idx].set_xlabel('Cell')
+            self.canvas.figure.tight_layout()
+        else:
+            self.axes[row_idx].set_xticks([])
+        
         self.canvas.draw()
 
     def plot_cell_assemblies_activity(self, activities):
@@ -303,6 +327,11 @@ class MatplotlibWidget(QWidget):
 
         for e_idx, ensemble in enumerate(activities):
             self.axes.plot(ensemble, label=f"Ensemble {e_idx+1}")
+
+        for side in ['top', 'right']:
+            self.axes.spines[side].set_visible(False)
+        self.axes.set_xlabel('Timepoint')
+        self.axes.set_ylabel('Assembly activity')
 
         self.axes.legend()
         self.canvas.figure.tight_layout()
@@ -452,8 +481,8 @@ class MatplotlibWidget(QWidget):
 
         # Plot the correlation matrix as a heatmap
         cax = self.axes[col_idx].imshow(correlations, cmap='coolwarm', vmin=-1, vmax=1)
-        self.axes[col_idx].set_xlabel('Ensembles')
-        self.axes[col_idx].set_ylabel('Stims')
+        self.axes[col_idx].set_xlabel('Stims')
+        self.axes[col_idx].set_ylabel('Ensembles')
 
         self.canvas.figure.colorbar(cax, ax=self.axes[col_idx], orientation='vertical')
 
