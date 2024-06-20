@@ -64,6 +64,8 @@ class MainWindow(QMainWindow):
 
         ## Edit actions
         self.btn_edit_transpose.clicked.connect(self.edit_transpose)
+        self.edit_btn_bin.clicked.connect(self.edit_bin)
+        self.edit_btn_trim.clicked.connect(self.edit_trimmatrix)
 
         ## Set feault values for analysis
         defaults = {
@@ -101,8 +103,16 @@ class MainWindow(QMainWindow):
         ## Numeric validator
         double_validator = QDoubleValidator()
         double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
-        double_validator.setRange(-1000000.0, 1000000.0, 10)
 
+        # For the edit options
+        double_validator.setRange(0, 1000000.0, 10)
+        self.edit_edit_binsize.setValidator(double_validator)
+        self.edit_edit_xstart.setValidator(double_validator)
+        self.edit_edit_xend.setValidator(double_validator)
+        self.edit_edit_ystart.setValidator(double_validator)
+        self.edit_edit_yend.setValidator(double_validator)
+
+        double_validator.setRange(-1000000.0, 1000000.0, 10)
         # Set validators to QLineEdit widgets
         # For the SVD analysis
         self.svd_edit_pks.setValidator(double_validator)
@@ -142,6 +152,9 @@ class MainWindow(QMainWindow):
         self.performance_check_pca.stateChanged.connect(self.performance_check_change)
         self.performance_check_ica.stateChanged.connect(self.performance_check_change)
         self.performance_btn_compare.clicked.connect(self.performance_compare)
+
+        # Saving
+        self.save_btn_save.clicked.connect(self.save_results)
         
     def update_console_log(self, message, msg_type="log"):
         color_map = {"log": "#000000", "error": "#da1e28", "warning": "#ff832b", "complete": "#198038"}
@@ -159,6 +172,7 @@ class MainWindow(QMainWindow):
     def reset_gui(self):
         # Delete all previous results
         self.results = {}
+        self.params = {}
         
         # Initialize buttons
         self.btn_svd_run.setEnabled(False)
@@ -175,6 +189,9 @@ class MainWindow(QMainWindow):
         self.performance_check_ica.setEnabled(False)
         self.performance_check_sgc.setEnabled(False)
         self.performance_btn_compare.setEnabled(False)
+
+        # Save tab
+        self.save_btn_save.setEnabled(False)
 
         # Clear the preview plots
         default_txt = "Load or select a variable\nto see a preview here"
@@ -227,12 +244,17 @@ class MainWindow(QMainWindow):
 
         default_txt = "Perform and select at least one analysis\nand load stimulation data\nto see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_corrstims').reset(default_txt)
+        default_txt = "Perform and select at least one analysis\nand load behavior data\nto see the metrics"
+        self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior').reset(default_txt)
         default_txt = "Perform and select at least one analysis\nto see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_corrcells').reset(default_txt)
         self.findChild(MatplotlibWidget, 'performance_plot_corrcells').canvas.setFixedHeight(400)
         default_txt = "Perform and select at least one analysis\nand load stimulation data\nto see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').reset(default_txt)
         self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').canvas.setFixedHeight(400)
+        default_txt = "Perform and select at least one analysis\nand load behavior data\nto see the metrics"
+        self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').canvas.setFixedHeight(400)
 
     def browse_files(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file')
@@ -409,9 +431,25 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set Behavior dataset - Identified {behaviors} behaviors and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_behavior()
     
+    def set_able_edit_options(self, boolval):
+        # Transpose matrix
+        self.btn_edit_transpose.setEnabled(boolval)
+        # Binning options
+        self.edit_btn_bin.setEnabled(boolval)
+        self.edit_edit_binsize.setEnabled(boolval)
+        self.edit_radio_sum.setEnabled(boolval)
+        self.edit_radio_mean.setEnabled(boolval)
+        # Trim options
+        self.edit_btn_trim.setEnabled(boolval)
+        self.edit_edit_xstart.setEnabled(boolval)
+        self.edit_edit_xend.setEnabled(boolval)
+        self.edit_edit_ystart.setEnabled(boolval)
+        self.edit_edit_yend.setEnabled(boolval)
+
     ## Clear variables 
     def clear_dFFo(self):
         delattr(self, "data_dFFo")
+        self.set_able_edit_options(False)
         self.btn_clear_dFFo.setEnabled(False)
         self.btn_view_dFFo.setEnabled(False)
         self.lbl_dffo_select.setText("Nothing")
@@ -421,6 +459,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Deleted dFFo dataset", msg_type="complete")       
     def clear_neuronal_activity(self):
         delattr(self, "data_neuronal_activity")
+        self.set_able_edit_options(False)
         self.btn_clear_neuronal_activity.setEnabled(False)
         self.btn_view_neuronal_activity.setEnabled(False)
         self.lbl_neuronal_activity_select.setText("Nothing")
@@ -430,6 +469,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Deleted Binary Neuronal Activity dataset", msg_type="complete")
     def clear_coordinates(self):
         delattr(self, "data_coordinates")
+        self.set_able_edit_options(False)
         self.btn_clear_coordinates.setEnabled(False)
         self.btn_view_coordinates.setEnabled(False)
         self.lbl_coordinates_select.setText("Nothing")
@@ -439,6 +479,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Deleted Coordinates dataset", msg_type="complete")
     def clear_stims(self):
         delattr(self, "data_stims")
+        self.set_able_edit_options(False)
         self.btn_clear_stim.setEnabled(False)
         self.btn_view_stim.setEnabled(False)
         self.lbl_stim_select.setText("Nothing")
@@ -448,6 +489,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Deleted Stimuli dataset", msg_type="complete")
     def clear_cells(self):
         delattr(self, "data_cells")
+        self.set_able_edit_options(False)
         self.btn_clear_cells.setEnabled(False)
         self.btn_view_cells.setEnabled(False)
         self.lbl_cells_select.setText("Nothing")
@@ -457,6 +499,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Deleted Selected cells dataset", msg_type="complete")
     def clear_behavior(self):
         delattr(self, "data_behavior")
+        self.set_able_edit_options(False)
         self.btn_clear_behavior.setEnabled(False)
         self.btn_view_behavior.setEnabled(False)
         self.lbl_behavior_select.setText("Nothing")
@@ -464,26 +507,26 @@ class MainWindow(QMainWindow):
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Behavior dataset", msg_type="complete")
-
+        
     ## Visualize variables from input file
     def view_dFFo(self):
         self.currently_visualizing = "dFFo"
-        self.btn_edit_transpose.setEnabled(True)
+        self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell')
     def view_neuronal_activity(self):
         self.currently_visualizing = "neuronal_activity"
-        self.btn_edit_transpose.setEnabled(True)
+        self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray')
     def view_coordinates(self):
         self.currently_visualizing = "coordinates"
-        self.btn_edit_transpose.setEnabled(True)
+        self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_coordinates2D(self.data_coordinates)
     def view_stims(self):
         self.currently_visualizing = "stims"
-        self.btn_edit_transpose.setEnabled(True)
+        self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_stims
         if len(preview_data.shape) == 1:
@@ -492,7 +535,7 @@ class MainWindow(QMainWindow):
         self.plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray')
     def view_cells(self):
         self.currently_visualizing = "cells"
-        self.btn_edit_transpose.setEnabled(True)
+        self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_cells
         if len(preview_data.shape) == 1:
@@ -501,7 +544,7 @@ class MainWindow(QMainWindow):
         self.plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray')
     def view_behavior(self):
         self.currently_visualizing = "behavior"
-        self.btn_edit_transpose.setEnabled(True)
+        self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
         if len(preview_data.shape) == 1:
@@ -536,6 +579,125 @@ class MainWindow(QMainWindow):
             self.view_cells()
         elif to_edit == "behavior":
             self.data_behavior = self.data_behavior.T
+            self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
+            self.view_behavior()
+
+    def bin_matrix(self, mat, bin_size, bin_method):
+        elements, timepoints = mat.shape
+        if bin_size >= timepoints:
+            self.update_console_log(f"Enter a bin size smaller than the curren amount of timepoints. Nothing has been changed.", "warning")
+            return mat   
+        num_bins = timepoints // bin_size
+        bin_mat = np.zeros((elements, num_bins))
+        for i in range(num_bins):
+            if bin_method == "mean":
+                bin_mat[:, i] = np.mean(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+            elif bin_method == "sum":
+                bin_mat[:, i] = np.sum(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+        return bin_mat 
+    def edit_bin(self):
+        to_edit = self.currently_visualizing
+        bin_size = self.edit_edit_binsize.text()
+        if len(bin_size) == 0:
+            self.update_console_log(f"Set a positive and integer bin size to bin the matrix. Nothing has been changed.", "warning")
+            return
+        else:
+            bin_size = int(bin_size)
+        bin_method = ""
+        if self.edit_radio_sum.isChecked():
+            bin_method = "sum"
+        else:
+            bin_method = "mean"
+
+        if to_edit == "dFFo":
+            self.data_dFFo = self.bin_matrix(self.data_dFFo, bin_size, bin_method)
+            self.update_console_log(f"Updated dFFo dataset. Please, verify the data preview.", "warning")
+            self.view_dFFo()
+        elif to_edit == "neuronal_activity":
+            self.data_neuronal_activity = self.bin_matrix(self.data_neuronal_activity, bin_size, bin_method)
+            print(self.data_neuronal_activity.shape)
+            self.cant_neurons = self.data_neuronal_activity.shape[0]
+            self.cant_timepoints = self.data_neuronal_activity.shape[1]
+            self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", "warning")
+            self.view_neuronal_activity()
+        elif to_edit == "coordinates":
+            self.data_coordinates = self.bin_matrix(self.data_coordinates, bin_size, bin_method)
+            self.update_console_log(f"Updated Coordinates dataset. Please, verify the data preview.", "warning")
+            self.view_coordinates()
+        elif to_edit == "stims":
+            self.data_stims = self.bin_matrix(self.data_stims, bin_size, bin_method)
+            self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", "warning")
+            self.view_stims()
+        elif to_edit == "cells":
+            self.data_cells = self.bin_matrix(self.data_cells, bin_size, bin_method)
+            self.update_console_log(f"Updated Selected Cells dataset. Please, verify the data preview.", "warning")
+            self.view_cells()
+        elif to_edit == "behavior":
+            self.data_behavior = self.bin_matrix(self.data_behavior, bin_size, bin_method)
+            self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
+            self.view_behavior()
+        
+    def edit_trimmatrix(self):
+        # Basic aproach
+        to_edit = self.currently_visualizing
+        xstart = self.edit_edit_xstart.text()
+        xend = self.edit_edit_xend.text()
+        ystart = self.edit_edit_ystart.text()
+        yend = self.edit_edit_yend.text()
+        
+        valid_x = len(xstart) and len(xend)
+        valid_y = len(ystart) and len(yend)
+        
+        if valid_x:
+            xstart = int(xstart)
+            xend = int(xend)
+        if valid_y:
+            ystart = int(ystart)
+            yend = int(yend)
+
+        if to_edit == "dFFo":
+            if valid_x:
+                self.data_dFFo = self.data_dFFo[:, xstart:xend]
+            if valid_y:
+                self.data_dFFo = self.data_dFFo[ystart:yend, :]
+            self.update_console_log(f"Updated dFFo dataset. Please, verify the data preview.", "warning")
+            self.view_dFFo()
+        elif to_edit == "neuronal_activity":
+            if valid_x:
+                self.data_neuronal_activity = self.data_neuronal_activity[:, xstart:xend]
+            if valid_y:
+                self.data_neuronal_activity = self.data_neuronal_activity[ystart:yend, :]
+            print(self.data_neuronal_activity.shape)
+            self.cant_neurons = self.data_neuronal_activity.shape[0]
+            self.cant_timepoints = self.data_neuronal_activity.shape[1]
+            self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", "warning")
+            self.view_neuronal_activity()
+        elif to_edit == "coordinates":
+            if valid_x:
+                self.data_coordinates = self.data_coordinates[:, xstart:xend]
+            if valid_y:
+                self.data_coordinates = self.data_coordinates[ystart:yend, :]
+            self.update_console_log(f"Updated Coordinates dataset. Please, verify the data preview.", "warning")
+            self.view_coordinates()
+        elif to_edit == "stims":
+            if valid_x:
+                self.data_stims = self.data_stims[:, xstart:xend]
+            if valid_y:
+                self.data_stims = self.data_stims[ystart:yend, :]
+            self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", "warning")
+            self.view_stims()
+        elif to_edit == "cells":
+            if valid_x:
+                self.data_cells = self.data_cells[:, xstart:xend]
+            if valid_y:
+                self.data_cells = self.data_cells[ystart:yend, :]
+            self.update_console_log(f"Updated Selected Cells dataset. Please, verify the data preview.", "warning")
+            self.view_cells()
+        elif to_edit == "behavior":
+            if valid_x:
+                self.data_behavior = self.data_behavior[:, xstart:xend]
+            if valid_y:
+                self.data_behavior = self.data_behavior[ystart:yend, :]
             self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
             self.view_behavior()
         
@@ -593,6 +755,7 @@ class MainWindow(QMainWindow):
             'statecut': val_statecut,
             'tf_idf_norm': val_idtfd
         }
+        self.params['svd'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
         self.update_console_log("Starting MATLAB engine...")
@@ -737,6 +900,7 @@ class MainWindow(QMainWindow):
             'inner_corr': inner_corr,
             'minsize': minsize
         }
+        self.params['pca'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
         self.update_console_log("Starting MATLAB engine...")
@@ -879,6 +1043,7 @@ class MainWindow(QMainWindow):
                 'number_of_iterations': val_iteartions
             }
         }
+        self.params['ica'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
         self.update_console_log("Starting MATLAB engine...")
@@ -972,6 +1137,7 @@ class MainWindow(QMainWindow):
         self.plot_widget.plot_ensembles_timecourse(answer['binary_time_projection'], xlabel="Timepoint")
       
     def we_have_results(self):
+        self.save_btn_save.setEnabled(True)
         for analysis_name in self.results.keys():
             if analysis_name == 'svd':
                 self.ensvis_btn_svd.setEnabled(True)
@@ -1167,6 +1333,32 @@ class MainWindow(QMainWindow):
                         cross_corrs.append(cross_corr)
                     self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper())          
 
+        if hasattr(self, "data_behavior"):
+            # Calculate correlation with stimuli
+            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior')
+            plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+            self.plot_widget.set_subplots(1, plot_colums)
+            for m_idx, method in enumerate(methods_to_compare):
+                timecourse = self.results[method]['timecourse']
+                stims = self.data_behavior
+                correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+                self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
+
+            # Calculate cross-correlation
+            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior')
+            max_ens = 0
+            for method in methods_to_compare:
+                max_ens = max(self.results[method]['ensembles_cant'], max_ens)
+            self.plot_widget.canvas.setFixedHeight(400*max_ens)
+            self.plot_widget.set_subplots(max_ens, plot_colums)
+            for m_idx, method in enumerate(methods_to_compare):
+                for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
+                    cross_corrs = []
+                    for stimtime in self.data_behavior:
+                        cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
+                        cross_corrs.append(cross_corr)
+                    self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper())          
+
         # Plot the correlation of cells between themselves
         self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
@@ -1185,6 +1377,26 @@ class MainWindow(QMainWindow):
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
                 self.plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
+    def save_results(self):
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save HDF5 Results File", "", "HDF5 Files (*.h5);;All files(*)")
+        if file_path:
+            self.update_console_log("Saving results file...")
+            with h5py.File(file_path, 'w') as hdf_file:
+                tmp = {"results": self.results}
+                self.save_data_to_hdf5(hdf_file, tmp)
+                tmp = {"parameters": self.params}
+                self.save_data_to_hdf5(hdf_file, tmp)
+            self.update_console_log("Done saving.", "complete")
+
+    def save_data_to_hdf5(self, group, data):
+        for key, value in data.items():
+            if isinstance(value, dict):
+                subgroup = group.create_group(str(key))
+                self.save_data_to_hdf5(subgroup, value)
+            elif isinstance(value, list):
+                group.create_dataset(key, data=value)
+            else:
+                group[key] = value
 
 app = QApplication(sys.argv)
 window = MainWindow()

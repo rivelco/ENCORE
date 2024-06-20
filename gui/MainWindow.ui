@@ -235,13 +235,21 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Transpose the dataset. It actually modifies the stored data.
+Use it to math the interpretation of your data.
+Use the axes labels as a guide.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Transpose dataset</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="lineEdit_4">
+               <widget class="QLineEdit" name="edit_edit_binsize">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -250,6 +258,12 @@
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Bin size. Use the same timeunits from the dataset.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="inputMethodHints">
                  <set>Qt::ImhNone</set>
@@ -263,9 +277,16 @@
                </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QPushButton" name="pushButton_3">
+               <widget class="QPushButton" name="edit_btn_trim">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Trim dataset to use only certain range of your data.
+Use it to remove part of your dataset.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Trim matrix</string>
@@ -304,7 +325,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLineEdit" name="lineEdit_5">
+                  <widget class="QLineEdit" name="edit_edit_xstart">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -319,6 +340,14 @@
                      <width>80</width>
                      <height>16777215</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Index of the first element in the range to keep
+Including this element.
+Index 0 based.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
                    </property>
                    <property name="placeholderText">
                     <string>Start</string>
@@ -329,7 +358,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="lineEdit_6">
+                  <widget class="QLineEdit" name="edit_edit_xend">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -344,6 +373,12 @@
                      <width>80</width>
                      <height>16777215</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>End of the range to keep, except this element.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
                    </property>
                    <property name="placeholderText">
                     <string>End</string>
@@ -357,9 +392,15 @@
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QPushButton" name="pushButton_2">
+               <widget class="QPushButton" name="edit_btn_bin">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Bin matrix on the x axis. Usefull electrical recordings.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Bin</string>
@@ -388,7 +429,7 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QLineEdit" name="lineEdit_8">
+                  <widget class="QLineEdit" name="edit_edit_ystart">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -403,6 +444,14 @@
                      <width>80</width>
                      <height>16777215</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Index of the first element in the range to keep
+Including this element.
+Index 0 based.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
                    </property>
                    <property name="placeholderText">
                     <string>Start</string>
@@ -413,7 +462,7 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="lineEdit_7">
+                  <widget class="QLineEdit" name="edit_edit_yend">
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
@@ -428,6 +477,12 @@
                      <width>80</width>
                      <height>16777215</height>
                     </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>End of the range to keep, except this element.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
                    </property>
                    <property name="placeholderText">
                     <string>End</string>
@@ -442,6 +497,12 @@
               </item>
               <item row="3" column="1">
                <widget class="QLabel" name="label_19">
+                <property name="toolTip">
+                 <string>Method to use for the binning process.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Bin method</string>
                 </property>
@@ -466,9 +527,15 @@
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QRadioButton" name="radioButton_7">
+                  <widget class="QRadioButton" name="edit_radio_sum">
                    <property name="enabled">
                     <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>This option sums the values of every bin.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
                    </property>
                    <property name="text">
                     <string>Sum</string>
@@ -479,9 +546,15 @@
                   </widget>
                  </item>
                  <item>
-                  <widget class="QRadioButton" name="radioButton_6">
+                  <widget class="QRadioButton" name="edit_radio_mean">
                    <property name="enabled">
                     <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>This option uses the mean of each bin.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
                    </property>
                    <property name="text">
                     <string>Mean</string>
@@ -552,6 +625,12 @@
            </item>
            <item>
             <widget class="QLineEdit" name="browser_var_info">
+             <property name="toolTip">
+              <string>Description of the selected variable.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="inputMask">
               <string/>
              </property>
@@ -585,6 +664,12 @@
                   <italic>true</italic>
                  </font>
                 </property>
+                <property name="toolTip">
+                 <string>Name of the selected variable for dFFo</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -607,6 +692,12 @@
                <widget class="QPushButton" name="btn_clear_coordinates">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Reoves the coordinates variable</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -638,6 +729,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Removes the dFFo variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -649,6 +746,12 @@
                  <font>
                   <italic>true</italic>
                  </font>
+                </property>
+                <property name="toolTip">
+                 <string>Name of the selected variable for Coordinates.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string/>
@@ -705,6 +808,12 @@
                   <italic>true</italic>
                  </font>
                 </property>
+                <property name="toolTip">
+                 <string>Name of the selected variable for Behavior</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -730,6 +839,12 @@
                   <italic>true</italic>
                  </font>
                 </property>
+                <property name="toolTip">
+                 <string>Name of the selected variable for Binary cell activity</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -745,6 +860,12 @@
                   <italic>true</italic>
                  </font>
                 </property>
+                <property name="toolTip">
+                 <string>Name of the selected variable for Stimulation</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string/>
                 </property>
@@ -757,6 +878,12 @@
                <widget class="QPushButton" name="btn_clear_behavior">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Removes the behavior variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -778,6 +905,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Removes the Binary cell activity variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -798,6 +931,9 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Removes the Stimulation variable.</string>
+                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -817,6 +953,12 @@
                <widget class="QPushButton" name="btn_clear_cells">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Removes the Cells variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -839,6 +981,12 @@
                  <font>
                   <italic>true</italic>
                  </font>
+                </property>
+                <property name="toolTip">
+                 <string>Name of the selected variable for Cells</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string/>
@@ -996,6 +1144,14 @@
                 <layout class="QFormLayout" name="formLayout">
                  <item row="0" column="0">
                   <widget class="QLabel" name="svd_lbl_pks">
+                   <property name="toolTip">
+                    <string>Minimul amount of active neurons in a single
+population vector to be considered as significative.
+Leave it empty for an automatic threshold.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>pks</string>
                    </property>
@@ -1013,6 +1169,13 @@
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="svd_lbl_scut">
+                   <property name="toolTip">
+                    <string>This is a threshold of coactivity. Suggested range 0.22-0.25
+Leave it empty if you want an automated threshold.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>scut</string>
                    </property>
@@ -1030,6 +1193,12 @@
                  </item>
                  <item row="4" column="0">
                   <widget class="QLabel" name="svd_lbl_hcut">
+                   <property name="toolTip">
+                    <string>Another threshold for coactivity. Further removes noise.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>hcut</string>
                    </property>
@@ -1044,6 +1213,14 @@
                  </item>
                  <item row="6" column="0">
                   <widget class="QLabel" name="svd_lbl_statecut">
+                   <property name="toolTip">
+                    <string>The maximum number of states is a fraction
+ of the total number of cells.
+This statates the maximum number of states. </string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>state_cut</string>
                    </property>
@@ -1058,6 +1235,14 @@
                  </item>
                  <item row="8" column="1">
                   <widget class="QCheckBox" name="svd_check_tfidf">
+                   <property name="toolTip">
+                    <string>Wheter of not to perform TF-IDF normalization.
+This normalization removes neurons that may appear
+in two or more different ensembles.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Perform TF-IDF normalization</string>
                    </property>
@@ -1068,6 +1253,12 @@
                  </item>
                  <item row="10" column="1">
                   <widget class="QPushButton" name="svd_btn_defaults">
+                   <property name="toolTip">
+                    <string>Load default parameters.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Load default values</string>
                    </property>
@@ -1321,6 +1512,12 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                 <layout class="QFormLayout" name="formLayout_4">
                  <item row="0" column="0">
                   <widget class="QLabel" name="pca_lbl_dc">
+                   <property name="toolTip">
+                    <string>Cut off for distances.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>dc</string>
                    </property>
@@ -1335,6 +1532,12 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="pca_lbl_npcs">
+                   <property name="toolTip">
+                    <string>Number of principal components to use to extract ensembles.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Num. of principal components</string>
                    </property>
@@ -1349,6 +1552,13 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                  </item>
                  <item row="2" column="0">
                   <widget class="QLabel" name="pca_lbl_minspk">
+                   <property name="toolTip">
+                    <string>Minimum number of active neurons to be considered
+part of the analysis</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Min population spike</string>
                    </property>
@@ -1363,6 +1573,12 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                  </item>
                  <item row="3" column="0">
                   <widget class="QLabel" name="pca_lbl_nsur">
+                   <property name="toolTip">
+                    <string>Surrogates for core-cells, should be 1000 or more.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Number of surrogates</string>
                    </property>
@@ -1377,6 +1593,9 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                  </item>
                  <item row="4" column="0">
                   <widget class="QLabel" name="pca_lbl_prct">
+                   <property name="toolTip">
+                    <string>Percentile on the core cell distribution.</string>
+                   </property>
                    <property name="text">
                     <string>Percentile for core-cells</string>
                    </property>
@@ -1419,6 +1638,12 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                  </item>
                  <item row="7" column="0">
                   <widget class="QLabel" name="pca_lbl_minsize">
+                   <property name="toolTip">
+                    <string>Minimum number of cells that can form an ensemble.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Min assembly size</string>
                    </property>
@@ -1433,6 +1658,12 @@ Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by vi
                  </item>
                  <item row="8" column="1">
                   <widget class="QPushButton" name="pca_btn_defaults">
+                   <property name="toolTip">
+                    <string>Load default parameters.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Load default values</string>
                    </property>
@@ -1718,6 +1949,13 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                         <verstretch>0</verstretch>
                        </sizepolicy>
                       </property>
+                      <property name="toolTip">
+                       <string>Defines the method to compute the threshold for
+assembly detection</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>5000</number>
+                      </property>
                       <property name="title">
                        <string>Method</string>
                       </property>
@@ -1733,6 +1971,12 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                        </property>
                        <item>
                         <widget class="QRadioButton" name="ica_radio_method_marcenko">
+                         <property name="toolTip">
+                          <string>Uses the analytical bound</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="text">
                           <string>MarcenkoPastur</string>
                          </property>
@@ -1743,6 +1987,14 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                        </item>
                        <item>
                         <widget class="QRadioButton" name="ica_radio_method_shuffling">
+                         <property name="toolTip">
+                          <string>Estimate eigenvalue distribution for
+independent activity from surrogate matrices generated by
+shuffling time bins.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="text">
                           <string>binshuffling</string>
                          </property>
@@ -1750,6 +2002,14 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                        </item>
                        <item>
                         <widget class="QRadioButton" name="ica_radio_method_shift">
+                         <property name="toolTip">
+                          <string>Estimate eigenvalue distribution for
+independent activity from surrogate matrices generated by
+random circular shifts of original spike matrix.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="text">
                           <string>circularshift</string>
                          </property>
@@ -1787,6 +2047,15 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                        </property>
                        <item row="0" column="0">
                         <widget class="QLabel" name="label_10">
+                         <property name="toolTip">
+                          <string>Defines which percentile of the
+surrogate distribution of maximal eigenvalues is used as statistical
+threshold. It must be a number between 0 and 100 (95 or larger
+recommended). Not used when 'MarcenkoPastur' is chosen.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>7000</number>
+                         </property>
                          <property name="text">
                           <string>Permutation percentile</string>
                          </property>
@@ -1801,6 +2070,14 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                        </item>
                        <item row="1" column="0">
                         <widget class="QLabel" name="label_13">
+                         <property name="toolTip">
+                          <string>Defines how many surrogate
+matrices are generated (100 or more recommended). Not used
+when 'MarcenkoPastur' is chosen.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="text">
                           <string>Number of permutations</string>
                          </property>
@@ -1847,6 +2124,13 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
+                      </property>
+                      <property name="toolTip">
+                       <string>Defines which method is used to extract assembly
+patterns. </string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>5000</number>
                       </property>
                       <property name="title">
                        <string>Method</string>
@@ -1895,6 +2179,14 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                        </property>
                        <item row="0" column="0">
                         <widget class="QLabel" name="label_14">
+                         <property name="toolTip">
+                          <string>Number of iterations for fastICA
+algorithm (100 or more recommended). Not used when 'PCA' is
+chosen.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="text">
                           <string>Number of iterations</string>
                          </property>
@@ -1915,6 +2207,12 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                  </item>
                  <item>
                   <widget class="QPushButton" name="ica_btn_defaults">
+                   <property name="toolTip">
+                    <string>Load default parameters.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Load default values</string>
                    </property>
@@ -2425,7 +2723,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tabWidget_4">
+         <widget class="QTabWidget" name="tab_36">
           <property name="currentIndex">
            <number>1</number>
           </property>
@@ -2464,7 +2762,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                  <x>0</x>
                  <y>0</y>
                  <width>1114</width>
-                 <height>514</height>
+                 <height>506</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_34">
@@ -2499,8 +2797,8 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>1114</width>
-                 <height>514</height>
+                 <width>89</width>
+                 <height>210</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_36">
@@ -2520,10 +2818,77 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             </item>
            </layout>
           </widget>
+          <widget class="QWidget" name="tab_35">
+           <attribute name="title">
+            <string>Correlation with behavior</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_48">
+            <item>
+             <widget class="QScrollArea" name="scrollArea_4">
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_4">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>89</width>
+                 <height>210</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_49">
+                <item>
+                 <widget class="MatplotlibWidget" name="performance_plot_corrbehavior">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
+          </widget>
           <widget class="QWidget" name="tab_32">
            <attribute name="title">
-            <string>Correlation with behavioral activity</string>
+            <string>Cross correlation with behavioral activity</string>
            </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_46">
+            <item>
+             <widget class="QScrollArea" name="scrollArea_3">
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_3">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>1114</width>
+                 <height>506</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_47">
+                <item>
+                 <widget class="MatplotlibWidget" name="performance_plot_crossensbehavior">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </widget>
         </item>
@@ -2531,8 +2896,42 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Preprocessing</string>
+        <string>Save</string>
        </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_18">
+        <item>
+         <widget class="QGroupBox" name="groupBox_26">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Save results</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_45">
+           <item>
+            <widget class="QPushButton" name="save_btn_save">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Save the analysis results and used parameters
+to an HDF5 file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Save results</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
