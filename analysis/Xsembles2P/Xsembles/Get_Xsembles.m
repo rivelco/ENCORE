@@ -23,15 +23,15 @@ function analysis = Get_Xsembles(varargin)
 % Modified Sep 2023 (inputs and functions updated and new, and names renamed)
 
 %% Default values
-default_network_bin = 1;
-default_network_iterations = 1000;
-default_network_significance = 0.05;
-default_coactive_neurons_threshold = 2;
-default_clustering_range = 3:10;
-default_clustering_fixed = 0; % if zero, it will select recommended clusters 
-default_iterations_ensemble = 1000;
-default_parallel_processing = true;
-default_file_log = '';
+default_network_bin = varargin{2}.NetworkBin;
+default_network_iterations = varargin{2}.NetworkIterations;
+default_network_significance = varargin{2}.NetworkSignificance;
+default_coactive_neurons_threshold = varargin{2}.CoactiveNeuronsThreshold;
+default_clustering_range = varargin{2}.ClusteringRange;
+default_clustering_fixed = varargin{2}.ClusteringFixed; % if zero, it will select recommended clusters 
+default_iterations_ensemble = varargin{2}.EnsembleIterations;
+default_parallel_processing = varargin{2}.ParallelProcessing;
+default_file_log = varargin{2}.FileLog;
 
 %% Parse inputs
 inputs = inputParser;
