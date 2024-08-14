@@ -254,6 +254,13 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns').reset(default_txt)
         self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies').reset(default_txt)
 
+        default_txt = "Perform the Xnsembles2P analysis to see results"
+        self.findChild(MatplotlibWidget, 'x2p_plot_similarity').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'x2p_plot_epi').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'x2p_plot_onsemact').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'x2p_plot_offsemact').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'x2p_plot_activity').reset(default_txt)
+
         self.envis_slide_selectedens.setMaximum(2)
         self.envis_slide_selectedens.setValue(1)
         self.ensvis_lbl_currentens.setText(f"{1}")
@@ -384,10 +391,12 @@ class MainWindow(QMainWindow):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
                 self.lbl_pca_spikes_selected.setText(f"Loaded")
                 self.lbl_ica_spikes_selected.setText(f"Loaded")
+                self.lbl_x2p_spikes_selected.setText(f"Loaded")
             else:
                 self.lbl_sdv_spikes_selected.setText(f"Nothing selected")
                 self.lbl_pca_spikes_selected.setText(f"Nothing selected")
                 self.lbl_ica_spikes_selected.setText(f"Nothing selected")
+                self.lbl_x2p_spikes_selected.setText(f"Nothing selected")
 
             # Validate data for SVD
             needed_data = ["data_neuronal_activity"]
@@ -400,6 +409,10 @@ class MainWindow(QMainWindow):
             # Validate needed data for ICA
             needed_data = ["data_neuronal_activity"]
             self.btn_run_ica.setEnabled(self.validate_needed_data(needed_data))
+
+            # Validate needed data for x2p
+            needed_data = ["data_neuronal_activity"]
+            self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
 
     ## Set variables from input file
     def set_dFFo(self):
@@ -1181,7 +1194,98 @@ class MainWindow(QMainWindow):
         self.x2p_check_parallel.setChecked(True)
         self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
     def run_x2p(self):
-        pass
+        # Prepare data
+        data = self.data_neuronal_activity
+        raster = matlab.logical(data.tolist())
+
+        # Prepare parameters
+        input_value = self.x2p_edit_bin.text()
+        val_network_bin = float(input_value) if len(input_value) > 0 else self.x2p_defaults['network_bin']
+        input_value = self.x2p_edit_iterations.text()
+        val_network_iterations = float(input_value) if len(input_value) > 0 else self.x2p_defaults['network_iterations']
+        input_value = self.x2p_edit_significance.text()
+        val_network_significance = float(input_value) if len(input_value) > 0 else self.x2p_defaults['network_significance']
+        input_value = self.x2p_edit_threshold.text()
+        val_coactive_neurons_threshold = float(input_value) if len(input_value) > 0 else self.x2p_defaults['coactive_neurons_threshold']
+        input_value = self.x2p_edit_rangestart.text()
+        val_clustering_range_start = float(input_value) if len(input_value) > 0 else self.x2p_defaults['clustering_range_start']
+        input_value = self.x2p_edit_rangeend.text()
+        val_clustering_range_end = float(input_value) if len(input_value) > 0 else self.x2p_defaults['clustering_range_end']
+        val_clustering_range = range(int(val_clustering_range_start), int(val_clustering_range_end)+1)
+        val_clustering_range = matlab.double(val_clustering_range)
+        input_value = self.x2p_edit_fixed.text()
+        val_clustering_fixed = float(input_value) if len(input_value) > 0 else self.x2p_defaults['clustering_fixed']
+        input_value = self.x2p_edit_itensemble.text()
+        val_iterations_ensemble = float(input_value) if len(input_value) > 0 else self.x2p_defaults['iterations_ensemble']
+        parallel = matlab.logical(self.x2p_check_parallel.isChecked())
+
+        # Pack parameters
+        pars = {
+            'NetworkBin': val_network_bin,
+            'NetworkIterations': val_network_iterations,
+            'NetworkSignificance': val_network_significance,
+            'CoactiveNeuronsThreshold': val_coactive_neurons_threshold,
+            'ClusteringRange': val_clustering_range,
+            'ClusteringFixed': val_clustering_fixed,
+            'EnsembleIterations': val_iterations_ensemble,
+            'ParallelProcessing': parallel,
+            'FileLog': ''
+        }
+        self.params['x2p'] = pars
+        pars_matlab = self.dict_to_matlab_struct(pars)
+
+        self.update_console_log("Starting MATLAB engine...")
+        eng = matlab.engine.start_matlab()
+        self.update_console_log("Loaded MATLAB engine.", "complete")
+
+        # Adding to path
+        relative_folder_path = 'analysis/Xsembles2P'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+
+        # Clean all the figures in case there was something previously
+        #if 'ica' in self.results:
+        #    del self.results['ica']
+        #algorithm_figs = ["ica_plot_assemblys", "ica_plot_activity", "ica_plot_binary_patterns", "ica_plot_binary_assemblies"] 
+        #for fig_name in algorithm_figs:
+        #    self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
+
+        self.update_console_log("Performing Xsembles2P...")
+        try:
+            answer = eng.Get_Xsembles(raster, pars_matlab)
+        except:
+            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            answer = None
+        self.update_console_log("Done.", "complete")
+
+        if answer != None:
+            clean_answer = {}
+            clean_answer['similarity'] = np.array(answer['Clustering']['Similarity'])
+            self.plot_X2P_results(clean_answer)
+            
+            #import pprint
+            #with open('text_output.txt', 'w') as file:
+            #    pprint.pprint(answer, stream=file)
+            #with h5py.File("ensembles_output.h5", 'w') as hdf_file:
+            #    tmp = {"results": answer}
+            #    self.save_data_to_hdf5(hdf_file, tmp)
+            #print("done saving")
+
+        if False and answer != None:
+            self.update_console_log("Saving results...")
+            self.results['ica'] = {}
+            self.results['ica']['timecourse'] = binary_time_projection
+            self.results['ica']['ensembles_cant'] = binary_time_projection.shape[0]
+            self.results['ica']['neus_in_ens'] = binary_assembly_templates
+            self.we_have_results()
+            self.update_console_log("Done saving", "complete")
+    def plot_X2P_results(self, answer):
+        # Similarity map
+        simmap = answer['similarity']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_similarity')
+        plot_widget.preview_dataset(simmap, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
+        
 
     def we_have_results(self):
         self.save_btn_save.setEnabled(True)
@@ -1445,11 +1549,15 @@ class MainWindow(QMainWindow):
 
     def save_data_to_hdf5(self, group, data):
         for key, value in data.items():
+            print(key)
             if isinstance(value, dict):
                 subgroup = group.create_group(str(key))
                 self.save_data_to_hdf5(subgroup, value)
             elif isinstance(value, list):
-                group.create_dataset(key, data=value)
+                try:
+                    group.create_dataset(key, data=value)
+                except:
+                    print(" -> error")
             else:
                 group[key] = value
 
