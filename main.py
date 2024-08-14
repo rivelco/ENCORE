@@ -67,7 +67,7 @@ class MainWindow(QMainWindow):
         self.edit_btn_bin.clicked.connect(self.edit_bin)
         self.edit_btn_trim.clicked.connect(self.edit_trimmatrix)
 
-        ## Set feault values for analysis
+        ## Set default values for analysis
         defaults = {
             'pks': 3,
             'scut': 0.22,
@@ -99,6 +99,19 @@ class MainWindow(QMainWindow):
             }
         }
         self.ica_defaults = defaults
+        defaults = {
+            'network_bin': 1,
+            'network_iterations': 1000,
+            'network_significance': 0.05,
+            'coactive_neurons_threshold': 2,
+            'clustering_range_start': 3,
+            'clustering_range_end': 10,
+            'clustering_fixed': 0,
+            'iterations_ensemble': 1000,
+            'parallel_processing': True,
+            'file_log': ''
+        }
+        self.x2p_defaults = defaults
 
         ## Numeric validator
         double_validator = QDoubleValidator()
@@ -113,7 +126,7 @@ class MainWindow(QMainWindow):
         self.edit_edit_yend.setValidator(double_validator)
 
         double_validator.setRange(-1000000.0, 1000000.0, 10)
-        # Set validators to QLineEdit widgets
+        ## Set validators to QLineEdit widgets
         # For the SVD analysis
         self.svd_edit_pks.setValidator(double_validator)
         self.svd_edit_scut.setValidator(double_validator)
@@ -128,29 +141,45 @@ class MainWindow(QMainWindow):
         self.pca_edit_centthr.setValidator(double_validator)
         self.pca_edit_innercorr.setValidator(double_validator)
         self.pca_edit_minsize.setValidator(double_validator)
-        
+        # For ICA analysis
+        self.ica_edit_perpercentile.setValidator(double_validator)
+        self.ica_edit_percant.setValidator(double_validator)
+        self.ica_edit_iterations.setValidator(double_validator)
+        # For X2P analysis
+        self.x2p_edit_bin.setValidator(double_validator)
+        self.x2p_edit_iterations.setValidator(double_validator)
+        self.x2p_edit_significance.setValidator(double_validator)
+        self.x2p_edit_threshold.setValidator(double_validator)
+        self.x2p_edit_rangestart.setValidator(double_validator)
+        self.x2p_edit_rangeend.setValidator(double_validator)
+        self.x2p_edit_fixed.setValidator(double_validator)
+        self.x2p_edit_itensemble.setValidator(double_validator)
+
         ## SVD analysis
         self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
         self.btn_svd_run.clicked.connect(self.run_svd)
-
         ## PCA analysis
         self.pca_btn_defaults.clicked.connect(self.load_defaults_pca)
         self.btn_run_pca.clicked.connect(self.run_PCA)
-
         ## ICA analysis
         self.ica_btn_defaults.clicked.connect(self.load_defaults_ica)
         self.btn_run_ica.clicked.connect(self.run_ICA)
+        ## X2P analysis
+        self.x2p_btn_defaults.clicked.connect(self.load_defaults_x2p)
+        self.btn_run_x2p.clicked.connect(self.run_x2p)
 
         ## Ensembles visualizer
         self.ensvis_btn_svd.clicked.connect(self.vis_ensembles_svd)
         self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
         self.ensvis_btn_ica.clicked.connect(self.vis_ensembles_ica)
+        self.ensvis_btn_x2p.clicked.connect(self.vis_ensembles_x2p)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
 
         ## Performance
         self.performance_check_svd.stateChanged.connect(self.performance_check_change)
         self.performance_check_pca.stateChanged.connect(self.performance_check_change)
         self.performance_check_ica.stateChanged.connect(self.performance_check_change)
+        self.performance_check_x2p.stateChanged.connect(self.performance_check_change)
         self.performance_btn_compare.clicked.connect(self.performance_compare)
 
         # Saving
@@ -178,15 +207,18 @@ class MainWindow(QMainWindow):
         self.btn_svd_run.setEnabled(False)
         self.btn_run_pca.setEnabled(False)
         self.btn_run_ica.setEnabled(False)
+        self.btn_run_x2p.setEnabled(False)
 
         self.ensvis_btn_svd.setEnabled(False)
         self.ensvis_btn_pca.setEnabled(False)
         self.ensvis_btn_ica.setEnabled(False)
+        self.ensvis_btn_x2p.setEnabled(False)
         self.ensvis_btn_sgc.setEnabled(False)
 
         self.performance_check_svd.setEnabled(False)
         self.performance_check_pca.setEnabled(False)
         self.performance_check_ica.setEnabled(False)
+        self.performance_check_x2p.setEnabled(False)
         self.performance_check_sgc.setEnabled(False)
         self.performance_btn_compare.setEnabled(False)
 
@@ -1135,7 +1167,22 @@ class MainWindow(QMainWindow):
 
         self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies')
         self.plot_widget.plot_ensembles_timecourse(answer['binary_time_projection'], xlabel="Timepoint")
-      
+
+    def load_defaults_x2p(self):
+        defaults = self.x2p_defaults
+        self.x2p_edit_bin.setText(f"{defaults['network_bin']}")
+        self.x2p_edit_iterations.setText(f"{defaults['network_iterations']}")
+        self.x2p_edit_significance.setText(f"{defaults['network_significance']}")
+        self.x2p_edit_threshold.setText(f"{defaults['coactive_neurons_threshold']}")
+        self.x2p_edit_rangestart.setText(f"{defaults['clustering_range_start']}")
+        self.x2p_edit_rangeend.setText(f"{defaults['clustering_range_end']}")
+        self.x2p_edit_fixed.setText(f"{defaults['clustering_fixed']}")
+        self.x2p_edit_itensemble.setText(f"{defaults['iterations_ensemble']}")
+        self.x2p_check_parallel.setChecked(True)
+        self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
+    def run_x2p(self):
+        pass
+
     def we_have_results(self):
         self.save_btn_save.setEnabled(True)
         for analysis_name in self.results.keys():
@@ -1148,6 +1195,9 @@ class MainWindow(QMainWindow):
             elif analysis_name == 'ica':
                 self.ensvis_btn_ica.setEnabled(True)
                 self.performance_check_ica.setEnabled(True)
+            elif analysis_name == 'x2p':
+                self.ensvis_btn_x2p.setEnabled(True)
+                self.performance_check_x2p.setEnabled(True)
 
     def vis_ensembles_svd(self):
         self.ensemble_currently_shown = "svd"
@@ -1157,6 +1207,9 @@ class MainWindow(QMainWindow):
         self.update_analysis_results()
     def vis_ensembles_ica(self):
         self.ensemble_currently_shown = "ica"
+        self.update_analysis_results()
+    def vis_ensembles_x2p(self):
+        self.ensemble_currently_shown = "x2p"
         self.update_analysis_results()
 
     def update_analysis_results(self):
@@ -1286,6 +1339,8 @@ class MainWindow(QMainWindow):
             methods_to_compare.append("pca")
         if self.performance_check_ica.isChecked():
             methods_to_compare.append("ica")
+        if self.performance_check_x2p.isChecked():
+            methods_to_compare.append("x2p")
         if self.performance_check_sgc.isChecked():
             methods_to_compare.append("sgc")
         if len(methods_to_compare) > 0:
