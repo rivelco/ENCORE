@@ -36,7 +36,7 @@
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -2370,6 +2370,9 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 <property name="text">
                  <string>Nothing selected</string>
                 </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
                </widget>
               </item>
              </layout>
@@ -2553,17 +2556,69 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tabWidget_4">
-          <widget class="QWidget" name="tab_38">
-           <attribute name="title">
-            <string>Tab 1</string>
-           </attribute>
-          </widget>
-          <widget class="QWidget" name="tab_39">
-           <attribute name="title">
-            <string>Tab 2</string>
-           </attribute>
-          </widget>
+         <widget class="QGroupBox" name="groupBox_30">
+          <property name="title">
+           <string>Results visualization</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_52">
+           <item>
+            <widget class="QTabWidget" name="tabWidget_4">
+             <property name="currentIndex">
+              <number>4</number>
+             </property>
+             <widget class="QWidget" name="tab_38">
+              <attribute name="title">
+               <string>Similarity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_51">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_similarity"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_39">
+              <attribute name="title">
+               <string>Ensemble Participation Index</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_53">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_epi"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_40">
+              <attribute name="title">
+               <string>Onsemble Activity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_54">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_onsemact"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_41">
+              <attribute name="title">
+               <string>Offsemble activity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_55">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_offsemact"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_42">
+              <attribute name="title">
+               <string>Activity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_56">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_activity"/>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>
