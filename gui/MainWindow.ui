@@ -36,7 +36,7 @@
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -2564,7 +2564,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            <item>
             <widget class="QTabWidget" name="tabWidget_4">
              <property name="currentIndex">
-              <number>4</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="tab_38">
               <attribute name="title">
@@ -2613,6 +2613,26 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               <layout class="QVBoxLayout" name="verticalLayout_56">
                <item>
                 <widget class="MatplotlibWidget" name="x2p_plot_activity"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_43">
+              <attribute name="title">
+               <string>Onsemble Neurons</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_57">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_onsemneu"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_44">
+              <attribute name="title">
+               <string>Offsemble neurons</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_58">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_offsemneu"/>
                </item>
               </layout>
              </widget>
@@ -3056,7 +3076,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
         <item>
          <widget class="QTabWidget" name="tab_36">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="movable">
            <bool>true</bool>

@@ -260,6 +260,8 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'x2p_plot_onsemact').reset(default_txt)
         self.findChild(MatplotlibWidget, 'x2p_plot_offsemact').reset(default_txt)
         self.findChild(MatplotlibWidget, 'x2p_plot_activity').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'x2p_plot_onsemneu').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu').reset(default_txt)
 
         self.envis_slide_selectedens.setMaximum(2)
         self.envis_slide_selectedens.setValue(1)
@@ -1266,7 +1268,29 @@ class MainWindow(QMainWindow):
             clean_answer['OnsembleActivity'] = np.array(answer['Ensembles']['OnsembleActivity'])
             clean_answer['OffsembleActivity'] = np.array(answer['Ensembles']['OffsembleActivity'])
             clean_answer['Activity'] = np.array(answer['Ensembles']['Activity'])
+            cant_ens = int(answer['Ensembles']['Count'])
+            clean_answer['Count'] = cant_ens
+            ## Format the onsemble and offsemble neurons
+            clean_answer['OnsembleNeurons'] = np.zeros((cant_ens, self.cant_neurons))
+            for ens_it in range(cant_ens):
+                members = np.array(answer['Ensembles']['OnsembleNeurons'][ens_it]) - 1
+                members = members.astype(int)
+                clean_answer['OnsembleNeurons'][ens_it, members] = 1
+            clean_answer['OffsembleNeurons'] = np.zeros((cant_ens, self.cant_neurons))
+            for ens_it in range(cant_ens):
+                members = np.array(answer['Ensembles']['OffsembleNeurons'][ens_it]) - 1
+                members = members.astype(int)
+                clean_answer['OffsembleNeurons'][ens_it, members] = 1
+
             self.plot_X2P_results(clean_answer)
+
+            self.update_console_log("Saving results...")
+            self.results['x2p'] = {}
+            self.results['x2p']['timecourse'] = clean_answer['Activity']
+            self.results['x2p']['ensembles_cant'] = cant_ens
+            self.results['x2p']['neus_in_ens'] = clean_answer['OnsembleNeurons']
+            self.we_have_results()
+            self.update_console_log("Done saving", "complete")
             
             #import pprint
             #with open('text_output.txt', 'w') as file:
@@ -1275,15 +1299,6 @@ class MainWindow(QMainWindow):
             #    tmp = {"results": answer}
             #    self.save_data_to_hdf5(hdf_file, tmp)
             #print("done saving")
-
-        if False and answer != None:
-            self.update_console_log("Saving results...")
-            self.results['ica'] = {}
-            self.results['ica']['timecourse'] = binary_time_projection
-            self.results['ica']['ensembles_cant'] = binary_time_projection.shape[0]
-            self.results['ica']['neus_in_ens'] = binary_assembly_templates
-            self.we_have_results()
-            self.update_console_log("Done saving", "complete")
     def plot_X2P_results(self, answer):
         # Similarity map
         dataset = answer['similarity']
@@ -1304,7 +1319,15 @@ class MainWindow(QMainWindow):
         # Activity
         dataset = answer['Activity']
         plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_activity')
-        plot_widget.preview_dataset(dataset==False, xlabel="Timepoint", ylabel="Ensemble", cmap='gray')
+        plot_widget.plot_ensembles_timecourse(dataset)
+        # Onsemble neurons
+        dataset = answer['OnsembleNeurons']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_onsemneu')
+        plot_widget.plot_ensembles_timecourse(dataset, xlabel="Cell")
+        # Offsemble neurons
+        dataset = answer['OffsembleNeurons']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu')
+        plot_widget.plot_ensembles_timecourse(dataset, xlabel="Cell")
 
 
     def we_have_results(self):
@@ -1481,6 +1504,8 @@ class MainWindow(QMainWindow):
             methods_to_compare.append("pca")
         if self.performance_check_ica.isChecked():
             methods_to_compare.append("ica")
+        if self.performance_check_x2p.isChecked():
+            methods_to_compare.append("x2p")
         if self.performance_check_sgc.isChecked():
             methods_to_compare.append("sgc")
 
