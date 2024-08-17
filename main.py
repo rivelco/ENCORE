@@ -1262,6 +1262,10 @@ class MainWindow(QMainWindow):
         if answer != None:
             clean_answer = {}
             clean_answer['similarity'] = np.array(answer['Clustering']['Similarity'])
+            clean_answer['EPI'] = np.array(answer['Ensembles']['EPI'])
+            clean_answer['OnsembleActivity'] = np.array(answer['Ensembles']['OnsembleActivity'])
+            clean_answer['OffsembleActivity'] = np.array(answer['Ensembles']['OffsembleActivity'])
+            clean_answer['Activity'] = np.array(answer['Ensembles']['Activity'])
             self.plot_X2P_results(clean_answer)
             
             #import pprint
@@ -1282,10 +1286,26 @@ class MainWindow(QMainWindow):
             self.update_console_log("Done saving", "complete")
     def plot_X2P_results(self, answer):
         # Similarity map
-        simmap = answer['similarity']
+        dataset = answer['similarity']
         plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_similarity')
-        plot_widget.preview_dataset(simmap, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
-        
+        plot_widget.preview_dataset(dataset, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
+        # EPI
+        dataset = answer['EPI']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_epi')
+        plot_widget.preview_dataset(dataset, xlabel="Neuron", ylabel="Ensemble", cmap='jet')
+        # Onsemble activity
+        dataset = answer['OnsembleActivity']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_onsemact')
+        plot_widget.preview_dataset(dataset, xlabel="Timepoint", ylabel="Ensemble", cmap='jet')
+        # Onsemble activity
+        dataset = answer['OffsembleActivity']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_offsemact')
+        plot_widget.preview_dataset(dataset, xlabel="Timepoint", ylabel="Ensemble", cmap='jet')
+        # Activity
+        dataset = answer['Activity']
+        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_activity')
+        plot_widget.preview_dataset(dataset==False, xlabel="Timepoint", ylabel="Ensemble", cmap='gray')
+
 
     def we_have_results(self):
         self.save_btn_save.setEnabled(True)
