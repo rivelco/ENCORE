@@ -337,23 +337,48 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives):
+    def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives, only_ens, only_contours, show_numbers):
         self.axes.clear()
 
+        all_cells = range(coordinates.shape[0])
+        not_in_ens = [cell for cell in all_cells if cell not in highlight_idxs]
+
         # Plot all cells
-        self.axes.scatter(coordinates[:, 0], coordinates[:, 1], c='blue')
+        if not only_ens:
+            if only_contours:
+                self.axes.scatter(coordinates[not_in_ens, 0], coordinates[not_in_ens, 1], edgecolor='blue', facecolors='none')
+            else:
+                self.axes.scatter(coordinates[not_in_ens, 0], coordinates[not_in_ens, 1], c='blue', alpha=0.5)
+            if show_numbers:
+                for i in range(len(not_in_ens)):
+                    cell = not_in_ens[i]
+                    self.axes.text(coordinates[cell, 0], coordinates[cell, 1], str(cell+1), fontsize=6, ha='right')
+        
         # Highlight cells in ensemble
-        self.axes.scatter(coordinates[highlight_idxs, 0], coordinates[highlight_idxs, 1], c='red', label='Cells in ensemble')
+        not_exclusive = [cell for cell in highlight_idxs if cell not in exclusives]
+        if len(not_exclusive) > 0:
+            if only_contours:
+                self.axes.scatter(coordinates[not_exclusive, 0], coordinates[not_exclusive, 1], edgecolor='red', facecolors='none', label='Cells in ensemble')
+            else:
+                self.axes.scatter(coordinates[not_exclusive, 0], coordinates[not_exclusive, 1], c='red', alpha=0.5, label='Cells in ensemble')
+            if show_numbers:
+                for i in range(len(not_exclusive)):
+                    cell = not_exclusive[i]
+                    self.axes.text(coordinates[cell, 0], coordinates[cell, 1], str(cell+1), fontsize=6, ha='right')
+        
         # Highlight the exclusive cells 
         if len(exclusives) > 0:
-            self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', label='Exclusive cells')
-
-        # Label all cells with their indices
-        for i in range(coordinates.shape[0]):
-            self.axes.text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='right')
-
+            if only_contours:
+                self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], edgecolor='yellow', facecolors='none', label='Exclusive cells')
+            else:
+                self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', alpha=0.5, label='Exclusive cells')
+            if show_numbers:
+                for i in range(len(exclusives)):
+                    cell = exclusives[i]
+                    self.axes.text(coordinates[cell, 0], coordinates[cell, 1], str(cell+1), fontsize=6, ha='right')
+        
         # Add legend
-        self.axes.legend()
+        self.axes.legend(loc='lower left', bbox_to_anchor=(0, 1))
 
         # Set labels and title
         self.axes.set_xlabel('X coordinate')
@@ -375,7 +400,7 @@ class MatplotlibWidget(QWidget):
         for ii in range(num_cells):
             f = dFFo_ens[ii, :]
             f = (f - Fmi) / (Fma - Fmi)
-            self.axes.plot(np.arange(1, cant_timepoints + 1), ii + f, linewidth=1) #, color=cc[ii % 64]
+            self.axes.plot(np.arange(1, cant_timepoints + 1), ii + f, linewidth=1, color='black') #, color=cc[ii % 64]
             self.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
         
         # Iterate over the indices to create bands
@@ -411,13 +436,13 @@ class MatplotlibWidget(QWidget):
         cant_timepoints = dFFo_ens.shape[1]
         core = core_names
 
-        cc = plt.cm.jet(np.linspace(0, 1, min(len(core), 64)))
-        cc = np.maximum(cc - 0.3, 0)
+        #cc = plt.cm.jet(np.linspace(0, 1, min(len(core), 64)))
+        #cc = np.maximum(cc - 0.3, 0)
         
         for ii in range(len(core)):
             f = dFFo_ens[ii, :]
             f = (f - Fmi) / (Fma - Fmi)
-            self.axes[plot_ax].plot(np.arange(1, cant_timepoints + 1), ii + f, color=cc[ii % 64], linewidth=1)
+            self.axes[plot_ax].plot(np.arange(1, cant_timepoints + 1), ii + f, color='black', linewidth=1) #, color=cc[ii % 64]
             self.axes[plot_ax].text(cant_timepoints * 1.02, ii, str(core[ii]+1), fontsize=8)
 
         self.axes[plot_ax].set_xlim([1, cant_timepoints])
@@ -435,20 +460,26 @@ class MatplotlibWidget(QWidget):
 
     def plot_all_coords(self, coordinates, highlight_idxs, exclusives, row, col):
         self.axes[row, col].clear()
+        all_cells = range(coordinates.shape[0])
+        not_in_ens = [cell for cell in all_cells if cell not in highlight_idxs]
+
         # Plot all cells
-        self.axes[row, col].scatter(coordinates[:, 0], coordinates[:, 1], c='blue')
+        self.axes[row, col].scatter(coordinates[not_in_ens, 0], coordinates[not_in_ens, 1], c='blue', alpha=0.5)
+        
         # Highlight cells in ensemble
-        self.axes[row, col].scatter(coordinates[highlight_idxs, 0], coordinates[highlight_idxs, 1], c='red', label='Cells in ensemble')
+        not_exclusive = [cell for cell in highlight_idxs if cell not in exclusives]
+        if len(not_exclusive) > 0:
+            self.axes[row, col].scatter(coordinates[not_exclusive, 0], coordinates[not_exclusive, 1], c='red', alpha=0.5, label='Cells in ensemble')
+            
         # Highlight the exclusive cells 
         if len(exclusives) > 0:
-            self.axes[row, col].scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', label='Exclusive cells')
-
-        # Label all cells with their indices
+            self.axes[row, col].scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', alpha=0.5, label='Exclusive cells')
+        
         for i in range(coordinates.shape[0]):
-            self.axes[row, col].text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='right')
-
+            self.axes[row, col].text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='left')
+        
         # Add legend
-        self.axes[row, col].legend()
+        self.axes[row, col].legend(loc='lower left', bbox_to_anchor=(0, 1))
 
         # Set labels and title
         self.axes[row, col].set_xlabel('X coordinate')

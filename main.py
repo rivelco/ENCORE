@@ -36,7 +36,7 @@ class MainWindow(QMainWindow):
         self.tree_view.clicked.connect(self.item_clicked)
 
         ## Identify change of tab
-        self.main_tabs.currentChanged.connect(self.onTabChange)
+        self.main_tabs.currentChanged.connect(self.main_tabs_change)
 
         ## Set the activity variables
         self.btn_set_dFFo.clicked.connect(self.set_dFFo)
@@ -169,13 +169,18 @@ class MainWindow(QMainWindow):
         self.btn_run_x2p.clicked.connect(self.run_x2p)
 
         ## Ensembles visualizer
+        self.ensvis_tabs.currentChanged.connect(self.ensvis_tabchange)
         self.ensvis_btn_svd.clicked.connect(self.vis_ensembles_svd)
         self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
         self.ensvis_btn_ica.clicked.connect(self.vis_ensembles_ica)
         self.ensvis_btn_x2p.clicked.connect(self.vis_ensembles_x2p)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
+        self.ensvis_check_onlyens.stateChanged.connect(self.update_ens_vis_coords)
+        self.ensvis_check_onlycont.stateChanged.connect(self.update_ens_vis_coords)
+        self.ensvis_check_cellnum.stateChanged.connect(self.update_ens_vis_coords)
 
         ## Performance
+        self.performance_tabs.currentChanged.connect(self.performance_tabchange)
         self.performance_check_svd.stateChanged.connect(self.performance_check_change)
         self.performance_check_pca.stateChanged.connect(self.performance_check_change)
         self.performance_check_ica.stateChanged.connect(self.performance_check_change)
@@ -202,6 +207,7 @@ class MainWindow(QMainWindow):
         # Delete all previous results
         self.results = {}
         self.params = {}
+        self.tempvars = {}
         
         # Initialize buttons
         self.btn_svd_run.setEnabled(False)
@@ -263,12 +269,32 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'x2p_plot_onsemneu').reset(default_txt)
         self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu').reset(default_txt)
 
+        self.ensvis_edit_numens.setText("")
         self.envis_slide_selectedens.setMaximum(2)
         self.envis_slide_selectedens.setValue(1)
         self.ensvis_lbl_currentens.setText(f"{1}")
+        self.ensvis_check_onlyens.setEnabled(False)
+        self.ensvis_check_onlycont.setEnabled(False)
+        self.ensvis_check_cellnum.setEnabled(False)
+        self.ensvis_check_onlyens.setChecked(False)
+        self.ensvis_check_onlycont.setChecked(False)
+        self.ensvis_check_cellnum.setChecked(True)
         self.ensvis_edit_members.setText("")
         self.ensvis_edit_exclusive.setText("")
         self.ensvis_edit_timepoints.setText("")
+        self.ensvis_tabs.setCurrentIndex(0)
+        self.tempvars['ensvis_shown_results'] = False
+        self.tempvars['ensvis_shown_tab1'] = False
+        self.tempvars['ensvis_shown_tab2'] = False
+        self.tempvars['ensvis_shown_tab3'] = False
+        self.tempvars['ensvis_shown_tab4'] = False 
+
+        self.tempvars['performance_shown_results'] = False
+        self.tempvars['performance_shown_tab0'] = False
+        self.tempvars['performance_shown_tab1'] = False
+        self.tempvars['performance_shown_tab2'] = False
+        self.tempvars['performance_shown_tab3'] = False
+        self.tempvars['performance_shown_tab4'] = False
         
         default_txt = "Perform an ensemble analysis first\nAnd load coordinates\nto see this panel"
         self.findChild(MatplotlibWidget, 'ensvis_plot_map').reset(default_txt)
@@ -285,17 +311,18 @@ class MainWindow(QMainWindow):
 
         default_txt = "Perform and select at least one analysis\nand load stimulation data\nto see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_corrstims').reset(default_txt)
-        default_txt = "Perform and select at least one analysis\nand load behavior data\nto see the metrics"
-        self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior').reset(default_txt)
         default_txt = "Perform and select at least one analysis\nto see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_corrcells').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'performance_plot_corrcells').canvas.setFixedHeight(400)
-        default_txt = "Perform and select at least one analysis\nand load stimulation data\nto see the metrics"
+        #self.findChild(MatplotlibWidget, 'performance_plot_corrcells').canvas.setFixedHeight(400)
+        default_txt = "Perform and select at least one analysis and load\n behavior data to see the metrics"
+        self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior').reset(default_txt)
+        #self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior').canvas.setFixedHeight(400)
+        default_txt = "Perform and select at least one analysis and load\n stimulation data to see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').canvas.setFixedHeight(400)
-        default_txt = "Perform and select at least one analysis\nand load behavior data\nto see the metrics"
+        #self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').canvas.setFixedHeight(400)
+        default_txt = "Perform and select at least one analysis and load\n behavior data to see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').canvas.setFixedHeight(400)
+        #self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').canvas.setFixedHeight(400)
 
     def browse_files(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file')
@@ -387,7 +414,7 @@ class MainWindow(QMainWindow):
         return txt
 
     ## Identify the tab changes
-    def onTabChange(self, index):
+    def main_tabs_change(self, index):
         if index > 0: # SVD tab
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
@@ -1346,6 +1373,29 @@ class MainWindow(QMainWindow):
                 self.ensvis_btn_x2p.setEnabled(True)
                 self.performance_check_x2p.setEnabled(True)
 
+    def ensvis_tabchange(self, index):
+        if self.tempvars['ensvis_shown_results']:
+            if index == 0:  # General
+                pass
+            elif index == 1:    # Spatial distributions
+                if hasattr(self, "data_coordinates"):
+                    if not self.tempvars['ensvis_shown_tab1']:
+                        self.tempvars['ensvis_shown_tab1'] = True
+                        self.update_ensvis_allcoords()
+            elif index == 2:    # Binary activations
+                if not self.tempvars['ensvis_shown_tab2']:
+                    self.tempvars['ensvis_shown_tab2'] = True
+                    self.update_ensvis_allbinary()
+            elif index == 3:    # dFFo
+                if hasattr(self, "data_dFFo"):
+                    if not self.tempvars['ensvis_shown_tab3']:
+                        self.tempvars['ensvis_shown_tab3'] = True
+                        self.update_ensvis_alldFFo()
+            elif index == 4:    # Ensemble activations
+                if not self.tempvars['ensvis_shown_tab4']:
+                    self.tempvars['ensvis_shown_tab4'] = True
+                    self.update_ensvis_allens()
+
     def vis_ensembles_svd(self):
         self.ensemble_currently_shown = "svd"
         self.update_analysis_results()
@@ -1360,15 +1410,15 @@ class MainWindow(QMainWindow):
         self.update_analysis_results()
 
     def update_analysis_results(self):
-        self.initialize_ensemble_view()
-        self.update_ensvis_allbinary()
-        self.update_ensvis_allens()
-        if hasattr(self, "data_dFFo"):
-            self.update_ensvis_alldFFo()
-        if hasattr(self, "data_coordinates"):
-            self.update_ensvis_allcoords()
+        self.initialize_ensemble_view()   
+        self.tempvars['ensvis_shown_tab1'] = False
+        self.tempvars['ensvis_shown_tab2'] = False
+        self.tempvars['ensvis_shown_tab3'] = False
+        self.tempvars['ensvis_shown_tab4'] = False 
 
     def initialize_ensemble_view(self):
+        self.tempvars['ensvis_shown_results'] = True
+        self.ensvis_tabs.setCurrentIndex(0)
         curr_show = self.ensemble_currently_shown 
         self.ensvis_lbl_currently.setText(f"{curr_show}".upper())
         # Show the number of identifies ensembles
@@ -1410,15 +1460,27 @@ class MainWindow(QMainWindow):
 
         idx_corrected_members = [idx-1 for idx in members]
         idx_corrected_exclusive = [idx-1 for idx in exc_elems]
+
+        self.current_idx_corrected_members = idx_corrected_members
+        self.current_idx_corrected_exclusive = idx_corrected_exclusive
         
         if hasattr(self, "data_coordinates"):
-            self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_map')
-            self.plot_widget.plot_coordinates2D_highlight(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive)
+            self.ensvis_check_onlyens.setEnabled(True)
+            self.ensvis_check_onlycont.setEnabled(True)
+            self.ensvis_check_cellnum.setEnabled(True)
+            self.update_ens_vis_coords()
 
         if hasattr(self, "data_dFFo"):
             self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
             dFFo_ens = self.data_dFFo[idx_corrected_members, :]
             self.plot_widget.plot_ensemble_dFFo(dFFo_ens, idx_corrected_members, ensemble_timecourse)
+    
+    def update_ens_vis_coords(self):
+        only_ens = self.ensvis_check_onlyens.isChecked()
+        only_contours = self.ensvis_check_onlycont.isChecked()
+        show_numbers = self.ensvis_check_cellnum.isChecked()
+        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_map')
+        self.plot_widget.plot_coordinates2D_highlight(self.data_coordinates, self.current_idx_corrected_members, self.current_idx_corrected_exclusive, only_ens, only_contours, show_numbers)
 
     def update_ensvis_alldFFo(self):
         curr_analysis = self.ensemble_currently_shown
@@ -1443,6 +1505,7 @@ class MainWindow(QMainWindow):
         rows = math.ceil(math.sqrt(cant_ensembles))
         cols = math.ceil(cant_ensembles / rows)
         self.plot_widget.set_subplots(rows, cols)
+        self.plot_widget.canvas.setFixedHeight(300*rows)
 
         for current_ens in range(cant_ensembles):
             row = current_ens // cols
@@ -1478,6 +1541,33 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allens')
         self.plot_widget.plot_ensembles_timecourse(self.results[curr_analysis]['timecourse'])
 
+    def performance_tabchange(self, index):
+        if self.tempvars['performance_shown_results']:
+            if index == 0:  # Correlation with ensemble presentation
+                if hasattr(self, "data_stims"):
+                    if not self.tempvars['performance_shown_tab0']:
+                        self.tempvars['performance_shown_tab0'] = True
+                        self.update_corr_stim()
+            elif index == 1:    # Correlations between cells
+                if not self.tempvars['performance_shown_tab1']:
+                    self.tempvars['performance_shown_tab1'] = True
+                    self.update_correlation_cells()
+            elif index == 2:    # Cross correlations ensembles and stims
+                if hasattr(self, "data_stims"):
+                    if not self.tempvars['performance_shown_tab2']:
+                        self.tempvars['performance_shown_tab2'] = True
+                        self.update_cross_ens_stim()
+            elif index == 3:    # Correlation with behavior
+                if hasattr(self, "data_behavior"):
+                    if not self.tempvars['performance_shown_tab3']:
+                        self.tempvars['performance_shown_tab3'] = True
+                        self.update_corr_behavior()
+            elif index == 4:    # Cross Correlation with behavior
+                if hasattr(self, "data_behavior"):
+                    if not self.tempvars['performance_shown_tab4']:
+                        self.tempvars['performance_shown_tab4'] = True
+                        self.update_cross_behavior()
+        
     def performance_check_change(self):
         methods_to_compare = []
         if self.performance_check_svd.isChecked():
@@ -1490,79 +1580,39 @@ class MainWindow(QMainWindow):
             methods_to_compare.append("x2p")
         if self.performance_check_sgc.isChecked():
             methods_to_compare.append("sgc")
-        if len(methods_to_compare) > 0:
+        self.tempvars['methods_to_compare'] = methods_to_compare
+        self.tempvars['cant_methods_compare'] = len(methods_to_compare)
+        if self.tempvars['cant_methods_compare'] > 0:
             self.performance_btn_compare.setEnabled(True)
         else:
             self.performance_btn_compare.setEnabled(False)
 
     def performance_compare(self):
-        # Get the algorithms to compare
-        methods_to_compare = []
-        if self.performance_check_svd.isChecked():
-            methods_to_compare.append("svd")
-        if self.performance_check_pca.isChecked():
-            methods_to_compare.append("pca")
-        if self.performance_check_ica.isChecked():
-            methods_to_compare.append("ica")
-        if self.performance_check_x2p.isChecked():
-            methods_to_compare.append("x2p")
-        if self.performance_check_sgc.isChecked():
-            methods_to_compare.append("sgc")
+        self.tempvars['performance_shown_results'] = True
+        self.tempvars['performance_shown_tab0'] = False
+        self.tempvars['performance_shown_tab1'] = False
+        self.tempvars['performance_shown_tab2'] = False
+        self.tempvars['performance_shown_tab3'] = False
+        self.tempvars['performance_shown_tab4'] = False
+        self.performance_tabs.setCurrentIndex(0)
+        self.update_corr_stim()
 
-        cant_methods_compare = len(methods_to_compare)
-
-        if hasattr(self, "data_stims"):
-            # Calculate correlation with stimuli
-            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
-            plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
-            self.plot_widget.set_subplots(1, plot_colums)
-            for m_idx, method in enumerate(methods_to_compare):
-                timecourse = self.results[method]['timecourse']
-                stims = self.data_stims
-                correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
-                self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
-
-            # Calculate cross-correlation
-            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensstim')
-            max_ens = 0
-            for method in methods_to_compare:
-                max_ens = max(self.results[method]['ensembles_cant'], max_ens)
-            self.plot_widget.canvas.setFixedHeight(400*max_ens)
-            self.plot_widget.set_subplots(max_ens, plot_colums)
-            for m_idx, method in enumerate(methods_to_compare):
-                for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
-                    cross_corrs = []
-                    for stimtime in self.data_stims:
-                        cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
-                        cross_corrs.append(cross_corr)
-                    self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper())          
-
-        if hasattr(self, "data_behavior"):
-            # Calculate correlation with stimuli
-            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior')
-            plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
-            self.plot_widget.set_subplots(1, plot_colums)
-            for m_idx, method in enumerate(methods_to_compare):
-                timecourse = self.results[method]['timecourse']
-                stims = self.data_behavior
-                correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
-                self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
-
-            # Calculate cross-correlation
-            self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior')
-            max_ens = 0
-            for method in methods_to_compare:
-                max_ens = max(self.results[method]['ensembles_cant'], max_ens)
-            self.plot_widget.canvas.setFixedHeight(400*max_ens)
-            self.plot_widget.set_subplots(max_ens, plot_colums)
-            for m_idx, method in enumerate(methods_to_compare):
-                for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
-                    cross_corrs = []
-                    for stimtime in self.data_behavior:
-                        cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
-                        cross_corrs.append(cross_corr)
-                    self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper())          
-
+    def update_corr_stim(self):
+        methods_to_compare = self.tempvars['methods_to_compare']
+        cant_methods_compare = self.tempvars['cant_methods_compare']
+        # Calculate correlation with stimuli
+        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
+        plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+        self.plot_widget.set_subplots(1, plot_colums)
+        for m_idx, method in enumerate(methods_to_compare):
+            timecourse = self.results[method]['timecourse']
+            stims = self.data_stims
+            correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+            self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())            
+    
+    def update_correlation_cells(self):
+        methods_to_compare = self.tempvars['methods_to_compare']
+        cant_methods_compare = self.tempvars['cant_methods_compare']
         # Plot the correlation of cells between themselves
         self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
@@ -1581,6 +1631,57 @@ class MainWindow(QMainWindow):
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
                 self.plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
+    def update_cross_ens_stim(self):
+        methods_to_compare = self.tempvars['methods_to_compare']
+        cant_methods_compare = self.tempvars['cant_methods_compare']
+        plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+        # Calculate cross-correlation
+        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensstim')
+        max_ens = 0
+        for method in methods_to_compare:
+            max_ens = max(self.results[method]['ensembles_cant'], max_ens)
+        self.plot_widget.canvas.setFixedHeight(400*max_ens)
+        self.plot_widget.set_subplots(max_ens, plot_colums)
+        for m_idx, method in enumerate(methods_to_compare):
+            for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
+                cross_corrs = []
+                for stimtime in self.data_stims:
+                    cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
+                    cross_corrs.append(cross_corr)
+                self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper())          
+
+    def update_corr_behavior(self):
+        methods_to_compare = self.tempvars['methods_to_compare']
+        cant_methods_compare = self.tempvars['cant_methods_compare']
+        # Calculate correlation with stimuli
+        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior')
+        plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+        self.plot_widget.set_subplots(1, plot_colums)
+        for m_idx, method in enumerate(methods_to_compare):
+            timecourse = self.results[method]['timecourse']
+            stims = self.data_behavior
+            correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+            self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
+
+    def update_cross_behavior(self):
+        methods_to_compare = self.tempvars['methods_to_compare']
+        cant_methods_compare = self.tempvars['cant_methods_compare']
+        plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
+        # Calculate cross-correlation
+        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior')
+        max_ens = 0
+        for method in methods_to_compare:
+            max_ens = max(self.results[method]['ensembles_cant'], max_ens)
+        self.plot_widget.canvas.setFixedHeight(400*max_ens)
+        self.plot_widget.set_subplots(max_ens, plot_colums)
+        for m_idx, method in enumerate(methods_to_compare):
+            for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
+                cross_corrs = []
+                for stimtime in self.data_behavior:
+                    cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
+                    cross_corrs.append(cross_corr)
+                self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper())          \
+                    
     def save_results(self):
         file_path, _ = QFileDialog.getSaveFileName(self, "Save HDF5 Results File", "", "HDF5 Files (*.h5);;All files(*)")
         if file_path:

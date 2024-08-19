@@ -36,7 +36,7 @@
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -2770,7 +2770,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tabWidget_3">
+         <widget class="QTabWidget" name="ensvis_tabs">
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -2827,6 +2827,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                <item>
                 <widget class="QWidget" name="widget" native="true">
                  <layout class="QFormLayout" name="formLayout_8">
+                  <property name="topMargin">
+                   <number>6</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>6</number>
+                  </property>
                   <item row="0" column="0">
                    <widget class="QLabel" name="ensvis_lbl_currentens">
                     <property name="font">
@@ -2864,6 +2870,45 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     </property>
                     <property name="tickInterval">
                      <number>1</number>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_31">
+                 <property name="title">
+                  <string>Visualization options</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_4">
+                  <property name="topMargin">
+                   <number>6</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>6</number>
+                  </property>
+                  <property name="verticalSpacing">
+                   <number>6</number>
+                  </property>
+                  <item row="1" column="0">
+                   <widget class="QCheckBox" name="ensvis_check_onlyens">
+                    <property name="text">
+                     <string>Show only ensemble cells</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QCheckBox" name="ensvis_check_cellnum">
+                    <property name="text">
+                     <string>Show cell number</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QCheckBox" name="ensvis_check_onlycont">
+                    <property name="text">
+                     <string>Show only contours</string>
                     </property>
                    </widget>
                   </item>
@@ -2949,7 +2994,29 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_31">
             <item>
-             <widget class="MatplotlibWidget" name="ensvis_plot_allspatial"/>
+             <widget class="QScrollArea" name="scrollArea_5">
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_5">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>1114</width>
+                 <height>489</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_59">
+                <item>
+                 <widget class="MatplotlibWidget" name="ensvis_plot_allspatial"/>
+                </item>
+               </layout>
+              </widget>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -3074,7 +3141,10 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tab_36">
+         <widget class="QTabWidget" name="performance_tabs">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -3148,8 +3218,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>210</height>
+                 <width>1114</width>
+                 <height>514</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_36">
@@ -3184,8 +3254,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>210</height>
+                 <width>1114</width>
+                 <height>514</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_49">
@@ -3220,8 +3290,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
-                 <height>210</height>
+                 <width>1114</width>
+                 <height>514</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_47">
