@@ -73,6 +73,9 @@ class MainWindow(QMainWindow):
             'scut': 0.22,
             'hcut': 0.22,
             'state_cut': 6,
+            'csi_start': 0.01,
+            'csi_step': 0.01,
+            'csi_end': 0.1,
             'tf_idf_norm': True
         }
         self.svd_defaults = defaults
@@ -792,6 +795,9 @@ class MainWindow(QMainWindow):
         self.svd_edit_scut.setText(f"{defaults['scut']}")
         self.svd_edit_hcut.setText(f"{defaults['hcut']}")
         self.svd_edit_statecut.setText(f"{defaults['state_cut']}")
+        self.svd_edit_csistart.setText(f"{defaults['csi_start']}")
+        self.svd_edit_csistep.setText(f"{defaults['csi_step']}")
+        self.svd_edit_csiend.setText(f"{defaults['csi_end']}")
         self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
         self.update_console_log("Loaded default SVD parameter values", "complete")
     def run_svd(self):
@@ -819,6 +825,24 @@ class MainWindow(QMainWindow):
         else:
             val_statecut = self.svd_defaults['statecut']
             self.svd_edit_statecut.setText(f"{val_statecut}")
+        input_value = self.svd_edit_csistart.text()
+        if len(input_value) > 0:
+            val_csistart = float(input_value)
+        else:
+            val_csistart = self.svd_defaults['csi_start']
+            self.svd_edit_csistart.setText(f"{val_csistart}")
+        input_value = self.svd_edit_csistep.text()
+        if len(input_value) > 0:
+            val_csistep = float(input_value)
+        else:
+            val_csistep = self.svd_defaults['statecut']
+            self.svd_edit_csistep.setText(f"{val_csistep}")
+        input_value = self.svd_edit_csiend.text()
+        if len(input_value) > 0:
+            val_csiend = float(input_value)
+        else:
+            val_csiend = self.svd_defaults['statecut']
+            self.svd_edit_csiend.setText(f"{val_csiend}")
         val_idtfd = self.svd_check_tfidf.isChecked()
 
         # Pack parameters
@@ -827,7 +851,10 @@ class MainWindow(QMainWindow):
             'scut': val_scut,
             'hcut': val_hcut,
             'statecut': val_statecut,
-            'tf_idf_norm': val_idtfd
+            'tf_idf_norm': val_idtfd,
+            'csi_start': val_csistart,
+            'csi_step': val_csistep,
+            'csi_end': val_csiend
         }
         self.params['svd'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)

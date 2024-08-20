@@ -30,6 +30,9 @@ pks = pars.pks;
 scut = pars.scut;
 hcut = pars.hcut;
 statecut = pars.statecut;
+csi_vec_start = pars.csi_start;
+csi_vec_step = pars.csi_step;
+csi_vec_end = pars.csi_end;
 tf_idf_norm = pars.tf_idf_norm;
 
 %pks = [3]; % default 4, leave it empty if you want an automated threshold
@@ -64,9 +67,9 @@ state_cut = round(size(Spikes,1)/statecut); % maximum number of states is a frac
 % Percent cut to determine the cells that weigh more in each state. 
 % 0.25 gives me ~ 15 cells in the largest state
 % csi_cut = 0.15;
-csi_vec_start = 0.01;
-csi_vec_step = 0.01;
-csi_vec_end = 0.1;
+% csi_vec_start = 0.01;
+% csi_vec_step = 0.01;
+% csi_vec_end = 0.1;
 csi_vec = csi_vec_start:csi_vec_step:csi_vec_end;
 % here I'm selecting this threshold by cross-validation - this is the range
 % of the parameter that the code will test
