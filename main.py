@@ -5,8 +5,11 @@ import scipy.io
 import math
 import numpy as np
 import scipy.stats as stats
+from time import sleep
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
+from PyQt6.QtWidgets import QTableWidgetItem
+
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
 from PyQt6.QtGui import QTextCursor, QDoubleValidator
@@ -24,7 +27,8 @@ import matlab.engine
 
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        #super().__init__(*args, **kwargs)
+        super(MainWindow, self).__init__()
         loadUi("gui/MainWindow.ui", self)
         self.setWindowTitle('Ensembles GUI')
 
@@ -446,6 +450,16 @@ class MainWindow(QMainWindow):
             needed_data = ["data_neuronal_activity"]
             self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
 
+    ## Read only for the first column in labels
+    def make_column_read_only(self):
+        column_index = 0
+        # Iterate through all rows and modify the flags of the items in the specified column
+        for row in range(self.table_setlabels.rowCount()):
+            item = self.table_setlabels.item(row, column_index)
+            if item is not None:
+                # Remove the ItemIsEditable flag
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+
     ## Set variables from input file
     def set_dFFo(self):
         data_dFFo = assign_data_from_file(self)
@@ -487,6 +501,7 @@ class MainWindow(QMainWindow):
         self.lbl_stim_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_stims()
+        self.setup_tab_labelvars(stims)
     def set_cells(self):
         data_cells = assign_data_from_file(self)
         self.data_cells = data_cells
@@ -650,6 +665,7 @@ class MainWindow(QMainWindow):
             self.data_stims = self.data_stims.T
             self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", "warning")
             self.view_stims()
+            self.setup_tab_labelvars(self.data_stims.shape[0])
         elif to_edit == "cells":
             self.data_cells = self.data_cells.T
             self.update_console_log(f"Updated Selected Cells dataset. Please, verify the data preview.", "warning")
@@ -777,6 +793,22 @@ class MainWindow(QMainWindow):
                 self.data_behavior = self.data_behavior[ystart:yend, :]
             self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
             self.view_behavior()
+
+    def setup_tab_labelvars(self, rows_cant):
+        self.table_setlabels.setRowCount(rows_cant)
+        self.table_setlabels.setHorizontalHeaderLabels(["Variable index", "Label"])
+        for index in range(rows_cant):
+            self.table_setlabels.setItem(index, 0, QTableWidgetItem(str(index+1)))
+        self.make_column_read_only()
+        
+
+    def save_labels(self):
+        self.labels = []
+        # Save the entered labels
+        for i, line_edit in enumerate(self.line_edits):
+            self.labels.append(line_edit.text())
+        print("Labels saved:", self.labels)
+        # Add more code here if you need to handle the labels further
         
     def dict_to_matlab_struct(self, pars_dict):
         matlab_struct = {}
