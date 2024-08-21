@@ -195,7 +195,7 @@
               </sizepolicy>
              </property>
              <property name="currentIndex">
-              <number>1</number>
+              <number>0</number>
              </property>
              <widget class="QWidget" name="tab_36">
               <attribute name="title">
@@ -626,14 +626,14 @@ Index 0 based.</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_60">
                   <item>
-                   <widget class="QPushButton" name="pushButton_2">
+                   <widget class="QPushButton" name="btn_set_labels">
                     <property name="text">
                      <string>Save labels</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="pushButton">
+                   <widget class="QPushButton" name="btn_clear_labels">
                     <property name="text">
                      <string>Delete all the labels</string>
                     </property>

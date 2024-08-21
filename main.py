@@ -70,6 +70,8 @@ class MainWindow(QMainWindow):
         self.btn_edit_transpose.clicked.connect(self.edit_transpose)
         self.edit_btn_bin.clicked.connect(self.edit_bin)
         self.edit_btn_trim.clicked.connect(self.edit_trimmatrix)
+        self.btn_set_labels.clicked.connect(self.varlabels_save)
+        self.btn_clear_labels.clicked.connect(self.varlabels_clear)
 
         ## Set default values for analysis
         defaults = {
@@ -214,6 +216,7 @@ class MainWindow(QMainWindow):
         # Delete all previous results
         self.results = {}
         self.params = {}
+        self.varlabels = {}
         self.tempvars = {}
         
         # Initialize buttons
@@ -450,16 +453,6 @@ class MainWindow(QMainWindow):
             needed_data = ["data_neuronal_activity"]
             self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
 
-    ## Read only for the first column in labels
-    def make_column_read_only(self):
-        column_index = 0
-        # Iterate through all rows and modify the flags of the items in the specified column
-        for row in range(self.table_setlabels.rowCount()):
-            item = self.table_setlabels.item(row, column_index)
-            if item is not None:
-                # Remove the ItemIsEditable flag
-                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-
     ## Set variables from input file
     def set_dFFo(self):
         data_dFFo = assign_data_from_file(self)
@@ -501,7 +494,6 @@ class MainWindow(QMainWindow):
         self.lbl_stim_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_stims()
-        self.setup_tab_labelvars(stims)
     def set_cells(self):
         data_cells = assign_data_from_file(self)
         self.data_cells = data_cells
@@ -606,16 +598,19 @@ class MainWindow(QMainWindow):
         self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell')
+        self.varlabels_setup_tab(self.data_dFFo.shape[0])
     def view_neuronal_activity(self):
         self.currently_visualizing = "neuronal_activity"
         self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray')
+        self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
     def view_coordinates(self):
         self.currently_visualizing = "coordinates"
         self.set_able_edit_options(True)
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_coordinates2D(self.data_coordinates)
+        self.varlabels_setup_tab(self.data_coordinates.shape[0])
     def view_stims(self):
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
@@ -624,6 +619,7 @@ class MainWindow(QMainWindow):
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
+        self.varlabels_setup_tab(preview_data.shape[0])
         self.plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray')
     def view_cells(self):
         self.currently_visualizing = "cells"
@@ -633,6 +629,7 @@ class MainWindow(QMainWindow):
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
+        self.varlabels_setup_tab(preview_data.shape[0])
         self.plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray')
     def view_behavior(self):
         self.currently_visualizing = "behavior"
@@ -642,6 +639,7 @@ class MainWindow(QMainWindow):
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
+        self.varlabels_setup_tab(preview_data.shape[0])
         self.plot_widget.preview_dataset(preview_data)
 
     ## Edit buttons
@@ -665,7 +663,6 @@ class MainWindow(QMainWindow):
             self.data_stims = self.data_stims.T
             self.update_console_log(f"Updated Stims dataset. Please, verify the data preview.", "warning")
             self.view_stims()
-            self.setup_tab_labelvars(self.data_stims.shape[0])
         elif to_edit == "cells":
             self.data_cells = self.data_cells.T
             self.update_console_log(f"Updated Selected Cells dataset. Please, verify the data preview.", "warning")
@@ -794,21 +791,71 @@ class MainWindow(QMainWindow):
             self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
             self.view_behavior()
 
-    def setup_tab_labelvars(self, rows_cant):
+    def varlabels_setup_tab(self, rows_cant):
+        curr_view = self.currently_visualizing
+        new_colum_start = ""
+        label_family = ""
+        if curr_view == "dFFo" or curr_view == "neuronal_activity" or curr_view == "coordinates":
+            new_colum_start = "Cell"
+            label_family = "cell"
+        elif curr_view == "stims":
+            new_colum_start = "Stimulus"
+            label_family = "stim"
+        elif curr_view == "cells":
+            new_colum_start = "Selected cell"
+            label_family = "selected_cell"
+        elif curr_view == "behavior":
+            new_colum_start = "Behavior"
+            label_family = "behavior"
         self.table_setlabels.setRowCount(rows_cant)
-        self.table_setlabels.setHorizontalHeaderLabels(["Variable index", "Label"])
-        for index in range(rows_cant):
-            self.table_setlabels.setItem(index, 0, QTableWidgetItem(str(index+1)))
-        self.make_column_read_only()
-        
-
-    def save_labels(self):
-        self.labels = []
-        # Save the entered labels
-        for i, line_edit in enumerate(self.line_edits):
-            self.labels.append(line_edit.text())
-        print("Labels saved:", self.labels)
-        # Add more code here if you need to handle the labels further
+        self.table_setlabels.setHorizontalHeaderLabels([f"{new_colum_start} index", "Label"])
+        labels_registered = label_family in self.varlabels
+        for row in range(rows_cant):
+            self.table_setlabels.setItem(row, 0, QTableWidgetItem(str(row+1)))
+            item = self.table_setlabels.item(row, 0)
+            if item is not None: # Remove the ItemIsEditable flag
+                item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
+            if labels_registered:
+                if row in self.varlabels[label_family]:
+                    self.table_setlabels.setItem(row, 1, QTableWidgetItem(self.varlabels[label_family][row]))
+            else:   # To clear out all the previous entries
+                self.table_setlabels.setItem(row, 1, QTableWidgetItem(None))
+    def varlabels_save(self):
+        label_family = ""
+        curr_view = self.currently_visualizing
+        if curr_view == "dFFo" or curr_view == "neuronal_activity" or curr_view == "coordinates":
+            label_family = "cell"
+        elif curr_view == "stims":
+            label_family = "stim"
+        elif curr_view == "cells":
+            label_family = "selected_cell"
+        elif curr_view == "behavior":
+            label_family = "behavior"
+        if not label_family in self.varlabels:
+            self.varlabels[label_family] = {}
+        # Iterate through each row to get the value of the labels column
+        for row in range(self.table_setlabels.rowCount()):
+            item = self.table_setlabels.item(row, 1)
+            new_label = str(row+1)
+            if item is not None:
+                if len(item.text()) > 0:
+                    new_label = item.text()
+            self.varlabels[label_family][row] = new_label
+        self.update_console_log(f"Saved {label_family} labels. Please, verify the data preview.", "warning")
+    def varlabels_clear(self):
+        label_family = ""
+        curr_view = self.currently_visualizing
+        if curr_view == "dFFo" or curr_view == "neuronal_activity" or curr_view == "coordinates":
+            label_family = "cell"
+        elif curr_view == "stims":
+            label_family = "stim"
+        elif curr_view == "cells":
+            label_family = "selected_cell"
+        elif curr_view == "behavior":
+            label_family = "behavior"
+        if label_family in self.varlabels:
+            del self.varlabels[label_family]
+        self.varlabels_setup_tab(self.table_setlabels.rowCount())
         
     def dict_to_matlab_struct(self, pars_dict):
         matlab_struct = {}
