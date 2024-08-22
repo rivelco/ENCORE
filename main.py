@@ -188,6 +188,12 @@ class MainWindow(QMainWindow):
         self.ensvis_check_onlycont.stateChanged.connect(self.update_ens_vis_coords)
         self.ensvis_check_cellnum.stateChanged.connect(self.update_ens_vis_coords)
 
+        # Ensemble compare
+        self.enscomp_slider_svd.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
+
         ## Performance
         self.performance_tabs.currentChanged.connect(self.performance_tabchange)
         self.performance_check_svd.stateChanged.connect(self.performance_check_change)
@@ -298,6 +304,70 @@ class MainWindow(QMainWindow):
         self.tempvars['ensvis_shown_tab2'] = False
         self.tempvars['ensvis_shown_tab3'] = False
         self.tempvars['ensvis_shown_tab4'] = False 
+
+        # Ensembles compare
+        self.enscomp_slider_svd.setEnabled(False)
+        self.enscomp_slider_lbl_min_svd.setEnabled(False)
+        self.enscomp_slider_lbl_max_svd.setEnabled(False)
+        self.enscomp_slider_svd.setMinimum(1)
+        self.enscomp_slider_svd.setMaximum(2)
+        self.enscomp_slider_svd.setValue(1)
+        self.enscomp_slider_lbl_min_svd.setText("1")
+        self.enscomp_slider_lbl_max_svd.setText("1")
+        self.enscomp_check_coords_svd.setEnabled(False)
+        self.enscomp_check_ens_svd.setEnabled(False)
+        self.enscomp_check_neus_svd.setEnabled(False)
+        self.enscomp_btn_color_svd.setEnabled(False)
+        self.enscomp_slider_pca.setEnabled(False)
+        self.enscomp_slider_lbl_min_pca.setEnabled(False)
+        self.enscomp_slider_lbl_max_pca.setEnabled(False)
+        self.enscomp_slider_pca.setMinimum(1)
+        self.enscomp_slider_pca.setMaximum(2)
+        self.enscomp_slider_pca.setValue(1)
+        self.enscomp_slider_lbl_min_pca.setText("1")
+        self.enscomp_slider_lbl_max_pca.setText("1")
+        self.enscomp_check_coords_pca.setEnabled(False)
+        self.enscomp_check_ens_pca.setEnabled(False)
+        self.enscomp_check_neus_pca.setEnabled(False)
+        self.enscomp_btn_color_pca.setEnabled(False)
+        self.enscomp_slider_ica.setEnabled(False)
+        self.enscomp_slider_lbl_min_ica.setEnabled(False)
+        self.enscomp_slider_lbl_max_ica.setEnabled(False)
+        self.enscomp_slider_ica.setMinimum(1)
+        self.enscomp_slider_ica.setMaximum(2)
+        self.enscomp_slider_ica.setValue(1)
+        self.enscomp_slider_lbl_min_ica.setText("1")
+        self.enscomp_slider_lbl_max_ica.setText("1")
+        self.enscomp_check_coords_ica.setEnabled(False)
+        self.enscomp_check_ens_ica.setEnabled(False)
+        self.enscomp_check_neus_ica.setEnabled(False)
+        self.enscomp_btn_color_ica.setEnabled(False)
+        self.enscomp_slider_x2p.setEnabled(False)
+        self.enscomp_slider_lbl_min_x2p.setEnabled(False)
+        self.enscomp_slider_lbl_max_x2p.setEnabled(False)
+        self.enscomp_slider_x2p.setMinimum(1)
+        self.enscomp_slider_x2p.setMaximum(2)
+        self.enscomp_slider_x2p.setValue(1)
+        self.enscomp_slider_lbl_min_x2p.setText("1")
+        self.enscomp_slider_lbl_max_x2p.setText("1")
+        self.enscomp_check_coords_x2p.setEnabled(False)
+        self.enscomp_check_ens_x2p.setEnabled(False)
+        self.enscomp_check_neus_x2p.setEnabled(False)
+        self.enscomp_btn_color_x2p.setEnabled(False)
+        if not hasattr(self, "data_stims"):
+            self.enscomp_slider_stim.setEnabled(False)
+            self.enscomp_slider_lbl_min_stim.setEnabled(False)
+            self.enscomp_slider_lbl_max_stim.setEnabled(False)
+            self.enscomp_slider_lbl_stim.setEnabled(False)
+            self.enscomp_check_show_stim.setEnabled(False)
+            self.enscomp_btn_color_stim.setEnabled(False)
+        if not hasattr(self, "data_behavior"):
+            self.enscomp_slider_behavior.setEnabled(False)
+            self.enscomp_slider_lbl_min_behavior.setEnabled(False)
+            self.enscomp_slider_lbl_max_behavior.setEnabled(False)
+            self.enscomp_slider_lbl_behavior.setEnabled(False)
+            self.enscomp_check_behavior_stim.setEnabled(False)
+            self.enscomp_btn_color_behavior.setEnabled(False)
 
         self.tempvars['performance_shown_results'] = False
         self.tempvars['performance_shown_tab0'] = False
@@ -620,6 +690,7 @@ class MainWindow(QMainWindow):
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
+        self.update_enscomp_options("stims")
         self.plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray')
     def view_cells(self):
         self.currently_visualizing = "cells"
@@ -640,6 +711,7 @@ class MainWindow(QMainWindow):
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
+        self.update_enscomp_options("behavior")
         self.plot_widget.preview_dataset(preview_data)
 
     ## Edit buttons
@@ -1469,15 +1541,19 @@ class MainWindow(QMainWindow):
             if analysis_name == 'svd':
                 self.ensvis_btn_svd.setEnabled(True)
                 self.performance_check_svd.setEnabled(True)
+                self.ensembles_compare_update_opts('svd')
             elif analysis_name == 'pca':
                 self.ensvis_btn_pca.setEnabled(True)
                 self.performance_check_pca.setEnabled(True)
+                self.ensembles_compare_update_opts('pca')
             elif analysis_name == 'ica':
                 self.ensvis_btn_ica.setEnabled(True)
                 self.performance_check_ica.setEnabled(True)
+                self.ensembles_compare_update_opts('ica')
             elif analysis_name == 'x2p':
                 self.ensvis_btn_x2p.setEnabled(True)
                 self.performance_check_x2p.setEnabled(True)
+                self.ensembles_compare_update_opts('x2p')
 
     def ensvis_tabchange(self, index):
         if self.tempvars['ensvis_shown_results']:
@@ -1646,6 +1722,105 @@ class MainWindow(QMainWindow):
         curr_analysis = self.ensemble_currently_shown
         self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allens')
         self.plot_widget.plot_ensembles_timecourse(self.results[curr_analysis]['timecourse'])
+
+    def ensembles_compare_update_opts(self, algorithm):
+        if algorithm == 'svd':
+            ens_selector = self.enscomp_slider_svd
+            selector_label_min = self.enscomp_slider_lbl_min_svd
+            selector_label_max = self.enscomp_slider_lbl_max_svd
+            check_coords = self.enscomp_check_coords_svd
+            check_ensemble = self.enscomp_check_ens_svd
+            check_neurons = self.enscomp_check_neus_svd
+            color_button = self.enscomp_btn_color_svd
+        elif algorithm == 'pca':
+            ens_selector = self.enscomp_slider_pca
+            selector_label_min = self.enscomp_slider_lbl_min_pca
+            selector_label_max = self.enscomp_slider_lbl_max_pca
+            check_coords = self.enscomp_check_coords_pca
+            check_ensemble = self.enscomp_check_ens_pca
+            check_neurons = self.enscomp_check_neus_pca
+            color_button = self.enscomp_btn_color_pca
+        elif algorithm == 'ica':
+            ens_selector = self.enscomp_slider_ica
+            selector_label_min = self.enscomp_slider_lbl_min_ica
+            selector_label_max = self.enscomp_slider_lbl_max_ica
+            check_coords = self.enscomp_check_coords_ica
+            check_ensemble = self.enscomp_check_ens_ica
+            check_neurons = self.enscomp_check_neus_ica
+            color_button = self.enscomp_btn_color_ica
+        elif algorithm == 'x2p':
+            ens_selector = self.enscomp_slider_x2p
+            selector_label_min = self.enscomp_slider_lbl_min_x2p
+            selector_label_max = self.enscomp_slider_lbl_max_x2p
+            check_coords = self.enscomp_check_coords_x2p
+            check_ensemble = self.enscomp_check_ens_x2p
+            check_neurons = self.enscomp_check_neus_x2p
+            color_button = self.enscomp_btn_color_x2p
+        # Activate the slider
+        ens_selector.setEnabled(True)
+        ens_selector.setMinimum(1)   # Set the minimum value
+        ens_selector.setMaximum(self.results[algorithm]['ensembles_cant']) # Set the maximum value
+        ens_selector.setValue(1)
+        selector_label_min.setEnabled(True)
+        selector_label_min.setText(f"{1}")
+        selector_label_max.setEnabled(True)
+        selector_label_max.setText(f"{self.results[algorithm]['ensembles_cant']}")
+        # Update the toolbox options
+        check_coords.setEnabled(True)
+        check_ensemble.setEnabled(True)
+        check_neurons.setEnabled(True)
+        color_button.setEnabled(True)
+    
+    def update_enscomp_options(self, exp_data):
+        if exp_data == "stims":
+            slider = self.enscomp_slider_stim
+            lbl_min = self.enscomp_slider_lbl_min_stim
+            lbl_max = self.enscomp_slider_lbl_max_stim
+            lbl_label = self.enscomp_slider_lbl_stim
+            check_show = self.enscomp_check_show_stim
+            color_pick = self.enscomp_btn_color_stim
+            shp = self.data_stims.shape
+            max_val = shp[0] if len(shp) > 1 else 1
+        elif exp_data == "behavior":
+            slider = self.enscomp_slider_behavior
+            lbl_min = self.enscomp_slider_lbl_min_behavior
+            lbl_max = self.enscomp_slider_lbl_max_behavior
+            lbl_label = self.enscomp_slider_lbl_behavior
+            check_show = self.enscomp_check_behavior_stim
+            color_pick = self.enscomp_btn_color_behavior
+            shp = self.data_behavior.shape
+            max_val = shp[0] if len(shp) > 1 else 1
+        # Activate the slider
+        slider.setEnabled(True)
+        slider.setMinimum(1)   # Set the minimum value
+        slider.setMaximum(max_val) # Set the maximum value
+        slider.setValue(1)
+        lbl_min.setText(f"{1}")
+        lbl_min.setEnabled(True)
+        lbl_label.setText(f"{1}")
+        lbl_label.setEnabled(True)
+        lbl_max.setText(f"{max_val}")
+        lbl_max.setEnabled(True)
+        # Update the toolbox options
+        check_show.setEnabled(True)
+        color_pick.setEnabled(True)
+        
+    def ensembles_compare_update_ensembles(self):
+        ensembles_to_compare = {}
+        sliders = {
+            "svd": self.enscomp_slider_svd,
+            "pca": self.enscomp_slider_pca,
+            "ica": self.enscomp_slider_ica,
+            "x2p": self.enscomp_slider_x2p
+        }
+        for key, slider in sliders.items():
+            if slider.isEnabled():
+                ens_idx = slider.value()
+                ensembles_to_compare[key] = {}
+                ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:]
+                ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:]
+        print(ensembles_to_compare)
 
     def performance_tabchange(self, index):
         if self.tempvars['performance_shown_results']:

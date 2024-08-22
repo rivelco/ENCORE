@@ -3248,7 +3248,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                <widget class="QWidget" name="widget_9" native="true">
                 <layout class="QHBoxLayout" name="horizontalLayout_22">
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_svd">
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_svd">
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                      <horstretch>0</horstretch>
@@ -3267,6 +3267,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QSlider" name="enscomp_slider_svd">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -3274,6 +3277,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     </sizepolicy>
                    </property>
                    <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
                     <number>1</number>
                    </property>
                    <property name="orientation">
@@ -3284,6 +3290,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </property>
                    <property name="tickInterval">
                     <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_svd">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
                    </property>
                   </widget>
                  </item>
@@ -3323,7 +3341,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                <widget class="QWidget" name="widget_10" native="true">
                 <layout class="QHBoxLayout" name="horizontalLayout_23">
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_pca">
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_pca">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -3336,6 +3354,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QSlider" name="enscomp_slider_pca">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -3343,6 +3364,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     </sizepolicy>
                    </property>
                    <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
                     <number>1</number>
                    </property>
                    <property name="orientation">
@@ -3353,6 +3377,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </property>
                    <property name="tickInterval">
                     <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_pca">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
                    </property>
                   </widget>
                  </item>
@@ -3392,7 +3428,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                <widget class="QWidget" name="widget_11" native="true">
                 <layout class="QHBoxLayout" name="horizontalLayout_24">
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_ica">
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_ica">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -3405,6 +3441,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QSlider" name="enscomp_slider_ica">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -3412,6 +3451,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     </sizepolicy>
                    </property>
                    <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
                     <number>1</number>
                    </property>
                    <property name="orientation">
@@ -3422,6 +3464,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </property>
                    <property name="tickInterval">
                     <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_ica">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
                    </property>
                   </widget>
                  </item>
@@ -3450,7 +3504,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </font>
                 </property>
                 <property name="text">
-                 <string>Xnsembles</string>
+                 <string>Xnsembles2P</string>
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignCenter</set>
@@ -3461,7 +3515,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                <widget class="QWidget" name="widget_12" native="true">
                 <layout class="QHBoxLayout" name="horizontalLayout_25">
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_x2p">
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_x2p">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -3474,6 +3528,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QSlider" name="enscomp_slider_x2p">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="sizePolicy">
                     <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                      <horstretch>0</horstretch>
@@ -3481,6 +3538,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     </sizepolicy>
                    </property>
                    <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
                     <number>1</number>
                    </property>
                    <property name="orientation">
@@ -3491,6 +3551,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </property>
                    <property name="tickInterval">
                     <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_x2p">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
                    </property>
                   </widget>
                  </item>
@@ -3529,19 +3601,49 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </widget>
               </item>
               <item>
-               <widget class="QSlider" name="enscomp_slider_stim">
-                <property name="maximum">
-                 <number>1</number>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="tickPosition">
-                 <enum>QSlider::TicksAbove</enum>
-                </property>
-                <property name="tickInterval">
-                 <number>1</number>
-                </property>
+               <widget class="QWidget" name="widget_13" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_26">
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_stim">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="enscomp_slider_stim">
+                   <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                   <property name="tickInterval">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_stim">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
               <item>
@@ -3583,19 +3685,49 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </widget>
               </item>
               <item>
-               <widget class="QSlider" name="enscomp_slider_behavior">
-                <property name="maximum">
-                 <number>1</number>
-                </property>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="tickPosition">
-                 <enum>QSlider::TicksAbove</enum>
-                </property>
-                <property name="tickInterval">
-                 <number>1</number>
-                </property>
+               <widget class="QWidget" name="widget_14" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_27">
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_behavior">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="enscomp_slider_behavior">
+                   <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                   <property name="tickInterval">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_behavior">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
               <item>
@@ -3620,62 +3752,68 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_33">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <widget class="QTabWidget" name="tabWidget_3">
+          <property name="currentIndex">
+           <number>0</number>
           </property>
-          <property name="title">
-           <string>Graphics</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_63">
-           <item>
-            <widget class="MatplotlibWidget" name="enscomp_plot_map">
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>250</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_29">
-             <property name="text">
-              <string>Ensembles timecourse</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="MatplotlibWidget" name="enscomp_plot_enstime">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_28">
-             <property name="text">
-              <string>Neurons timecourse</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="MatplotlibWidget" name="enscomp_plot_neusact">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <widget class="QWidget" name="tab_47">
+           <attribute name="title">
+            <string>Space map</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_74">
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_map">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>250</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_48">
+           <attribute name="title">
+            <string>Time profiles</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_75">
+            <item>
+             <widget class="QLabel" name="label_29">
+              <property name="text">
+               <string>Ensembles timecourse</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_enstime">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_28">
+              <property name="text">
+               <string>Neurons timecourse</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_neusact">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
         <item>
@@ -3739,7 +3877,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>3</number>
+                 <number>2</number>
                 </property>
                 <property name="tabSpacing">
                  <number>0</number>
@@ -3822,7 +3960,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </widget>
                   </item>
                   <item>
-                   <widget class="QPushButton" name="enscomp_check_color_pca">
+                   <widget class="QPushButton" name="enscomp_btn_color_pca">
                     <property name="text">
                      <string>Color pick</string>
                     </property>
@@ -3831,12 +3969,20 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </layout>
                 </widget>
                 <widget class="QWidget" name="page_5">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>260</width>
+                   <height>175</height>
+                  </rect>
+                 </property>
                  <attribute name="label">
                   <string>ICA</string>
                  </attribute>
                  <layout class="QVBoxLayout" name="verticalLayout_71">
                   <item>
-                   <widget class="QCheckBox" name="checkBox_10">
+                   <widget class="QCheckBox" name="enscomp_check_coords_ica">
                     <property name="text">
                      <string>Show in map</string>
                     </property>
@@ -3850,7 +3996,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </widget>
                   </item>
                   <item>
-                   <widget class="QCheckBox" name="checkBox_12">
+                   <widget class="QCheckBox" name="enscomp_check_neus_ica">
                     <property name="text">
                      <string>Show neurons activity</string>
                     </property>
@@ -3866,6 +4012,14 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </layout>
                 </widget>
                 <widget class="QWidget" name="page_6">
+                 <property name="geometry">
+                  <rect>
+                   <x>0</x>
+                   <y>0</y>
+                   <width>260</width>
+                   <height>175</height>
+                  </rect>
+                 </property>
                  <attribute name="label">
                   <string>Xnsembles2P</string>
                  </attribute>
