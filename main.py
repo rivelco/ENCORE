@@ -1807,20 +1807,44 @@ class MainWindow(QMainWindow):
         
     def ensembles_compare_update_ensembles(self):
         ensembles_to_compare = {}
-        sliders = {
+        ens_selector = {
             "svd": self.enscomp_slider_svd,
             "pca": self.enscomp_slider_pca,
             "ica": self.enscomp_slider_ica,
             "x2p": self.enscomp_slider_x2p
         }
-        for key, slider in sliders.items():
+        for key, slider in ens_selector.items():
             if slider.isEnabled():
                 ens_idx = slider.value()
                 ensembles_to_compare[key] = {}
                 ensembles_to_compare[key]["ens_idx"] = ens_idx-1
                 ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:]
                 ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:]
-        print(ensembles_to_compare)
+        self.ensembles_compare_update_map(ensembles_to_compare)
+
+    def ensembles_compare_update_map(self, ensembles_to_compare):
+        # Stablish the dimention of the map
+        max_x = np.max(self.data_coordinates[:, 0])
+        max_y = np.max(self.data_coordinates[:, 1])
+
+        mixed_ens = []
+        for key, ens_data in ensembles_to_compare.items():
+            if len(mixed_ens) == 0:
+                mixed_ens = ens_data["neus_in_ens"]
+            else:
+                mixed_ens += ens_data["neus_in_ens"]
+        
+        members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
+        members_freq = [member for member in mixed_ens if member > 0]6
+
+        members_coords = [[],[]]
+        members_coords[0] = self.data_coordinates[members_idx, 0]
+        members_coords[1] = self.data_coordinates[members_idx, 1]
+
+
+        map_plot = self.findChild(MatplotlibWidget, 'enscomp_plot_map')
+        map_plot.plot_coordinates2D_highlight(self.data_coordinates, self.current_idx_corrected_members, self.current_idx_corrected_exclusive, only_ens, only_contours, show_numbers)
+
 
     def performance_tabchange(self, index):
         if self.tempvars['performance_shown_results']:
