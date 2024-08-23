@@ -3133,7 +3133,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -3282,6 +3282,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <property name="pageStep">
                     <number>1</number>
                    </property>
+                   <property name="tracking">
+                    <bool>false</bool>
+                   </property>
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -3368,6 +3371,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    </property>
                    <property name="pageStep">
                     <number>1</number>
+                   </property>
+                   <property name="tracking">
+                    <bool>false</bool>
                    </property>
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -3456,6 +3462,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <property name="pageStep">
                     <number>1</number>
                    </property>
+                   <property name="tracking">
+                    <bool>false</bool>
+                   </property>
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -3543,6 +3552,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <property name="pageStep">
                     <number>1</number>
                    </property>
+                   <property name="tracking">
+                    <bool>false</bool>
+                   </property>
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
                    </property>
@@ -3619,6 +3631,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   <widget class="QSlider" name="enscomp_slider_stim">
                    <property name="maximum">
                     <number>1</number>
+                   </property>
+                   <property name="tracking">
+                    <bool>false</bool>
                    </property>
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -3703,6 +3718,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   <widget class="QSlider" name="enscomp_slider_behavior">
                    <property name="maximum">
                     <number>1</number>
+                   </property>
+                   <property name="tracking">
+                    <bool>false</bool>
                    </property>
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -3887,8 +3905,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>186</width>
-                   <height>120</height>
+                   <width>198</width>
+                   <height>128</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -3930,8 +3948,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>186</width>
-                   <height>120</height>
+                   <width>198</width>
+                   <height>128</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -3974,7 +3992,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <x>0</x>
                    <y>0</y>
                    <width>260</width>
-                   <height>202</height>
+                   <height>175</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -4016,8 +4034,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>186</width>
-                   <height>120</height>
+                   <width>198</width>
+                   <height>128</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -4244,7 +4262,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -4280,7 +4298,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -4316,7 +4334,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -4352,7 +4370,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>

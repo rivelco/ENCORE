@@ -5,6 +5,7 @@ from matplotlib.figure import Figure
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.patches import Wedge
 
 class MatplotlibWidget(QWidget):
     def __init__(self, rows=1, cols=1, parent=None):
@@ -336,6 +337,40 @@ class MatplotlibWidget(QWidget):
         self.axes.legend()
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+
+    # Plot the ensembles compare
+    def encomp_update_map(self, lims, members_idx, members_freqs, members_coords):
+        self.axes.clear()
+        colors = {
+            'svd': 'red',
+            'ica': 'blue',
+            'pca': 'green',
+            'x2p': 'orange'
+        }
+        colors = ['red', 'blue', 'green', 'orange']
+
+        # Plot each point as two semi-circles
+        for idx in range(len(members_idx)):
+            member_idx = members_idx[idx]
+            member_freq = int(members_freqs[idx])
+            member_coords_x = members_coords[0][idx]
+            member_coords_y = members_coords[1][idx]
+            deg_start = 0
+            deg_step = 360.0/member_freq
+            deg_end = deg_step
+            for it in range(member_freq):
+                wedge1 = Wedge((member_coords_x, member_coords_y), 10, deg_start, deg_end, color=colors[it])  # First half
+                self.axes.add_patch(wedge1)
+                deg_start += deg_step
+                deg_end += deg_step
+
+        # Adjust plot limits
+        self.axes.set_xlim(0, lims[0])
+        self.axes.set_ylim(0, lims[1])
+        self.axes.set_aspect('equal')
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+        #self.axes.set_title('Scatter Plot with Half-Colored Points')
 
     def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives, only_ens, only_contours, show_numbers):
         self.axes.clear()

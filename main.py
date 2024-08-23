@@ -1826,6 +1826,9 @@ class MainWindow(QMainWindow):
         # Stablish the dimention of the map
         max_x = np.max(self.data_coordinates[:, 0])
         max_y = np.max(self.data_coordinates[:, 1])
+        lims = [max_x, max_y]
+
+        print(ensembles_to_compare)
 
         mixed_ens = []
         for key, ens_data in ensembles_to_compare.items():
@@ -1833,17 +1836,19 @@ class MainWindow(QMainWindow):
                 mixed_ens = ens_data["neus_in_ens"]
             else:
                 mixed_ens += ens_data["neus_in_ens"]
-        
+        print(len(mixed_ens))
         members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
-        members_freq = [member for member in mixed_ens if member > 0]6
+        members_freq = [member for member in mixed_ens if member > 0]
 
         members_coords = [[],[]]
         members_coords[0] = self.data_coordinates[members_idx, 0]
         members_coords[1] = self.data_coordinates[members_idx, 1]
 
+        print([len(members_idx), len(members_freq), len(members_coords[0])])
+        print(members_freq)
 
         map_plot = self.findChild(MatplotlibWidget, 'enscomp_plot_map')
-        map_plot.plot_coordinates2D_highlight(self.data_coordinates, self.current_idx_corrected_members, self.current_idx_corrected_exclusive, only_ens, only_contours, show_numbers)
+        map_plot.encomp_update_map(lims, members_idx, members_freq, members_coords)
 
 
     def performance_tabchange(self, index):
