@@ -339,19 +339,11 @@ class MatplotlibWidget(QWidget):
         self.canvas.draw()
 
     # Plot the ensembles compare
-    def encomp_update_map(self, lims, members_idx, members_freqs, members_coords):
+    def enscomp_update_map(self, lims, members_idx, members_freqs, members_coords, members_colors, neuron_size):
         self.axes.clear()
-        colors = {
-            'svd': 'red',
-            'ica': 'blue',
-            'pca': 'green',
-            'x2p': 'orange'
-        }
-        colors = ['red', 'blue', 'green', 'orange']
 
         # Plot each point as two semi-circles
-        for idx in range(len(members_idx)):
-            member_idx = members_idx[idx]
+        for idx in range(len(members_freqs)):
             member_freq = int(members_freqs[idx])
             member_coords_x = members_coords[0][idx]
             member_coords_y = members_coords[1][idx]
@@ -359,14 +351,24 @@ class MatplotlibWidget(QWidget):
             deg_step = 360.0/member_freq
             deg_end = deg_step
             for it in range(member_freq):
-                wedge1 = Wedge((member_coords_x, member_coords_y), 10, deg_start, deg_end, color=colors[it])  # First half
-                self.axes.add_patch(wedge1)
+                wedge = Wedge((member_coords_x, member_coords_y), neuron_size, deg_start, deg_end, color=members_colors[idx][it])  # First half
+                self.axes.add_patch(wedge)
                 deg_start += deg_step
                 deg_end += deg_step
 
+        for idx in range(len(members_idx)):
+            member_idx = members_idx[idx]
+            member_coords_x = members_coords[0][idx]
+            member_coords_y = members_coords[1][idx]
+            self.axes.text(member_coords_x, member_coords_y, str(member_idx+1), fontsize=6,
+                            ha='center', va='center', color='black', bbox=dict(facecolor='white', edgecolor='none', alpha=0.5, boxstyle='round', pad=0))
+        
         # Adjust plot limits
-        self.axes.set_xlim(0, lims[0])
-        self.axes.set_ylim(0, lims[1])
+        lim_offset = 1.5*neuron_size
+        self.axes.set_xlim(0-lim_offset, lims[0]+lim_offset)
+        self.axes.set_ylim(0-lim_offset, lims[1]+lim_offset)
+        self.axes.set_xlabel("X coordinates")
+        self.axes.set_ylabel("Y coordinates")
         self.axes.set_aspect('equal')
         self.canvas.figure.tight_layout()
         self.canvas.draw()

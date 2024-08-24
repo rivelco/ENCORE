@@ -8,7 +8,7 @@ import scipy.stats as stats
 from time import sleep
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
-from PyQt6.QtWidgets import QTableWidgetItem
+from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt
@@ -193,6 +193,16 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_btn_color_svd.clicked.connect(self.get_color_svd)
+        self.enscomp_btn_color_pca.clicked.connect(self.get_color_pca)
+        self.enscomp_btn_color_ica.clicked.connect(self.get_color_ica)
+        self.enscomp_btn_color_x2p.clicked.connect(self.get_color_x2p)
+        self.enscomp_check_coords_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_coords_pca.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_coords_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_coords_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
 
         ## Performance
         self.performance_tabs.currentChanged.connect(self.performance_tabchange)
@@ -369,6 +379,17 @@ class MainWindow(QMainWindow):
             self.enscomp_check_behavior_stim.setEnabled(False)
             self.enscomp_btn_color_behavior.setEnabled(False)
 
+        self.enscom_colors = {
+            'svd': 'red',
+            'ica': 'blue',
+            'pca': 'green',
+            'x2p': 'orange'
+        }
+        self.enscomp_check_coords_svd.setChecked(True)
+        self.enscomp_check_coords_pca.setChecked(True)
+        self.enscomp_check_coords_ica.setChecked(True)
+        self.enscomp_check_coords_x2p.setChecked(True)
+
         self.tempvars['performance_shown_results'] = False
         self.tempvars['performance_shown_tab0'] = False
         self.tempvars['performance_shown_tab1'] = False
@@ -495,7 +516,7 @@ class MainWindow(QMainWindow):
 
     ## Identify the tab changes
     def main_tabs_change(self, index):
-        if index > 0: # SVD tab
+        if index > 0 and index < 5: # Analysis tabs
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
                 self.lbl_pca_spikes_selected.setText(f"Loaded")
@@ -522,6 +543,8 @@ class MainWindow(QMainWindow):
             # Validate needed data for x2p
             needed_data = ["data_neuronal_activity"]
             self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
+        if index == 6: #Ensembles compare tab
+            self.ensembles_compare_update_ensembles()
 
     ## Set variables from input file
     def set_dFFo(self):
@@ -1189,12 +1212,15 @@ class MainWindow(QMainWindow):
 
             # Save the results
             self.update_console_log("Saving results...")
-            self.results['pca'] = {}
-            self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
-            self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
-            self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T
-            self.we_have_results()
-            self.update_console_log("Done saving", "complete")
+            if np.array(answer["sel_ensmat_out"]).shape[0] > 0:
+                self.results['pca'] = {}
+                self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
+                self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
+                self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T.astype(float)
+                self.we_have_results()
+                self.update_console_log("Done saving", "complete")
+            else:
+                self.update_console_log("The algorithm didn't found any ensemble. Check the python console for more info.", "error")
     def plot_PCA_results(self, pars, answer):
         ## Plot the eigs
         eigs = np.array(answer['exp_var'])
@@ -1813,13 +1839,25 @@ class MainWindow(QMainWindow):
             "ica": self.enscomp_slider_ica,
             "x2p": self.enscomp_slider_x2p
         }
+        ens_show = {
+            "svd": self.enscomp_check_coords_svd,
+            "pca": self.enscomp_check_coords_pca,
+            "ica": self.enscomp_check_coords_ica,
+            "x2p": self.enscomp_check_coords_x2p
+        }
         for key, slider in ens_selector.items():
-            if slider.isEnabled():
+            if slider.isEnabled() and ens_show[key].isChecked():
                 ens_idx = slider.value()
                 ensembles_to_compare[key] = {}
                 ensembles_to_compare[key]["ens_idx"] = ens_idx-1
-                ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:]
-                ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:]
+                ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
+                ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
+        
+        self.enscomp_colorflag_svd.setStyleSheet(f'background-color: {self.enscom_colors["svd"]};')
+        self.enscomp_colorflag_pca.setStyleSheet(f'background-color: {self.enscom_colors["pca"]};')
+        self.enscomp_colorflag_ica.setStyleSheet(f'background-color: {self.enscom_colors["ica"]};')
+        self.enscomp_colorflag_x2p.setStyleSheet(f'background-color: {self.enscom_colors["x2p"]};')
+
         self.ensembles_compare_update_map(ensembles_to_compare)
 
     def ensembles_compare_update_map(self, ensembles_to_compare):
@@ -1828,28 +1866,74 @@ class MainWindow(QMainWindow):
         max_y = np.max(self.data_coordinates[:, 1])
         lims = [max_x, max_y]
 
-        print(ensembles_to_compare)
-
         mixed_ens = []
+        colors = self.enscom_colors
+
+        list_colors_freq = [[] for l in range(self.cant_neurons)] 
+
         for key, ens_data in ensembles_to_compare.items():
+            new_members = ens_data["neus_in_ens"].copy()
             if len(mixed_ens) == 0:
-                mixed_ens = ens_data["neus_in_ens"]
+                mixed_ens = new_members
             else:
-                mixed_ens += ens_data["neus_in_ens"]
-        print(len(mixed_ens))
+                mixed_ens += new_members
+            for cell_idx in range(len(new_members)):
+                if new_members[cell_idx] > 0:
+                    list_colors_freq[cell_idx].append(colors[key])
+
         members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
         members_freq = [member for member in mixed_ens if member > 0]
+        members_colors = [colors_list for colors_list in list_colors_freq if len(colors_list) > 0]
 
         members_coords = [[],[]]
         members_coords[0] = self.data_coordinates[members_idx, 0]
         members_coords[1] = self.data_coordinates[members_idx, 1]
 
-        print([len(members_idx), len(members_freq), len(members_coords[0])])
-        print(members_freq)
+        neuron_size = float(self.enscomp_visopts_neusize.text())
+
+        members_idx = []
+        if self.enscomp_visopts_showcells.isChecked():
+            members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
 
         map_plot = self.findChild(MatplotlibWidget, 'enscomp_plot_map')
-        map_plot.encomp_update_map(lims, members_idx, members_freq, members_coords)
+        map_plot.enscomp_update_map(lims, members_idx, members_freq, members_coords, members_colors, neuron_size)
 
+    def get_color_svd(self):
+        # Open the QColorDialog to select a color
+        color = QColorDialog.getColor()
+        # Check if a color was selected
+        if color.isValid():
+            # Convert the color to a Matplotlib-compatible format (hex string)
+            color_hex = color.name()
+            self.enscom_colors['svd'] = color_hex
+            self.ensembles_compare_update_ensembles()
+    def get_color_pca(self):
+        # Open the QColorDialog to select a color
+        color = QColorDialog.getColor()
+        # Check if a color was selected
+        if color.isValid():
+            # Convert the color to a Matplotlib-compatible format (hex string)
+            color_hex = color.name()
+            self.enscom_colors['pca'] = color_hex
+            self.ensembles_compare_update_ensembles()
+    def get_color_ica(self):
+        # Open the QColorDialog to select a color
+        color = QColorDialog.getColor()
+        # Check if a color was selected
+        if color.isValid():
+            # Convert the color to a Matplotlib-compatible format (hex string)
+            color_hex = color.name()
+            self.enscom_colors['ica'] = color_hex
+            self.ensembles_compare_update_ensembles()
+    def get_color_x2p(self):
+        # Open the QColorDialog to select a color
+        color = QColorDialog.getColor()
+        # Check if a color was selected
+        if color.isValid():
+            # Convert the color to a Matplotlib-compatible format (hex string)
+            color_hex = color.name()
+            self.enscom_colors['x2p'] = color_hex
+            self.ensembles_compare_update_ensembles()
 
     def performance_tabchange(self, index):
         if self.tempvars['performance_shown_results']:
