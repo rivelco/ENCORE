@@ -1711,26 +1711,26 @@ class MainWindow(QMainWindow):
         curr_analysis = self.ensemble_currently_shown
         cant_ensembles = self.results[curr_analysis]['ensembles_cant']
 
-        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_alldffo')
-        self.plot_widget.set_subplots(1, cant_ensembles)
+        plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_alldffo')
+        plot_widget.set_subplots(1, max(cant_ensembles,2))
         for current_ens in range(cant_ensembles):
             # Create subplot for each core
             ensemble = self.results[curr_analysis]['neus_in_ens'][current_ens,:]
             members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
             idx_corrected_members = [idx-1 for idx in members]
             dFFo_ens = self.data_dFFo[idx_corrected_members, :]
-            self.plot_widget.plot_all_dFFo(dFFo_ens, idx_corrected_members, current_ens)
+            plot_widget.plot_all_dFFo(dFFo_ens, idx_corrected_members, current_ens)
 
     def update_ensvis_allcoords(self):
         curr_analysis = self.ensemble_currently_shown
         cant_ensembles = self.results[curr_analysis]['ensembles_cant']
         
-        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allspatial')
+        plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allspatial')
         
         rows = math.ceil(math.sqrt(cant_ensembles))
         cols = math.ceil(cant_ensembles / rows)
-        self.plot_widget.set_subplots(rows, cols)
-        self.plot_widget.canvas.setFixedHeight(300*rows)
+        plot_widget.set_subplots(max(rows, 2), max(cols, 2))
+        plot_widget.canvas.setFixedHeight(300*rows)
 
         for current_ens in range(cant_ensembles):
             row = current_ens // cols
@@ -1746,14 +1746,14 @@ class MainWindow(QMainWindow):
             exc_elems = [cell+1 for cell in range(len(mask_e)) if mask_e[cell] and sum_mask[cell] == 1]
             idx_corrected_exclusive = [idx-1 for idx in exc_elems]
             
-            self.plot_widget.plot_all_coords(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive, row, col)
+            plot_widget.plot_all_coords(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive, row, col)
 
     def update_ensvis_allbinary(self):
         curr_analysis = self.ensemble_currently_shown
         cant_ensembles = self.results[curr_analysis]['ensembles_cant']
         
         self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allbinary')
-        self.plot_widget.set_subplots(1, cant_ensembles)
+        self.plot_widget.set_subplots(1, max(cant_ensembles, 2))
         for current_ens in range(cant_ensembles):
             ensemble = self.results[curr_analysis]['neus_in_ens'][current_ens,:]
             members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
