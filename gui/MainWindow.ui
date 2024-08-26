@@ -36,7 +36,7 @@
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -2642,7 +2642,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                  <string>Parallel processing</string>
                 </property>
                 <property name="checked">
-                 <bool>true</bool>
+                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -3133,7 +3133,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -3846,7 +3846,13 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QSlider" name="enscomp_slider_stim">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
                     <number>1</number>
                    </property>
                    <property name="tracking">
@@ -3933,7 +3939,13 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QSlider" name="enscomp_slider_behavior">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
                    <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
                     <number>1</number>
                    </property>
                    <property name="tracking">
@@ -4013,30 +4025,6 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
             <string>Time profiles</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_75">
-            <item>
-             <widget class="QLabel" name="label_29">
-              <property name="text">
-               <string>Ensembles timecourse</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="MatplotlibWidget" name="enscomp_plot_enstime">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_28">
-              <property name="text">
-               <string>Neurons timecourse</string>
-              </property>
-             </widget>
-            </item>
             <item>
              <widget class="MatplotlibWidget" name="enscomp_plot_neusact">
               <property name="sizePolicy">
@@ -4160,7 +4148,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  <enum>QFrame::Plain</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>3</number>
+                 <number>0</number>
                 </property>
                 <property name="tabSpacing">
                  <number>0</number>
@@ -4192,6 +4180,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <widget class="QCheckBox" name="enscomp_check_ens_svd">
                     <property name="text">
                      <string>Show ensemble timecourse</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
                     </property>
                    </widget>
                   </item>
@@ -4239,6 +4230,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     <property name="text">
                      <string>Show ensemble timecourse</string>
                     </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -4285,6 +4279,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     <property name="text">
                      <string>Show ensemble timecourse</string>
                     </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                   <item>
@@ -4330,6 +4327,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <widget class="QCheckBox" name="enscomp_check_ens_x2p">
                     <property name="text">
                      <string>Show ensemble timecourse</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                    <property name="autoExclusive">
+                     <bool>false</bool>
                     </property>
                    </widget>
                   </item>
@@ -4539,7 +4542,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -4575,7 +4578,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -4611,7 +4614,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -4647,7 +4650,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>

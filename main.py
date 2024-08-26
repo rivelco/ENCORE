@@ -117,7 +117,7 @@ class MainWindow(QMainWindow):
             'clustering_range_end': 10,
             'clustering_fixed': 0,
             'iterations_ensemble': 1000,
-            'parallel_processing': True,
+            'parallel_processing': False,
             'file_log': ''
         }
         self.x2p_defaults = defaults
@@ -203,6 +203,14 @@ class MainWindow(QMainWindow):
         self.enscomp_check_coords_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_coords_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_ens_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_neus_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_ens_pca.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_neus_pca.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_ens_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_neus_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_ens_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_neus_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
 
         ## Performance
         self.performance_tabs.currentChanged.connect(self.performance_tabchange)
@@ -286,7 +294,7 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns').reset(default_txt)
         self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies').reset(default_txt)
 
-        default_txt = "Perform the Xnsembles2P analysis to see results"
+        default_txt = "Perform the Xsembles2P analysis to see results"
         self.findChild(MatplotlibWidget, 'x2p_plot_similarity').reset(default_txt)
         self.findChild(MatplotlibWidget, 'x2p_plot_epi').reset(default_txt)
         self.findChild(MatplotlibWidget, 'x2p_plot_onsemact').reset(default_txt)
@@ -389,6 +397,14 @@ class MainWindow(QMainWindow):
         self.enscomp_check_coords_pca.setChecked(True)
         self.enscomp_check_coords_ica.setChecked(True)
         self.enscomp_check_coords_x2p.setChecked(True)
+        self.enscomp_check_ens_svd.setChecked(True)
+        self.enscomp_check_ens_pca.setChecked(True)
+        self.enscomp_check_ens_ica.setChecked(True)
+        self.enscomp_check_ens_x2p.setChecked(True)
+        self.enscomp_check_neus_svd.setChecked(False)
+        self.enscomp_check_neus_pca.setChecked(False)
+        self.enscomp_check_neus_ica.setChecked(False)
+        self.enscomp_check_neus_x2p.setChecked(False)
 
         self.tempvars['performance_shown_results'] = False
         self.tempvars['performance_shown_tab0'] = False
@@ -544,7 +560,8 @@ class MainWindow(QMainWindow):
             needed_data = ["data_neuronal_activity"]
             self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
         if index == 6: #Ensembles compare tab
-            self.ensembles_compare_update_ensembles()
+            if len(self.results) > 0:
+                self.ensembles_compare_update_ensembles()
 
     ## Set variables from input file
     def set_dFFo(self):
@@ -1214,7 +1231,7 @@ class MainWindow(QMainWindow):
             self.update_console_log("Saving results...")
             if np.array(answer["sel_ensmat_out"]).shape[0] > 0:
                 self.results['pca'] = {}
-                self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"])
+                self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"]).astype(int)
                 self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
                 self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T.astype(float)
                 self.we_have_results()
@@ -1424,7 +1441,7 @@ class MainWindow(QMainWindow):
         self.x2p_edit_rangeend.setText(f"{defaults['clustering_range_end']}")
         self.x2p_edit_fixed.setText(f"{defaults['clustering_fixed']}")
         self.x2p_edit_itensemble.setText(f"{defaults['iterations_ensemble']}")
-        self.x2p_check_parallel.setChecked(True)
+        self.x2p_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
     def run_x2p(self):
         # Prepare data
@@ -1839,14 +1856,8 @@ class MainWindow(QMainWindow):
             "ica": self.enscomp_slider_ica,
             "x2p": self.enscomp_slider_x2p
         }
-        ens_show = {
-            "svd": self.enscomp_check_coords_svd,
-            "pca": self.enscomp_check_coords_pca,
-            "ica": self.enscomp_check_coords_ica,
-            "x2p": self.enscomp_check_coords_x2p
-        }
         for key, slider in ens_selector.items():
-            if slider.isEnabled() and ens_show[key].isChecked():
+            if slider.isEnabled():
                 ens_idx = slider.value()
                 ensembles_to_compare[key] = {}
                 ensembles_to_compare[key]["ens_idx"] = ens_idx-1
@@ -1859,8 +1870,15 @@ class MainWindow(QMainWindow):
         self.enscomp_colorflag_x2p.setStyleSheet(f'background-color: {self.enscom_colors["x2p"]};')
 
         self.ensembles_compare_update_map(ensembles_to_compare)
+        self.ensembles_compare_update_timecourses(ensembles_to_compare)
 
     def ensembles_compare_update_map(self, ensembles_to_compare):
+        ens_show = {
+            "svd": self.enscomp_check_coords_svd,
+            "pca": self.enscomp_check_coords_pca,
+            "ica": self.enscomp_check_coords_ica,
+            "x2p": self.enscomp_check_coords_x2p
+        }
         # Stablish the dimention of the map
         max_x = np.max(self.data_coordinates[:, 0])
         max_y = np.max(self.data_coordinates[:, 1])
@@ -1872,14 +1890,15 @@ class MainWindow(QMainWindow):
         list_colors_freq = [[] for l in range(self.cant_neurons)] 
 
         for key, ens_data in ensembles_to_compare.items():
-            new_members = ens_data["neus_in_ens"].copy()
-            if len(mixed_ens) == 0:
-                mixed_ens = new_members
-            else:
-                mixed_ens += new_members
-            for cell_idx in range(len(new_members)):
-                if new_members[cell_idx] > 0:
-                    list_colors_freq[cell_idx].append(colors[key])
+            if ens_show[key].isChecked():
+                new_members = ens_data["neus_in_ens"].copy()
+                if len(mixed_ens) == 0:
+                    mixed_ens = new_members
+                else:
+                    mixed_ens += new_members
+                for cell_idx in range(len(new_members)):
+                    if new_members[cell_idx] > 0:
+                        list_colors_freq[cell_idx].append(colors[key])
 
         members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
         members_freq = [member for member in mixed_ens if member > 0]
@@ -1897,6 +1916,43 @@ class MainWindow(QMainWindow):
 
         map_plot = self.findChild(MatplotlibWidget, 'enscomp_plot_map')
         map_plot.enscomp_update_map(lims, members_idx, members_freq, members_coords, members_colors, neuron_size)
+
+    def ensembles_compare_update_timecourses(self, ensembles_to_compare):
+        requested = {
+            "svd": [self.enscomp_check_ens_svd, self.enscomp_check_neus_svd],
+            "pca": [self.enscomp_check_ens_pca, self.enscomp_check_neus_pca],
+            "ica": [self.enscomp_check_ens_ica, self.enscomp_check_neus_ica],
+            "x2p": [self.enscomp_check_ens_x2p, self.enscomp_check_neus_x2p]
+        }
+        colors = []
+        timecourses = []
+        cells_activities = []
+        new_ticks = []
+        for key, ens_data in ensembles_to_compare.items():
+            if requested[key][0].isEnabled() and requested[key][0].isChecked():
+                new_timecourse = ens_data["timecourse"].copy()
+            else:
+                new_timecourse = []
+            timecourses.append(new_timecourse)
+
+            if requested[key][1].isEnabled() and requested[key][1].isChecked():
+                new_members = ens_data["neus_in_ens"].copy()
+                cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
+                cells_activity_count = np.sum(cells_activity_mat, axis=0)
+            else:
+                cells_activity_count = []
+            cells_activities.append(cells_activity_count)
+
+            colors.append(self.enscom_colors[key])
+            new_ticks.append(key)
+        
+        cells_activities.reverse()
+        timecourses.reverse()
+        colors.reverse()
+        new_ticks.reverse()
+
+        plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_neusact')
+        plot_widget.enscomp_update_timelines(new_ticks, cells_activities, [], timecourses, colors, self.cant_timepoints)
 
     def get_color_svd(self):
         # Open the QColorDialog to select a color

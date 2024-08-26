@@ -372,7 +372,63 @@ class MatplotlibWidget(QWidget):
         self.axes.set_aspect('equal')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
-        #self.axes.set_title('Scatter Plot with Half-Colored Points')
+
+    def enscomp_update_timelines(self, ticks, cell_activities, ensemble_dffo, ensemble_timecourse, colors, limx):
+        self.axes.clear()
+
+        # Iterate over the indices to create bands
+        for acts in range(len(ensemble_timecourse)):
+            cells_acts = ensemble_timecourse[acts]
+            act_lenght = len(cells_acts)
+            time_axis = range(0, act_lenght)
+            if act_lenght > 0:
+                band_it = 0
+                while band_it < act_lenght:
+                    if cells_acts[band_it] == 1:
+                        start = band_it
+                        band_it = band_it + 1
+                        while band_it < act_lenght and cells_acts[band_it] == 1:
+                            band_it = band_it + 1
+                        end = band_it
+                        self.axes.fill_between(time_axis[start:end], acts, acts+1, color=colors[acts], alpha=1)
+                    band_it = band_it + 1
+
+        # Plot the neurons activitiesS
+        valid_activities = []
+        first_flag = True
+        use_colors = []
+        for method_idx in range(len(cell_activities)):
+            method = cell_activities[method_idx]
+            if len(method) > 0:
+                if first_flag:
+                    valid_activities = np.array([method.copy()])
+                    first_flag = False
+                else:
+                    valid_activities = np.vstack([valid_activities, method])
+                use_colors.append(colors[method_idx])
+
+        if not first_flag:
+            Fmi = np.min(valid_activities)
+            Fma = np.max(valid_activities)
+            num_ensembles = len(cell_activities)
+            for acts in range(num_ensembles):
+                cells_acts = cell_activities[acts]
+                if len(cells_acts) > 0:
+                    cant_timepoints = len(cells_acts)
+                    cells_acts = (cells_acts - Fmi) / (Fma - Fmi)
+                    self.axes.plot(np.arange(1, cant_timepoints + 1), acts + cells_acts, linewidth=1, color='black', alpha=0.6)
+                    #self.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
+
+        self.axes.set_xlim([0, limx])
+        self.axes.set_ylim([0, len(ticks)])
+        self.axes.set_xlabel('Time (timepoint)')
+        self.axes.set_yticks([tick+0.5 for tick in range(len(ticks))])
+        self.axes.set_yticklabels(ticks)
+        for side in ['left', 'top', 'right']:
+            self.axes.spines[side].set_visible(False)
+
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
 
     def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives, only_ens, only_contours, show_numbers):
         self.axes.clear()
@@ -471,19 +527,15 @@ class MatplotlibWidget(QWidget):
         Fmi = np.min(dFFo_ens)
         Fma = np.max(dFFo_ens)
         cant_timepoints = dFFo_ens.shape[1]
-        core = core_names
-
-        #cc = plt.cm.jet(np.linspace(0, 1, min(len(core), 64)))
-        #cc = np.maximum(cc - 0.3, 0)
         
-        for ii in range(len(core)):
+        for ii in range(len(core_names)):
             f = dFFo_ens[ii, :]
             f = (f - Fmi) / (Fma - Fmi)
             self.axes[plot_ax].plot(np.arange(1, cant_timepoints + 1), ii + f, color='black', linewidth=1) #, color=cc[ii % 64]
-            self.axes[plot_ax].text(cant_timepoints * 1.02, ii, str(core[ii]+1), fontsize=8)
+            self.axes[plot_ax].text(cant_timepoints * 1.02, ii, str(core_names[ii]+1), fontsize=8)
 
         self.axes[plot_ax].set_xlim([1, cant_timepoints])
-        self.axes[plot_ax].set_ylim([0, len(core) + 0.2])
+        self.axes[plot_ax].set_ylim([0, len(core_names) + 0.2])
         self.axes[plot_ax].set_xlabel('Time (timepoint)')
         self.axes[plot_ax].set_ylabel('Cell #')
         self.axes[plot_ax].set_title(f'Ensemble {plot_ax + 1}')
