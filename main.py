@@ -5,13 +5,13 @@ import scipy.io
 import math
 import numpy as np
 import scipy.stats as stats
-from time import sleep
+import time
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
 from PyQt6.uic import loadUi
-from PyQt6.QtCore import QDateTime, Qt
+from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal
 from PyQt6.QtGui import QTextCursor, QDoubleValidator
 
 from data.load_data import FileTreeModel
@@ -25,12 +25,32 @@ import matplotlib.pyplot as plt
 
 import matlab.engine
 
+class WorkerSignals(QObject):
+    result_ready = pyqtSignal(object)  # Signal to emit the result
+
+class WorkerRunnable(QRunnable):
+    def __init__(self, long_running_function, *args, **kwargs):
+        super().__init__()
+        self.long_running_function = long_running_function
+        self.args = args
+        self.kwargs = kwargs
+        self.signals = WorkerSignals()
+
+    @pyqtSlot()
+    def run(self):
+        # Run the long-running function with arguments and capture the result
+        result = self.long_running_function(*self.args, **self.kwargs)
+        # Emit the result using the signal
+        self.signals.result_ready.emit(result)
+
 class MainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
         #super().__init__(*args, **kwargs)
         super(MainWindow, self).__init__()
         loadUi("gui/MainWindow.ui", self)
         self.setWindowTitle('Ensembles GUI')
+
+        self.threadpool = QThreadPool()
 
         # Initialize the GUI
         self.reset_gui()
@@ -166,7 +186,7 @@ class MainWindow(QMainWindow):
 
         ## SVD analysis
         self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
-        self.btn_svd_run.clicked.connect(self.run_svd)
+        self.btn_run_svd.clicked.connect(self.run_svd)
         ## PCA analysis
         self.pca_btn_defaults.clicked.connect(self.load_defaults_pca)
         self.btn_run_pca.clicked.connect(self.run_PCA)
@@ -244,7 +264,7 @@ class MainWindow(QMainWindow):
         self.tempvars = {}
         
         # Initialize buttons
-        self.btn_svd_run.setEnabled(False)
+        self.btn_run_svd.setEnabled(False)
         self.btn_run_pca.setEnabled(False)
         self.btn_run_ica.setEnabled(False)
         self.btn_run_x2p.setEnabled(False)
@@ -546,7 +566,7 @@ class MainWindow(QMainWindow):
 
             # Validate data for SVD
             needed_data = ["data_neuronal_activity"]
-            self.btn_svd_run.setEnabled(self.validate_needed_data(needed_data))
+            self.btn_run_svd.setEnabled(self.validate_needed_data(needed_data))
 
             # Validate needed data for PCA
             needed_data = ["data_neuronal_activity"]
@@ -992,6 +1012,8 @@ class MainWindow(QMainWindow):
         self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
         self.update_console_log("Loaded default SVD parameter values", "complete")
     def run_svd(self):
+        # Temporarly disable the button
+        self.btn_run_svd.setEnabled(False)
         # Prepare data
         data = self.data_neuronal_activity
         spikes = matlab.double(data.tolist())
@@ -1050,16 +1072,6 @@ class MainWindow(QMainWindow):
         self.params['svd'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
-        self.update_console_log("Starting MATLAB engine...")
-        eng = matlab.engine.start_matlab()
-        self.update_console_log("Loaded MATLAB engine.", "complete")
-
-        # Adding to path
-        relative_folder_path = 'analysis/SVD'
-        folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
-
         # Clean all the figures in case there was something previously
         if 'svd' in self.results:
             del self.results['svd']
@@ -1067,25 +1079,54 @@ class MainWindow(QMainWindow):
         for fig_name in algorithm_figs:
             self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
 
+        # Run the SVD in parallel
         self.update_console_log("Performing SVD...")
         self.update_console_log("Look in the Python console for additional logs.", "warning")
+        worker_svd = WorkerRunnable(self.run_svd_parallel, spikes, coords_foo, pars_matlab)
+        worker_svd.signals.result_ready.connect(self.run_svd_parallel_end)
+        self.threadpool.start(worker_svd)
+    def run_svd_parallel(self, spikes, coords_foo, pars_matlab):
+        log_flag = "GUI SVD:"
+        print(f"{log_flag} Starting MATLAB engine...")
+        start_time = time.time()
+        eng = matlab.engine.start_matlab()
+        # Adding to path
+        relative_folder_path = 'analysis/SVD'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+        end_time = time.time()
+        engine_time = end_time - start_time
+        print(f"{log_flag} Loaded MATLAB engine.")
+        start_time = time.time()
         try:
             answer = eng.Stoixeion(spikes, coords_foo, pars_matlab)
         except:
-            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
             answer = None
-        self.update_console_log("Done.", "complete")
-
+        end_time = time.time()
+        algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        plot_times = 0
         if answer != None:
             # Update pks and scut in case of automatic calculation
             self.svd_edit_pks.setText(f"{int(answer['pks'])}")
             self.svd_edit_scut.setText(f"{answer['scut']}")
-
             # Plotting results
-            self.update_console_log("Plotting and saving results...")
+            print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
+            start_time = time.time()
             self.plot_SVD_results(answer)
-            self.update_console_log("Done plotting and saving...")
+            end_time = time.time()
+            plot_times = end_time - start_time
+            print(f"{log_flag} Done plotting and saving...")
+        return [engine_time, algorithm_time, plot_times]
+    def run_svd_parallel_end(self, times):
+        self.update_console_log("Done executing the SVD algorithm", "complete") 
+        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
+        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
+        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        self.btn_run_svd.setEnabled(True)
     def plot_SVD_results(self, answer):
         # Similarity map
         simmap = np.array(answer['S_index_ti'])
@@ -1159,6 +1200,8 @@ class MainWindow(QMainWindow):
         self.pca_edit_minsize.setText(f"{defaults['minsize']}")
         self.update_console_log("Loaded default PCA parameter values", "complete")
     def run_PCA(self):
+        # Temporarly disable the button
+        self.btn_run_pca.setEnabled(False)
         # Prepare data
         data = self.data_neuronal_activity
         raster = matlab.double(data.tolist())
@@ -1195,16 +1238,6 @@ class MainWindow(QMainWindow):
         self.params['pca'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
-        self.update_console_log("Starting MATLAB engine...")
-        eng = matlab.engine.start_matlab()
-        self.update_console_log("Loaded MATLAB engine.", "complete")
-
-        # Adding to path
-        relative_folder_path = 'analysis/NeuralEnsembles'
-        folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
-
         # Clean all the figures in case there was something previously
         if 'pca' in self.results:
             del self.results['pca']
@@ -1214,30 +1247,59 @@ class MainWindow(QMainWindow):
 
         self.update_console_log("Performing PCA...")
         self.update_console_log("Look in the Python console for additional logs.", "warning")
+        worker_pca = WorkerRunnable(self.run_pca_parallel, raster, pars_matlab, pars)
+        worker_pca.signals.result_ready.connect(self.run_pca_parallel_end)
+        self.threadpool.start(worker_pca) 
+    def run_pca_parallel(self, raster, pars_matlab, pars):
+        log_flag = "GUI PCA:"
+        start_time = time.time()
+        print(f"{log_flag} Starting MATLAB engine...")
+        eng = matlab.engine.start_matlab()
+        # Adding to path
+        relative_folder_path = 'analysis/NeuralEnsembles'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+        end_time = time.time()
+        engine_time = end_time - start_time
+        print(f"{log_flag} Loaded MATLAB engine.")
+        start_time = time.time()
         try:
             answer = eng.raster2ens_by_density(raster, pars_matlab)
         except:
-            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
             answer = None
-        self.update_console_log("Done.", "complete")
-
-        ## Plot the results
+        end_time = time.time()
+        algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        plot_times = 0
+        # Plot the results
         if answer != None:
-            self.update_console_log("Plotting results...")
+            print(f"{log_flag} Plotting results...")
+            start_time = time.time()
             self.plot_PCA_results(pars, answer)
-            self.update_console_log("Done plotting.", "complete")
-
+            print(f"{log_flag} Done plotting.")
             # Save the results
-            self.update_console_log("Saving results...")
+            print(f"{log_flag} Saving results...")
             if np.array(answer["sel_ensmat_out"]).shape[0] > 0:
                 self.results['pca'] = {}
                 self.results['pca']['timecourse'] = np.array(answer["sel_ensmat_out"]).astype(int)
                 self.results['pca']['ensembles_cant'] = self.results['pca']['timecourse'].shape[0]
                 self.results['pca']['neus_in_ens'] = np.array(answer["sel_core_cells"]).T.astype(float)
                 self.we_have_results()
-                self.update_console_log("Done saving", "complete")
+                print(f"{log_flag} Done saving")
             else:
-                self.update_console_log("The algorithm didn't found any ensemble. Check the python console for more info.", "error")
+                print(f"{log_flag} The algorithm didn't found any ensemble. Check the python console for more info.")
+            end_time = time.time()
+            plot_times = end_time - start_time
+            print(f"{log_flag} Done plotting and saving...")
+        return [engine_time, algorithm_time, plot_times]
+    def run_pca_parallel_end(self, times):
+        self.update_console_log("Done executing the PCA algorithm", "complete") 
+        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
+        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
+        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        self.btn_run_pca.setEnabled(True)
     def plot_PCA_results(self, pars, answer):
         ## Plot the eigs
         eigs = np.array(answer['exp_var'])
@@ -1302,6 +1364,8 @@ class MainWindow(QMainWindow):
         self.ica_edit_iterations.setText(f"{defaults['Patterns']['number_of_iterations']}")
         self.update_console_log("Loaded default ICA parameter values", "complete")
     def run_ICA(self):
+        # Temporarly disable the button
+        self.btn_run_ica.setEnabled(False)
         # Prepare data
         data = self.data_neuronal_activity
         spikes = matlab.double(data.tolist())
@@ -1341,16 +1405,6 @@ class MainWindow(QMainWindow):
         self.params['ica'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
-        self.update_console_log("Starting MATLAB engine...")
-        eng = matlab.engine.start_matlab()
-        self.update_console_log("Loaded MATLAB engine.", "complete")
-
-        # Adding to path
-        relative_folder_path = 'analysis/Cell-Assembly-Detection'
-        folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
-
         # Clean all the figures in case there was something previously
         if 'ica' in self.results:
             del self.results['ica']
@@ -1359,29 +1413,48 @@ class MainWindow(QMainWindow):
             self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
 
         self.update_console_log("Performing ICA...")
-        self.update_console_log("Looking for patterns...")
+        self.update_console_log("Look in the Python console for additional logs.", "warning")
+        worker_ica = WorkerRunnable(self.run_ica_parallel, spikes, pars_matlab)
+        worker_ica.signals.result_ready.connect(self.run_ica_parallel_end)
+        self.threadpool.start(worker_ica)
+    def run_ica_parallel(self, spikes, pars_matlab):
+        log_flag = "GUI ICA:"
+        print(f"{log_flag} Starting MATLAB engine...")
+        start_time = time.time()
+        eng = matlab.engine.start_matlab()
+        # Adding to path
+        relative_folder_path = 'analysis/Cell-Assembly-Detection'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng.genpath(folder_path)
+        eng.addpath(folder_path_with_subfolders, nargout=0)
+        end_time = time.time()
+        engine_time = end_time - start_time
+        print(f"{log_flag} Loaded MATLAB engine.")
+        print(f"{log_flag} Looking for patterns...")
+        start_time = time.time()
         try:
             answer = eng.assembly_patterns(spikes, pars_matlab)
         except:
-            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
             answer = None
-        self.update_console_log("Done looking for patterns...", "complete")
+        print(f"{log_flag} Done looking for patterns...")
 
         if answer != None:
             assembly_templates = np.array(answer['AssemblyTemplates']).T
-
-            self.update_console_log("Looking for assembly activity...")
+            print(f"{log_flag} Looking for assembly activity...")
             try:
                 answer = eng.assembly_activity(answer['AssemblyTemplates'],spikes)
             except:
-                self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+                print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
                 answer = None
-            self.update_console_log("Done looking for assembly activity...", "complete")
-        self.update_console_log("Done.", "complete")
-
+            print(f"{log_flag} Done looking for assembly activity...")
+        end_time = time.time()
+        algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        plot_times = 0
         if answer != None:
+            start_time = time.time()
             time_projection = np.array(answer["time_projection"])
-            
             ## Identify the significative values to binarize the matrix
             threshold = 1.96    # p < 0.05 for the z-score
             binary_assembly_templates = np.zeros(assembly_templates.shape)
@@ -1404,13 +1477,22 @@ class MainWindow(QMainWindow):
             }
             self.plot_ICA_results(answer)
 
-            self.update_console_log("Saving results...")
+            print(f"{log_flag} Saving results...")
             self.results['ica'] = {}
             self.results['ica']['timecourse'] = binary_time_projection
             self.results['ica']['ensembles_cant'] = binary_time_projection.shape[0]
             self.results['ica']['neus_in_ens'] = binary_assembly_templates
             self.we_have_results()
-            self.update_console_log("Done saving", "complete")
+            end_time = time.time()
+            plot_times = end_time - start_time
+            print(f"{log_flag} Done plotting and saving...")
+        return [engine_time, algorithm_time, plot_times]
+    def run_ica_parallel_end(self, times):
+        self.update_console_log("Done executing the ICA algorithm", "complete") 
+        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
+        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
+        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        self.btn_run_ica.setEnabled(True)
     def plot_ICA_results(self, answer):
         # Plot the assembly templates
         self.plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_assemblys')
@@ -1444,6 +1526,8 @@ class MainWindow(QMainWindow):
         self.x2p_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
     def run_x2p(self):
+        # Temporarly disable the button
+        self.btn_run_x2p.setEnabled(False)
         # Prepare data
         data = self.data_neuronal_activity
         raster = matlab.logical(data.tolist())
@@ -1484,32 +1568,43 @@ class MainWindow(QMainWindow):
         self.params['x2p'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
 
-        self.update_console_log("Starting MATLAB engine...")
-        eng = matlab.engine.start_matlab()
-        self.update_console_log("Loaded MATLAB engine.", "complete")
+        # Clean all the figures in case there was something previously
+        if 'x2p' in self.results:
+            del self.results['x2p']
+        algorithm_figs = ["x2p_plot_similarity", "x2p_plot_epi", "x2p_plot_onsemact", "x2p_plot_offsemact", "x2p_plot_activity", "x2p_plot_onsemneu", "x2p_plot_offsemneu"] 
+        for fig_name in algorithm_figs:
+            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
 
+        self.update_console_log("Performing Xsembles2P...")
+        self.update_console_log("Look in the Python console for additional logs.", "warning")
+        worker_x2p = WorkerRunnable(self.run_x2p_parallel, raster, pars_matlab)
+        worker_x2p.signals.result_ready.connect(self.run_x2p_parallel_end)
+        self.threadpool.start(worker_x2p)
+    def run_x2p_parallel(self, raster, pars_matlab):
+        log_flag = "GUI X2P:"
+        print(f"{log_flag} Starting MATLAB engine...")
+        start_time = time.time()
+        eng = matlab.engine.start_matlab()
         # Adding to path
         relative_folder_path = 'analysis/Xsembles2P'
         folder_path = os.path.abspath(relative_folder_path)
         folder_path_with_subfolders = eng.genpath(folder_path)
         eng.addpath(folder_path_with_subfolders, nargout=0)
-
-        # Clean all the figures in case there was something previously
-        #if 'ica' in self.results:
-        #    del self.results['ica']
-        #algorithm_figs = ["ica_plot_assemblys", "ica_plot_activity", "ica_plot_binary_patterns", "ica_plot_binary_assemblies"] 
-        #for fig_name in algorithm_figs:
-        #    self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
-
-        self.update_console_log("Performing Xsembles2P...")
+        end_time = time.time()
+        engine_time = end_time - start_time
+        print(f"{log_flag} Loaded MATLAB engine.")
+        start_time = time.time()
         try:
             answer = eng.Get_Xsembles(raster, pars_matlab)
         except:
-            self.update_console_log("An error occurred while excecuting the algorithm. Check the Python console for more info.", msg_type="error")
+            print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
             answer = None
-        self.update_console_log("Done.", "complete")
-
+        end_time = time.time()
+        algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        plot_times = 0
         if answer != None:
+            start_time = time.time()
             clean_answer = {}
             clean_answer['similarity'] = np.array(answer['Clustering']['Similarity'])
             clean_answer['EPI'] = np.array(answer['Ensembles']['EPI'])
@@ -1532,21 +1627,22 @@ class MainWindow(QMainWindow):
 
             self.plot_X2P_results(clean_answer)
 
-            self.update_console_log("Saving results...")
+            print(f"{log_flag} Saving results...")
             self.results['x2p'] = {}
             self.results['x2p']['timecourse'] = clean_answer['Activity']
             self.results['x2p']['ensembles_cant'] = cant_ens
             self.results['x2p']['neus_in_ens'] = clean_answer['OnsembleNeurons']
             self.we_have_results()
-            self.update_console_log("Done saving", "complete")
-            
-            #import pprint
-            #with open('text_output.txt', 'w') as file:
-            #    pprint.pprint(answer, stream=file)
-            #with h5py.File("ensembles_output.h5", 'w') as hdf_file:
-            #    tmp = {"results": answer}
-            #    self.save_data_to_hdf5(hdf_file, tmp)
-            #print("done saving")
+            end_time = time.time()
+            plot_times = end_time - start_time
+            print(f"{log_flag} Done plotting and saving...")
+        return [engine_time, algorithm_time, plot_times]
+    def run_x2p_parallel_end(self, times):
+        self.update_console_log("Done executing the Xsembles2P algorithm", "complete") 
+        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
+        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
+        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        self.btn_run_x2p.setEnabled(True)
     def plot_X2P_results(self, answer):
         # Similarity map
         dataset = answer['similarity']
@@ -1879,6 +1975,8 @@ class MainWindow(QMainWindow):
             "ica": self.enscomp_check_coords_ica,
             "x2p": self.enscomp_check_coords_x2p
         }
+        if not hasattr(self, "data_coordinates"):
+            self.data_coordinates = np.random.randint(1, 351, size=(self.cant_neurons, 2))
         # Stablish the dimention of the map
         max_x = np.max(self.data_coordinates[:, 0])
         max_y = np.max(self.data_coordinates[:, 1])
