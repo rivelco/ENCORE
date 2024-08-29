@@ -221,9 +221,9 @@ class MainWindow(QMainWindow):
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_btn_color.clicked.connect(self.enscomp_get_color)
-        self.enscomp_check_coords_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_ens_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_neus_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_coords.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_ens.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_check_neus.stateChanged.connect(self.ensembles_compare_update_ensembles)
         # Connect the combo box to a function that handles selection changes
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
 
@@ -1867,6 +1867,14 @@ class MainWindow(QMainWindow):
             ens_selector = self.enscomp_slider_x2p
             selector_label_min = self.enscomp_slider_lbl_min_x2p
             selector_label_max = self.enscomp_slider_lbl_max_x2p
+
+        # Only add the new algorithm if it's not there already
+        combo_string = algorithm.upper()
+        index_match = self.enscomp_combo_select_result.findText(combo_string)
+        if index_match == -1:
+            self.enscomp_combo_select_result.addItem(combo_string)
+            self.enscomp_visopts[algorithm]['enabled'] = True
+
         # Activate the slider
         ens_selector.setEnabled(True)
         ens_selector.setMinimum(1)   # Set the minimum value
@@ -1877,12 +1885,16 @@ class MainWindow(QMainWindow):
         selector_label_max.setEnabled(True)
         selector_label_max.setText(f"{self.results[algorithm]['ensembles_cant']}")
         # Update the toolbox options
-        self.enscomp_check_coords.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
-        self.enscomp_check_ens.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
-        self.enscomp_check_neus.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
-        self.enscomp_btn_color.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        self.enscomp_visopts[algorithm]['enabled'] = True
+        #self.enscomp_check_coords.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        #self.enscomp_check_ens.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        #self.enscomp_check_neus.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        #self.enscomp_btn_color.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
     
     def ensembles_compare_update_combo_results(self, text):
+        self.enscomp_check_coords.blockSignals(True)
+        self.enscomp_check_ens.blockSignals(True)
+        self.enscomp_check_neus.blockSignals(True)
         method_selected = text.lower()
         # Change enabled status for this option
         self.enscomp_check_coords.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
@@ -1890,9 +1902,12 @@ class MainWindow(QMainWindow):
         self.enscomp_check_neus.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
         self.enscomp_btn_color.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
         # Change the boxes values
-        self.enscomp_check_coords.setEnabled(self.enscomp_visopts[method_selected]['enscomp_check_coords'])
-        self.enscomp_check_ens.setEnabled(self.enscomp_visopts[method_selected]['enscomp_check_ens'])
-        self.enscomp_check_neus.setEnabled(self.enscomp_visopts[method_selected]['enscomp_check_neus'])
+        self.enscomp_check_coords.setChecked(self.enscomp_visopts[method_selected]['enscomp_check_coords'])
+        self.enscomp_check_ens.setChecked(self.enscomp_visopts[method_selected]['enscomp_check_ens'])
+        self.enscomp_check_neus.setChecked(self.enscomp_visopts[method_selected]['enscomp_check_neus'])
+        self.enscomp_check_coords.blockSignals(False)
+        self.enscomp_check_ens.blockSignals(False)
+        self.enscomp_check_neus.blockSignals(False)
     
     def update_enscomp_options(self, exp_data):
         if exp_data == "stims":
@@ -1944,16 +1959,16 @@ class MainWindow(QMainWindow):
                 ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
                 ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
         
-        self.enscomp_colorflag_svd.setStyleSheet(f'background-color: {self.enscomp_visopts["svd"]['color']};')
-        self.enscomp_colorflag_pca.setStyleSheet(f'background-color: {self.enscomp_visopts["pca"]['color']};')
-        self.enscomp_colorflag_ica.setStyleSheet(f'background-color: {self.enscomp_visopts["ica"]['color']};')
-        self.enscomp_colorflag_x2p.setStyleSheet(f'background-color: {self.enscomp_visopts["x2p"]['color']};')
+        self.enscomp_colorflag_svd.setStyleSheet(f"background-color: {self.enscomp_visopts['svd']['color']};")
+        self.enscomp_colorflag_pca.setStyleSheet(f"background-color: {self.enscomp_visopts['pca']['color']};")
+        self.enscomp_colorflag_ica.setStyleSheet(f"background-color: {self.enscomp_visopts['ica']['color']};")
+        self.enscomp_colorflag_x2p.setStyleSheet(f"background-color: {self.enscomp_visopts['x2p']['color']};")
         
         # Update the visualization options
         current_method = self.enscomp_combo_select_result.currentText().lower()
-        'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False
         self.enscomp_visopts[current_method]['enscomp_check_coords'] = self.enscomp_check_coords.isChecked()
-
+        self.enscomp_visopts[current_method]['enscomp_check_ens'] = self.enscomp_check_ens.isChecked()
+        self.enscomp_visopts[current_method]['enscomp_check_neus'] = self.enscomp_check_neus.isChecked()
 
         self.ensembles_compare_update_map(ensembles_to_compare)
         self.ensembles_compare_update_timecourses(ensembles_to_compare)
@@ -1967,12 +1982,11 @@ class MainWindow(QMainWindow):
         lims = [max_x, max_y]
 
         mixed_ens = []
-        colors = self.enscom_colors
 
         list_colors_freq = [[] for l in range(self.cant_neurons)] 
 
         for key, ens_data in ensembles_to_compare.items():
-            if self.enscomp_visopts[key]['enabled']:
+            if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_coords']:
                 new_members = ens_data["neus_in_ens"].copy()
                 if len(mixed_ens) == 0:
                     mixed_ens = new_members
@@ -1980,7 +1994,7 @@ class MainWindow(QMainWindow):
                     mixed_ens += new_members
                 for cell_idx in range(len(new_members)):
                     if new_members[cell_idx] > 0:
-                        list_colors_freq[cell_idx].append(colors[key])
+                        list_colors_freq[cell_idx].append(self.enscomp_visopts[key]['color'])
 
         members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
         members_freq = [member for member in mixed_ens if member > 0]
