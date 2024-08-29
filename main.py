@@ -1057,6 +1057,7 @@ class MainWindow(QMainWindow):
             val_csiend = self.svd_defaults['statecut']
             self.svd_edit_csiend.setText(f"{val_csiend}")
         val_idtfd = self.svd_check_tfidf.isChecked()
+        parallel_computing = self.svd_check_tfidf.isChecked()
 
         # Pack parameters
         pars = {
@@ -1067,7 +1068,8 @@ class MainWindow(QMainWindow):
             'tf_idf_norm': val_idtfd,
             'csi_start': val_csistart,
             'csi_step': val_csistep,
-            'csi_end': val_csiend
+            'csi_end': val_csiend,
+            'parallel_processing': parallel_computing
         }
         self.params['svd'] = pars
         pars_matlab = self.dict_to_matlab_struct(pars)
