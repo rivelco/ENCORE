@@ -102,7 +102,8 @@ class MainWindow(QMainWindow):
             'csi_start': 0.01,
             'csi_step': 0.01,
             'csi_end': 0.1,
-            'tf_idf_norm': True
+            'tf_idf_norm': True,
+            'parallel_processing': False
         }
         self.svd_defaults = defaults
         defaults = {
@@ -1010,6 +1011,7 @@ class MainWindow(QMainWindow):
         self.svd_edit_csistep.setText(f"{defaults['csi_step']}")
         self.svd_edit_csiend.setText(f"{defaults['csi_end']}")
         self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
+        self.svd_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default SVD parameter values", "complete")
     def run_svd(self):
         # Temporarly disable the button
@@ -1057,7 +1059,7 @@ class MainWindow(QMainWindow):
             val_csiend = self.svd_defaults['statecut']
             self.svd_edit_csiend.setText(f"{val_csiend}")
         val_idtfd = self.svd_check_tfidf.isChecked()
-        parallel_computing = self.svd_check_tfidf.isChecked()
+        parallel_computing = self.svd_check_parallel.isChecked()
 
         # Pack parameters
         pars = {
