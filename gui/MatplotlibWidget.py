@@ -430,6 +430,17 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
+    def enscomp_plot_similarity(self, matrix, labels):
+        self.axes.clear()
+
+        self.axes.imshow(matrix, aspect='equal')
+        self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45)
+        self.axes.set_yticks(ticks = np.arange(len(labels)), labels=labels, rotation=0)
+
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+
     def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives, only_ens, only_contours, show_numbers):
         self.axes.clear()
 

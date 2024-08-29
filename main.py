@@ -5,6 +5,8 @@ import scipy.io
 import math
 import numpy as np
 import scipy.stats as stats
+from sklearn.metrics.pairwise import cosine_similarity
+from scipy.spatial.distance import pdist, squareform
 import time
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
@@ -214,24 +216,18 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
+
         self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_btn_color_svd.clicked.connect(self.get_color_svd)
-        self.enscomp_btn_color_pca.clicked.connect(self.get_color_pca)
-        self.enscomp_btn_color_ica.clicked.connect(self.get_color_ica)
-        self.enscomp_btn_color_x2p.clicked.connect(self.get_color_x2p)
-        self.enscomp_check_coords_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_coords_pca.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_coords_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_coords_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
+
+        self.enscomp_btn_color.clicked.connect(self.enscomp_get_color)
+        self.enscomp_check_coords_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_ens_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_neus_svd.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_ens_pca.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_neus_pca.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_ens_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_neus_ica.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_ens_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_check_neus_x2p.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        # Connect the combo box to a function that handles selection changes
+        self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
+
+        self.enscomp_tabs.currentChanged.connect(self.ensembles_compare_tabchange)
 
         ## Performance
         self.performance_tabs.currentChanged.connect(self.performance_tabchange)
@@ -345,6 +341,22 @@ class MainWindow(QMainWindow):
         self.tempvars['ensvis_shown_tab4'] = False 
 
         # Ensembles compare
+        self.enscomp_visopts = {
+            "svd": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'red', 'enabled': False},
+            "pca": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'blue', 'enabled': False},
+            "ica": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'green', 'enabled': False},
+            "x2p": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'orange', 'enabled': False}
+        }
+
+        self.enscomp_check_coords.setEnabled(False)
+        self.enscomp_check_ens.setEnabled(False)
+        self.enscomp_check_neus.setEnabled(False)
+        self.enscomp_btn_color.setEnabled(False)
+
+        self.enscomp_check_coords.setChecked(True)
+        self.enscomp_check_ens.setChecked(True)
+        self.enscomp_check_neus.setChecked(False)
+        
         self.enscomp_slider_svd.setEnabled(False)
         self.enscomp_slider_lbl_min_svd.setEnabled(False)
         self.enscomp_slider_lbl_max_svd.setEnabled(False)
@@ -353,10 +365,6 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_svd.setValue(1)
         self.enscomp_slider_lbl_min_svd.setText("1")
         self.enscomp_slider_lbl_max_svd.setText("1")
-        self.enscomp_check_coords_svd.setEnabled(False)
-        self.enscomp_check_ens_svd.setEnabled(False)
-        self.enscomp_check_neus_svd.setEnabled(False)
-        self.enscomp_btn_color_svd.setEnabled(False)
         self.enscomp_slider_pca.setEnabled(False)
         self.enscomp_slider_lbl_min_pca.setEnabled(False)
         self.enscomp_slider_lbl_max_pca.setEnabled(False)
@@ -365,10 +373,6 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_pca.setValue(1)
         self.enscomp_slider_lbl_min_pca.setText("1")
         self.enscomp_slider_lbl_max_pca.setText("1")
-        self.enscomp_check_coords_pca.setEnabled(False)
-        self.enscomp_check_ens_pca.setEnabled(False)
-        self.enscomp_check_neus_pca.setEnabled(False)
-        self.enscomp_btn_color_pca.setEnabled(False)
         self.enscomp_slider_ica.setEnabled(False)
         self.enscomp_slider_lbl_min_ica.setEnabled(False)
         self.enscomp_slider_lbl_max_ica.setEnabled(False)
@@ -377,10 +381,6 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_ica.setValue(1)
         self.enscomp_slider_lbl_min_ica.setText("1")
         self.enscomp_slider_lbl_max_ica.setText("1")
-        self.enscomp_check_coords_ica.setEnabled(False)
-        self.enscomp_check_ens_ica.setEnabled(False)
-        self.enscomp_check_neus_ica.setEnabled(False)
-        self.enscomp_btn_color_ica.setEnabled(False)
         self.enscomp_slider_x2p.setEnabled(False)
         self.enscomp_slider_lbl_min_x2p.setEnabled(False)
         self.enscomp_slider_lbl_max_x2p.setEnabled(False)
@@ -389,10 +389,6 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_x2p.setValue(1)
         self.enscomp_slider_lbl_min_x2p.setText("1")
         self.enscomp_slider_lbl_max_x2p.setText("1")
-        self.enscomp_check_coords_x2p.setEnabled(False)
-        self.enscomp_check_ens_x2p.setEnabled(False)
-        self.enscomp_check_neus_x2p.setEnabled(False)
-        self.enscomp_btn_color_x2p.setEnabled(False)
         if not hasattr(self, "data_stims"):
             self.enscomp_slider_stim.setEnabled(False)
             self.enscomp_slider_lbl_min_stim.setEnabled(False)
@@ -414,18 +410,6 @@ class MainWindow(QMainWindow):
             'pca': 'green',
             'x2p': 'orange'
         }
-        self.enscomp_check_coords_svd.setChecked(True)
-        self.enscomp_check_coords_pca.setChecked(True)
-        self.enscomp_check_coords_ica.setChecked(True)
-        self.enscomp_check_coords_x2p.setChecked(True)
-        self.enscomp_check_ens_svd.setChecked(True)
-        self.enscomp_check_ens_pca.setChecked(True)
-        self.enscomp_check_ens_ica.setChecked(True)
-        self.enscomp_check_ens_x2p.setChecked(True)
-        self.enscomp_check_neus_svd.setChecked(False)
-        self.enscomp_check_neus_pca.setChecked(False)
-        self.enscomp_check_neus_ica.setChecked(False)
-        self.enscomp_check_neus_x2p.setChecked(False)
 
         self.tempvars['performance_shown_results'] = False
         self.tempvars['performance_shown_tab0'] = False
@@ -1871,34 +1855,18 @@ class MainWindow(QMainWindow):
             ens_selector = self.enscomp_slider_svd
             selector_label_min = self.enscomp_slider_lbl_min_svd
             selector_label_max = self.enscomp_slider_lbl_max_svd
-            check_coords = self.enscomp_check_coords_svd
-            check_ensemble = self.enscomp_check_ens_svd
-            check_neurons = self.enscomp_check_neus_svd
-            color_button = self.enscomp_btn_color_svd
         elif algorithm == 'pca':
             ens_selector = self.enscomp_slider_pca
             selector_label_min = self.enscomp_slider_lbl_min_pca
             selector_label_max = self.enscomp_slider_lbl_max_pca
-            check_coords = self.enscomp_check_coords_pca
-            check_ensemble = self.enscomp_check_ens_pca
-            check_neurons = self.enscomp_check_neus_pca
-            color_button = self.enscomp_btn_color_pca
         elif algorithm == 'ica':
             ens_selector = self.enscomp_slider_ica
             selector_label_min = self.enscomp_slider_lbl_min_ica
             selector_label_max = self.enscomp_slider_lbl_max_ica
-            check_coords = self.enscomp_check_coords_ica
-            check_ensemble = self.enscomp_check_ens_ica
-            check_neurons = self.enscomp_check_neus_ica
-            color_button = self.enscomp_btn_color_ica
         elif algorithm == 'x2p':
             ens_selector = self.enscomp_slider_x2p
             selector_label_min = self.enscomp_slider_lbl_min_x2p
             selector_label_max = self.enscomp_slider_lbl_max_x2p
-            check_coords = self.enscomp_check_coords_x2p
-            check_ensemble = self.enscomp_check_ens_x2p
-            check_neurons = self.enscomp_check_neus_x2p
-            color_button = self.enscomp_btn_color_x2p
         # Activate the slider
         ens_selector.setEnabled(True)
         ens_selector.setMinimum(1)   # Set the minimum value
@@ -1909,10 +1877,22 @@ class MainWindow(QMainWindow):
         selector_label_max.setEnabled(True)
         selector_label_max.setText(f"{self.results[algorithm]['ensembles_cant']}")
         # Update the toolbox options
-        check_coords.setEnabled(True)
-        check_ensemble.setEnabled(True)
-        check_neurons.setEnabled(True)
-        color_button.setEnabled(True)
+        self.enscomp_check_coords.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        self.enscomp_check_ens.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        self.enscomp_check_neus.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        self.enscomp_btn_color.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+    
+    def ensembles_compare_update_combo_results(self, text):
+        method_selected = text.lower()
+        # Change enabled status for this option
+        self.enscomp_check_coords.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
+        self.enscomp_check_ens.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
+        self.enscomp_check_neus.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
+        self.enscomp_btn_color.setEnabled(self.enscomp_visopts[method_selected]['enabled'])
+        # Change the boxes values
+        self.enscomp_check_coords.setEnabled(self.enscomp_visopts[method_selected]['enscomp_check_coords'])
+        self.enscomp_check_ens.setEnabled(self.enscomp_visopts[method_selected]['enscomp_check_ens'])
+        self.enscomp_check_neus.setEnabled(self.enscomp_visopts[method_selected]['enscomp_check_neus'])
     
     def update_enscomp_options(self, exp_data):
         if exp_data == "stims":
@@ -1964,21 +1944,21 @@ class MainWindow(QMainWindow):
                 ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
                 ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
         
-        self.enscomp_colorflag_svd.setStyleSheet(f'background-color: {self.enscom_colors["svd"]};')
-        self.enscomp_colorflag_pca.setStyleSheet(f'background-color: {self.enscom_colors["pca"]};')
-        self.enscomp_colorflag_ica.setStyleSheet(f'background-color: {self.enscom_colors["ica"]};')
-        self.enscomp_colorflag_x2p.setStyleSheet(f'background-color: {self.enscom_colors["x2p"]};')
+        self.enscomp_colorflag_svd.setStyleSheet(f'background-color: {self.enscomp_visopts["svd"]['color']};')
+        self.enscomp_colorflag_pca.setStyleSheet(f'background-color: {self.enscomp_visopts["pca"]['color']};')
+        self.enscomp_colorflag_ica.setStyleSheet(f'background-color: {self.enscomp_visopts["ica"]['color']};')
+        self.enscomp_colorflag_x2p.setStyleSheet(f'background-color: {self.enscomp_visopts["x2p"]['color']};')
+        
+        # Update the visualization options
+        current_method = self.enscomp_combo_select_result.currentText().lower()
+        'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False
+        self.enscomp_visopts[current_method]['enscomp_check_coords'] = self.enscomp_check_coords.isChecked()
+
 
         self.ensembles_compare_update_map(ensembles_to_compare)
         self.ensembles_compare_update_timecourses(ensembles_to_compare)
 
     def ensembles_compare_update_map(self, ensembles_to_compare):
-        ens_show = {
-            "svd": self.enscomp_check_coords_svd,
-            "pca": self.enscomp_check_coords_pca,
-            "ica": self.enscomp_check_coords_ica,
-            "x2p": self.enscomp_check_coords_x2p
-        }
         if not hasattr(self, "data_coordinates"):
             self.data_coordinates = np.random.randint(1, 351, size=(self.cant_neurons, 2))
         # Stablish the dimention of the map
@@ -1992,7 +1972,7 @@ class MainWindow(QMainWindow):
         list_colors_freq = [[] for l in range(self.cant_neurons)] 
 
         for key, ens_data in ensembles_to_compare.items():
-            if ens_show[key].isChecked():
+            if self.enscomp_visopts[key]['enabled']:
                 new_members = ens_data["neus_in_ens"].copy()
                 if len(mixed_ens) == 0:
                     mixed_ens = new_members
@@ -2020,24 +2000,18 @@ class MainWindow(QMainWindow):
         map_plot.enscomp_update_map(lims, members_idx, members_freq, members_coords, members_colors, neuron_size)
 
     def ensembles_compare_update_timecourses(self, ensembles_to_compare):
-        requested = {
-            "svd": [self.enscomp_check_ens_svd, self.enscomp_check_neus_svd],
-            "pca": [self.enscomp_check_ens_pca, self.enscomp_check_neus_pca],
-            "ica": [self.enscomp_check_ens_ica, self.enscomp_check_neus_ica],
-            "x2p": [self.enscomp_check_ens_x2p, self.enscomp_check_neus_x2p]
-        }
         colors = []
         timecourses = []
         cells_activities = []
         new_ticks = []
         for key, ens_data in ensembles_to_compare.items():
-            if requested[key][0].isEnabled() and requested[key][0].isChecked():
+            if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_ens']:
                 new_timecourse = ens_data["timecourse"].copy()
             else:
                 new_timecourse = []
             timecourses.append(new_timecourse)
 
-            if requested[key][1].isEnabled() and requested[key][1].isChecked():
+            if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_neus']:
                 new_members = ens_data["neus_in_ens"].copy()
                 cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
                 cells_activity_count = np.sum(cells_activity_mat, axis=0)
@@ -2045,7 +2019,7 @@ class MainWindow(QMainWindow):
                 cells_activity_count = []
             cells_activities.append(cells_activity_count)
 
-            colors.append(self.enscom_colors[key])
+            colors.append(self.enscomp_visopts[key]['color'])
             new_ticks.append(key)
         
         cells_activities.reverse()
@@ -2056,42 +2030,47 @@ class MainWindow(QMainWindow):
         plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_neusact')
         plot_widget.enscomp_update_timelines(new_ticks, cells_activities, [], timecourses, colors, self.cant_timepoints)
 
-    def get_color_svd(self):
+    def enscomp_get_color(self):
         # Open the QColorDialog to select a color
         color = QColorDialog.getColor()
         # Check if a color was selected
         if color.isValid():
             # Convert the color to a Matplotlib-compatible format (hex string)
             color_hex = color.name()
-            self.enscom_colors['svd'] = color_hex
+            current_method = self.enscomp_combo_select_result.currentText().lower()
+            self.enscomp_visopts[current_method]['color'] = color_hex
             self.ensembles_compare_update_ensembles()
-    def get_color_pca(self):
-        # Open the QColorDialog to select a color
-        color = QColorDialog.getColor()
-        # Check if a color was selected
-        if color.isValid():
-            # Convert the color to a Matplotlib-compatible format (hex string)
-            color_hex = color.name()
-            self.enscom_colors['pca'] = color_hex
-            self.ensembles_compare_update_ensembles()
-    def get_color_ica(self):
-        # Open the QColorDialog to select a color
-        color = QColorDialog.getColor()
-        # Check if a color was selected
-        if color.isValid():
-            # Convert the color to a Matplotlib-compatible format (hex string)
-            color_hex = color.name()
-            self.enscom_colors['ica'] = color_hex
-            self.ensembles_compare_update_ensembles()
-    def get_color_x2p(self):
-        # Open the QColorDialog to select a color
-        color = QColorDialog.getColor()
-        # Check if a color was selected
-        if color.isValid():
-            # Convert the color to a Matplotlib-compatible format (hex string)
-            color_hex = color.name()
-            self.enscom_colors['x2p'] = color_hex
-            self.ensembles_compare_update_ensembles()
+
+    def ensembles_compare_similarity(self, methods, criteria, method):
+        # Create the labels and the big matrix
+        labels = []
+        all_elements = []
+        for algorithm in methods:
+            elements = self.results[algorithm][criteria]
+            for e_idx, element in enumerate(elements):
+                all_elements.append(element)
+                labels.append(f"{algorithm}-E{e_idx+1}")
+        # Convert to numpy array
+        all_elements = np.array(all_elements)
+        if method == 'cosine':
+            # Calculate cosine similarity
+            similarity_matrix = cosine_similarity(all_elements)
+        elif method == 'euclidean':
+            similarity_matrix = squareform(pdist(all_elements, metric='euclidean'))
+        elif method == 'correlation':
+            similarity_matrix = np.corrcoef(all_elements)
+        elif method == 'jaccard':
+            jaccard_distances = pdist(all_elements, metric='jaccard')
+            similarity_matrix = 1 - squareform(jaccard_distances)
+
+
+        plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements')
+        plot_widget.enscomp_plot_similarity(similarity_matrix, labels)
+    
+    def ensembles_compare_tabchange(self, index):
+        if index == 2:    # Spatial distributions
+            if len(self.results) > 0:
+                self.ensembles_compare_similarity(list(self.results.keys()), 'neus_in_ens', 'cosine')
 
     def performance_tabchange(self, index):
         if self.tempvars['performance_shown_results']:
