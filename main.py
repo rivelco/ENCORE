@@ -1716,6 +1716,7 @@ class MainWindow(QMainWindow):
                 self.ensvis_btn_x2p.setEnabled(True)
                 self.performance_check_x2p.setEnabled(True)
                 self.ensembles_compare_update_opts('x2p')
+        self.tempvars["showed_sim_maps"] = False
 
     def ensvis_tabchange(self, index):
         if self.tempvars['ensvis_shown_results']:
@@ -2156,8 +2157,12 @@ class MainWindow(QMainWindow):
 
     
     def ensembles_compare_tabchange(self, index):
-        if index == 2 or index == 3:    # Any similarity maps tab
-            if len(self.results) > 0:
+        if len(self.results) > 0:
+            if index == 2:
+                self.enscomp_combo_select_simil.setCurrentText("Neurons")
+            elif index == 3:
+                self.enscomp_combo_select_simil.setCurrentText("Timecourses")
+            if index == 2 or index == 3:
                 self.enscomp_combo_select_simil.setEnabled(True)
                 self.enscomp_combo_select_simil_method.setEnabled(True)
                 self.enscomp_combo_select_simil_colormap.setEnabled(True)
