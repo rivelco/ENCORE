@@ -224,9 +224,31 @@ class MainWindow(QMainWindow):
         self.enscomp_check_coords.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_ens.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_neus.stateChanged.connect(self.ensembles_compare_update_ensembles)
-        # Connect the combo box to a function that handles selection changes
+
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
 
+        # Populate the similarity maps combo box
+        similarity_items = ["Neurons", "Timecourses"]
+        similarity_methods = ["Cosine", "Euclidean", "Correlation", "Jaccard"]
+        similarity_colors = ["viridis", "plasma", "coolwarm", "magma", "Spectral"]
+        for item in similarity_items:
+            self.enscomp_combo_select_simil.addItem(item)
+        for method in similarity_methods:
+            self.enscomp_combo_select_simil_method.addItem(method)
+        for color in similarity_colors:
+            self.enscomp_combo_select_simil_colormap.addItem(color)
+        self.enscomp_combo_select_simil.setEnabled(False)
+        self.enscomp_combo_select_simil_method.setEnabled(False)
+        self.enscomp_combo_select_simil_colormap.setEnabled(False)
+        self.enscomp_combo_select_simil.currentTextChanged.connect(self.ensembles_compare_similarity_update_combbox)
+        
+        self.enscomp_combo_select_simil.setCurrentText("Neurons")
+        self.enscomp_combo_select_simil_method.setCurrentText("Jaccard")
+        self.enscomp_combo_select_simil_colormap.setCurrentText("viridis")
+
+        # Connect the combo box to a function that handles selection changes
+        self.enscomp_combo_select_simil_method.currentTextChanged.connect(self.ensembles_compare_similarity)
+        self.enscomp_combo_select_simil_colormap.currentTextChanged.connect(self.ensembles_compare_similarity)
         self.enscomp_tabs.currentChanged.connect(self.ensembles_compare_tabchange)
 
         ## Performance
@@ -345,8 +367,22 @@ class MainWindow(QMainWindow):
             "svd": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'red', 'enabled': False},
             "pca": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'blue', 'enabled': False},
             "ica": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'green', 'enabled': False},
-            "x2p": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'orange', 'enabled': False}
+            "x2p": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'orange', 'enabled': False},
+            "sim_neus": {'method': 'Jaccard', 'colormap': 'viridis'},
+            "sim_time": {'method': 'Cosine', 'colormap': 'plasma'},
         }
+        self.tempvars["showed_sim_maps"] = False
+
+        # Clean the combo box of results
+        elems_in_combox = self.enscomp_combo_select_result.count()
+        self.enscomp_combo_select_result.blockSignals(True)
+        for elem in range(elems_in_combox):
+            self.enscomp_combo_select_result.removeItem(elem)
+        self.enscomp_combo_select_result.blockSignals(False)
+
+        self.enscomp_combo_select_simil.setEnabled(False)
+        self.enscomp_combo_select_simil_method.setEnabled(False)
+        self.enscomp_combo_select_simil_colormap.setEnabled(False)
 
         self.enscomp_check_coords.setEnabled(False)
         self.enscomp_check_ens.setEnabled(False)
@@ -404,13 +440,6 @@ class MainWindow(QMainWindow):
             self.enscomp_check_behavior_stim.setEnabled(False)
             self.enscomp_btn_color_behavior.setEnabled(False)
 
-        self.enscom_colors = {
-            'svd': 'red',
-            'ica': 'blue',
-            'pca': 'green',
-            'x2p': 'orange'
-        }
-
         self.tempvars['performance_shown_results'] = False
         self.tempvars['performance_shown_tab0'] = False
         self.tempvars['performance_shown_tab1'] = False
@@ -445,6 +474,12 @@ class MainWindow(QMainWindow):
         default_txt = "Perform and select at least one analysis and load\n behavior data to see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').reset(default_txt)
         #self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').canvas.setFixedHeight(400)
+
+        default_txt = "Perform and select at least one analysis\n to see the metrics"
+        self.findChild(MatplotlibWidget, 'enscomp_plot_map').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'enscomp_plot_neusact').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'enscomp_plot_sim_times').reset(default_txt)
 
     def browse_files(self):
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file')
@@ -1886,10 +1921,10 @@ class MainWindow(QMainWindow):
         selector_label_max.setText(f"{self.results[algorithm]['ensembles_cant']}")
         # Update the toolbox options
         self.enscomp_visopts[algorithm]['enabled'] = True
-        #self.enscomp_check_coords.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
-        #self.enscomp_check_ens.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
-        #self.enscomp_check_neus.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
-        #self.enscomp_btn_color.setEnabled(self.enscomp_visopts[algorithm]['enabled'])
+        self.enscomp_combo_select_simil.setEnabled(True)
+        self.enscomp_combo_select_simil_method.setEnabled(True)
+        self.enscomp_combo_select_simil_colormap.setEnabled(True)
+
     
     def ensembles_compare_update_combo_results(self, text):
         self.enscomp_check_coords.blockSignals(True)
@@ -2055,36 +2090,81 @@ class MainWindow(QMainWindow):
             self.enscomp_visopts[current_method]['color'] = color_hex
             self.ensembles_compare_update_ensembles()
 
-    def ensembles_compare_similarity(self, methods, criteria, method):
+    def ensembles_compare_similarity(self, component=None, first_show=False):
+        for i in range(2):
+            if component == "Neurons":
+                criteria = 'neus_in_ens'
+                key = "sim_neus"
+            elif component == "Timecourses":
+                criteria = 'timecourse'
+                key = "sim_time"
+            else:
+                component = self.enscomp_combo_select_simil.currentText()
+
         # Create the labels and the big matrix
         labels = []
         all_elements = []
-        for algorithm in methods:
+        for algorithm in list(self.results.keys()):
             elements = self.results[algorithm][criteria]
             for e_idx, element in enumerate(elements):
                 all_elements.append(element)
                 labels.append(f"{algorithm}-E{e_idx+1}")
         # Convert to numpy array
         all_elements = np.array(all_elements)
-        if method == 'cosine':
-            # Calculate cosine similarity
+
+        if not first_show:
+            method = self.enscomp_combo_select_simil_method.currentText()
+            color = self.enscomp_combo_select_simil_colormap.currentText()
+        else:
+            method = self.enscomp_visopts[key]['method']
+            color = self.enscomp_visopts[key]['colormap']
+
+        if method == 'Cosine':
             similarity_matrix = cosine_similarity(all_elements)
-        elif method == 'euclidean':
+        elif method == 'Euclidean':
             similarity_matrix = squareform(pdist(all_elements, metric='euclidean'))
-        elif method == 'correlation':
+        elif method == 'Correlation':
             similarity_matrix = np.corrcoef(all_elements)
-        elif method == 'jaccard':
+        elif method == 'Jaccard':
             jaccard_distances = pdist(all_elements, metric='jaccard')
             similarity_matrix = 1 - squareform(jaccard_distances)
 
+        if component == "Neurons":
+            plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements')
+            self.enscomp_visopts["sim_neus"]['method'] = method
+            self.enscomp_visopts["sim_neus"]['colormap'] = color
+        elif component == "Timecourses":
+            plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_times')
+            self.enscomp_visopts["sim_time"]['method'] = method
+            self.enscomp_visopts["sim_time"]['colormap'] = color
+        
+        plot_widget.enscomp_plot_similarity(similarity_matrix, labels, color)
+    
+    def ensembles_compare_similarity_update_combbox(self, text):
+        self.enscomp_combo_select_simil_method.blockSignals(True)
+        self.enscomp_combo_select_simil_colormap.blockSignals(True)
 
-        plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements')
-        plot_widget.enscomp_plot_similarity(similarity_matrix, labels)
+        if text == "Neurons":
+            key = "sim_neus"
+        elif text == "Timecourses":
+            key = "sim_time"
+        self.enscomp_combo_select_simil_method.setCurrentText(self.enscomp_visopts[key]['method'])
+        self.enscomp_combo_select_simil_colormap.setCurrentText(self.enscomp_visopts[key]['colormap'])
+
+        self.enscomp_combo_select_simil_method.blockSignals(False)
+        self.enscomp_combo_select_simil_colormap.blockSignals(False)
+
     
     def ensembles_compare_tabchange(self, index):
-        if index == 2:    # Spatial distributions
+        if index == 2 or index == 3:    # Any similarity maps tab
             if len(self.results) > 0:
-                self.ensembles_compare_similarity(list(self.results.keys()), 'neus_in_ens', 'cosine')
+                self.enscomp_combo_select_simil.setEnabled(True)
+                self.enscomp_combo_select_simil_method.setEnabled(True)
+                self.enscomp_combo_select_simil_colormap.setEnabled(True)
+                if not self.tempvars["showed_sim_maps"]:
+                    self.ensembles_compare_similarity(component="Neurons", first_show=True)
+                    self.ensembles_compare_similarity(component="Timecourses", first_show=True)
+                    self.tempvars["showed_sim_maps"] = True
 
     def performance_tabchange(self, index):
         if self.tempvars['performance_shown_results']:

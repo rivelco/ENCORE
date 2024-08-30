@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1182</width>
+    <width>1181</width>
     <height>801</height>
    </rect>
   </property>
@@ -36,7 +36,7 @@
        <number>4</number>
       </property>
       <property name="currentIndex">
-       <number>6</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -3140,7 +3140,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -4008,7 +4008,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
         <item>
          <widget class="QTabWidget" name="enscomp_tabs">
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="tab_47">
            <attribute name="title">
@@ -4046,11 +4046,21 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
           </widget>
           <widget class="QWidget" name="tab_49">
            <attribute name="title">
-            <string>All similarities</string>
+            <string>Similarities in members</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_79">
             <item>
              <widget class="MatplotlibWidget" name="enscomp_plot_sim_elements"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_50">
+           <attribute name="title">
+            <string>Similarities in timecouses</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_67">
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_sim_times"/>
             </item>
            </layout>
           </widget>
@@ -4197,18 +4207,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_66">
               <item>
-               <widget class="QComboBox" name="comboBox_3">
-                <item>
-                 <property name="text">
-                  <string>Neurons</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Timecourse</string>
-                 </property>
-                </item>
-               </widget>
+               <widget class="QComboBox" name="enscomp_combo_select_simil"/>
               </item>
               <item>
                <widget class="QWidget" name="widget_20" native="true">
@@ -4242,18 +4241,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QComboBox" name="comboBox">
-                   <item>
-                    <property name="text">
-                     <string>Jaccard</string>
-                    </property>
-                   </item>
-                   <item>
-                    <property name="text">
-                     <string>Correlation</string>
-                    </property>
-                   </item>
-                  </widget>
+                  <widget class="QComboBox" name="enscomp_combo_select_simil_method"/>
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_26">
@@ -4263,7 +4251,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QComboBox" name="comboBox_2"/>
+                  <widget class="QComboBox" name="enscomp_combo_select_simil_colormap"/>
                  </item>
                 </layout>
                </widget>
@@ -4456,7 +4444,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -4492,7 +4480,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -4528,7 +4516,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -4564,7 +4552,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
