@@ -278,6 +278,7 @@ class MainWindow(QMainWindow):
     def reset_gui(self):
         # Delete all previous results
         self.results = {}
+        self.algotrithm_results = {}
         self.params = {}
         self.varlabels = {}
         self.tempvars = {}
@@ -1132,6 +1133,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
+            self.algotrithm_results['svd'] = answer
             # Update pks and scut in case of automatic calculation
             self.svd_edit_pks.setText(f"{int(answer['pks'])}")
             self.svd_edit_scut.setText(f"{answer['scut']}")
@@ -1298,6 +1300,7 @@ class MainWindow(QMainWindow):
         plot_times = 0
         # Plot the results
         if answer != None:
+            self.algotrithm_results['pca'] = answer
             print(f"{log_flag} Plotting results...")
             start_time = time.time()
             self.plot_PCA_results(pars, answer)
@@ -1463,6 +1466,8 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done looking for patterns...")
 
         if answer != None:
+            self.algotrithm_results['ica'] = {}
+            self.algotrithm_results['ica']['patterns'] = answer
             assembly_templates = np.array(answer['AssemblyTemplates']).T
             print(f"{log_flag} Looking for assembly activity...")
             try:
@@ -1476,6 +1481,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
+            self.algotrithm_results['ica']['assembly_activity'] = answer
             start_time = time.time()
             time_projection = np.array(answer["time_projection"])
             ## Identify the significative values to binarize the matrix
@@ -1642,12 +1648,27 @@ class MainWindow(QMainWindow):
                 members = np.array(answer['Ensembles']['OnsembleNeurons'][ens_it]) - 1
                 members = members.astype(int)
                 clean_answer['OnsembleNeurons'][ens_it, members] = 1
+            answer['Ensembles']['OnsembleNeurons'] = clean_answer['OnsembleNeurons']
             clean_answer['OffsembleNeurons'] = np.zeros((cant_ens, self.cant_neurons))
             for ens_it in range(cant_ens):
                 members = np.array(answer['Ensembles']['OffsembleNeurons'][ens_it]) - 1
                 members = members.astype(int)
                 clean_answer['OffsembleNeurons'][ens_it, members] = 1
+            answer['Ensembles']['OffsembleNeurons'] = clean_answer['OffsembleNeurons']
+            # Clean other variables for the h5 save file
+            new_clean = {}
+            new_clean['Durations'] = {}
+            new_clean['Indices'] = {}
+            new_clean['Vectors'] = {}
+            for ens_it in range(cant_ens):
+                new_clean['Durations'][f"{ens_it}"] = np.array(answer['Ensembles']['Durations'][ens_it])
+                new_clean['Indices'][f"{ens_it}"] = np.array(answer['Ensembles']['Indices'][ens_it])
+                new_clean['Vectors'][f"{ens_it}"] = np.array(answer['Ensembles']['Vectors'][ens_it])
+            answer['Ensembles']['Vectors'] = new_clean['Vectors']
+            answer['Ensembles']['Indices'] = new_clean['Indices']
+            answer['Ensembles']['Durations'] = new_clean['Durations']
 
+            self.algotrithm_results['x2p'] = answer
             self.plot_X2P_results(clean_answer)
 
             print(f"{log_flag} Saving results...")
@@ -2321,11 +2342,12 @@ class MainWindow(QMainWindow):
                 self.save_data_to_hdf5(hdf_file, tmp)
                 tmp = {"parameters": self.params}
                 self.save_data_to_hdf5(hdf_file, tmp)
+                tmp = {"algorithm_results": self.algotrithm_results}
+                self.save_data_to_hdf5(hdf_file, tmp)
             self.update_console_log("Done saving.", "complete")
 
     def save_data_to_hdf5(self, group, data):
         for key, value in data.items():
-            print(key)
             if isinstance(value, dict):
                 subgroup = group.create_group(str(key))
                 self.save_data_to_hdf5(subgroup, value)
@@ -2333,7 +2355,7 @@ class MainWindow(QMainWindow):
                 try:
                     group.create_dataset(key, data=value)
                 except:
-                    print(" -> error")
+                    print(f" GUI Saving: Could not save a variable called {key}, maybe it is not a matrix nor scalar.")
             else:
                 group[key] = value
 
