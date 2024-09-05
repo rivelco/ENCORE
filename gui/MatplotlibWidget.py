@@ -1,17 +1,45 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFileDialog
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from matplotlib.patches import Wedge
+
+class CustomNavigationToolbar(NavigationToolbar):
+    def __init__(self, canvas, parent=None):
+        super().__init__(canvas, parent)
+
+    def save_figure(self, *args):
+        # Add options for both SVG and PNG file types
+        options = "SVG files (*.svg);;PNG files (*.png);;All files (*)"
+        filename, filetype = QFileDialog.getSaveFileName(self, "Save Figure", "", options)
+        
+        if filename:
+            # Check and append the correct file extension if not present
+            if filetype == "SVG files (*.svg)" and not filename.endswith('.svg'):
+                filename += '.svg'
+            elif filetype == "PNG files (*.png)" and not filename.endswith('.png'):
+                filename += '.png'
+
+            # Set SVG font type to 'none' to preserve text as text in SVG
+            if filename.endswith('.svg'):
+                mpl.rcParams['svg.fonttype'] = 'none'
+            else:
+                mpl.rcParams['svg.fonttype'] = 'path'  # Default behavior for PNG
+            
+            # Save the figure with the selected format
+            format = 'svg' if filename.endswith('.svg') else 'png'
+            self.canvas.figure.savefig(filename, format=format)
 
 class MatplotlibWidget(QWidget):
     def __init__(self, rows=1, cols=1, parent=None):
         super().__init__(parent)
         self.canvas = FigureCanvas(Figure())
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.toolbar = CustomNavigationToolbar(self.canvas, self)
+        #self.toolbar = NavigationToolbar(self.canvas, self)
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.canvas)
