@@ -16,7 +16,7 @@ from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal
-from PyQt6.QtGui import QTextCursor, QDoubleValidator
+from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator
 
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
@@ -157,14 +157,6 @@ class MainWindow(QMainWindow):
         double_validator = QDoubleValidator()
         double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
 
-        # For the edit options
-        double_validator.setRange(0, 1000000.0, 10)
-        self.edit_edit_binsize.setValidator(double_validator)
-        self.edit_edit_xstart.setValidator(double_validator)
-        self.edit_edit_xend.setValidator(double_validator)
-        self.edit_edit_ystart.setValidator(double_validator)
-        self.edit_edit_yend.setValidator(double_validator)
-
         double_validator.setRange(-1000000.0, 1000000.0, 10)
         ## Set validators to QLineEdit widgets
         # For the SVD analysis
@@ -236,6 +228,9 @@ class MainWindow(QMainWindow):
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
 
         # Populate the similarity maps combo box
+        double_validator.setRange(0.0, 100.0, 2)
+        self.enscomp_visopts_neusize.setValidator(double_validator)
+
         similarity_items = ["Neurons", "Timecourses"]
         similarity_methods = ["Cosine", "Euclidean", "Correlation", "Jaccard"]
         similarity_colors = ["viridis", "plasma", "coolwarm", "magma", "Spectral"]
@@ -394,6 +389,11 @@ class MainWindow(QMainWindow):
             "sim_time": {'method': 'Cosine', 'colormap': 'plasma'},
         }
         self.tempvars["showed_sim_maps"] = False
+
+        # The general options
+        self.enscomp_visopts_showcells.setEnabled(False)
+        self.enscomp_visopts_neusize.setEnabled(False)
+        self.enscomp_visopts_setneusize.setEnabled(False)
 
         # Clean the combo box of results
         elems_in_combox = self.enscomp_combo_select_result.count()
@@ -786,24 +786,28 @@ class MainWindow(QMainWindow):
     def view_dFFo(self):
         self.currently_visualizing = "dFFo"
         self.set_able_edit_options(True)
+        self.update_edit_validators(lim_sup_x=self.data_dFFo.shape[1], lim_sup_y=self.data_dFFo.shape[0])
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell')
         self.varlabels_setup_tab(self.data_dFFo.shape[0])
     def view_neuronal_activity(self):
         self.currently_visualizing = "neuronal_activity"
         self.set_able_edit_options(True)
+        self.update_edit_validators(lim_sup_x=self.data_neuronal_activity.shape[1], lim_sup_y=self.data_neuronal_activity.shape[0])
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray')
         self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
     def view_coordinates(self):
         self.currently_visualizing = "coordinates"
         self.set_able_edit_options(True)
+        self.update_edit_validators(lim_sup_x=2, lim_sup_y=self.data_coordinates.shape[0])
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         self.plot_widget.preview_coordinates2D(self.data_coordinates)
         self.varlabels_setup_tab(self.data_coordinates.shape[0])
     def view_stims(self):
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
+        self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0])
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_stims
         if len(preview_data.shape) == 1:
@@ -815,6 +819,7 @@ class MainWindow(QMainWindow):
     def view_cells(self):
         self.currently_visualizing = "cells"
         self.set_able_edit_options(True)
+        self.update_edit_validators(lim_sup_x=self.data_cells.shape[1], lim_sup_y=self.data_cells.shape[0])
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_cells
         if len(preview_data.shape) == 1:
@@ -825,6 +830,7 @@ class MainWindow(QMainWindow):
     def view_behavior(self):
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
+        self.update_edit_validators(lim_sup_x=self.data_behavior.shape[1], lim_sup_y=self.data_behavior.shape[0])
         self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
         if len(preview_data.shape) == 1:
@@ -863,6 +869,16 @@ class MainWindow(QMainWindow):
             self.data_behavior = self.data_behavior.T
             self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
             self.view_behavior()
+
+    def update_edit_validators(self, lim_sup_x=10000000, lim_sup_y=10000000):
+        # For the edit options
+        int_validator = QIntValidator(0, lim_sup_x)
+        self.edit_edit_binsize.setValidator(int_validator)
+        self.edit_edit_xstart.setValidator(int_validator)
+        self.edit_edit_xend.setValidator(int_validator)
+        int_validator = QIntValidator(0, lim_sup_y)
+        self.edit_edit_ystart.setValidator(int_validator)
+        self.edit_edit_yend.setValidator(int_validator)
 
     def bin_matrix(self, mat, bin_size, bin_method):
         elements, timepoints = mat.shape
@@ -1970,6 +1986,11 @@ class MainWindow(QMainWindow):
             selector_label_min = self.enscomp_slider_lbl_min_x2p
             selector_label_max = self.enscomp_slider_lbl_max_x2p
 
+        # Enable the general visualization options
+        self.enscomp_visopts_showcells.setEnabled(True)
+        self.enscomp_visopts_neusize.setEnabled(True)
+        self.enscomp_visopts_setneusize.setEnabled(True)
+        
         # Only add the new algorithm if it's not there already
         combo_string = algorithm.upper()
         index_match = self.enscomp_combo_select_result.findText(combo_string)
