@@ -33,7 +33,7 @@
        <bool>true</bool>
       </property>
       <property name="toolTipDuration">
-       <number>4</number>
+       <number>-1</number>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -103,6 +103,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Visualize the current dFFo variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>dFFo/FFo</string>
                 </property>
@@ -112,6 +118,12 @@
                <widget class="QPushButton" name="btn_view_neuronal_activity">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Visualize the current Binary Cell Activity variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Binary cell activity</string>
@@ -123,6 +135,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Visualize the current Coordinates variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Coordinates</string>
                 </property>
@@ -132,6 +150,12 @@
                <widget class="QPushButton" name="btn_view_stim">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Visualize the current Stimulation variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Stimulation</string>
@@ -143,6 +167,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Visualize the current Cells variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Cells</string>
                 </property>
@@ -152,6 +182,12 @@
                <widget class="QPushButton" name="btn_view_behavior">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Visualize the current Behavior variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Behavior</string>
@@ -287,7 +323,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="toolTip">
-                  <string>Bin matrix on the x axis. Usefull electrical recordings.</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bin matrix on the x axis. &lt;/p&gt;&lt;p&gt;Useful for electrical recordings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="toolTipDuration">
                   <number>5000</number>
@@ -348,9 +384,7 @@ Use it to remove part of your dataset.</string>
                   <bool>false</bool>
                  </property>
                  <property name="toolTip">
-                  <string>Transpose the dataset. It actually modifies the stored data.
-Use it to math the interpretation of your data.
-Use the axes labels as a guide.</string>
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
                  <property name="toolTipDuration">
                   <number>5000</number>
@@ -627,6 +661,12 @@ Index 0 based.</string>
                  <layout class="QVBoxLayout" name="verticalLayout_60">
                   <item>
                    <widget class="QPushButton" name="btn_set_labels">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the custom labels.&lt;/p&gt;&lt;p&gt;Verify the index of every element in the table and the name you have provided.&lt;/p&gt;&lt;p&gt;If you don't specify a label then the item index will be used as label.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
                     <property name="text">
                      <string>Save labels</string>
                     </property>
@@ -634,6 +674,12 @@ Index 0 based.</string>
                   </item>
                   <item>
                    <widget class="QPushButton" name="btn_clear_labels">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all the labels for the current dataset.&lt;/p&gt;&lt;p&gt;After this, every item will be recognized only by its index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
                     <property name="text">
                      <string>Delete all the labels</string>
                     </property>
@@ -680,7 +726,7 @@ Index 0 based.</string>
               <bool>false</bool>
              </property>
              <property name="toolTip">
-              <string>Select the file to open</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a file to open.&lt;/p&gt;&lt;p&gt;Consider that opening a new file &lt;span style=&quot; font-weight:700;&quot;&gt;do not delete&lt;/span&gt; the current assigned variables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="toolTipDuration">
               <number>5000</number>
@@ -705,7 +751,7 @@ Index 0 based.</string>
            <item>
             <widget class="QLineEdit" name="browser_var_info">
              <property name="toolTip">
-              <string>Description of the selected variable.</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Description of the selected variable.&lt;/p&gt;&lt;p&gt;Here you can see if a variable is a scalar or a dataset (matrix).&lt;/p&gt;&lt;p&gt;Depending on the variable description it can be assigned to an environment variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="toolTipDuration">
               <number>5000</number>
@@ -762,6 +808,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the behavior matrix.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain a &lt;span style=&quot; font-weight:700;&quot;&gt;collection of behaviors in time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Every row will be interpreted as a different behavior. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Behavior</string>
                 </property>
@@ -788,6 +840,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the coordinates.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;coordinates of the center of every cell&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;Consider that only the first two dimentions would be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Coordinates</string>
                 </property>
@@ -795,6 +853,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="1">
                <widget class="QLabel" name="lbl_neuronal_activity_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Binary Cell activity variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -845,6 +909,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the binary activity of every cell.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;binary activation of every cell in time&lt;/span&gt;, like a rasterplot.&lt;/p&gt;&lt;p&gt;This matrix should be binary, only 1's and 0's or True and False values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Binary cell activity</string>
                 </property>
@@ -852,6 +922,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="5">
                <widget class="QLabel" name="lbl_behavior_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Behavior variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -865,6 +941,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as a stimulation matrix.&lt;/p&gt;&lt;p&gt;This should be a binary matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;a collection of stimuli in time&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;Every row can be a different stimuli and the presence of this stimulation should be noted with a 1 value.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Stimulation</string>
                 </property>
@@ -872,6 +954,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="3">
                <widget class="QLabel" name="lbl_stim_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Stimulation variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -905,6 +993,12 @@ Index 0 based.</string>
                <widget class="QPushButton" name="btn_set_dFFo">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the dFFo.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;fluorescence of every cell in time&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>dFFo/FFo</string>
@@ -971,6 +1065,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="lbl_dffo_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the dFFo variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -997,6 +1097,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="2">
                <widget class="QLabel" name="lbl_coordinates_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Coordinates variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -1013,6 +1119,9 @@ Index 0 based.</string>
                 <property name="toolTip">
                  <string>Removes the Stimulation variable.</string>
                 </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -1022,6 +1131,12 @@ Index 0 based.</string>
                <widget class="QPushButton" name="btn_set_cells">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the cells matrix.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain a &lt;span style=&quot; font-weight:700;&quot;&gt;collection of groups of cells&lt;/span&gt;, gouped by any mean.&lt;/p&gt;&lt;p&gt;Every row would be interpreted as a individual group. Every column will represent a different cell. If you want to include the cell &lt;span style=&quot; font-style:italic;&quot;&gt;i&lt;/span&gt; in the group&lt;span style=&quot; font-style:italic;&quot;&gt; j&lt;/span&gt;, then the row &lt;span style=&quot; font-style:italic;&quot;&gt;j &lt;/span&gt;column&lt;span style=&quot; font-style:italic;&quot;&gt; i&lt;/span&gt; should have a value of 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Cells</string>
@@ -1046,6 +1161,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="4">
                <widget class="QLabel" name="lbl_cells_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Cells variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -1333,7 +1454,7 @@ in two or more different ensembles.</string>
                  <item row="12" column="1">
                   <widget class="QPushButton" name="svd_btn_defaults">
                    <property name="toolTip">
-                    <string>Load default parameters.</string>
+                    <string>Load default parameters for the SVD analysis.</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>5000</number>
@@ -1415,6 +1536,12 @@ in two or more different ensembles.</string>
                <widget class="QPushButton" name="btn_run_svd">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Run the SVD analysis with the current parameters.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Perform analysis</string>
@@ -1803,7 +1930,7 @@ part of the analysis</string>
                  <item row="8" column="1">
                   <widget class="QPushButton" name="pca_btn_defaults">
                    <property name="toolTip">
-                    <string>Load default parameters.</string>
+                    <string>Load default parameters for the PCA analysis.</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>5000</number>
@@ -1833,6 +1960,12 @@ part of the analysis</string>
                <widget class="QPushButton" name="btn_run_pca">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Run the PCA analysis with the current parameters.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Perform analysis</string>
@@ -2365,7 +2498,7 @@ chosen.</string>
                  <item>
                   <widget class="QPushButton" name="ica_btn_defaults">
                    <property name="toolTip">
-                    <string>Load default parameters.</string>
+                    <string>Load default parameters for the ICA analysis.</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>5000</number>
@@ -2395,6 +2528,12 @@ chosen.</string>
                <widget class="QPushButton" name="btn_run_ica">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Run the ICA analysis with the current parameters.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Perform analysis</string>
@@ -2674,6 +2813,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
               </item>
               <item row="9" column="1">
                <widget class="QPushButton" name="x2p_btn_defaults">
+                <property name="toolTip">
+                 <string>Load default parameters for the Xsembles2P analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Load default values</string>
                 </property>
@@ -2712,6 +2857,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             <widget class="QPushButton" name="btn_run_x2p">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Run the Xsembles2P analysis with the current parameters.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>Perform analysis</string>
@@ -2860,6 +3011,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the SVD analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>SVD</string>
              </property>
@@ -2869,6 +3026,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
             <widget class="QPushButton" name="ensvis_btn_pca">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the PCA analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>PCA</string>
@@ -2880,6 +3043,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the ICA analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>ICA</string>
              </property>
@@ -2890,6 +3059,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the Xsembles2P analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Xsembles2P</string>
              </property>
@@ -2899,6 +3074,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
             <widget class="QPushButton" name="ensvis_btn_sgc">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the SGC analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>SGC</string>
@@ -2995,6 +3176,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </item>
                <item>
                 <widget class="QLineEdit" name="ensvis_edit_numens">
+                 <property name="toolTip">
+                  <string>Number of ensembles detected by the selected analysis.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
@@ -3026,6 +3213,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                       <bold>true</bold>
                      </font>
                     </property>
+                    <property name="toolTip">
+                     <string>Index (base 1) of the currently shown ensemble.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
                     <property name="text">
                      <string>1</string>
                     </property>
@@ -3035,6 +3228,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <widget class="QSlider" name="envis_slide_selectedens">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="toolTip">
+                     <string>Slide the selector to visualize a different ensemble.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
                     </property>
                     <property name="minimum">
                      <number>1</number>
@@ -3079,6 +3278,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </property>
                   <item row="1" column="0">
                    <widget class="QCheckBox" name="ensvis_check_onlyens">
+                    <property name="toolTip">
+                     <string>When checked, the map only shows the cells in the current ensemble. When not selected the map show all the recorded cells.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
                     <property name="text">
                      <string>Show only ensemble cells</string>
                     </property>
@@ -3086,6 +3291,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </item>
                   <item row="1" column="1">
                    <widget class="QCheckBox" name="ensvis_check_cellnum">
+                    <property name="toolTip">
+                     <string>Change to show/hide the index number of every cell (base 0)</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
                     <property name="text">
                      <string>Show cell number</string>
                     </property>
@@ -3093,6 +3304,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </item>
                   <item row="2" column="0">
                    <widget class="QCheckBox" name="ensvis_check_onlycont">
+                    <property name="toolTip">
+                     <string>When selected the neurons are shown as empty circles. When not selected the cells are shown as filled circles.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
                     <property name="text">
                      <string>Show only contours</string>
                     </property>
@@ -3103,6 +3320,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </item>
                <item>
                 <widget class="QLabel" name="label_11">
+                 <property name="toolTip">
+                  <string>Index of the cells that belongs to the selected ensemble (base 0).</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="text">
                   <string>Members of this ensemble</string>
                  </property>
@@ -3110,6 +3333,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </item>
                <item>
                 <widget class="QTextEdit" name="ensvis_edit_members">
+                 <property name="toolTip">
+                  <string/>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -3117,6 +3343,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </item>
                <item>
                 <widget class="QLabel" name="label_15">
+                 <property name="toolTip">
+                  <string>Index of the cells that belong only to the selected ensemble (base 0).</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="text">
                   <string>Exclusive members of this ensemble</string>
                  </property>
@@ -3134,6 +3366,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </item>
                <item>
                 <widget class="QLabel" name="label_12">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Timepoints of activation of the selected ensemble, in the same temporal unit of the input Binary Neuronal Activity data.&lt;/p&gt;&lt;p&gt;It is the index of every 1 in the rasterplot for this ensemble (base 0).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="text">
                   <string>Timepoints of activation</string>
                  </property>
@@ -3192,8 +3430,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
-                 <height>89</height>
+                 <width>1113</width>
+                 <height>481</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -3368,6 +3606,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;SVD&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="maximum">
                           <number>1</number>
                          </property>
@@ -3394,6 +3638,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                           <font>
                            <bold>true</bold>
                           </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the SVD analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
                          </property>
                          <property name="text">
                           <string>2</string>
@@ -3513,6 +3763,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;PCA&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="maximum">
                           <number>1</number>
                          </property>
@@ -3542,6 +3798,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                           <font>
                            <bold>true</bold>
                           </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the PCA analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
                          </property>
                          <property name="text">
                           <string>2</string>
@@ -3658,6 +3920,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;ICA&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="maximum">
                           <number>1</number>
                          </property>
@@ -3684,6 +3952,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                           <font>
                            <bold>true</bold>
                           </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the ICA analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
                          </property>
                          <property name="text">
                           <string>2</string>
@@ -3766,6 +4040,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                         <bold>true</bold>
                        </font>
                       </property>
+                      <property name="toolTip">
+                       <string/>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>-1</number>
+                      </property>
                       <property name="text">
                        <string>Xsembles2P</string>
                       </property>
@@ -3800,6 +4080,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                            <verstretch>0</verstretch>
                           </sizepolicy>
                          </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;Xsembles2P&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
                          <property name="maximum">
                           <number>1</number>
                          </property>
@@ -3826,6 +4112,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                           <font>
                            <bold>true</bold>
                           </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the Xsembles2P analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
                          </property>
                          <property name="text">
                           <string>2</string>
@@ -3908,6 +4200,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different stimulus from the Stimulation input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="maximum">
                     <number>1</number>
                    </property>
@@ -3935,6 +4233,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                      <bold>true</bold>
                     </font>
                    </property>
+                   <property name="toolTip">
+                    <string>Total number of stimulus.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>2</string>
                    </property>
@@ -3949,6 +4253,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  <font>
                   <bold>true</bold>
                  </font>
+                </property>
+                <property name="toolTip">
+                 <string>Label of the current stimulus.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Label</string>
@@ -4001,6 +4311,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different behavior from the Behavior input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
                    <property name="maximum">
                     <number>1</number>
                    </property>
@@ -4028,6 +4341,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                      <bold>true</bold>
                     </font>
                    </property>
+                   <property name="toolTip">
+                    <string>Total number of beaviors.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>2</string>
                    </property>
@@ -4042,6 +4361,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  <font>
                   <bold>true</bold>
                  </font>
+                </property>
+                <property name="toolTip">
+                 <string>Label of the current behavior.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Label</string>
@@ -4150,6 +4475,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <layout class="QVBoxLayout" name="verticalLayout_63">
               <item>
                <widget class="QCheckBox" name="enscomp_visopts_showcells">
+                <property name="toolTip">
+                 <string>Change to show/hide the cell index number (base 0).</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Show cell numbers</string>
                 </property>
@@ -4179,6 +4510,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QLineEdit" name="enscomp_visopts_neusize">
+                   <property name="toolTip">
+                    <string>Number in pixels of the diameter of every neuron.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>6</string>
                    </property>
@@ -4189,6 +4526,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </item>
                  <item>
                   <widget class="QToolButton" name="enscomp_visopts_setneusize">
+                   <property name="toolTip">
+                    <string>Set the size of the neurons.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
                    <property name="text">
                     <string>Set</string>
                    </property>
@@ -4213,10 +4556,23 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_69">
               <item>
-               <widget class="QComboBox" name="enscomp_combo_select_result"/>
+               <widget class="QComboBox" name="enscomp_combo_select_result">
+                <property name="toolTip">
+                 <string>Select the analysis to change its visualization properties.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="enscomp_check_coords">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change to show/hide from the map the cells of the selected ensemble as identified by the selected analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Show coords</string>
                 </property>
@@ -4227,6 +4583,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               </item>
               <item>
                <widget class="QCheckBox" name="enscomp_check_ens">
+                <property name="toolTip">
+                 <string>Change to show/hide the timecourse of the selected ensemble as identified by the selected analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Show ensemble timecourse</string>
                 </property>
@@ -4237,6 +4599,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               </item>
               <item>
                <widget class="QCheckBox" name="enscomp_check_neus">
+                <property name="toolTip">
+                 <string>Change to show/hide the sum of activity of the neurons in the selected ensemble as identified by the selected analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Show neurons activity</string>
                 </property>
@@ -4244,6 +4612,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               </item>
               <item>
                <widget class="QPushButton" name="enscomp_btn_color">
+                <property name="toolTip">
+                 <string>Pick the color of the ensembles of the selected analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Color pick</string>
                 </property>
@@ -4259,7 +4633,14 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_66">
               <item>
-               <widget class="QComboBox" name="enscomp_combo_select_simil"/>
+               <widget class="QComboBox" name="enscomp_combo_select_simil">
+                <property name="toolTip">
+                 <string>Select the map to modify its visualization properties.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+               </widget>
               </item>
               <item>
                <widget class="QWidget" name="widget_20" native="true">
@@ -4293,7 +4674,14 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </widget>
                  </item>
                  <item row="0" column="1">
-                  <widget class="QComboBox" name="enscomp_combo_select_simil_method"/>
+                  <widget class="QComboBox" name="enscomp_combo_select_simil_method">
+                   <property name="toolTip">
+                    <string>Select the method to use to compute the similarity of the items in the selected map.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                  </widget>
                  </item>
                  <item row="1" column="0">
                   <widget class="QLabel" name="label_26">
@@ -4303,7 +4691,14 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                   </widget>
                  </item>
                  <item row="1" column="1">
-                  <widget class="QComboBox" name="enscomp_combo_select_simil_colormap"/>
+                  <widget class="QComboBox" name="enscomp_combo_select_simil_colormap">
+                   <property name="toolTip">
+                    <string>Select the color map for the selected map.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -4325,6 +4720,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <layout class="QHBoxLayout" name="horizontalLayout_34">
               <item>
                <widget class="QCheckBox" name="enscomp_check_show_stim">
+                <property name="toolTip">
+                 <string>Change to show/hide the selected stimulus.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Show in time</string>
                 </property>
@@ -4332,6 +4733,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               </item>
               <item>
                <widget class="QPushButton" name="enscomp_btn_color_stim">
+                <property name="toolTip">
+                 <string>Pick the color for the simuli.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Color pick</string>
                 </property>
@@ -4348,6 +4755,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <layout class="QHBoxLayout" name="horizontalLayout_33">
               <item>
                <widget class="QCheckBox" name="enscomp_check_behavior_stim">
+                <property name="toolTip">
+                 <string>Change to show/hide the selected behavior.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Show in time</string>
                 </property>
@@ -4355,6 +4768,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               </item>
               <item>
                <widget class="QPushButton" name="enscomp_btn_color_behavior">
+                <property name="toolTip">
+                 <string>Pick the color of the behavior.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Color pick</string>
                 </property>
@@ -4396,6 +4815,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>When selected, the results from the SVD analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>SVD</string>
              </property>
@@ -4405,6 +4830,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
             <widget class="QCheckBox" name="performance_check_pca">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>When selected, the results from the PCA analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>PCA</string>
@@ -4416,6 +4847,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>When selected, the results from the ICA analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>ICA</string>
              </property>
@@ -4425,6 +4862,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
             <widget class="QCheckBox" name="performance_check_x2p">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>When selected, the results from the Xsembles2P analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>Xsembles2P</string>
@@ -4436,6 +4879,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>When selected, the results from the SGC analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>SGC</string>
              </property>
@@ -4445,6 +4894,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
             <widget class="QPushButton" name="performance_btn_compare">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Perform the comparision of the results of the selected analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>Compare</string>
@@ -4658,6 +5113,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </item>
            <item>
             <widget class="QCheckBox" name="save_check_input">
+             <property name="toolTip">
+              <string>Select to add the user input data to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Input user data</string>
              </property>
@@ -4668,6 +5129,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </item>
            <item>
             <widget class="QCheckBox" name="save_check_minimal">
+             <property name="toolTip">
+              <string>Select to add the minimal analysis results used by this GUI to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Minimal results used by Ensembles GUI</string>
              </property>
@@ -4678,6 +5145,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </item>
            <item>
             <widget class="QCheckBox" name="save_check_params">
+             <property name="toolTip">
+              <string>Select to add the analysis parameters to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Analysis parameters</string>
              </property>
@@ -4688,6 +5161,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </item>
            <item>
             <widget class="QCheckBox" name="save_check_full">
+             <property name="toolTip">
+              <string>Select to add all the results of every analysis to the file, even those that are not used by the GUI.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Full results of every analysis</string>
              </property>
@@ -4698,6 +5177,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </item>
            <item>
             <widget class="QCheckBox" name="save_check_enscomp">
+             <property name="toolTip">
+              <string>Select to add the similarity matrix of the analysis results to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Ensembles Compare analysis</string>
              </property>
@@ -4708,6 +5193,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            </item>
            <item>
             <widget class="QCheckBox" name="save_check_perf">
+             <property name="toolTip">
+              <string>Select to add the performance comparission matrix to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Performance Comparison</string>
              </property>
@@ -4725,8 +5216,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  <bool>false</bool>
                 </property>
                 <property name="toolTip">
-                 <string>Save the analysis results and used parameters
-to an HDF5 file.</string>
+                 <string>Save the selected data to an HDF5 file, useful for quick visualization of the results and to use across different platforms.</string>
                 </property>
                 <property name="toolTipDuration">
                  <number>5000</number>
@@ -4741,6 +5231,12 @@ to an HDF5 file.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Save the selected data as a Python Pickle file, useful for future use in Python.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Save as Python file (.pkl)</string>
                 </property>
@@ -4750,6 +5246,12 @@ to an HDF5 file.</string>
                <widget class="QPushButton" name="save_btn_mat">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Save the selected data as a MATLAB file, useful for later use in MATLAB.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Save as MATLAB file (.mat)</string>
