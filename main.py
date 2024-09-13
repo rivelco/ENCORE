@@ -8,6 +8,8 @@ import scipy.stats as stats
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import pdist, squareform
 import time
+from datetime import datetime
+import pickle
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
@@ -51,6 +53,12 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         loadUi("gui/MainWindow.ui", self)
         self.setWindowTitle('Ensembles GUI')
+
+        self.ensgui_desc = {
+            "analyzer": "EnsemblesGUI",
+            "date": "",
+            "gui_version": 2.0
+        }
 
         self.threadpool = QThreadPool()
 
@@ -260,7 +268,9 @@ class MainWindow(QMainWindow):
         self.performance_btn_compare.clicked.connect(self.performance_compare)
 
         # Saving
-        self.save_btn_save.clicked.connect(self.save_results)
+        self.save_btn_hdf5.clicked.connect(self.save_results_hdf5)
+        self.save_btn_pkl.clicked.connect(self.save_results_pkl)
+        self.save_btn_mat.clicked.connect(self.save_results_mat)
         
     def update_console_log(self, message, msg_type="log"):
         color_map = {"log": "#000000", "error": "#da1e28", "warning": "#ff832b", "complete": "#198038"}
@@ -303,7 +313,18 @@ class MainWindow(QMainWindow):
         self.performance_btn_compare.setEnabled(False)
 
         # Save tab
-        self.save_btn_save.setEnabled(False)
+        save_itms = [self.save_check_input,
+                self.save_check_minimal,
+                self.save_check_params,
+                self.save_check_full,
+                self.save_check_enscomp,
+                self.save_check_perf]
+        for itm in save_itms:
+            itm.setChecked(True)
+            itm.setEnabled(False)
+        save_btns = [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]
+        for btn in save_btns:
+            btn.setEnabled(False)
 
         # Clear the preview plots
         default_txt = "Load or select a variable\nto see a preview here"
@@ -615,6 +636,9 @@ class MainWindow(QMainWindow):
         self.lbl_dffo_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set dFFo dataset - Identified {neus} cells and {frames} time points. Please, verify the data preview.", msg_type="complete")
         self.view_dFFo()
+        self.save_check_input.setEnabled(True)
+        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+            btn.setEnabled(True)
     def set_neuronal_activity(self):
         data_neuronal_activity = assign_data_from_file(self)
         self.data_neuronal_activity = data_neuronal_activity
@@ -625,6 +649,9 @@ class MainWindow(QMainWindow):
         self.lbl_neuronal_activity_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Binary Neuronal Activity dataset - Identified {self.cant_neurons} cells and {self.cant_timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_neuronal_activity()
+        self.save_check_input.setEnabled(True)
+        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+            btn.setEnabled(True)
     def set_coordinates(self):
         data_coordinates = assign_data_from_file(self)
         self.data_coordinates = data_coordinates[:, 0:2]
@@ -635,6 +662,9 @@ class MainWindow(QMainWindow):
         self.lbl_coordinates_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Coordinates dataset - Identified {neus} cells and {dims} dimentions. Please, verify the data preview.", msg_type="complete")
         self.view_coordinates()
+        self.save_check_input.setEnabled(True)
+        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+            btn.setEnabled(True)
     def set_stims(self):
         data_stims = assign_data_from_file(self)
         self.data_stims = data_stims
@@ -645,6 +675,9 @@ class MainWindow(QMainWindow):
         self.lbl_stim_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_stims()
+        self.save_check_input.setEnabled(True)
+        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+            btn.setEnabled(True)
     def set_cells(self):
         data_cells = assign_data_from_file(self)
         self.data_cells = data_cells
@@ -655,6 +688,9 @@ class MainWindow(QMainWindow):
         self.lbl_cells_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Selected cells dataset - Identified {stims} groups and {cells} cells. Please, verify the data preview.", msg_type="complete")
         self.view_cells()
+        self.save_check_input.setEnabled(True)
+        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+            btn.setEnabled(True)
     def set_behavior(self):
         data_behavior = assign_data_from_file(self)
         self.data_behavior = data_behavior
@@ -665,6 +701,9 @@ class MainWindow(QMainWindow):
         self.lbl_behavior_select_name.setText(self.file_selected_var_name)
         self.update_console_log(f"Set Behavior dataset - Identified {behaviors} behaviors and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_behavior()
+        self.save_check_input.setEnabled(True)
+        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+            btn.setEnabled(True)
     
     def set_able_edit_options(self, boolval):
         # Transpose matrix
@@ -1719,7 +1758,6 @@ class MainWindow(QMainWindow):
 
 
     def we_have_results(self):
-        self.save_btn_save.setEnabled(True)
         for analysis_name in self.results.keys():
             if analysis_name == 'svd':
                 self.ensvis_btn_svd.setEnabled(True)
@@ -1737,6 +1775,13 @@ class MainWindow(QMainWindow):
                 self.ensvis_btn_x2p.setEnabled(True)
                 self.performance_check_x2p.setEnabled(True)
                 self.ensembles_compare_update_opts('x2p')
+        save_itms = [self.save_check_minimal,
+                self.save_check_params,
+                self.save_check_full,
+                self.save_check_enscomp,
+                self.save_check_perf]
+        for itm in save_itms:
+            itm.setEnabled(True)
         self.tempvars["showed_sim_maps"] = False
 
     def ensvis_tabchange(self, index):
@@ -2112,6 +2157,31 @@ class MainWindow(QMainWindow):
             self.enscomp_visopts[current_method]['color'] = color_hex
             self.ensembles_compare_update_ensembles()
 
+    def ensembles_compare_get_elements_labels(self, criteria):
+        labels = []
+        all_elements = []
+        for algorithm in list(self.results.keys()):
+            elements = self.results[algorithm][criteria]
+            for e_idx, element in enumerate(elements):
+                all_elements.append(element)
+                labels.append(f"{algorithm}-E{e_idx+1}")
+        # Convert to numpy array
+        all_elements = np.array(all_elements)
+        return all_elements, labels
+    
+    def ensembles_compare_get_simmatrix(self, method, all_elements):
+        similarity_matrix = []
+        if method == 'Cosine':
+            similarity_matrix = cosine_similarity(all_elements)
+        elif method == 'Euclidean':
+            similarity_matrix = squareform(pdist(all_elements, metric='euclidean'))
+        elif method == 'Correlation':
+            similarity_matrix = np.corrcoef(all_elements)
+        elif method == 'Jaccard':
+            jaccard_distances = pdist(all_elements, metric='jaccard')
+            similarity_matrix = 1 - squareform(jaccard_distances)
+        return similarity_matrix
+
     def ensembles_compare_similarity(self, component=None, first_show=False):
         for i in range(2):
             if component == "Neurons":
@@ -2124,15 +2194,7 @@ class MainWindow(QMainWindow):
                 component = self.enscomp_combo_select_simil.currentText()
 
         # Create the labels and the big matrix
-        labels = []
-        all_elements = []
-        for algorithm in list(self.results.keys()):
-            elements = self.results[algorithm][criteria]
-            for e_idx, element in enumerate(elements):
-                all_elements.append(element)
-                labels.append(f"{algorithm}-E{e_idx+1}")
-        # Convert to numpy array
-        all_elements = np.array(all_elements)
+        all_elements, labels = self.ensembles_compare_get_elements_labels(criteria)
 
         if not first_show:
             method = self.enscomp_combo_select_simil_method.currentText()
@@ -2141,15 +2203,7 @@ class MainWindow(QMainWindow):
             method = self.enscomp_visopts[key]['method']
             color = self.enscomp_visopts[key]['colormap']
 
-        if method == 'Cosine':
-            similarity_matrix = cosine_similarity(all_elements)
-        elif method == 'Euclidean':
-            similarity_matrix = squareform(pdist(all_elements, metric='euclidean'))
-        elif method == 'Correlation':
-            similarity_matrix = np.corrcoef(all_elements)
-        elif method == 'Jaccard':
-            jaccard_distances = pdist(all_elements, metric='jaccard')
-            similarity_matrix = 1 - squareform(jaccard_distances)
+        similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
 
         if component == "Neurons":
             plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements')
@@ -2246,7 +2300,8 @@ class MainWindow(QMainWindow):
         self.tempvars['performance_shown_tab3'] = False
         self.tempvars['performance_shown_tab4'] = False
         self.performance_tabs.setCurrentIndex(0)
-        self.update_corr_stim()
+        if hasattr(self, 'data_stims'):
+            self.update_corr_stim()
 
     def update_corr_stim(self):
         methods_to_compare = self.tempvars['methods_to_compare']
@@ -2332,19 +2387,96 @@ class MainWindow(QMainWindow):
                     cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                     cross_corrs.append(cross_corr)
                 self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper())          \
-                    
-    def save_results(self):
-        file_path, _ = QFileDialog.getSaveFileName(self, "Save HDF5 Results File", "", "HDF5 Files (*.h5);;All files(*)")
-        if file_path:
-            self.update_console_log("Saving results file...")
-            with h5py.File(file_path, 'w') as hdf_file:
-                tmp = {"results": self.results}
-                self.save_data_to_hdf5(hdf_file, tmp)
-                tmp = {"parameters": self.params}
-                self.save_data_to_hdf5(hdf_file, tmp)
-                tmp = {"algorithm_results": self.algotrithm_results}
-                self.save_data_to_hdf5(hdf_file, tmp)
-            self.update_console_log("Done saving.", "complete")
+
+    def get_data_to_save(self):
+        data = {}
+        now = datetime.now()
+        formatted_time = now.strftime("%d%m%y_%H%M%S")
+        self.ensgui_desc["date"] = formatted_time
+        data["EnsemblesGUI"] = self.ensgui_desc
+        if self.save_check_input.isChecked() and self.save_check_input.isEnabled():
+            print("GUI Save: Getting input data...")
+            data['input_data'] = {}
+            if hasattr(self, "data_dFFo"):
+                data['input_data']["dFFo"] = self.data_dFFo
+            if hasattr(self, "data_neuronal_activity"):
+                data['input_data']["neuronal_activity"] = self.data_neuronal_activity
+            if hasattr(self, "data_coordinates"):
+                data['input_data']["coordinates"] = self.data_coordinates
+            if hasattr(self, "data_stims"):
+                data['input_data']["stims"] = self.data_stims
+            if hasattr(self, "data_cells"):
+                data['input_data']["cells"] = self.data_cells
+            if hasattr(self, "data_behavior"):
+                data['input_data']["behavior"] = self.data_behavior
+        if self.save_check_minimal.isChecked() and self.save_check_minimal.isEnabled():
+            print("GUI Save: Getting minimal results...")
+            data['results'] = self.results
+        if self.save_check_params.isChecked() and self.save_check_params.isEnabled():
+            print("GUI Save: Getting analysis parameters...")
+            data["parameters"] = self.params
+        if self.save_check_full.isChecked() and self.save_check_full.isEnabled():
+            print("GUI Save: Getting algorithms full results...")
+            data['algorithms_results'] = self.algotrithm_results
+        if self.save_check_enscomp.isChecked() and self.save_check_enscomp.isEnabled():
+            print("GUI Save: Getting ensembles compare...")
+            data["ensembles_compare"] = {}
+            for criteria in ["neus_in_ens", "timecourse"]:
+                data["ensembles_compare"][criteria] = {}
+                all_elements, labels = self.ensembles_compare_get_elements_labels(criteria)
+                for method in ["Cosine", "Euclidean", "Correlation", "Jaccard"]:
+                    similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
+                    data["ensembles_compare"][criteria][method] = similarity_matrix
+            data["ensembles_compare"]["labels"] = labels
+        if self.save_check_perf.isChecked() and self.save_check_perf.isEnabled():
+            print("GUI Save: Getting ensembles performance...")
+            data["ensembles_performance"] = {}
+
+            data["ensembles_performance"]["correlation_cells"] = {}
+            for method in list(self.results.keys()):
+                data["ensembles_performance"]["correlation_cells"][method] = {}
+                for ens_idx, ens in enumerate(self.results[method]['neus_in_ens']):
+                    members = [c_idx for c_idx in range(len(ens)) if ens[c_idx] == 1]
+                    activity_neus_in_ens = self.data_neuronal_activity[members, :]
+                    correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
+                    data["ensembles_performance"]["correlation_cells"][method][f"Ensemble {ens_idx+1}"] = correlation
+
+            if hasattr(self, "data_stims"):
+                data["ensembles_performance"]["correlation_ensembles_stimuli"] = {}
+                stims = self.data_stims
+                for method in list(self.results.keys()):
+                    timecourse = self.results[method]['timecourse']
+                    correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+                    data["ensembles_performance"]["correlation_ensembles_stimuli"][method] = correlation
+                
+                data["ensembles_performance"]["crosscorr_ensembles_stimuli"] = {}
+                for method in self.results.keys():
+                    data["ensembles_performance"]["crosscorr_ensembles_stimuli"][method] = {}
+                    for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
+                        cross_corrs = []
+                        for stimtime in self.data_stims:
+                            cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
+                            cross_corrs.append(cross_corr)
+                        data["ensembles_performance"]["crosscorr_ensembles_stimuli"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
+            
+            if hasattr(self, "data_behavior"):
+                data["ensembles_performance"]["correlation_ensembles_behavior"] = {}
+                behavior = self.data_behavior
+                for method in list(self.results.keys()):
+                    timecourse = self.results[method]['timecourse']
+                    correlation = metrics.compute_correlation_with_stimuli(timecourse, behavior)
+                    data["ensembles_performance"]["correlation_ensembles_behavior"][method] = correlation
+                
+                data["ensembles_performance"]["crosscorr_ensembles_behavior"] = {}
+                for method in self.results.keys():
+                    data["ensembles_performance"]["crosscorr_ensembles_behavior"][method] = {}
+                    for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
+                        cross_corrs = []
+                        for stimtime in behavior:
+                            cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
+                            cross_corrs.append(cross_corr)
+                        data["ensembles_performance"]["crosscorr_ensembles_behavior"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
+        return data
 
     def save_data_to_hdf5(self, group, data):
         for key, value in data.items():
@@ -2358,6 +2490,34 @@ class MainWindow(QMainWindow):
                     print(f" GUI Saving: Could not save a variable called {key}, maybe it is not a matrix nor scalar.")
             else:
                 group[key] = value
+    def save_results_hdf5(self):
+        data_to_save = self.get_data_to_save()
+        proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save HDF5 Results File", proposed_name, "HDF5 Files (*.h5);;All files(*)")
+        if file_path:
+            self.update_console_log("Saving results in HDF5 file...")
+            with h5py.File(file_path, 'w') as hdf_file:
+                self.save_data_to_hdf5(hdf_file, data_to_save)
+            self.update_console_log("Done saving.", "complete")
+
+    def save_results_pkl(self):
+        data_to_save = self.get_data_to_save()
+        proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save PKL Results File", proposed_name, "Pickle Files (*.pkl);;All files(*)")
+        if file_path:
+            self.update_console_log("Saving results in Python Pickle file...")
+            with open(file_path, 'wb') as pkl_file:
+                pickle.dump(data_to_save, pkl_file)
+            self.update_console_log("Done saving.", "complete")
+
+    def save_results_mat(self):
+        data_to_save = self.get_data_to_save()
+        proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save MATLAB Results File", proposed_name, "MATLAB Files (*.mat);;All files(*)")
+        if file_path:
+            self.update_console_log("Saving results in MATLAB file...")
+            scipy.io.savemat(file_path, data_to_save)
+            self.update_console_log("Done saving.", "complete")
 
 app = QApplication(sys.argv)
 window = MainWindow()

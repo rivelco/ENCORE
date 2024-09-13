@@ -1399,6 +1399,19 @@ in two or more different ensembles.</string>
                </widget>
               </item>
               <item>
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
                <widget class="QPushButton" name="btn_run_svd">
                 <property name="enabled">
                  <bool>false</bool>
@@ -1802,6 +1815,19 @@ part of the analysis</string>
                  </item>
                 </layout>
                </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item>
                <widget class="QPushButton" name="btn_run_pca">
@@ -2353,6 +2379,19 @@ chosen.</string>
                </widget>
               </item>
               <item>
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
                <widget class="QPushButton" name="btn_run_ica">
                 <property name="enabled">
                  <bool>false</bool>
@@ -2655,6 +2694,19 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item>
             <widget class="QPushButton" name="btn_run_x2p">
@@ -4585,7 +4637,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
         <item>
          <widget class="QGroupBox" name="groupBox_26">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -4595,45 +4647,80 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_45">
            <item>
-            <widget class="QCheckBox" name="checkBox">
+            <widget class="QLabel" name="label_27">
              <property name="text">
-              <string>Save input user data</string>
+              <string>Select the data to save to a file.</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_2">
+            <widget class="QCheckBox" name="save_check_input">
              <property name="text">
-              <string>Save minimal results used by Ensembles GUI</string>
+              <string>Input user data</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_3">
+            <widget class="QCheckBox" name="save_check_minimal">
              <property name="text">
-              <string>Save full results of every analysis</string>
+              <string>Minimal results used by Ensembles GUI</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_4">
+            <widget class="QCheckBox" name="save_check_params">
              <property name="text">
-              <string>Save Ensembles Compare analysis</string>
+              <string>Analysis parameters</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBox_5">
+            <widget class="QCheckBox" name="save_check_full">
+             <property name="text">
+              <string>Full results of every analysis</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_enscomp">
+             <property name="text">
+              <string>Ensembles Compare analysis</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_perf">
              <property name="text">
               <string>Performance Comparison</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QWidget" name="widget_23" native="true">
-             <layout class="QHBoxLayout" name="horizontalLayout_36">
+             <layout class="QVBoxLayout" name="verticalLayout_68">
               <item>
-               <widget class="QPushButton" name="save_btn_save">
+               <widget class="QPushButton" name="save_btn_hdf5">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -4645,21 +4732,27 @@ to an HDF5 file.</string>
                  <number>5000</number>
                 </property>
                 <property name="text">
-                 <string>Save as HDF5 file</string>
+                 <string>Save as HDF5 file (.h5)</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton">
+               <widget class="QPushButton" name="save_btn_pkl">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
-                 <string>Save as MATLAB file</string>
+                 <string>Save as Python file (.pkl)</string>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="pushButton_2">
+               <widget class="QPushButton" name="save_btn_mat">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
                 <property name="text">
-                 <string>Save as Python PCK file</string>
+                 <string>Save as MATLAB file (.mat)</string>
                 </property>
                </widget>
               </item>
@@ -4685,7 +4778,7 @@ to an HDF5 file.</string>
         <item>
          <widget class="QGroupBox" name="groupBox_41">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
