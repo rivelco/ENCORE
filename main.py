@@ -216,6 +216,7 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        #self.enscomp_slider_stim.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
@@ -808,14 +809,15 @@ class MainWindow(QMainWindow):
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_stims
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("stims")
-        self.plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray')
+        stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
+        plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray', yitems_labels=stim_labels)
     def view_cells(self):
         self.currently_visualizing = "cells"
         self.set_able_edit_options(True)
@@ -1049,6 +1051,8 @@ class MainWindow(QMainWindow):
                 if len(item.text()) > 0:
                     new_label = item.text()
             self.varlabels[label_family][row] = new_label
+        if curr_view == "stims":
+            self.view_stims()
         self.update_console_log(f"Saved {label_family} labels. Please, verify the data preview.", "warning")
     def varlabels_clear(self):
         label_family = ""
@@ -2331,11 +2335,12 @@ class MainWindow(QMainWindow):
         self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
         self.plot_widget.set_subplots(1, plot_colums)
+        stim_labels = self.varlabels["stim"].values() if "stim" in self.varlabels else []
         for m_idx, method in enumerate(methods_to_compare):
             timecourse = self.results[method]['timecourse']
             stims = self.data_stims
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
-            self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())            
+            self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper(), stimuli_labels=stim_labels)            
     
     def update_correlation_cells(self):
         methods_to_compare = self.tempvars['methods_to_compare']
@@ -2369,13 +2374,15 @@ class MainWindow(QMainWindow):
             max_ens = max(self.results[method]['ensembles_cant'], max_ens)
         self.plot_widget.canvas.setFixedHeight(400*max_ens)
         self.plot_widget.set_subplots(max_ens, plot_colums)
+        stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
         for m_idx, method in enumerate(methods_to_compare):
             for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
                 cross_corrs = []
                 for stimtime in self.data_stims:
                     cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                     cross_corrs.append(cross_corr)
-                self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper())          
+                cross_corrs = np.array(cross_corrs)
+                self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper(), stimuli_labels=stim_labels)          
 
     def update_corr_behavior(self):
         methods_to_compare = self.tempvars['methods_to_compare']
