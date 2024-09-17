@@ -788,15 +788,17 @@ class MainWindow(QMainWindow):
         self.currently_visualizing = "dFFo"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_dFFo.shape[1], lim_sup_y=self.data_dFFo.shape[0])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell')
+        plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
+        plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell', yitems_labels=cell_labels)
         self.varlabels_setup_tab(self.data_dFFo.shape[0])
     def view_neuronal_activity(self):
         self.currently_visualizing = "neuronal_activity"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_neuronal_activity.shape[1], lim_sup_y=self.data_neuronal_activity.shape[0])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray')
+        plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
+        plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray', yitems_labels=cell_labels)
         self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
     def view_coordinates(self):
         self.currently_visualizing = "coordinates"
@@ -822,25 +824,27 @@ class MainWindow(QMainWindow):
         self.currently_visualizing = "cells"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_cells.shape[1], lim_sup_y=self.data_cells.shape[0])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_cells
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
-        self.plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray')
+        selectcell_labels = list(self.varlabels["selected_cell"].values()) if "selected_cell" in self.varlabels else []
+        plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
     def view_behavior(self):
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_behavior.shape[1], lim_sup_y=self.data_behavior.shape[0])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
         if len(preview_data.shape) == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("behavior")
-        self.plot_widget.preview_dataset(preview_data)
+        behavior_labels = list(self.varlabels["behavior"].values()) if "behavior" in self.varlabels else []
+        plot_widget.preview_dataset(preview_data, ylabel='Behavior', yitems_labels=behavior_labels)
 
     ## Edit buttons
     def edit_transpose(self):
@@ -1021,7 +1025,7 @@ class MainWindow(QMainWindow):
         self.table_setlabels.setHorizontalHeaderLabels([f"{new_colum_start} index", "Label"])
         labels_registered = label_family in self.varlabels
         for row in range(rows_cant):
-            self.table_setlabels.setItem(row, 0, QTableWidgetItem(str(row+1)))
+            self.table_setlabels.setItem(row, 0, QTableWidgetItem(str(row)))
             item = self.table_setlabels.item(row, 0)
             if item is not None: # Remove the ItemIsEditable flag
                 item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEditable)
@@ -1046,13 +1050,21 @@ class MainWindow(QMainWindow):
         # Iterate through each row to get the value of the labels column
         for row in range(self.table_setlabels.rowCount()):
             item = self.table_setlabels.item(row, 1)
-            new_label = str(row+1)
+            new_label = str(row)
             if item is not None:
                 if len(item.text()) > 0:
                     new_label = item.text()
             self.varlabels[label_family][row] = new_label
-        if curr_view == "stims":
+        if curr_view == "dFFo":
+            self.view_dFFo()
+        elif curr_view == "neuronal_activity":
+            self.view_neuronal_activity()
+        elif curr_view == "stims":
             self.view_stims()
+        elif curr_view == "cells":
+            self.view_cells()
+        elif curr_view == "behavior":
+            self.view_behavior()
         self.update_console_log(f"Saved {label_family} labels. Please, verify the data preview.", "warning")
     def varlabels_clear(self):
         label_family = ""
@@ -1067,6 +1079,17 @@ class MainWindow(QMainWindow):
             label_family = "behavior"
         if label_family in self.varlabels:
             del self.varlabels[label_family]
+            
+        if curr_view == "dFFo":
+            self.view_dFFo()
+        elif curr_view == "neuronal_activity":
+            self.view_neuronal_activity()
+        elif curr_view == "stims":
+            self.view_stims()
+        elif curr_view == "cells":
+            self.view_cells()
+        elif curr_view == "behavior":
+            self.view_behavior()
         self.varlabels_setup_tab(self.table_setlabels.rowCount())
         
     def dict_to_matlab_struct(self, pars_dict):
