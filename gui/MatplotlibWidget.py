@@ -86,9 +86,19 @@ class MatplotlibWidget(QWidget):
         self.axes.set_ylabel(ylabel)
         self.axes.set_xlim([0, t])
         self.axes.set_ylim([-0.5, n-0.5])
-        if len(yitems_labels) > 0:
+        num_user_labels = len(yitems_labels)
+        if num_user_labels > 0:
             self.axes.set_yticks(range(n))
-            self.axes.set_yticklabels(yitems_labels)
+            if num_user_labels == n:
+                self.axes.set_yticklabels(yitems_labels)
+            elif n > num_user_labels:
+                new_labels = list(range(num_user_labels, n))
+                new_labels = yitems_labels + new_labels
+                self.axes.set_yticklabels(new_labels)
+            elif n < num_user_labels:
+                new_labels = yitems_labels[:n]
+                self.axes.set_yticklabels(new_labels)
+                
         for side in ['left', 'top', 'right', 'bottom']:
             self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
@@ -638,12 +648,12 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_perf_correlations_ens_stim(self, correlations, col_idx, title=None, stimuli_labels=[]):
+    def plot_perf_correlations_ens_group(self, correlations, col_idx, title=None, xlabel="Group", group_labels=[]):
         self.axes[col_idx].clear()
 
         # Plot the correlation matrix as a heatmap
         cax = self.axes[col_idx].imshow(correlations, cmap='coolwarm', vmin=-1, vmax=1)
-        self.axes[col_idx].set_xlabel('Stims')
+        self.axes[col_idx].set_xlabel(xlabel)
         self.axes[col_idx].set_ylabel('Ensembles')
 
         self.canvas.figure.colorbar(cax, ax=self.axes[col_idx], orientation='vertical')
@@ -653,7 +663,7 @@ class MatplotlibWidget(QWidget):
 
         num_ens = correlations.shape[0]
         num_stim = correlations.shape[1]
-        stim_labels = stimuli_labels if len(stimuli_labels) > 0 else range(1, num_stim+1)
+        stim_labels = group_labels if len(group_labels) > 0 else range(1, num_stim+1)
         self.axes[col_idx].set_xticks(range(num_stim))
         self.axes[col_idx].set_yticks(range(num_ens))
         self.axes[col_idx].set_xticklabels(stim_labels)
@@ -694,14 +704,14 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_perf_cross_ens_stims(self, cross_corrs, lags, col_idx, row_idx, title=None, stimuli_labels=[]):
+    def plot_perf_cross_ens_stims(self, cross_corrs, lags, col_idx, row_idx, group_prefix="Group", title=None, group_labels=[]):
         self.axes[row_idx][col_idx].clear()
 
         # Plot the correlation matrix as a heatmap
         num_stim = cross_corrs.shape[0]
-        stim_labels = stimuli_labels if len(stimuli_labels) > 0 else range(1, num_stim+1)
+        stim_labels = group_labels if len(group_labels) > 0 else range(1, num_stim+1)
         for c_idx, cross_corr in enumerate(cross_corrs):
-            self.axes[row_idx][col_idx].plot(lags, cross_corr, label=f"Stim {stim_labels[c_idx]}")
+            self.axes[row_idx][col_idx].plot(lags, cross_corr, label=f"{group_prefix} {stim_labels[c_idx]}")
         self.axes[row_idx][col_idx].axhline(0, color='black', linestyle='--', linewidth=0.5)
         self.axes[row_idx][col_idx].set_xlabel('Lag')
         self.axes[row_idx][col_idx].set_ylabel('Cross correlation')
