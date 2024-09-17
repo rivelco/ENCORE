@@ -2350,53 +2350,66 @@ class MainWindow(QMainWindow):
         self.performance_tabs.setCurrentIndex(0)
         if hasattr(self, 'data_stims'):
             self.update_corr_stim()
+            self.tempvars['performance_shown_tab0'] = True
 
     def update_corr_stim(self):
+        plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
+        worker_corrstim = WorkerRunnable(self.update_corr_stim_parallel, plot_widget)
+        #worker_corrstim.signals.result_ready.connect(self.update_corr_stim_parallel_end)
+        self.threadpool.start(worker_corrstim) 
+    def update_corr_stim_parallel(self, plot_widget):   
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         # Calculate correlation with stimuli
-        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
-        self.plot_widget.set_subplots(1, plot_colums)
+        plot_widget.set_subplots(1, plot_colums)
         stim_labels = self.varlabels["stim"].values() if "stim" in self.varlabels else []
         for m_idx, method in enumerate(methods_to_compare):
             timecourse = self.results[method]['timecourse']
             stims = self.data_stims
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
-            self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper(), stimuli_labels=stim_labels)            
-    
+            plot_widget.plot_perf_correlations_ens_group(correlation, m_idx, title=f"{method}".upper(), xlabel="Stims", group_labels=stim_labels)            
+
     def update_correlation_cells(self):
+        plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
+        worker_corrcells = WorkerRunnable(self.update_correlation_cells_parallel, plot_widget)
+        #worker_corrcells.signals.result_ready.connect(self.update_corr_stim_parallel_end)
+        self.threadpool.start(worker_corrcells) 
+    def update_correlation_cells_parallel(self, plot_widget):   
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         # Plot the correlation of cells between themselves
-        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
         # Find the greatest number of ensembles
         max_ens = 0
         for method in methods_to_compare:
             max_ens = max(self.results[method]['ensembles_cant'], max_ens)
-        self.plot_widget.canvas.setFixedHeight(450*max_ens)
+        plot_widget.canvas.setFixedHeight(450*max_ens)
 
-        self.plot_widget.set_subplots(max_ens, plot_colums)
+        plot_widget.set_subplots(max_ens, plot_colums)
         for col_idx, method in enumerate(methods_to_compare):
             for row_idx, ens in enumerate(self.results[method]['neus_in_ens']):
                 members = [c_idx for c_idx in range(len(ens)) if ens[c_idx] == 1]
                 activity_neus_in_ens = self.data_neuronal_activity[members, :]
                 cells_names = [member+1 for member in members]
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
-                self.plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
+                plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
     def update_cross_ens_stim(self):
+        plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensstim')
+        worker_crosstim = WorkerRunnable(self.update_cross_ens_stim_parallel, plot_widget)
+        #worker_crosstim.signals.result_ready.connect(self.update_cross_ens_stim_end)
+        self.threadpool.start(worker_crosstim) 
+    def update_cross_ens_stim_parallel(self, plot_widget):    
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
         # Calculate cross-correlation
-        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensstim')
         max_ens = 0
         for method in methods_to_compare:
             max_ens = max(self.results[method]['ensembles_cant'], max_ens)
-        self.plot_widget.canvas.setFixedHeight(400*max_ens)
-        self.plot_widget.set_subplots(max_ens, plot_colums)
+        plot_widget.canvas.setFixedHeight(400*max_ens)
+        plot_widget.set_subplots(max_ens, plot_colums)
         stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
         for m_idx, method in enumerate(methods_to_compare):
             for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
@@ -2405,39 +2418,50 @@ class MainWindow(QMainWindow):
                     cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                     cross_corrs.append(cross_corr)
                 cross_corrs = np.array(cross_corrs)
-                self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper(), stimuli_labels=stim_labels)          
+                plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, group_prefix="Stim", title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper(), group_labels=stim_labels)          
 
     def update_corr_behavior(self):
+        plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior')
+        worker_corrbeha = WorkerRunnable(self.update_corr_behavior_parallel, plot_widget)
+        #worker_corrbeha.signals.result_ready.connect(self.update_cross_ens_stim_end)
+        self.threadpool.start(worker_corrbeha) 
+    def update_corr_behavior_parallel(self, plot_widget):
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
-        # Calculate correlation with stimuli
-        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior')
+        # Calculate correlation with stimuli 
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
-        self.plot_widget.set_subplots(1, plot_colums)
+        plot_widget.set_subplots(1, plot_colums)
+        behavior_labels = self.varlabels["behavior"].values() if "behavior" in self.varlabels else []
         for m_idx, method in enumerate(methods_to_compare):
             timecourse = self.results[method]['timecourse']
             stims = self.data_behavior
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
-            self.plot_widget.plot_perf_correlations_ens_stim(correlation, m_idx, title=f"{method}".upper())
+            plot_widget.plot_perf_correlations_ens_group(correlation, m_idx, title=f"{method}".upper(), xlabel="Behavior", group_labels=behavior_labels)
 
     def update_cross_behavior(self):
+        plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior')
+        worker_crossbeha = WorkerRunnable(self.update_cross_behavior_parallel, plot_widget)
+        #worker_crossbeha.signals.result_ready.connect(self.update_cross_ens_stim_end)
+        self.threadpool.start(worker_crossbeha)
+    def update_cross_behavior_parallel(self, plot_widget):
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
         # Calculate cross-correlation
-        self.plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior')
         max_ens = 0
         for method in methods_to_compare:
             max_ens = max(self.results[method]['ensembles_cant'], max_ens)
-        self.plot_widget.canvas.setFixedHeight(400*max_ens)
-        self.plot_widget.set_subplots(max_ens, plot_colums)
+        plot_widget.canvas.setFixedHeight(400*max_ens)
+        plot_widget.set_subplots(max_ens, plot_colums)
+        behavior_labels = list(self.varlabels["behavior"].values()) if "behavior" in self.varlabels else []
         for m_idx, method in enumerate(methods_to_compare):
             for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
                 cross_corrs = []
                 for stimtime in self.data_behavior:
                     cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                     cross_corrs.append(cross_corr)
-                self.plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper())          \
+                cross_corrs = np.array(cross_corrs)
+                plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, group_prefix="Beha", title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper(), group_labels=behavior_labels)
 
     def get_data_to_save(self):
         data = {}
