@@ -30,7 +30,11 @@ pks = pars.pks;
 scut = pars.scut;
 hcut = pars.hcut;
 statecut = pars.statecut;
+csi_vec_start = pars.csi_start;
+csi_vec_step = pars.csi_step;
+csi_vec_end = pars.csi_end;
 tf_idf_norm = pars.tf_idf_norm;
+parallel_processing = pars.parallel_processing;
 
 %pks = [3]; % default 4, leave it empty if you want an automated threshold
 
@@ -64,9 +68,9 @@ state_cut = round(size(Spikes,1)/statecut); % maximum number of states is a frac
 % Percent cut to determine the cells that weigh more in each state. 
 % 0.25 gives me ~ 15 cells in the largest state
 % csi_cut = 0.15;
-csi_vec_start = 0.01;
-csi_vec_step = 0.01;
-csi_vec_end = 0.1;
+% csi_vec_start = 0.01;
+% csi_vec_step = 0.01;
+% csi_vec_end = 0.1;
 csi_vec = csi_vec_start:csi_vec_step:csi_vec_end;
 % here I'm selecting this threshold by cross-validation - this is the range
 % of the parameter that the code will test
@@ -94,7 +98,20 @@ end
 % calculate cosine similarity of tf-idf matrix
 % S_index_ti = sindex(tf_idf_Rasterbin);
 disp("> Calculating cosine similarity...")
-S_index_ti = 1-pdist2(tf_idf_Rasterbin',tf_idf_Rasterbin','cosine'); % this function is faster
+if parallel_processing
+    parpool('local');
+    % Assuming rasterbin is your input matrix
+    n = size(tf_idf_Rasterbin, 2); % Number of columns (vectors)
+    S_index_ti = zeros(n, n); % Preallocate the result matrix
+
+    % Use parfor to parallelize the loop
+    parfor i = 1:n
+        % Compute the cosine similarity of the i-th vector with all others
+        S_index_ti(i, :) = 1 - pdist2(tf_idf_Rasterbin(:, i)', tf_idf_Rasterbin', 'cosine');
+    end
+else
+    S_index_ti = 1-pdist2(tf_idf_Rasterbin',tf_idf_Rasterbin','cosine'); % this function is faster
+end
 
 % threshold of noise
 if isempty(scut)

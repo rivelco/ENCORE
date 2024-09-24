@@ -1,16 +1,45 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QFileDialog
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QSizePolicy
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+from matplotlib.patches import Wedge
+
+class CustomNavigationToolbar(NavigationToolbar):
+    def __init__(self, canvas, parent=None):
+        super().__init__(canvas, parent)
+
+    def save_figure(self, *args):
+        # Add options for both SVG and PNG file types
+        options = "SVG files (*.svg);;PNG files (*.png);;All files (*)"
+        filename, filetype = QFileDialog.getSaveFileName(self, "Save Figure", "", options)
+        
+        if filename:
+            # Check and append the correct file extension if not present
+            if filetype == "SVG files (*.svg)" and not filename.endswith('.svg'):
+                filename += '.svg'
+            elif filetype == "PNG files (*.png)" and not filename.endswith('.png'):
+                filename += '.png'
+
+            # Set SVG font type to 'none' to preserve text as text in SVG
+            if filename.endswith('.svg'):
+                mpl.rcParams['svg.fonttype'] = 'none'
+            else:
+                mpl.rcParams['svg.fonttype'] = 'path'  # Default behavior for PNG
+            
+            # Save the figure with the selected format
+            format = 'svg' if filename.endswith('.svg') else 'png'
+            self.canvas.figure.savefig(filename, format=format)
 
 class MatplotlibWidget(QWidget):
     def __init__(self, rows=1, cols=1, parent=None):
         super().__init__(parent)
         self.canvas = FigureCanvas(Figure())
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.toolbar = CustomNavigationToolbar(self.canvas, self)
+        #self.toolbar = NavigationToolbar(self.canvas, self)
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self.canvas)
@@ -47,7 +76,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_axis_off()
         self.canvas.draw()
 
-    def preview_dataset(self, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto'):
+    def preview_dataset(self, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
         self.axes.clear()
         n, t = dataset.shape
         self.axes.imshow(dataset, cmap=cmap, interpolation='nearest', aspect=aspect)
@@ -57,6 +86,19 @@ class MatplotlibWidget(QWidget):
         self.axes.set_ylabel(ylabel)
         self.axes.set_xlim([0, t])
         self.axes.set_ylim([-0.5, n-0.5])
+        num_user_labels = len(yitems_labels)
+        if num_user_labels > 0:
+            self.axes.set_yticks(range(n))
+            if num_user_labels == n:
+                self.axes.set_yticklabels(yitems_labels)
+            elif n > num_user_labels:
+                new_labels = list(range(num_user_labels, n))
+                new_labels = yitems_labels + new_labels
+                self.axes.set_yticklabels(new_labels)
+            elif n < num_user_labels:
+                new_labels = yitems_labels[:n]
+                self.axes.set_yticklabels(new_labels)
+                
         for side in ['left', 'top', 'right', 'bottom']:
             self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
@@ -337,23 +379,151 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives):
+    # Plot the ensembles compare
+    def enscomp_update_map(self, lims, members_idx, members_freqs, members_coords, members_colors, neuron_size):
         self.axes.clear()
 
+        # Plot each point as two semi-circles
+        for idx in range(len(members_freqs)):
+            member_freq = int(members_freqs[idx])
+            member_coords_x = members_coords[0][idx]
+            member_coords_y = members_coords[1][idx]
+            deg_start = 0
+            deg_step = 360.0/member_freq
+            deg_end = deg_step
+            for it in range(member_freq):
+                wedge = Wedge((member_coords_x, member_coords_y), neuron_size, deg_start, deg_end, color=members_colors[idx][it])  # First half
+                self.axes.add_patch(wedge)
+                deg_start += deg_step
+                deg_end += deg_step
+
+        for idx in range(len(members_idx)):
+            member_idx = members_idx[idx]
+            member_coords_x = members_coords[0][idx]
+            member_coords_y = members_coords[1][idx]
+            self.axes.text(member_coords_x, member_coords_y, str(member_idx+1), fontsize=6,
+                            ha='center', va='center', color='black', bbox=dict(facecolor='white', edgecolor='none', alpha=0.5, boxstyle='round', pad=0))
+        
+        # Adjust plot limits
+        lim_offset = 1.5*neuron_size
+        self.axes.set_xlim(0-lim_offset, lims[0]+lim_offset)
+        self.axes.set_ylim(0-lim_offset, lims[1]+lim_offset)
+        self.axes.set_xlabel("X coordinates")
+        self.axes.set_ylabel("Y coordinates")
+        self.axes.set_aspect('equal')
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def enscomp_update_timelines(self, ticks, cell_activities, ensemble_dffo, ensemble_timecourse, colors, limx):
+        self.axes.clear()
+
+        # Iterate over the indices to create bands
+        for acts in range(len(ensemble_timecourse)):
+            cells_acts = ensemble_timecourse[acts]
+            act_lenght = len(cells_acts)
+            time_axis = range(0, act_lenght)
+            if act_lenght > 0:
+                band_it = 0
+                while band_it < act_lenght:
+                    if cells_acts[band_it] == 1:
+                        start = band_it
+                        band_it = band_it + 1
+                        while band_it < act_lenght and cells_acts[band_it] == 1:
+                            band_it = band_it + 1
+                        end = band_it
+                        self.axes.fill_between(time_axis[start:end], acts, acts+1, color=colors[acts], alpha=1)
+                    band_it = band_it + 1
+
+        # Plot the neurons activitiesS
+        valid_activities = []
+        first_flag = True
+        use_colors = []
+        for method_idx in range(len(cell_activities)):
+            method = cell_activities[method_idx]
+            if len(method) > 0:
+                if first_flag:
+                    valid_activities = np.array([method.copy()])
+                    first_flag = False
+                else:
+                    valid_activities = np.vstack([valid_activities, method])
+                use_colors.append(colors[method_idx])
+
+        if not first_flag:
+            Fmi = np.min(valid_activities)
+            Fma = np.max(valid_activities)
+            num_ensembles = len(cell_activities)
+            for acts in range(num_ensembles):
+                cells_acts = cell_activities[acts]
+                if len(cells_acts) > 0:
+                    cant_timepoints = len(cells_acts)
+                    cells_acts = (cells_acts - Fmi) / (Fma - Fmi)
+                    self.axes.plot(np.arange(1, cant_timepoints + 1), acts + cells_acts, linewidth=1, color='black', alpha=0.6)
+                    #self.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
+
+        self.axes.set_xlim([0, limx])
+        self.axes.set_ylim([0, len(ticks)])
+        self.axes.set_xlabel('Time (timepoint)')
+        self.axes.set_yticks([tick+0.5 for tick in range(len(ticks))])
+        self.axes.set_yticklabels(ticks)
+        for side in ['left', 'top', 'right']:
+            self.axes.spines[side].set_visible(False)
+
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+    def enscomp_plot_similarity(self, matrix, labels, color):
+        self.axes.clear()
+
+        self.axes.imshow(matrix, aspect='equal', cmap=color)
+        self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45)
+        self.axes.set_yticks(ticks = np.arange(len(labels)), labels=labels, rotation=0)
+
+        self.canvas.figure.tight_layout()
+        self.canvas.draw()
+
+
+    def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives, only_ens, only_contours, show_numbers):
+        self.axes.clear()
+
+        all_cells = range(coordinates.shape[0])
+        not_in_ens = [cell for cell in all_cells if cell not in highlight_idxs]
+
         # Plot all cells
-        self.axes.scatter(coordinates[:, 0], coordinates[:, 1], c='blue')
+        if not only_ens:
+            if only_contours:
+                self.axes.scatter(coordinates[not_in_ens, 0], coordinates[not_in_ens, 1], edgecolor='blue', facecolors='none')
+            else:
+                self.axes.scatter(coordinates[not_in_ens, 0], coordinates[not_in_ens, 1], c='blue', alpha=0.5)
+            if show_numbers:
+                for i in range(len(not_in_ens)):
+                    cell = not_in_ens[i]
+                    self.axes.text(coordinates[cell, 0], coordinates[cell, 1], str(cell+1), fontsize=6, ha='right')
+        
         # Highlight cells in ensemble
-        self.axes.scatter(coordinates[highlight_idxs, 0], coordinates[highlight_idxs, 1], c='red', label='Cells in ensemble')
+        not_exclusive = [cell for cell in highlight_idxs if cell not in exclusives]
+        if len(not_exclusive) > 0:
+            if only_contours:
+                self.axes.scatter(coordinates[not_exclusive, 0], coordinates[not_exclusive, 1], edgecolor='red', facecolors='none', label='Cells in ensemble')
+            else:
+                self.axes.scatter(coordinates[not_exclusive, 0], coordinates[not_exclusive, 1], c='red', alpha=0.5, label='Cells in ensemble')
+            if show_numbers:
+                for i in range(len(not_exclusive)):
+                    cell = not_exclusive[i]
+                    self.axes.text(coordinates[cell, 0], coordinates[cell, 1], str(cell+1), fontsize=6, ha='right')
+        
         # Highlight the exclusive cells 
         if len(exclusives) > 0:
-            self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', label='Exclusive cells')
-
-        # Label all cells with their indices
-        for i in range(coordinates.shape[0]):
-            self.axes.text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='right')
-
+            if only_contours:
+                self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], edgecolor='yellow', facecolors='none', label='Exclusive cells')
+            else:
+                self.axes.scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', alpha=0.5, label='Exclusive cells')
+            if show_numbers:
+                for i in range(len(exclusives)):
+                    cell = exclusives[i]
+                    self.axes.text(coordinates[cell, 0], coordinates[cell, 1], str(cell+1), fontsize=6, ha='right')
+        
         # Add legend
-        self.axes.legend()
+        self.axes.legend(loc='lower left', bbox_to_anchor=(0, 1))
 
         # Set labels and title
         self.axes.set_xlabel('X coordinate')
@@ -375,7 +545,7 @@ class MatplotlibWidget(QWidget):
         for ii in range(num_cells):
             f = dFFo_ens[ii, :]
             f = (f - Fmi) / (Fma - Fmi)
-            self.axes.plot(np.arange(1, cant_timepoints + 1), ii + f, linewidth=1) #, color=cc[ii % 64]
+            self.axes.plot(np.arange(1, cant_timepoints + 1), ii + f, linewidth=1, color='black') #, color=cc[ii % 64]
             self.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
         
         # Iterate over the indices to create bands
@@ -409,19 +579,15 @@ class MatplotlibWidget(QWidget):
         Fmi = np.min(dFFo_ens)
         Fma = np.max(dFFo_ens)
         cant_timepoints = dFFo_ens.shape[1]
-        core = core_names
-
-        cc = plt.cm.jet(np.linspace(0, 1, min(len(core), 64)))
-        cc = np.maximum(cc - 0.3, 0)
         
-        for ii in range(len(core)):
+        for ii in range(len(core_names)):
             f = dFFo_ens[ii, :]
             f = (f - Fmi) / (Fma - Fmi)
-            self.axes[plot_ax].plot(np.arange(1, cant_timepoints + 1), ii + f, color=cc[ii % 64], linewidth=1)
-            self.axes[plot_ax].text(cant_timepoints * 1.02, ii, str(core[ii]+1), fontsize=8)
+            self.axes[plot_ax].plot(np.arange(1, cant_timepoints + 1), ii + f, color='black', linewidth=1) #, color=cc[ii % 64]
+            self.axes[plot_ax].text(cant_timepoints * 1.02, ii, str(core_names[ii]+1), fontsize=8)
 
         self.axes[plot_ax].set_xlim([1, cant_timepoints])
-        self.axes[plot_ax].set_ylim([0, len(core) + 0.2])
+        self.axes[plot_ax].set_ylim([0, len(core_names) + 0.2])
         self.axes[plot_ax].set_xlabel('Time (timepoint)')
         self.axes[plot_ax].set_ylabel('Cell #')
         self.axes[plot_ax].set_title(f'Ensemble {plot_ax + 1}')
@@ -435,20 +601,26 @@ class MatplotlibWidget(QWidget):
 
     def plot_all_coords(self, coordinates, highlight_idxs, exclusives, row, col):
         self.axes[row, col].clear()
+        all_cells = range(coordinates.shape[0])
+        not_in_ens = [cell for cell in all_cells if cell not in highlight_idxs]
+
         # Plot all cells
-        self.axes[row, col].scatter(coordinates[:, 0], coordinates[:, 1], c='blue')
+        self.axes[row, col].scatter(coordinates[not_in_ens, 0], coordinates[not_in_ens, 1], c='blue', alpha=0.5)
+        
         # Highlight cells in ensemble
-        self.axes[row, col].scatter(coordinates[highlight_idxs, 0], coordinates[highlight_idxs, 1], c='red', label='Cells in ensemble')
+        not_exclusive = [cell for cell in highlight_idxs if cell not in exclusives]
+        if len(not_exclusive) > 0:
+            self.axes[row, col].scatter(coordinates[not_exclusive, 0], coordinates[not_exclusive, 1], c='red', alpha=0.5, label='Cells in ensemble')
+            
         # Highlight the exclusive cells 
         if len(exclusives) > 0:
-            self.axes[row, col].scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', label='Exclusive cells')
-
-        # Label all cells with their indices
+            self.axes[row, col].scatter(coordinates[exclusives, 0], coordinates[exclusives, 1], c='yellow', alpha=0.5, label='Exclusive cells')
+        
         for i in range(coordinates.shape[0]):
-            self.axes[row, col].text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='right')
-
+            self.axes[row, col].text(coordinates[i, 0], coordinates[i, 1], str(i+1), fontsize=6, ha='left')
+        
         # Add legend
-        self.axes[row, col].legend()
+        self.axes[row, col].legend(loc='lower left', bbox_to_anchor=(0, 1))
 
         # Set labels and title
         self.axes[row, col].set_xlabel('X coordinate')
@@ -476,12 +648,12 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_perf_correlations_ens_stim(self, correlations, col_idx, title=None):
+    def plot_perf_correlations_ens_group(self, correlations, col_idx, title=None, xlabel="Group", group_labels=[]):
         self.axes[col_idx].clear()
 
         # Plot the correlation matrix as a heatmap
         cax = self.axes[col_idx].imshow(correlations, cmap='coolwarm', vmin=-1, vmax=1)
-        self.axes[col_idx].set_xlabel('Stims')
+        self.axes[col_idx].set_xlabel(xlabel)
         self.axes[col_idx].set_ylabel('Ensembles')
 
         self.canvas.figure.colorbar(cax, ax=self.axes[col_idx], orientation='vertical')
@@ -491,9 +663,10 @@ class MatplotlibWidget(QWidget):
 
         num_ens = correlations.shape[0]
         num_stim = correlations.shape[1]
+        stim_labels = group_labels if len(group_labels) > 0 else range(1, num_stim+1)
         self.axes[col_idx].set_xticks(range(num_stim))
         self.axes[col_idx].set_yticks(range(num_ens))
-        self.axes[col_idx].set_xticklabels(range(1, num_stim+1))
+        self.axes[col_idx].set_xticklabels(stim_labels)
         self.axes[col_idx].set_yticklabels(range(1, num_ens+1))
 
         #for ens in range(num_ens):
@@ -531,12 +704,14 @@ class MatplotlibWidget(QWidget):
         self.canvas.figure.tight_layout()
         self.canvas.draw()
 
-    def plot_perf_cross_ens_stims(self, cross_corrs, lags, col_idx, row_idx, title=None):
+    def plot_perf_cross_ens_stims(self, cross_corrs, lags, col_idx, row_idx, group_prefix="Group", title=None, group_labels=[]):
         self.axes[row_idx][col_idx].clear()
 
         # Plot the correlation matrix as a heatmap
+        num_stim = cross_corrs.shape[0]
+        stim_labels = group_labels if len(group_labels) > 0 else range(1, num_stim+1)
         for c_idx, cross_corr in enumerate(cross_corrs):
-            self.axes[row_idx][col_idx].plot(lags, cross_corr, label=f"Stim {c_idx+1}")
+            self.axes[row_idx][col_idx].plot(lags, cross_corr, label=f"{group_prefix} {stim_labels[c_idx]}")
         self.axes[row_idx][col_idx].axhline(0, color='black', linestyle='--', linewidth=0.5)
         self.axes[row_idx][col_idx].set_xlabel('Lag')
         self.axes[row_idx][col_idx].set_ylabel('Cross correlation')

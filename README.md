@@ -9,6 +9,7 @@ This GUI currently incorporates three different algorithms:
 - SVD based method: Carrillo-Reid, et al. "Endogenous sequential cortical activity evoked by visual stimuli." Journal of Neuroscience 35.23 (2015): 8813-8828.
 - PCA based method: Herzog et al. 2021 "Scalable and accurate automated method for neuronal ensemble detection in spiking neural networks. https://pubmed.ncbi.nlm.nih.gov/34329314/ Rubén Herzog Dec 2021
 - ICA based method: Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large neuronal populations. J Neurosci Methods 220(2):149-66. 10.1016/j.jneumeth.2013.04.010
+- Xsembles2P method: Pérez-Ortega, J., Akrouh, A. & Yuste, R. 2024. Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x
 
 **More analysis and features coming soon...**
 
@@ -24,6 +25,9 @@ This specs, while recommended, are not mandatory. If you can run MATLAB 2020A th
 
 - MATLAB (version 2020A or above)
 - Python 3.10 or above
+
+### Needed MATLAB modules
+- Parallel Computing Toolbox
 
 ## Clone or download the repo
 
@@ -56,11 +60,12 @@ pip install numpy
 pip install matplotlib
 pip install h5py
 pip install scikit-learn
+pip install scipy
 ```
 
 ## Install the MATLAB engine for Python
 
-To run the algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path,  to something like this:
+To run the algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path, to something like this:
 
 ```bash
 cd C:\Program Files\MATLAB\R2023a\extern\engines\python
@@ -78,7 +83,7 @@ It is possible that you need to run that command from an elevated terminal.
 
 ## Run the GUI
 
-To run the GUI you now just need to call main.py from your configured python environment. Make surre your in the path where you downloaded the repo.
+To run the GUI you now just need to call main.py from your configured python environment. Make sure your in the path where you downloaded the repo.
 
 ```bash
 python main.py

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1182</width>
+    <width>1181</width>
     <height>801</height>
    </rect>
   </property>
@@ -19,6 +19,9 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
   <property name="tabShape">
    <enum>QTabWidget::Rounded</enum>
   </property>
@@ -30,7 +33,7 @@
        <bool>true</bool>
       </property>
       <property name="toolTipDuration">
-       <number>4</number>
+       <number>-1</number>
       </property>
       <property name="currentIndex">
        <number>0</number>
@@ -100,6 +103,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Visualize the current dFFo variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>dFFo/FFo</string>
                 </property>
@@ -109,6 +118,12 @@
                <widget class="QPushButton" name="btn_view_neuronal_activity">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Visualize the current Binary Cell Activity variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Binary cell activity</string>
@@ -120,6 +135,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Visualize the current Coordinates variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Coordinates</string>
                 </property>
@@ -129,6 +150,12 @@
                <widget class="QPushButton" name="btn_view_stim">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Visualize the current Stimulation variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Stimulation</string>
@@ -140,6 +167,12 @@
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Visualize the current Cells variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Cells</string>
                 </property>
@@ -149,6 +182,12 @@
                <widget class="QPushButton" name="btn_view_behavior">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Visualize the current Behavior variable.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Behavior</string>
@@ -181,390 +220,476 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_5">
-             <property name="title">
-              <string>Edit variable</string>
+            <widget class="QTabWidget" name="tabs_edit_vars">
+             <property name="enabled">
+              <bool>true</bool>
              </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <layout class="QGridLayout" name="gridLayout_3">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <property name="bottomMargin">
-               <number>3</number>
-              </property>
-              <property name="verticalSpacing">
-               <number>2</number>
-              </property>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_17">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>x dimention (time)</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="2">
-               <widget class="QLabel" name="label_18">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>y dimention (cells)</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="btn_edit_transpose">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="toolTip">
-                 <string>Transpose the dataset. It actually modifies the stored data.
-Use it to math the interpretation of your data.
-Use the axes labels as a guide.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Transpose dataset</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="edit_edit_binsize">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>Bin size. Use the same timeunits from the dataset.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="inputMethodHints">
-                 <set>Qt::ImhNone</set>
-                </property>
-                <property name="placeholderText">
-                 <string>Same time units</string>
-                </property>
-                <property name="clearButtonEnabled">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="edit_btn_trim">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="toolTip">
-                 <string>Trim dataset to use only certain range of your data.
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <widget class="QWidget" name="tab_36">
+              <attribute name="title">
+               <string>Edit variable</string>
+              </attribute>
+              <layout class="QGridLayout" name="gridLayout_5">
+               <item row="3" column="1">
+                <widget class="QLabel" name="label_19">
+                 <property name="toolTip">
+                  <string>Method to use for the binning process.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Bin method</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QWidget" name="widget_4" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_13">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QRadioButton" name="edit_radio_sum">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="toolTip">
+                     <string>This option sums the values of every bin.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Sum</string>
+                    </property>
+                    <property name="checked">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QRadioButton" name="edit_radio_mean">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="toolTip">
+                     <string>This option uses the mean of each bin.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Mean</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>Bin size</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QPushButton" name="edit_btn_bin">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bin matrix on the x axis. &lt;/p&gt;&lt;p&gt;Useful for electrical recordings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Bin</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="edit_edit_binsize">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="toolTip">
+                  <string>Bin size. Use the same timeunits from the dataset.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="inputMethodHints">
+                  <set>Qt::ImhNone</set>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Same time units</string>
+                 </property>
+                 <property name="clearButtonEnabled">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QPushButton" name="edit_btn_trim">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>Trim dataset to use only certain range of your data.
 Use it to remove part of your dataset.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Trim matrix</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="label_16">
-                <property name="text">
-                 <string>Bin size</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <widget class="QWidget" name="widget_2" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_12">
-                 <property name="leftMargin">
-                  <number>0</number>
                  </property>
-                 <property name="topMargin">
-                  <number>0</number>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
                  </property>
-                 <property name="rightMargin">
-                  <number>0</number>
+                 <property name="text">
+                  <string>Trim matrix</string>
                  </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="btn_edit_transpose">
+                 <property name="enabled">
+                  <bool>false</bool>
                  </property>
-                 <item>
-                  <widget class="QLineEdit" name="edit_edit_xstart">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>80</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Index of the first element in the range to keep
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Transpose dataset</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_17">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="text">
+                  <string>x dimention (time)</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="2">
+                <widget class="QWidget" name="widget_2" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_12">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLineEdit" name="edit_edit_xstart">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>Index of the first element in the range to keep
 Including this element.
 Index 0 based.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="placeholderText">
-                    <string>Start</string>
-                   </property>
-                   <property name="clearButtonEnabled">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="edit_edit_xend">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>80</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>End of the range to keep, except this element.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="placeholderText">
-                    <string>End</string>
-                   </property>
-                   <property name="clearButtonEnabled">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="edit_btn_bin">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="toolTip">
-                 <string>Bin matrix on the x axis. Usefull electrical recordings.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Bin</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="2">
-               <widget class="QWidget" name="widget_3" native="true">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <layout class="QHBoxLayout" name="horizontalLayout_3">
-                 <property name="leftMargin">
-                  <number>0</number>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Start</string>
+                    </property>
+                    <property name="clearButtonEnabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="edit_edit_xend">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>End of the range to keep, except this element.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="placeholderText">
+                     <string>End</string>
+                    </property>
+                    <property name="clearButtonEnabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item row="3" column="2">
+                <widget class="QLabel" name="label_18">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="topMargin">
-                  <number>0</number>
+                 <property name="text">
+                  <string>y dimention (cells)</string>
                  </property>
-                 <property name="rightMargin">
-                  <number>0</number>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
                  </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
+                </widget>
+               </item>
+               <item row="4" column="2">
+                <widget class="QWidget" name="widget_3" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <item>
-                  <widget class="QLineEdit" name="edit_edit_ystart">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>80</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>Index of the first element in the range to keep
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLineEdit" name="edit_edit_ystart">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>Index of the first element in the range to keep
 Including this element.
 Index 0 based.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="placeholderText">
-                    <string>Start</string>
-                   </property>
-                   <property name="clearButtonEnabled">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLineEdit" name="edit_edit_yend">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="sizePolicy">
-                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                     <horstretch>0</horstretch>
-                     <verstretch>0</verstretch>
-                    </sizepolicy>
-                   </property>
-                   <property name="maximumSize">
-                    <size>
-                     <width>80</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="toolTip">
-                    <string>End of the range to keep, except this element.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="placeholderText">
-                    <string>End</string>
-                   </property>
-                   <property name="clearButtonEnabled">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLabel" name="label_19">
-                <property name="toolTip">
-                 <string>Method to use for the binning process.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Bin method</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <widget class="QWidget" name="widget_4" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_13">
-                 <property name="leftMargin">
-                  <number>0</number>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Start</string>
+                    </property>
+                    <property name="clearButtonEnabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="edit_edit_yend">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>End of the range to keep, except this element.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="placeholderText">
+                     <string>End</string>
+                    </property>
+                    <property name="clearButtonEnabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_45">
+              <attribute name="title">
+               <string>Label elements</string>
+              </attribute>
+              <layout class="QHBoxLayout" name="horizontalLayout_20">
+               <item>
+                <widget class="QTableWidget" name="table_setlabels">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="topMargin">
-                  <number>0</number>
+                 <property name="autoFillBackground">
+                  <bool>false</bool>
                  </property>
-                 <property name="rightMargin">
-                  <number>0</number>
+                 <property name="verticalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
                  </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
+                 <property name="horizontalScrollMode">
+                  <enum>QAbstractItemView::ScrollPerPixel</enum>
                  </property>
-                 <item>
-                  <widget class="QRadioButton" name="edit_radio_sum">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="toolTip">
-                    <string>This option sums the values of every bin.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="text">
-                    <string>Sum</string>
-                   </property>
-                   <property name="checked">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QRadioButton" name="edit_radio_mean">
-                   <property name="enabled">
-                    <bool>false</bool>
-                   </property>
-                   <property name="toolTip">
-                    <string>This option uses the mean of each bin.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="text">
-                    <string>Mean</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-             </layout>
+                 <property name="sortingEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <attribute name="horizontalHeaderStretchLastSection">
+                  <bool>true</bool>
+                 </attribute>
+                 <attribute name="verticalHeaderStretchLastSection">
+                  <bool>false</bool>
+                 </attribute>
+                 <column>
+                  <property name="text">
+                   <string>Variable index</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Label</string>
+                  </property>
+                 </column>
+                </widget>
+               </item>
+               <item>
+                <widget class="QGroupBox" name="groupBox_5">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="title">
+                  <string>Edit options</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_60">
+                  <item>
+                   <widget class="QPushButton" name="btn_set_labels">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the custom labels.&lt;/p&gt;&lt;p&gt;Verify the index of every element in the table and the name you have provided.&lt;/p&gt;&lt;p&gt;If you don't specify a label then the item index will be used as label.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Save labels</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="btn_clear_labels">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all the labels for the current dataset.&lt;/p&gt;&lt;p&gt;After this, every item will be recognized only by its index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Delete all the labels</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
@@ -601,7 +726,7 @@ Index 0 based.</string>
               <bool>false</bool>
              </property>
              <property name="toolTip">
-              <string>Select the file to open</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a file to open.&lt;/p&gt;&lt;p&gt;Consider that opening a new file &lt;span style=&quot; font-weight:700;&quot;&gt;do not delete&lt;/span&gt; the current assigned variables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="toolTipDuration">
               <number>5000</number>
@@ -626,7 +751,7 @@ Index 0 based.</string>
            <item>
             <widget class="QLineEdit" name="browser_var_info">
              <property name="toolTip">
-              <string>Description of the selected variable.</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Description of the selected variable.&lt;/p&gt;&lt;p&gt;Here you can see if a variable is a scalar or a dataset (matrix).&lt;/p&gt;&lt;p&gt;Depending on the variable description it can be assigned to an environment variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="toolTipDuration">
               <number>5000</number>
@@ -683,6 +808,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the behavior matrix.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain a &lt;span style=&quot; font-weight:700;&quot;&gt;collection of behaviors in time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Every row will be interpreted as a different behavior. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Behavior</string>
                 </property>
@@ -709,6 +840,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the coordinates.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;coordinates of the center of every cell&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;Consider that only the first two dimentions would be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Coordinates</string>
                 </property>
@@ -716,6 +853,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="1">
                <widget class="QLabel" name="lbl_neuronal_activity_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Binary Cell activity variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -766,6 +909,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the binary activity of every cell.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;binary activation of every cell in time&lt;/span&gt;, like a rasterplot.&lt;/p&gt;&lt;p&gt;This matrix should be binary, only 1's and 0's or True and False values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Binary cell activity</string>
                 </property>
@@ -773,6 +922,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="5">
                <widget class="QLabel" name="lbl_behavior_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Behavior variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -786,6 +941,12 @@ Index 0 based.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as a stimulation matrix.&lt;/p&gt;&lt;p&gt;This should be a binary matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;a collection of stimuli in time&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;Every row can be a different stimuli and the presence of this stimulation should be noted with a 1 value.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Stimulation</string>
                 </property>
@@ -793,6 +954,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="3">
                <widget class="QLabel" name="lbl_stim_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Stimulation variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -826,6 +993,12 @@ Index 0 based.</string>
                <widget class="QPushButton" name="btn_set_dFFo">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the dFFo.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;fluorescence of every cell in time&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>dFFo/FFo</string>
@@ -892,6 +1065,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="lbl_dffo_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the dFFo variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -918,6 +1097,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="2">
                <widget class="QLabel" name="lbl_coordinates_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Coordinates variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -934,6 +1119,9 @@ Index 0 based.</string>
                 <property name="toolTip">
                  <string>Removes the Stimulation variable.</string>
                 </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -943,6 +1131,12 @@ Index 0 based.</string>
                <widget class="QPushButton" name="btn_set_cells">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the cells matrix.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain a &lt;span style=&quot; font-weight:700;&quot;&gt;collection of groups of cells&lt;/span&gt;, gouped by any mean.&lt;/p&gt;&lt;p&gt;Every row would be interpreted as a individual group. Every column will represent a different cell. If you want to include the cell &lt;span style=&quot; font-style:italic;&quot;&gt;i&lt;/span&gt; in the group&lt;span style=&quot; font-style:italic;&quot;&gt; j&lt;/span&gt;, then the row &lt;span style=&quot; font-style:italic;&quot;&gt;j &lt;/span&gt;column&lt;span style=&quot; font-style:italic;&quot;&gt; i&lt;/span&gt; should have a value of 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Cells</string>
@@ -967,6 +1161,12 @@ Index 0 based.</string>
               </item>
               <item row="2" column="4">
                <widget class="QLabel" name="lbl_cells_select">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the Cells variable if any assigned.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
                 <property name="text">
                  <string>Nothing</string>
                 </property>
@@ -1233,7 +1433,7 @@ This statates the maximum number of states. </string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="1">
+                 <item row="10" column="1">
                   <widget class="QCheckBox" name="svd_check_tfidf">
                    <property name="toolTip">
                     <string>Wheter of not to perform TF-IDF normalization.
@@ -1251,10 +1451,10 @@ in two or more different ensembles.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="10" column="1">
+                 <item row="12" column="1">
                   <widget class="QPushButton" name="svd_btn_defaults">
                    <property name="toolTip">
-                    <string>Load default parameters.</string>
+                    <string>Load default parameters for the SVD analysis.</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>5000</number>
@@ -1264,13 +1464,84 @@ in two or more different ensembles.</string>
                    </property>
                   </widget>
                  </item>
+                 <item row="8" column="0">
+                  <widget class="QLabel" name="svd_lbl_csistep">
+                   <property name="text">
+                    <string>csi_vec_step</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="0">
+                  <widget class="QLabel" name="svd_lbl_csistart">
+                   <property name="text">
+                    <string>csi_vec_start</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="0">
+                  <widget class="QLabel" name="svd_lbl_csiend">
+                   <property name="text">
+                    <string>csi_vec_end</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="1">
+                  <widget class="QLineEdit" name="svd_edit_csistart">
+                   <property name="text">
+                    <string>0.01</string>
+                   </property>
+                   <property name="placeholderText">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="8" column="1">
+                  <widget class="QLineEdit" name="svd_edit_csistep">
+                   <property name="text">
+                    <string>0.01</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="1">
+                  <widget class="QLineEdit" name="svd_edit_csiend">
+                   <property name="text">
+                    <string>0.1</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="11" column="1">
+                  <widget class="QCheckBox" name="svd_check_parallel">
+                   <property name="text">
+                    <string>Parallel processing</string>
+                   </property>
+                  </widget>
+                 </item>
                 </layout>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="btn_svd_run">
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="btn_run_svd">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Run the SVD analysis with the current parameters.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Perform analysis</string>
@@ -1659,7 +1930,7 @@ part of the analysis</string>
                  <item row="8" column="1">
                   <widget class="QPushButton" name="pca_btn_defaults">
                    <property name="toolTip">
-                    <string>Load default parameters.</string>
+                    <string>Load default parameters for the PCA analysis.</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>5000</number>
@@ -1673,9 +1944,28 @@ part of the analysis</string>
                </widget>
               </item>
               <item>
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
                <widget class="QPushButton" name="btn_run_pca">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Run the PCA analysis with the current parameters.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Perform analysis</string>
@@ -2208,7 +2498,7 @@ chosen.</string>
                  <item>
                   <widget class="QPushButton" name="ica_btn_defaults">
                    <property name="toolTip">
-                    <string>Load default parameters.</string>
+                    <string>Load default parameters for the ICA analysis.</string>
                    </property>
                    <property name="toolTipDuration">
                     <number>5000</number>
@@ -2222,9 +2512,28 @@ chosen.</string>
                </widget>
               </item>
               <item>
+               <spacer name="verticalSpacer_3">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
                <widget class="QPushButton" name="btn_run_ica">
                 <property name="enabled">
                  <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Run the ICA analysis with the current parameters.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Perform analysis</string>
@@ -2264,6 +2573,9 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             <widget class="QTabWidget" name="tabWidget_5">
              <property name="currentIndex">
               <number>0</number>
+             </property>
+             <property name="movable">
+              <bool>true</bool>
              </property>
              <widget class="QWidget" name="tab_13">
               <attribute name="title">
@@ -2312,6 +2624,362 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_37">
+       <attribute name="title">
+        <string>Xsembles2P</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_18">
+        <item>
+         <widget class="QGroupBox" name="groupBox_27">
+          <property name="minimumSize">
+           <size>
+            <width>370</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>370</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Analysis data</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_50">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QGroupBox" name="groupBox_28">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Input data</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_19">
+              <item>
+               <widget class="QLabel" name="label_3">
+                <property name="font">
+                 <font>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Binary Neuronal Activity</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="lbl_x2p_spikes_selected">
+                <property name="text">
+                 <string>Nothing selected</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_29">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Parameters to adjust</string>
+             </property>
+             <layout class="QFormLayout" name="formLayout_9">
+              <item row="0" column="0">
+               <widget class="QLabel" name="x2p_lbl_bin">
+                <property name="text">
+                 <string>Network bin</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="x2p_edit_bin">
+                <property name="text">
+                 <string>1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="x2p_lbl_iterations">
+                <property name="text">
+                 <string>Network iterations</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QLineEdit" name="x2p_edit_iterations">
+                <property name="text">
+                 <string>1000</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="x2p_lbl_significance">
+                <property name="text">
+                 <string>Network significance</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="x2p_edit_significance">
+                <property name="text">
+                 <string>0.05</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="x2p_lbl_threshold">
+                <property name="text">
+                 <string>Coactive neurons threshold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QLineEdit" name="x2p_edit_threshold">
+                <property name="text">
+                 <string>2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="x2p_lbl_rangestart">
+                <property name="text">
+                 <string>Clustering range start</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QLineEdit" name="x2p_edit_rangestart">
+                <property name="text">
+                 <string>3</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="x2p_lbl_rangeend">
+                <property name="text">
+                 <string>Clustering range end</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QLineEdit" name="x2p_edit_rangeend">
+                <property name="text">
+                 <string>10</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="0">
+               <widget class="QLabel" name="x2p_lbl_fixed">
+                <property name="text">
+                 <string>Clustering fixed</string>
+                </property>
+               </widget>
+              </item>
+              <item row="6" column="1">
+               <widget class="QLineEdit" name="x2p_edit_fixed">
+                <property name="text">
+                 <string>0</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="x2p_lbl_itensemble">
+                <property name="text">
+                 <string>Iterations ensemble</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QLineEdit" name="x2p_edit_itensemble">
+                <property name="text">
+                 <string>1000</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QPushButton" name="x2p_btn_defaults">
+                <property name="toolTip">
+                 <string>Load default parameters for the Xsembles2P analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Load default values</string>
+                </property>
+               </widget>
+              </item>
+              <item row="8" column="1">
+               <widget class="QCheckBox" name="x2p_check_parallel">
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="text">
+                 <string>Parallel processing</string>
+                </property>
+                <property name="checked">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="btn_run_x2p">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Run the Xsembles2P analysis with the current parameters.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Perform analysis</string>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPlainTextEdit" name="plainTextEdit_4">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>75</height>
+              </size>
+             </property>
+             <property name="plainText">
+              <string>For details about this method, see the following paper:
+Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_30">
+          <property name="title">
+           <string>Results visualization</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_52">
+           <item>
+            <widget class="QTabWidget" name="tabWidget_4">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
+             <property name="movable">
+              <bool>true</bool>
+             </property>
+             <widget class="QWidget" name="tab_38">
+              <attribute name="title">
+               <string>Similarity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_51">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_similarity"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_39">
+              <attribute name="title">
+               <string>Ensemble Participation Index</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_53">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_epi"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_40">
+              <attribute name="title">
+               <string>Onsemble Activity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_54">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_onsemact"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_41">
+              <attribute name="title">
+               <string>Offsemble activity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_55">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_offsemact"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_42">
+              <attribute name="title">
+               <string>Activity</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_56">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_activity"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_43">
+              <attribute name="title">
+               <string>Onsemble Neurons</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_57">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_onsemneu"/>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="tab_44">
+              <attribute name="title">
+               <string>Offsemble neurons</string>
+              </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_58">
+               <item>
+                <widget class="MatplotlibWidget" name="x2p_plot_offsemneu"/>
+               </item>
+              </layout>
+             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_15">
        <attribute name="title">
         <string>Ensembles visualizer</string>
@@ -2343,6 +3011,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the SVD analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>SVD</string>
              </property>
@@ -2352,6 +3026,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             <widget class="QPushButton" name="ensvis_btn_pca">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the PCA analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>PCA</string>
@@ -2363,8 +3043,30 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the ICA analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>ICA</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="ensvis_btn_x2p">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the Xsembles2P analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Xsembles2P</string>
              </property>
             </widget>
            </item>
@@ -2372,6 +3074,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             <widget class="QPushButton" name="ensvis_btn_sgc">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Loads into the visualizer the results from the SGC analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>SGC</string>
@@ -2429,7 +3137,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tabWidget_3">
+         <widget class="QTabWidget" name="ensvis_tabs">
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -2468,6 +3176,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                </item>
                <item>
                 <widget class="QLineEdit" name="ensvis_edit_numens">
+                 <property name="toolTip">
+                  <string>Number of ensembles detected by the selected analysis.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
@@ -2486,12 +3200,24 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                <item>
                 <widget class="QWidget" name="widget" native="true">
                  <layout class="QFormLayout" name="formLayout_8">
+                  <property name="topMargin">
+                   <number>6</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>6</number>
+                  </property>
                   <item row="0" column="0">
                    <widget class="QLabel" name="ensvis_lbl_currentens">
                     <property name="font">
                      <font>
                       <bold>true</bold>
                      </font>
+                    </property>
+                    <property name="toolTip">
+                     <string>Index (base 1) of the currently shown ensemble.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
                     </property>
                     <property name="text">
                      <string>1</string>
@@ -2502,6 +3228,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                    <widget class="QSlider" name="envis_slide_selectedens">
                     <property name="enabled">
                      <bool>false</bool>
+                    </property>
+                    <property name="toolTip">
+                     <string>Slide the selector to visualize a different ensemble.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
                     </property>
                     <property name="minimum">
                      <number>1</number>
@@ -2530,7 +3262,70 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 </widget>
                </item>
                <item>
+                <widget class="QGroupBox" name="groupBox_31">
+                 <property name="title">
+                  <string>Visualization options</string>
+                 </property>
+                 <layout class="QGridLayout" name="gridLayout_4">
+                  <property name="topMargin">
+                   <number>6</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>6</number>
+                  </property>
+                  <property name="verticalSpacing">
+                   <number>6</number>
+                  </property>
+                  <item row="1" column="0">
+                   <widget class="QCheckBox" name="ensvis_check_onlyens">
+                    <property name="toolTip">
+                     <string>When checked, the map only shows the cells in the current ensemble. When not selected the map show all the recorded cells.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Show only ensemble cells</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QCheckBox" name="ensvis_check_cellnum">
+                    <property name="toolTip">
+                     <string>Change to show/hide the index number of every cell (base 0)</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Show cell number</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="2" column="0">
+                   <widget class="QCheckBox" name="ensvis_check_onlycont">
+                    <property name="toolTip">
+                     <string>When selected the neurons are shown as empty circles. When not selected the cells are shown as filled circles.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Show only contours</string>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <widget class="QLabel" name="label_11">
+                 <property name="toolTip">
+                  <string>Index of the cells that belongs to the selected ensemble (base 0).</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="text">
                   <string>Members of this ensemble</string>
                  </property>
@@ -2538,6 +3333,9 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                </item>
                <item>
                 <widget class="QTextEdit" name="ensvis_edit_members">
+                 <property name="toolTip">
+                  <string/>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>
@@ -2545,6 +3343,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                </item>
                <item>
                 <widget class="QLabel" name="label_15">
+                 <property name="toolTip">
+                  <string>Index of the cells that belong only to the selected ensemble (base 0).</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="text">
                   <string>Exclusive members of this ensemble</string>
                  </property>
@@ -2562,6 +3366,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                </item>
                <item>
                 <widget class="QLabel" name="label_12">
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Timepoints of activation of the selected ensemble, in the same temporal unit of the input Binary Neuronal Activity data.&lt;/p&gt;&lt;p&gt;It is the index of every 1 in the rasterplot for this ensemble (base 0).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
                  <property name="text">
                   <string>Timepoints of activation</string>
                  </property>
@@ -2608,7 +3418,29 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_31">
             <item>
-             <widget class="MatplotlibWidget" name="ensvis_plot_allspatial"/>
+             <widget class="QScrollArea" name="scrollArea_5">
+              <property name="sizeAdjustPolicy">
+               <enum>QAbstractScrollArea::AdjustToContents</enum>
+              </property>
+              <property name="widgetResizable">
+               <bool>true</bool>
+              </property>
+              <widget class="QWidget" name="scrollAreaWidgetContents_5">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>98</width>
+                 <height>89</height>
+                </rect>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_59">
+                <item>
+                 <widget class="MatplotlibWidget" name="ensvis_plot_allspatial"/>
+                </item>
+               </layout>
+              </widget>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -2646,6 +3478,1315 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_46">
+       <attribute name="title">
+        <string>Ensemble compare</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_21">
+        <item>
+         <widget class="QGroupBox" name="groupBox_32">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Data selector</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_61">
+           <item>
+            <widget class="QGroupBox" name="groupBox_35">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Ensemble selector</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_62">
+              <item>
+               <widget class="QWidget" name="widget_17" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_29">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QWidget" name="widget_16" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_65">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_7">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>SVD</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_9" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_22">
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_svd">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_svd">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;SVD&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_svd">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the SVD analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="enscomp_colorflag_svd" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="autoFillBackground">
+                    <bool>false</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="line">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_19" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_30">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QWidget" name="widget_18" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_76">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_21">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>PCA</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_10" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_23">
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_pca">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_pca">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;PCA&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="value">
+                          <number>0</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_pca">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the PCA analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="enscomp_colorflag_pca" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="line_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_22" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_31">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QWidget" name="widget_21" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_77">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_22">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>ICA</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_11" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_24">
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_ica">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_ica">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;ICA&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_ica">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the ICA analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="enscomp_colorflag_ica" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="line_3">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_25" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_32">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QWidget" name="widget_24" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_78">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_23">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string/>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>-1</number>
+                      </property>
+                      <property name="text">
+                       <string>Xsembles2P</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_12" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_25">
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_x2p">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_x2p">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;Xsembles2P&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_x2p">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of ensembles identified by the Xsembles2P analysis.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="enscomp_colorflag_x2p" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_36">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="MinimumExpanding" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Experimental data</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_73">
+              <item>
+               <widget class="QLabel" name="label_31">
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Stimuli</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_13" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_26">
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_stim">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="enscomp_slider_stim">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different stimulus from the Stimulation input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>1</number>
+                   </property>
+                   <property name="tracking">
+                    <bool>false</bool>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                   <property name="tickInterval">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_stim">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Total number of stimulus.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="enscomp_slider_lbl_stim">
+                <property name="font">
+                 <font>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Label of the current stimulus.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Label</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="Line" name="line_4">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_30">
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Behavior</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_14" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_27">
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_min_behavior">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>1</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSlider" name="enscomp_slider_behavior">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different behavior from the Behavior input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="maximum">
+                    <number>1</number>
+                   </property>
+                   <property name="pageStep">
+                    <number>1</number>
+                   </property>
+                   <property name="tracking">
+                    <bool>false</bool>
+                   </property>
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="tickPosition">
+                    <enum>QSlider::TicksAbove</enum>
+                   </property>
+                   <property name="tickInterval">
+                    <number>1</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_behavior">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Total number of beaviors.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="enscomp_slider_lbl_behavior">
+                <property name="font">
+                 <font>
+                  <bold>true</bold>
+                 </font>
+                </property>
+                <property name="toolTip">
+                 <string>Label of the current behavior.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Label</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTabWidget" name="enscomp_tabs">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_47">
+           <attribute name="title">
+            <string>Space map</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_74">
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_map">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>250</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_48">
+           <attribute name="title">
+            <string>Time profiles</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_75">
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_neusact">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_49">
+           <attribute name="title">
+            <string>Similarities in members</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_79">
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_sim_elements"/>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_50">
+           <attribute name="title">
+            <string>Similarities in timecouses</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_67">
+            <item>
+             <widget class="MatplotlibWidget" name="enscomp_plot_sim_times"/>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_34">
+          <property name="minimumSize">
+           <size>
+            <width>300</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>300</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Visualization options</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_64">
+           <item>
+            <widget class="QGroupBox" name="groupBox_37">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>General options</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_63">
+              <item>
+               <widget class="QCheckBox" name="enscomp_visopts_showcells">
+                <property name="toolTip">
+                 <string>Change to show/hide the cell index number (base 0).</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Show cell numbers</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_15" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_28">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QLabel" name="label_24">
+                   <property name="text">
+                    <string>Neuron size</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLineEdit" name="enscomp_visopts_neusize">
+                   <property name="toolTip">
+                    <string>Number in pixels of the diameter of every neuron.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>6</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QToolButton" name="enscomp_visopts_setneusize">
+                   <property name="toolTip">
+                    <string>Set the size of the neurons.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>Set</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_38">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Results selector</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_69">
+              <item>
+               <widget class="QComboBox" name="enscomp_combo_select_result">
+                <property name="toolTip">
+                 <string>Select the analysis to change its visualization properties.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="enscomp_check_coords">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change to show/hide from the map the cells of the selected ensemble as identified by the selected analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Show coords</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="enscomp_check_ens">
+                <property name="toolTip">
+                 <string>Change to show/hide the timecourse of the selected ensemble as identified by the selected analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Show ensemble timecourse</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="enscomp_check_neus">
+                <property name="toolTip">
+                 <string>Change to show/hide the sum of activity of the neurons in the selected ensemble as identified by the selected analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Show neurons activity</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="enscomp_btn_color">
+                <property name="toolTip">
+                 <string>Pick the color of the ensembles of the selected analysis.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Color pick</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_33">
+             <property name="title">
+              <string>Similarity maps</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_66">
+              <item>
+               <widget class="QComboBox" name="enscomp_combo_select_simil">
+                <property name="toolTip">
+                 <string>Select the map to modify its visualization properties.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_20" native="true">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <layout class="QFormLayout" name="formLayout_10">
+                 <property name="horizontalSpacing">
+                  <number>6</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_25">
+                   <property name="text">
+                    <string>Similairty method</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="QComboBox" name="enscomp_combo_select_simil_method">
+                   <property name="toolTip">
+                    <string>Select the method to use to compute the similarity of the items in the selected map.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_26">
+                   <property name="text">
+                    <string>Color map</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QComboBox" name="enscomp_combo_select_simil_colormap">
+                   <property name="toolTip">
+                    <string>Select the color map for the selected map.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_39">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Stimulation</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_34">
+              <item>
+               <widget class="QCheckBox" name="enscomp_check_show_stim">
+                <property name="toolTip">
+                 <string>Change to show/hide the selected stimulus.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Show in time</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="enscomp_btn_color_stim">
+                <property name="toolTip">
+                 <string>Pick the color for the simuli.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Color pick</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_40">
+             <property name="title">
+              <string>Behavior</string>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_33">
+              <item>
+               <widget class="QCheckBox" name="enscomp_check_behavior_stim">
+                <property name="toolTip">
+                 <string>Change to show/hide the selected behavior.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Show in time</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="enscomp_btn_color_behavior">
+                <property name="toolTip">
+                 <string>Pick the color of the behavior.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Color pick</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_5">
        <attribute name="title">
         <string>Performance Comparison</string>
@@ -2674,6 +4815,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>When selected, the results from the SVD analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>SVD</string>
              </property>
@@ -2683,6 +4830,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             <widget class="QCheckBox" name="performance_check_pca">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>When selected, the results from the PCA analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>PCA</string>
@@ -2694,8 +4847,30 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>When selected, the results from the ICA analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>ICA</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="performance_check_x2p">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>When selected, the results from the Xsembles2P analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Xsembles2P</string>
              </property>
             </widget>
            </item>
@@ -2703,6 +4878,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
             <widget class="QCheckBox" name="performance_check_sgc">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>When selected, the results from the SGC analysis will be added to the comparision.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
              </property>
              <property name="text">
               <string>SGC</string>
@@ -2714,6 +4895,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="toolTip">
+              <string>Perform the comparision of the results of the selected analysis.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
              <property name="text">
               <string>Compare</string>
              </property>
@@ -2723,9 +4910,12 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
          </widget>
         </item>
         <item>
-         <widget class="QTabWidget" name="tab_36">
+         <widget class="QTabWidget" name="performance_tabs">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="movable">
            <bool>true</bool>
@@ -2761,8 +4951,8 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>1114</width>
-                 <height>506</height>
+                 <width>98</width>
+                 <height>89</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_34">
@@ -2797,7 +4987,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2833,7 +5023,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2869,8 +5059,8 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>1114</width>
-                 <height>506</height>
+                 <width>98</width>
+                 <height>210</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_47">
@@ -2896,13 +5086,13 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Save</string>
+        <string>Save/Load</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_18">
+       <layout class="QHBoxLayout" name="horizontalLayout_35">
         <item>
          <widget class="QGroupBox" name="groupBox_26">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -2912,21 +5102,285 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_45">
            <item>
-            <widget class="QPushButton" name="save_btn_save">
-             <property name="enabled">
-              <bool>false</bool>
+            <widget class="QLabel" name="label_27">
+             <property name="text">
+              <string>Select the data to save to a file.</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_input">
              <property name="toolTip">
-              <string>Save the analysis results and used parameters
-to an HDF5 file.</string>
+              <string>Select to add the user input data to the file.</string>
              </property>
              <property name="toolTipDuration">
               <number>5000</number>
              </property>
              <property name="text">
-              <string>Save results</string>
+              <string>Input user data</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_minimal">
+             <property name="toolTip">
+              <string>Select to add the minimal analysis results used by this GUI to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Minimal results used by Ensembles GUI</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_params">
+             <property name="toolTip">
+              <string>Select to add the analysis parameters to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Analysis parameters</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_full">
+             <property name="toolTip">
+              <string>Select to add all the results of every analysis to the file, even those that are not used by the GUI.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Full results of every analysis</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_enscomp">
+             <property name="toolTip">
+              <string>Select to add the similarity matrix of the analysis results to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Ensembles Compare analysis</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="save_check_perf">
+             <property name="toolTip">
+              <string>Select to add the performance comparission matrix to the file.</string>
+             </property>
+             <property name="toolTipDuration">
+              <number>5000</number>
+             </property>
+             <property name="text">
+              <string>Performance Comparison</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QWidget" name="widget_23" native="true">
+             <layout class="QVBoxLayout" name="verticalLayout_68">
+              <item>
+               <widget class="QPushButton" name="save_btn_hdf5">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Save the selected data to an HDF5 file, useful for quick visualization of the results and to use across different platforms.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Save as HDF5 file (.h5)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="save_btn_pkl">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Save the selected data as a Python Pickle file, useful for future use in Python.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Save as Python file (.pkl)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="save_btn_mat">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>Save the selected data as a MATLAB file, useful for later use in MATLAB.</string>
+                </property>
+                <property name="toolTipDuration">
+                 <number>5000</number>
+                </property>
+                <property name="text">
+                 <string>Save as MATLAB file (.mat)</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_41">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="title">
+           <string>Load previous results</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_18">
+           <item>
+            <widget class="QWidget" name="widget_26" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <layout class="QHBoxLayout" name="horizontalLayout_37">
+              <item>
+               <widget class="QLineEdit" name="lineEdit"/>
+              </item>
+              <item>
+               <widget class="QPushButton" name="pushButton_3">
+                <property name="text">
+                 <string>Load EnsGUI file</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLineEdit" name="lineEdit_2">
+             <property name="inputMask">
+              <string/>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="frame">
+              <bool>false</bool>
+             </property>
+             <property name="placeholderText">
+              <string>Select a file to check its contents</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_6">
+             <property name="text">
+              <string>Input user data</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_7">
+             <property name="text">
+              <string>Minimal results used by Ensembles GUI</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_8">
+             <property name="text">
+              <string>Full results of every analysis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_9">
+             <property name="text">
+              <string>Ensembles Compare analysis</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="checkBox_10">
+             <property name="text">
+              <string>Performance comparison</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_4">
+             <property name="text">
+              <string>Load selection</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
