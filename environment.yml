@@ -26,7 +26,6 @@ dependencies:
       - h5py==3.11.0
       - joblib==1.4.2
       - kiwisolver==1.4.5
-      - matlabengine==23.2
       - matplotlib==3.9.0
       - numpy==1.26.4
       - packaging==24.0
