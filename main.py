@@ -373,12 +373,13 @@ class MainWindow(QMainWindow):
         self.ensvis_edit_members.setText("")
         self.ensvis_edit_exclusive.setText("")
         self.ensvis_edit_timepoints.setText("")
-        self.ensvis_tabs.setCurrentIndex(0)
+        
         self.tempvars['ensvis_shown_results'] = False
         self.tempvars['ensvis_shown_tab1'] = False
         self.tempvars['ensvis_shown_tab2'] = False
         self.tempvars['ensvis_shown_tab3'] = False
-        self.tempvars['ensvis_shown_tab4'] = False 
+        self.tempvars['ensvis_shown_tab4'] = False
+        self.ensvis_tabs.setCurrentIndex(0)
 
         # Ensembles compare
         self.enscomp_visopts = {
