@@ -520,6 +520,14 @@ class MainWindow(QMainWindow):
                 self.file_model = FileTreeModel(hdf5_file, model_type="hdf5")
                 self.tree_view.setModel(self.file_model)
                 self.update_console_log("Done loading file.", "complete")
+            elif file_extension == ".pkl":
+                self.update_console_log("Generating file structure...")
+                with open(fname, 'rb') as file:
+                    pkl_file = pickle.load(file)
+                self.file_model_type = "pkl"
+                self.file_model = FileTreeModel(pkl_file, model_type="pkl")
+                self.tree_view.setModel(self.file_model)
+                self.update_console_log("Done loading file.", "complete")
             elif file_extension == '.mat':
                 self.update_console_log("Generating file structure...")
                 mat_file = scipy.io.loadmat(fname)
