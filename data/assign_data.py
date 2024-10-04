@@ -1,6 +1,7 @@
 import h5py
 import numpy as np
 import scipy.io
+import pickle
 
 def assign_data_from_file(self):
     var_path = self.file_selected_var_path
@@ -21,6 +22,21 @@ def assign_data_from_file(self):
             # Read the dataset
             dataset = current_group[()]
             return dataset
+    elif model_type == "pkl":
+        with open(filename, 'rb') as file:
+            pkl_file = pickle.load(file)
+        # Split the dataset path into individual components
+        path_components = var_path.split('/')
+        # Start from the root of the file
+        current_group = pkl_file
+        # Traverse the file hierarchy
+        for component in path_components:
+            # Check if the component is not empty (for cases like "//")
+            if component:
+                current_group = current_group[component]
+        # Read the dataset
+        dataset = current_group
+        return dataset
     elif model_type == "mat":
         mat_file = scipy.io.loadmat(filename)
         # Split the path in components avoiding the empty segments 

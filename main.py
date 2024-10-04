@@ -373,12 +373,13 @@ class MainWindow(QMainWindow):
         self.ensvis_edit_members.setText("")
         self.ensvis_edit_exclusive.setText("")
         self.ensvis_edit_timepoints.setText("")
-        self.ensvis_tabs.setCurrentIndex(0)
+        
         self.tempvars['ensvis_shown_results'] = False
         self.tempvars['ensvis_shown_tab1'] = False
         self.tempvars['ensvis_shown_tab2'] = False
         self.tempvars['ensvis_shown_tab3'] = False
-        self.tempvars['ensvis_shown_tab4'] = False 
+        self.tempvars['ensvis_shown_tab4'] = False
+        self.ensvis_tabs.setCurrentIndex(0)
 
         # Ensembles compare
         self.enscomp_visopts = {
@@ -517,6 +518,14 @@ class MainWindow(QMainWindow):
                 hdf5_file = h5py.File(fname, 'r')
                 self.file_model_type = "hdf5"
                 self.file_model = FileTreeModel(hdf5_file, model_type="hdf5")
+                self.tree_view.setModel(self.file_model)
+                self.update_console_log("Done loading file.", "complete")
+            elif file_extension == ".pkl":
+                self.update_console_log("Generating file structure...")
+                with open(fname, 'rb') as file:
+                    pkl_file = pickle.load(file)
+                self.file_model_type = "pkl"
+                self.file_model = FileTreeModel(pkl_file, model_type="pkl")
                 self.tree_view.setModel(self.file_model)
                 self.update_console_log("Done loading file.", "complete")
             elif file_extension == '.mat':

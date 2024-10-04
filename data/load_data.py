@@ -4,6 +4,7 @@ from PyQt6.QtGui import QStandardItemModel, QStandardItem
 import numpy as np
 import scipy.io
 import csv
+import matlab
 
 class FileTreeItem:
     def __init__(self, name, obj, mdl_type, parent=None):
@@ -25,6 +26,43 @@ class FileTreeItem:
                 else:
                     self.obj_type = "Dataset"
                     self.obj_size = obj.shape
+        
+        if mdl_type == "pkl":
+            if isinstance(obj, dict):
+                self.obj_type = "Group"
+                self.obj_size = len(obj)
+                for var_name, var_value in obj.items():
+                    if not var_name.startswith('__'):
+                        self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, self))
+            elif isinstance(obj, int):
+                self.obj_type = "Scalar"
+                self.obj_size = -1
+            elif isinstance(obj, np.ndarray):
+                # This is an array or matrix.
+                self.obj_type = "Dataset"
+                self.obj_size = obj.shape
+            elif isinstance(obj, list):
+                # This is an array or matrix.
+                self.obj_type = "PythonList"
+                self.obj_size = len(obj)
+            elif isinstance(obj, matlab.double):
+                self.obj_type = "MatlabDouble"
+                self.obj_size = -1
+            elif isinstance(obj, matlab.logical):
+                self.obj_type = "MatlabLogical"
+                self.obj_size = -1 
+            elif isinstance(obj, str):
+                # This is a struct.
+                self.obj_type = "String"
+                self.obj_size = -1
+            elif isinstance(obj, float):
+                # This is a struct.
+                self.obj_type = "Scalar"
+                self.obj_size = -1
+            else:
+                # Unknown type.
+                self.obj_type = f"Unknown {str(type(obj))}"
+                self.obj_size = -1
 
         if mdl_type == "mat":
             if isinstance(obj, dict):
@@ -34,6 +72,7 @@ class FileTreeItem:
                     if not var_name.startswith('__'):
                         self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, self))
             if isinstance(obj, np.ndarray):
+                #print(obj[0])
                 if obj.dtype == 'O':  # Object array (likely cell array)
                     #This is a cell array.
                     self.obj_type = "Group"
@@ -57,7 +96,7 @@ class FileTreeItem:
                 self.obj_size = -1
             else:
                 # Unknown type.
-                self.obj_type = "Unkwown"
+                self.obj_type = f"Unknown {str(type(obj))}"
                 self.obj_size = -1
 
         if mdl_type == "csv":
