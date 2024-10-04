@@ -6,3 +6,5 @@ resources/
 gui/__pycache__/
 
 utils/__pycache__/
+
+docs/build/
