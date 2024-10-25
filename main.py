@@ -104,7 +104,7 @@ class MainWindow(QMainWindow):
         self.btn_clear_labels.clicked.connect(self.varlabels_clear)
 
         ## Set default values for analysis
-        defaults = {
+        self.svd_defaults = {
             'pks': 3,
             'scut': 0.22,
             'hcut': 0.22,
@@ -115,8 +115,7 @@ class MainWindow(QMainWindow):
             'tf_idf_norm': True,
             'parallel_processing': False
         }
-        self.svd_defaults = defaults
-        defaults = {
+        self.pca_defaults = {
             'dc': 0.01,
             'npcs': 3,
             'minspk': 3,
@@ -126,8 +125,7 @@ class MainWindow(QMainWindow):
             'inner_corr': 5,
             'minsize': 3
         }
-        self.pca_defaults = defaults
-        defaults = {
+        self.ica_defaults = {
             'threshold': {
                 'method': 'MarcenkoPastur',
                 'permutations_percentile': 95,
@@ -138,8 +136,7 @@ class MainWindow(QMainWindow):
                 'number_of_iterations': 500
             }
         }
-        self.ica_defaults = defaults
-        defaults = {
+        self.x2p_defaults = {
             'network_bin': 1,
             'network_iterations': 1000,
             'network_significance': 0.05,
@@ -151,7 +148,14 @@ class MainWindow(QMainWindow):
             'parallel_processing': False,
             'file_log': ''
         }
-        self.x2p_defaults = defaults
+        self.sgc_defaults = {
+            'standard_deviations_threshold': 2,
+            'shuffling_rounds': 1000,
+            'coactivity_significance_level': 0.05,
+            'montecarlo_rounds': 5,
+            'montecarlo_steps': 50000,
+            'affinity_threshold': 0.2
+        }
 
         ## Numeric validator
         double_validator = QDoubleValidator()
@@ -198,7 +202,7 @@ class MainWindow(QMainWindow):
         self.btn_run_ica.clicked.connect(self.run_ICA)
         ## X2P analysis
         self.x2p_btn_defaults.clicked.connect(self.load_defaults_x2p)
-        self.btn_run_x2p.clicked.connect(self.run_x2p)
+        self.btn_run_xsgcclicked.connect(self.run_x2p)
 
         ## Ensembles visualizer
         self.ensvis_tabs.currentChanged.connect(self.ensvis_tabchange)
@@ -610,11 +614,13 @@ class MainWindow(QMainWindow):
                 self.lbl_pca_spikes_selected.setText(f"Loaded")
                 self.lbl_ica_spikes_selected.setText(f"Loaded")
                 self.lbl_x2p_spikes_selected.setText(f"Loaded")
+                self.lbl_sgc_spikes_selected.setText(f"Loaded")
             else:
                 self.lbl_sdv_spikes_selected.setText(f"Nothing selected")
                 self.lbl_pca_spikes_selected.setText(f"Nothing selected")
                 self.lbl_ica_spikes_selected.setText(f"Nothing selected")
                 self.lbl_x2p_spikes_selected.setText(f"Nothing selected")
+                self.lbl_sgc_spikes_selected.setText(f"Nothing selected")
 
             # Validate data for SVD
             needed_data = ["data_neuronal_activity"]
@@ -631,7 +637,12 @@ class MainWindow(QMainWindow):
             # Validate needed data for x2p
             needed_data = ["data_neuronal_activity"]
             self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
-        if index == 6: #Ensembles compare tab
+
+            # Validate needed data for sgc
+            needed_data = ["data_neuronal_activity"]
+            self.btn_run_sgc.setEnabled(self.validate_needed_data(needed_data))
+
+        if index == 7: #Ensembles compare tab
             if len(self.results) > 0:
                 self.ensembles_compare_update_ensembles()
 
@@ -1808,6 +1819,98 @@ class MainWindow(QMainWindow):
         plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu')
         plot_widget.plot_ensembles_timecourse(dataset, xlabel="Cell")
 
+    def load_defaults_sgc(self):
+        defaults = self.sgc_defaults
+        #self.sgc_edit_pks.setText(f"{defaults['standard_deviations_threshold']}")
+        self.sgc_edit_shuff.setText(f"{defaults['shuffling_rounds']}")
+        self.sgc_edit_sig.setText(f"{defaults['coactivity_significance_level']}")
+        self.sgc_edit_monterounds.setText(f"{defaults['montecarlo_rounds']}")
+        self.sgc_edit_montesteps.setText(f"{defaults['montecarlo_steps']}")
+        self.sgc_edit_affthres.setText(f"{defaults['affinity_threshold']}")
+        self.update_console_log("Loaded default SGC parameter values", "complete")
+    def run_sgc(self):
+        # Temporarly disable the button
+        self.btn_run_sgc.setEnabled(False)
+        # Prepare data
+        data = self.data_neuronal_activity
+        # Prepare parameters
+        input_value = self.sgc_edit_shuff.text()
+        val_shuffling_rounds = int(input_value) if len(input_value) > 0 else self.sgc_defaults['shuffling_rounds']
+        input_value = self.sgc_edit_sig.text()
+        val_coactivity_significance_level = float(input_value) if len(input_value) > 0 else self.sgc_defaults['coactivity_significance_level']
+        input_value = self.sgc_edit_monterounds.text()
+        val_montecarlo_rounds = int(input_value) if len(input_value) > 0 else self.sgc_defaults['montecarlo_rounds']
+        input_value = self.sgc_edit_montesteps.text()
+        val_montecarlo_steps = int(input_value) if len(input_value) > 0 else self.sgc_defaults['montecarlo_steps']
+        input_value = self.sgc_edit_affthres.text()
+        val_affinity_threshold = float(input_value) if len(input_value) > 0 else self.sgc_defaults['affinity_threshold']
+
+        # Pack parameters
+        pars = {
+            'shuffling_rounds': val_shuffling_rounds,
+            'coactivity_significance_level': val_coactivity_significance_level,
+            'montecarlo_rounds': val_montecarlo_rounds,
+            'montecarlo_steps': val_montecarlo_steps,
+            'affinity_threshold': val_affinity_threshold
+        }
+        self.params['sgc'] = pars
+
+        # Clean all the figures in case there was something previously
+        if 'sgc' in self.results:
+            del self.results['sgc']
+        #algorithm_figs = ["x2p_plot_similarity", "x2p_plot_epi", "x2p_plot_onsemact", "x2p_plot_offsemact", "x2p_plot_activity", "x2p_plot_onsemneu", "x2p_plot_offsemneu"] 
+        #for fig_name in algorithm_figs:
+        #    self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
+
+        self.update_console_log("Performing SGC...")
+        self.update_console_log("Look in the Python console for additional logs.", "warning")
+        worker_sgc = WorkerRunnable(self.run_sgc_parallel, data, pars)
+        worker_sgc.signals.result_ready.connect(self.run_sgc_parallel_end)
+        self.threadpool.start(worker_sgc)
+    def run_sgc_parallel(self, spikes, pars):
+        log_flag = "GUI SGC:"
+        print(f"{log_flag} Connecting with SGC functions...")
+        start_time = time.time()
+        # Adding to path
+        import analysis.sgc_assembly_detection
+        end_time = time.time()
+        engine_time = end_time - start_time
+        print(f"{log_flag} Imported SGC functions.")
+        start_time = time.time()
+        try:
+            answer = SGC(spikes, pars)
+        except:
+            print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
+            answer = None
+        end_time = time.time()
+        algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        plot_times = 0
+        if answer != None:
+            self.algotrithm_results['sgc'] = answer
+            # Plotting results
+            print(f"{log_flag} Plotting and saving results...")
+            # For this method the saving occurs in the same plotting function to avoid recomputation
+            start_time = time.time()
+            self.plot_sgc_results(answer)
+            end_time = time.time()
+            plot_times = end_time - start_time
+            print(f"{log_flag} Done plotting and saving...")
+            self.we_have_results()
+        return [engine_time, algorithm_time, plot_times]
+    def run_sgc_parallel_end(self, times):
+        self.update_console_log("Done executing the SGC algorithm", "complete") 
+        self.update_console_log(f"- Importing the functions took {times[0]:.2f} seconds") 
+        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
+        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        self.btn_run_sgc.setEnabled(True)
+    def plot_sgc_results(self, answer):
+        # Similarity map
+        print(answer)
+        #dataset = answer['similarity']
+        #plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_similarity')
+        #plot_widget.preview_dataset(dataset, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
+        
 
     def we_have_results(self):
         for analysis_name in self.results.keys():

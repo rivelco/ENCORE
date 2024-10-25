@@ -229,6 +229,7 @@ def findSignificantDF_FCoactivity(dF_F):
     sig_dF_F_activity = (dF_F > mean_dF_F + CONST['STD_SIG_THRESHOLD'] * std_dF_F).astype('float');
     # \_ sig_dF_F_mask: binary mask of significant dF/F-signal for N units in T time steps
 
+    ## TODO Hack here
 
     ## FIND SIGNIFICANT PEAKS IN THE THE COACTIVITY
 
