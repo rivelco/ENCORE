@@ -29,6 +29,8 @@ import matplotlib.pyplot as plt
 
 import matlab.engine
 
+from pprint import pprint
+
 class WorkerSignals(QObject):
     result_ready = pyqtSignal(object)  # Signal to emit the result
 
@@ -153,7 +155,7 @@ class MainWindow(QMainWindow):
             'shuffling_rounds': 1000,
             'coactivity_significance_level': 0.05,
             'montecarlo_rounds': 5,
-            'montecarlo_steps': 50000,
+            'montecarlo_steps': 10000,
             'affinity_threshold': 0.2
         }
 
@@ -202,7 +204,10 @@ class MainWindow(QMainWindow):
         self.btn_run_ica.clicked.connect(self.run_ICA)
         ## X2P analysis
         self.x2p_btn_defaults.clicked.connect(self.load_defaults_x2p)
-        self.btn_run_xsgcclicked.connect(self.run_x2p)
+        self.btn_run_x2p.clicked.connect(self.run_x2p)
+        ## SGC analysis
+        self.sgc_btn_defaults.clicked.connect(self.load_defaults_sgc)
+        self.btn_run_sgc.clicked.connect(self.run_sgc)
 
         ## Ensembles visualizer
         self.ensvis_tabs.currentChanged.connect(self.ensvis_tabchange)
@@ -608,7 +613,7 @@ class MainWindow(QMainWindow):
 
     ## Identify the tab changes
     def main_tabs_change(self, index):
-        if index > 0 and index < 5: # Analysis tabs
+        if index > 0 and index < 6: # Analysis tabs
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
                 self.lbl_pca_spikes_selected.setText(f"Loaded")
@@ -1215,23 +1220,26 @@ class MainWindow(QMainWindow):
         log_flag = "GUI SVD:"
         print(f"{log_flag} Starting MATLAB engine...")
         start_time = time.time()
-        eng = matlab.engine.start_matlab()
+        eng_svd = matlab.engine.start_matlab()
         # Adding to path
         relative_folder_path = 'analysis/SVD'
         folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
+        folder_path_with_subfolders = eng_svd.genpath(folder_path)
+        eng_svd.addpath(folder_path_with_subfolders, nargout=0)
         end_time = time.time()
         engine_time = end_time - start_time
         print(f"{log_flag} Loaded MATLAB engine.")
         start_time = time.time()
         try:
-            answer = eng.Stoixeion(spikes, coords_foo, pars_matlab)
+            answer = eng_svd.Stoixeion(spikes, coords_foo, pars_matlab)
         except:
             print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
             answer = None
         end_time = time.time()
         algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        print(f"{log_flag} Terminating MATLAB engine...")
+        eng_svd.quit()
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
@@ -1381,23 +1389,26 @@ class MainWindow(QMainWindow):
         log_flag = "GUI PCA:"
         start_time = time.time()
         print(f"{log_flag} Starting MATLAB engine...")
-        eng = matlab.engine.start_matlab()
+        eng_pca = matlab.engine.start_matlab()
         # Adding to path
         relative_folder_path = 'analysis/NeuralEnsembles'
         folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
+        folder_path_with_subfolders = eng_pca.genpath(folder_path)
+        eng_pca.addpath(folder_path_with_subfolders, nargout=0)
         end_time = time.time()
         engine_time = end_time - start_time
         print(f"{log_flag} Loaded MATLAB engine.")
         start_time = time.time()
         try:
-            answer = eng.raster2ens_by_density(raster, pars_matlab)
+            answer = eng_pca.raster2ens_by_density(raster, pars_matlab)
         except:
             print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
             answer = None
         end_time = time.time()
         algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        print(f"{log_flag} Terminating MATLAB engine...")
+        eng_pca.quit()
         print(f"{log_flag} Done.")
         plot_times = 0
         # Plot the results
@@ -1549,19 +1560,19 @@ class MainWindow(QMainWindow):
         log_flag = "GUI ICA:"
         print(f"{log_flag} Starting MATLAB engine...")
         start_time = time.time()
-        eng = matlab.engine.start_matlab()
+        eng_ica = matlab.engine.start_matlab()
         # Adding to path
         relative_folder_path = 'analysis/Cell-Assembly-Detection'
         folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
+        folder_path_with_subfolders = eng_ica.genpath(folder_path)
+        eng_ica.addpath(folder_path_with_subfolders, nargout=0)
         end_time = time.time()
         engine_time = end_time - start_time
         print(f"{log_flag} Loaded MATLAB engine.")
         print(f"{log_flag} Looking for patterns...")
         start_time = time.time()
         try:
-            answer = eng.assembly_patterns(spikes, pars_matlab)
+            answer = eng_ica.assembly_patterns(spikes, pars_matlab)
         except:
             print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
             answer = None
@@ -1573,13 +1584,16 @@ class MainWindow(QMainWindow):
             assembly_templates = np.array(answer['AssemblyTemplates']).T
             print(f"{log_flag} Looking for assembly activity...")
             try:
-                answer = eng.assembly_activity(answer['AssemblyTemplates'],spikes)
+                answer = eng_ica.assembly_activity(answer['AssemblyTemplates'],spikes)
             except:
                 print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
                 answer = None
             print(f"{log_flag} Done looking for assembly activity...")
         end_time = time.time()
         algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        print(f"{log_flag} Terminating MATLAB engine...")
+        eng_ica.quit()
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
@@ -1715,23 +1729,26 @@ class MainWindow(QMainWindow):
         log_flag = "GUI X2P:"
         print(f"{log_flag} Starting MATLAB engine...")
         start_time = time.time()
-        eng = matlab.engine.start_matlab()
+        eng_x2p = matlab.engine.start_matlab()
         # Adding to path
         relative_folder_path = 'analysis/Xsembles2P'
         folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng.genpath(folder_path)
-        eng.addpath(folder_path_with_subfolders, nargout=0)
+        folder_path_with_subfolders = eng_x2p.genpath(folder_path)
+        eng_x2p.addpath(folder_path_with_subfolders, nargout=0)
         end_time = time.time()
         engine_time = end_time - start_time
         print(f"{log_flag} Loaded MATLAB engine.")
         start_time = time.time()
         try:
-            answer = eng.Get_Xsembles(raster, pars_matlab)
+            answer = eng_x2p.Get_Xsembles(raster, pars_matlab)
         except:
             print(f"{log_flag} An error occurred while excecuting the algorithm. Check the Python console for more info.")
             answer = None
         end_time = time.time()
         algorithm_time = end_time - start_time
+        print(f"{log_flag} Done.")
+        print(f"{log_flag} Terminating MATLAB engine...")
+        eng_x2p.quit()
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
@@ -1821,7 +1838,7 @@ class MainWindow(QMainWindow):
 
     def load_defaults_sgc(self):
         defaults = self.sgc_defaults
-        #self.sgc_edit_pks.setText(f"{defaults['standard_deviations_threshold']}")
+        self.sgc_edit_stdthreshold.setText(f"{defaults['standard_deviations_threshold']}")
         self.sgc_edit_shuff.setText(f"{defaults['shuffling_rounds']}")
         self.sgc_edit_sig.setText(f"{defaults['coactivity_significance_level']}")
         self.sgc_edit_monterounds.setText(f"{defaults['montecarlo_rounds']}")
@@ -1833,7 +1850,13 @@ class MainWindow(QMainWindow):
         self.btn_run_sgc.setEnabled(False)
         # Prepare data
         data = self.data_neuronal_activity
+        spikes = matlab.double(data.tolist())
+
+        data = self.data_dFFo
+        dFFo = matlab.double(data.tolist())
         # Prepare parameters
+        input_value = self.sgc_edit_stdthreshold.text()
+        val_std_threshold = float(input_value) if len(input_value) > 0 else self.sgc_defaults['standard_deviations_threshold']
         input_value = self.sgc_edit_shuff.text()
         val_shuffling_rounds = int(input_value) if len(input_value) > 0 else self.sgc_defaults['shuffling_rounds']
         input_value = self.sgc_edit_sig.text()
@@ -1847,6 +1870,7 @@ class MainWindow(QMainWindow):
 
         # Pack parameters
         pars = {
+            'standard_deviations_threshold': val_std_threshold,
             'shuffling_rounds': val_shuffling_rounds,
             'coactivity_significance_level': val_coactivity_significance_level,
             'montecarlo_rounds': val_montecarlo_rounds,
@@ -1854,6 +1878,7 @@ class MainWindow(QMainWindow):
             'affinity_threshold': val_affinity_threshold
         }
         self.params['sgc'] = pars
+        pars_matlab = self.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'sgc' in self.results:
@@ -1864,30 +1889,37 @@ class MainWindow(QMainWindow):
 
         self.update_console_log("Performing SGC...")
         self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_sgc = WorkerRunnable(self.run_sgc_parallel, data, pars)
+        worker_sgc = WorkerRunnable(self.run_sgc_parallel, spikes, dFFo, pars_matlab)
         worker_sgc.signals.result_ready.connect(self.run_sgc_parallel_end)
         self.threadpool.start(worker_sgc)
-    def run_sgc_parallel(self, spikes, pars):
+    def run_sgc_parallel(self, spikes, dFFo, pars_matlab):
         log_flag = "GUI SGC:"
-        print(f"{log_flag} Connecting with SGC functions...")
+        print(f"{log_flag} Starting MATLAB engine...")
         start_time = time.time()
+        eng_sgc = matlab.engine.start_matlab()
         # Adding to path
-        import analysis.sgc_assembly_detection
+        relative_folder_path = 'analysis/SGC_neural_assembly_detection'
+        folder_path = os.path.abspath(relative_folder_path)
+        folder_path_with_subfolders = eng_sgc.genpath(folder_path)
+        eng_sgc.addpath(folder_path_with_subfolders, nargout=0)
         end_time = time.time()
         engine_time = end_time - start_time
-        print(f"{log_flag} Imported SGC functions.")
+        print(f"{log_flag} Loaded MATLAB engine.")
         start_time = time.time()
         try:
-            answer = SGC(spikes, pars)
+            answer = eng_sgc.EnsemblesGUI_linker_SGC(spikes, dFFo, pars_matlab)
         except:
             print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
             answer = None
         end_time = time.time()
         algorithm_time = end_time - start_time
         print(f"{log_flag} Done.")
+        print(f"{log_flag} Terminating MATLAB engine...")
+        eng_sgc.quit()
+        print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
-            self.algotrithm_results['sgc'] = answer
+            #self.algotrithm_results['sgc'] = answer
             # Plotting results
             print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
@@ -1906,7 +1938,7 @@ class MainWindow(QMainWindow):
         self.btn_run_sgc.setEnabled(True)
     def plot_sgc_results(self, answer):
         # Similarity map
-        print(answer)
+        pprint(answer)
         #dataset = answer['similarity']
         #plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_similarity')
         #plot_widget.preview_dataset(dataset, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
