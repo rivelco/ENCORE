@@ -22,6 +22,7 @@ from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
 
 import utils.metrics as metrics
+from utils.text_formatting import format_nums_to_string
 
 from gui.MatplotlibWidget import MatplotlibWidget
 
@@ -278,6 +279,21 @@ class MainWindow(QMainWindow):
         self.save_btn_mat.clicked.connect(self.save_results_mat)
         
     def update_console_log(self, message, msg_type="log"):
+        """
+        Updates the console log with a new message, formatted with a specific color based on the message type.
+
+        :param message: The message to be displayed in the console log.
+        :type message: str
+        :param msg_type: The type of the message, which determines its color. 
+                        It can be one of "log", "error", "warning", or "complete". 
+                        Defaults to "log".
+        :type msg_type: str, optional
+        :return: None
+
+        This method formats the log entry by including the current timestamp and the provided message. The message 
+        is displayed in a monospace font with different colors based on the message type. The new message is appended 
+        to the console log, and the view is updated to scroll to the bottom to ensure the message is visible.
+        """
         color_map = {"log": "#000000", "error": "#da1e28", "warning": "#ff832b", "complete": "#198038"}
         current_date_time = QDateTime.currentDateTime().toString(Qt.DateFormat.ISODateWithMs)
 
@@ -291,6 +307,11 @@ class MainWindow(QMainWindow):
         self.console_log.repaint()
 
     def reset_gui(self):
+        """
+        Reset the GUI, delete all the variables and analysis results.
+        Also clears all the figures and restores the analysis and display options.
+        The result is the GUI just like the first time you opened it.
+        """
         # Delete all previous results
         self.results = {}
         self.algotrithm_results = {}
@@ -515,6 +536,11 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_times').reset(default_txt)
 
     def browse_files(self):
+        """
+        Opens a file browing dialog to open a new file.
+        
+        This function also loads the file tree model and shows it in the variable browser widget.
+        """
         fname, _ = QFileDialog.getOpenFileName(self, 'Open file')
         self.filenamePlain.setText(fname)
         self.update_console_log("Loading file...")
@@ -557,6 +583,20 @@ class MainWindow(QMainWindow):
             self.update_console_log("File not found.", "error")
 
     def item_clicked(self, index):
+        """
+        Handles the click event on a variable in the :attr:`MainWindow.tree_view`, displaying relevant information 
+        about the selected variable and enabling or disabling assign and clear buttons in the UI.
+
+        :param index: The index of the clicked item in the file model.
+        :type index: QModelIndex
+
+        :return: None
+
+        This method retrieves information about the selected variable, including its path in the file, type, and size. 
+        The item's name is extracted from the path and displayed along with its description in the UI. 
+        Depending on the type and size of the item, it enables or disables specific buttons related 
+        to the assigning to a dataset. The relevant information is also stored for further processing.
+        """
         # Get the item data from the index
         item_path = self.file_model.data_name(index)
         item_type = self.file_model.data_type(index)
@@ -599,20 +639,37 @@ class MainWindow(QMainWindow):
         self.file_selected_var_name = item_name
     
     def validate_needed_data(self, needed_data):
+        """
+        Validates that all required data for a given analysis are present in the current session.
+
+        :param needed_data: A list of strings representing the names of the required attributes.
+        :type needed_data: list of str
+
+        :return: True if all required attributes are present, False otherwise.
+        :rtype: bool
+
+        This method checks whether the object has the necessary attributes as specified in the 
+        `needed_data` list. If any required attribute is missing, it returns False, indicating 
+        that the data is not valid. Otherwise, it returns True.
+        """
         valid_data = True
         for req in needed_data:
             if not hasattr(self, req):
                 valid_data = False
         return valid_data
-        
-    def format_nums_to_string(self, numbers_list):
-        txt = f""
-        for member_id in range(len(numbers_list)):
-            txt += f"{numbers_list[member_id]}, " if member_id < len(numbers_list)-1 else f"{numbers_list[member_id]}"
-        return txt
 
     ## Identify the tab changes
     def main_tabs_change(self, index):
+        """
+        Identifies the change in tabs to load some data.
+
+        This function allows the asynchronous verification and loading of some tabs identified by index.
+        For the analysis tabs, the necessary data is evaluated and then change the text accordingly.
+        For the ensembles compare tab the visualizations are only loaded when the user reaches this tab.
+
+        :param index: Index of the currently open tab, 0 indexing.
+        :type index: int
+        """
         if index > 0 and index < 6: # Analysis tabs
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
@@ -653,9 +710,17 @@ class MainWindow(QMainWindow):
 
     ## Set variables from input file
     def set_dFFo(self):
-        data_dFFo = assign_data_from_file(self)
-        self.data_dFFo = data_dFFo
-        neus, frames = data_dFFo.shape
+        """
+        Sets the :attr:`MainWindow.dFFo` dataset by assigning data from a file and updating the relevant UI components.
+
+        This method loads the dFFo dataset from the selected file.
+        It then updates the UI to reflect that the dataset has been
+        assigned, enables buttons for further edition, and logs the update message.
+
+        :return: None
+        """
+        self.data_dFFo = assign_data_from_file(self)
+        neus, frames = self.data_dFFo.shape
         self.btn_clear_dFFo.setEnabled(True)
         self.btn_view_dFFo.setEnabled(True)
         self.lbl_dffo_select.setText("Assigned")
@@ -666,9 +731,17 @@ class MainWindow(QMainWindow):
         for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
             btn.setEnabled(True)
     def set_neuronal_activity(self):
-        data_neuronal_activity = assign_data_from_file(self)
-        self.data_neuronal_activity = data_neuronal_activity
-        self.cant_neurons, self.cant_timepoints = data_neuronal_activity.shape
+        """
+        Sets the :attr:`MainWindow.data_neuronal_activity` dataset by assigning data from a file and updating the relevant UI components.
+
+        This method loads the data_neuronal_activity dataset from the selected file and extracts the number of cells 
+        (cant_neurons) and time points (cant_timepoints). It then updates the UI to reflect that the dataset has been
+        assigned, enables buttons for further edition, and logs the update message.
+
+        :return: None
+        """
+        self.data_neuronal_activity = assign_data_from_file(self)
+        self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
         self.btn_clear_neuronal_activity.setEnabled(True)
         self.btn_view_neuronal_activity.setEnabled(True)
         self.lbl_neuronal_activity_select.setText("Assigned")
@@ -679,6 +752,15 @@ class MainWindow(QMainWindow):
         for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
             btn.setEnabled(True)
     def set_coordinates(self):
+        """
+        Sets the value of the :attr:`MainWindow.data_coordinates` variable.
+
+        The assigned value is the one of the selected variable in the variable broswer.
+        Only the first two elements of the second dimention are assigned.
+        This function also updates the buttons related to load and clear the variable
+        and triggers the visualization function.
+        At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
+        """
         data_coordinates = assign_data_from_file(self)
         self.data_coordinates = data_coordinates[:, 0:2]
         neus, dims = self.data_coordinates.shape
@@ -692,6 +774,14 @@ class MainWindow(QMainWindow):
         for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
             btn.setEnabled(True)
     def set_stims(self):
+        """
+        Sets the value of the :attr:`MainWindow.data_stims` variable.
+
+        The assigned value is the one of the selected variable in the variable broswer.
+        This function also updates the buttons related to load and clear the variable
+        and triggers the visualization function.
+        At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
+        """
         data_stims = assign_data_from_file(self)
         self.data_stims = data_stims
         stims, timepoints = data_stims.shape
@@ -705,6 +795,14 @@ class MainWindow(QMainWindow):
         for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
             btn.setEnabled(True)
     def set_cells(self):
+        """
+        Sets the value of the :attr:`MainWindow.data_cells` variable.
+
+        The assigned value is the one of the selected variable in the variable broswer.
+        This function also updates the buttons related to load and clear the variable
+        and triggers the visualization function.
+        At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
+        """
         data_cells = assign_data_from_file(self)
         self.data_cells = data_cells
         stims, cells = data_cells.shape
@@ -718,6 +816,14 @@ class MainWindow(QMainWindow):
         for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
             btn.setEnabled(True)
     def set_behavior(self):
+        """
+        Sets the value of the :attr:`MainWindow.data_behavior` variable.
+
+        The assigned value is the one of the selected variable in the variable broswer.
+        This function also updates the buttons related to load and clear the variable
+        and triggers the visualization function.
+        At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
+        """
         data_behavior = assign_data_from_file(self)
         self.data_behavior = data_behavior
         behaviors, timepoints = data_behavior.shape
@@ -732,6 +838,12 @@ class MainWindow(QMainWindow):
             btn.setEnabled(True)
     
     def set_able_edit_options(self, boolval):
+        """
+        Changes the enabled status of the editing options.
+
+        :param boolval: When true, all the buttons for editing are enabled, dissabled otherwise.
+        :type boolval: bool
+        """
         # Transpose matrix
         self.btn_edit_transpose.setEnabled(boolval)
         # Binning options
@@ -748,6 +860,12 @@ class MainWindow(QMainWindow):
 
     ## Clear variables 
     def clear_dFFo(self):
+        """
+        Deletes the value of the :attr:`MainWindow.data_dFFo` variable.
+
+        This function also updates the buttons related to load and clear the variable
+        At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
+        """
         delattr(self, "data_dFFo")
         self.set_able_edit_options(False)
         self.btn_clear_dFFo.setEnabled(False)
@@ -758,6 +876,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted dFFo dataset", msg_type="complete")       
     def clear_neuronal_activity(self):
+        """
+        Deletes the value of the :attr:`MainWindow.data_neuronal_activity` variable.
+
+        This function also updates the buttons related to load and clear the variable
+        At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
+        """
         delattr(self, "data_neuronal_activity")
         self.set_able_edit_options(False)
         self.btn_clear_neuronal_activity.setEnabled(False)
@@ -768,6 +892,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Binary Neuronal Activity dataset", msg_type="complete")
     def clear_coordinates(self):
+        """
+        Deletes the value of the :attr:`MainWindow.data_coordinates` variable.
+
+        This function also updates the buttons related to load and clear the variable
+        At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
+        """
         delattr(self, "data_coordinates")
         self.set_able_edit_options(False)
         self.btn_clear_coordinates.setEnabled(False)
@@ -778,6 +908,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Coordinates dataset", msg_type="complete")
     def clear_stims(self):
+        """
+        Deletes the value of the :attr:`MainWindow.data_stims` variable.
+
+        This function also updates the buttons related to load and clear the variable
+        At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
+        """
         delattr(self, "data_stims")
         self.set_able_edit_options(False)
         self.btn_clear_stim.setEnabled(False)
@@ -788,6 +924,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Stimuli dataset", msg_type="complete")
     def clear_cells(self):
+        """
+        Deletes the value of the :attr:`MainWindow.data_cells` variable.
+
+        This function also updates the buttons related to load and clear the variable
+        At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
+        """
         delattr(self, "data_cells")
         self.set_able_edit_options(False)
         self.btn_clear_cells.setEnabled(False)
@@ -798,6 +940,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
         self.update_console_log(f"Deleted Selected cells dataset", msg_type="complete")
     def clear_behavior(self):
+        """
+        Deletes the value of the :attr:`MainWindow.data_behavior` variable.
+
+        This function also updates the buttons related to load and clear the variable
+        At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
+        """
         delattr(self, "data_behavior")
         self.set_able_edit_options(False)
         self.btn_clear_behavior.setEnabled(False)
@@ -810,6 +958,15 @@ class MainWindow(QMainWindow):
         
     ## Visualize variables from input file
     def view_dFFo(self):
+        """
+        Displays the data saved in the :attr:`MainWindow.dFFo` variable.
+
+        This function also runs update the status for editing the variable
+        using :meth:`MainWindow.set_able_edit_options` and updates validators
+        using :meth:`MainWindow.update_edit_validators`.
+        This function also triggers the setup of the variable labels tab
+        using :meth:`MainWindow.varlabels_setup_tab`.
+        """
         self.currently_visualizing = "dFFo"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_dFFo.shape[1], lim_sup_y=self.data_dFFo.shape[0])
@@ -818,6 +975,15 @@ class MainWindow(QMainWindow):
         plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell', yitems_labels=cell_labels)
         self.varlabels_setup_tab(self.data_dFFo.shape[0])
     def view_neuronal_activity(self):
+        """
+        Displays the data saved in the :attr:`MainWindow.neuronal_activity` variable.
+
+        This function also runs update the status for editing the variable
+        using :meth:`MainWindow.set_able_edit_options` and updates validators
+        using :meth:`MainWindow.update_edit_validators`.
+        This function also triggers the setup of the variable labels tab
+        using :meth:`MainWindow.varlabels_setup_tab`.
+        """
         self.currently_visualizing = "neuronal_activity"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_neuronal_activity.shape[1], lim_sup_y=self.data_neuronal_activity.shape[0])
@@ -826,6 +992,15 @@ class MainWindow(QMainWindow):
         plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray', yitems_labels=cell_labels)
         self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
     def view_coordinates(self):
+        """
+        Displays the data saved in the :attr:`MainWindow.coordinates` variable.
+
+        This function also runs update the status for editing the variable
+        using :meth:`MainWindow.set_able_edit_options` and updates validators
+        using :meth:`MainWindow.update_edit_validators`.
+        This function also triggers the setup of the variable labels tab
+        using :meth:`MainWindow.varlabels_setup_tab`.
+        """
         self.currently_visualizing = "coordinates"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=2, lim_sup_y=self.data_coordinates.shape[0])
@@ -833,6 +1008,15 @@ class MainWindow(QMainWindow):
         self.plot_widget.preview_coordinates2D(self.data_coordinates)
         self.varlabels_setup_tab(self.data_coordinates.shape[0])
     def view_stims(self):
+        """
+        Displays the data saved in the :attr:`MainWindow.stims` variable.
+
+        This function also runs update the status for editing the variable
+        using :meth:`MainWindow.set_able_edit_options` and updates validators
+        using :meth:`MainWindow.update_edit_validators`.
+        This function also triggers the setup of the variable labels tab
+        using :meth:`MainWindow.varlabels_setup_tab`.
+        """
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0])
@@ -846,6 +1030,15 @@ class MainWindow(QMainWindow):
         stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
         plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray', yitems_labels=stim_labels)
     def view_cells(self):
+        """
+        Displays the data saved in the :attr:`MainWindow.cells` variable.
+
+        This function also runs update the status for editing the variable
+        using :meth:`MainWindow.set_able_edit_options` and updates validators
+        using :meth:`MainWindow.update_edit_validators`.
+        This function also triggers the setup of the variable labels tab
+        using :meth:`MainWindow.varlabels_setup_tab`.
+        """
         self.currently_visualizing = "cells"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_cells.shape[1], lim_sup_y=self.data_cells.shape[0])
@@ -858,6 +1051,15 @@ class MainWindow(QMainWindow):
         selectcell_labels = list(self.varlabels["selected_cell"].values()) if "selected_cell" in self.varlabels else []
         plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
     def view_behavior(self):
+        """
+        Displays the data saved in the :attr:`MainWindow.behavior` variable.
+
+        This function also runs update the status for editing the variable
+        using :meth:`MainWindow.set_able_edit_options` and updates validators
+        using :meth:`MainWindow.update_edit_validators`.
+        This function also triggers the setup of the variable labels tab
+        using :meth:`MainWindow.varlabels_setup_tab`.
+        """
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=self.data_behavior.shape[1], lim_sup_y=self.data_behavior.shape[0])
@@ -873,6 +1075,13 @@ class MainWindow(QMainWindow):
 
     ## Edit buttons
     def edit_transpose(self):
+        """
+        Transpose the currently visualized variable.
+
+        Simple transpose of the data currently viewed in the MainWindow.data_preview widget.
+        This method changes both the stored data and the visualization.
+        Also, a message is shown to the user about the interpretation of the transpose.
+        """
         to_edit = self.currently_visualizing
         if to_edit == "dFFo":
             self.data_dFFo = self.data_dFFo.T
@@ -902,6 +1111,14 @@ class MainWindow(QMainWindow):
             self.view_behavior()
 
     def update_edit_validators(self, lim_sup_x=10000000, lim_sup_y=10000000):
+        """
+        Update the validators for bining and slicing.
+
+        :param lim_sup_x: Maximum value possible for the x dimention, defaults to 10000000
+        :type lim_sup_x: int, optional
+        :param lim_sup_y: Mavimum value possible for the y dimention, defaults to 10000000
+        :type lim_sup_y: int, optional
+        """
         # For the edit options
         int_validator = QIntValidator(0, lim_sup_x)
         self.edit_edit_binsize.setValidator(int_validator)
@@ -912,9 +1129,33 @@ class MainWindow(QMainWindow):
         self.edit_edit_yend.setValidator(int_validator)
 
     def bin_matrix(self, mat, bin_size, bin_method):
+        """
+        Bins the input matrix along the timepoints dimension using the specified binning method.
+
+        :param mat: The input matrix to be binned, where each row represents an element and each column represents a timepoint.
+        :type mat: numpy.ndarray of shape (n, t)
+        :param bin_size: The number of timepoints to include in each bin. Must be smaller than the number of timepoints in `mat`.
+        :type bin_size: int
+        :param bin_method: The method used to bin the data. Options are "mean" to compute the mean of each bin, or "sum" to compute the sum.
+        :type bin_method: str
+        :raises ValueError: If `bin_method` is not one of the accepted values ("mean" or "sum").
+        :return: A matrix with the same number of rows as `mat` but with columns reduced by the binning operation.
+        :rtype: numpy.ndarray of shape (n, b)
+
+        :Example:
+
+            >>> mat = np.array([[1, 2, 3, 4], [5, 6, 7, 8]])
+            >>> bin_size = 2
+            >>> bin_method = "mean"
+            >>> binned_mat = self.bin_matrix(mat, bin_size, bin_method)
+            >>> print(binned_mat)
+            array([[1.5, 3.5],
+                [5.5, 7.5]])
+
+        """
         elements, timepoints = mat.shape
         if bin_size >= timepoints:
-            self.update_console_log(f"Enter a bin size smaller than the curren amount of timepoints. Nothing has been changed.", "warning")
+            self.update_console_log(f"Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.", "warning")
             return mat   
         num_bins = timepoints // bin_size
         bin_mat = np.zeros((elements, num_bins))
@@ -923,6 +1164,8 @@ class MainWindow(QMainWindow):
                 bin_mat[:, i] = np.mean(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
             elif bin_method == "sum":
                 bin_mat[:, i] = np.sum(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+            else:
+                raise ValueError("Invalid bin_method. Use 'mean' or 'sum'.")
         return bin_mat 
     def edit_bin(self):
         to_edit = self.currently_visualizing
@@ -967,6 +1210,21 @@ class MainWindow(QMainWindow):
             self.view_behavior()
         
     def edit_trimmatrix(self):
+        """
+        Edits the currently visualized matrix by trimming its rows and/or columns based on user-specified indices.
+
+        :param self: Instance of the MainWindow class.
+        :type self: MainWindow
+        :return: None
+
+        This method uses the start and end indices entered by the user to trim the matrix currently selected for editing.
+        Depending on the selection, it will trim one of the following datasets: dFFo, neuronal_activity, coordinates, stims, 
+        cells, or behavior. For each dataset, if valid start and end indices are provided for the x-axis or y-axis, 
+        it slices the data accordingly and updates the view for that dataset.
+
+        After trimming, the console log is updated to notify the user, and the appropriate preview function is called to 
+        display the updated dataset.
+        """
         # Basic aproach
         to_edit = self.currently_visualizing
         xstart = self.edit_edit_xstart.text()
@@ -1031,6 +1289,21 @@ class MainWindow(QMainWindow):
             self.view_behavior()
 
     def varlabels_setup_tab(self, rows_cant):
+        """
+        Sets up the table for labeling variables according to the currently visualized dataset.
+
+        :param rows_cant: The number of rows to display in the table.
+        :type rows_cant: int
+        :return: None
+
+        Based on the dataset currently selected for viewing (:attr:`MainWindow.currently_visualizing`), this function configures the label 
+        for the index column and initializes the label family. It sets the row count of :attr:`MainWindow.table_setlabels` to `rows_cant`, 
+        populates the table with index values in the first column, and sets up editable label fields in the second column. 
+        If labels have already been registered for the selected dataset type, these are pre-filled in the table; 
+        otherwise, previous entries are cleared.
+
+        The first column items are set as non-editable to prevent user modification of index values.
+        """
         curr_view = self.currently_visualizing
         new_colum_start = ""
         label_family = ""
@@ -1060,6 +1333,19 @@ class MainWindow(QMainWindow):
             else:   # To clear out all the previous entries
                 self.table_setlabels.setItem(row, 1, QTableWidgetItem(None))
     def varlabels_save(self):
+        """
+        Saves the labels entered by the user for the currently visualized dataset.
+
+        :return: None
+
+        Based on the current dataset selected (:attr:`MainWindow.currently_visualizing`), this function assigns a label family, retrieves 
+        the label values entered by the user in the second column of :attr:`MainWindow.table_setlabels`, and stores them in the :attr:`MainWindow.varlabels` 
+        dictionary under the corresponding label family. If a label is missing for any row, the row index is used as the 
+        default label.
+
+        After saving, the function updates the view of the current dataset to reflect any changes and logs a message 
+        to notify the user.
+        """
         label_family = ""
         curr_view = self.currently_visualizing
         if curr_view == "dFFo" or curr_view == "neuronal_activity" or curr_view == "coordinates":
@@ -1092,6 +1378,18 @@ class MainWindow(QMainWindow):
             self.view_behavior()
         self.update_console_log(f"Saved {label_family} labels. Please, verify the data preview.", "warning")
     def varlabels_clear(self):
+        """
+        Clears the saved labels for the currently visualized dataset.
+
+        :return: None
+
+        Determines the label family based on the currently visualized dataset (:attr:`MainWindow.currently_visualizing`) and removes 
+        the corresponding entries from the :attr:`MainWindow.varlabels` dictionary if they exist. This action clears all custom labels 
+        previously assigned to the dataset.
+
+        After clearing the labels, the function updates the view of the current dataset to reflect the removal of labels 
+        and reinitializes the :attr:`MainWindow.table_setlabels` widget to show empty label entries.
+        """
         label_family = ""
         curr_view = self.currently_visualizing
         if curr_view == "dFFo" or curr_view == "neuronal_activity" or curr_view == "coordinates":
@@ -1118,6 +1416,20 @@ class MainWindow(QMainWindow):
         self.varlabels_setup_tab(self.table_setlabels.rowCount())
         
     def dict_to_matlab_struct(self, pars_dict):
+        """
+        Converts a Python dictionary to a MATLAB struct.
+
+        :param pars_dict: A dictionary where keys represent the names of fields in the MATLAB struct and the values 
+                        represent the corresponding field values.
+        :type pars_dict: dict
+
+        :return: A MATLAB struct where the keys are the field names and the values are converted to the appropriate MATLAB data type.
+        :rtype: dict
+
+        This function recursively converts a Python dictionary to a MATLAB struct. It handles nested dictionaries by 
+        recursively calling the conversion function. Numeric values (integers or floats) are converted into MATLAB 
+        double type, while other data types are kept unchanged.
+        """
         matlab_struct = {}
         for key, value in pars_dict.items():
             if isinstance(value, dict):
@@ -2039,7 +2351,7 @@ class MainWindow(QMainWindow):
         members = []
         ensemble = self.results[curr_analysis]['neus_in_ens'][value-1,:]
         members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
-        members_txt = self.format_nums_to_string(members)
+        members_txt = format_nums_to_string(members)
         self.ensvis_edit_members.setText(members_txt)
 
         # Get the exclusive members of this ensemble
@@ -2047,13 +2359,13 @@ class MainWindow(QMainWindow):
         mask_e = ensemble == 1
         sum_mask = np.sum(ens_mat, axis=0)
         exc_elems = [cell+1 for cell in range(len(mask_e)) if mask_e[cell] and sum_mask[cell] == 1]
-        exclusive_txt = self.format_nums_to_string(exc_elems)
+        exclusive_txt = format_nums_to_string(exc_elems)
         self.ensvis_edit_exclusive.setText(exclusive_txt)
 
         # Timepoints of activation
         ensemble_timecourse = self.results[curr_analysis]['timecourse'][curr_ensemble-1,:]
         ens_timepoints = [frame+1 for frame in range(len(ensemble_timecourse)) if ensemble_timecourse[frame]]
-        ens_timepoints_txt = self.format_nums_to_string(ens_timepoints)
+        ens_timepoints_txt = format_nums_to_string(ens_timepoints)
         self.ensvis_edit_timepoints.setText(ens_timepoints_txt)
 
         idx_corrected_members = [idx-1 for idx in members]
