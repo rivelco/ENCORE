@@ -33,10 +33,44 @@ import matlab.engine
 from pprint import pprint
 
 class WorkerSignals(QObject):
-    result_ready = pyqtSignal(object)  # Signal to emit the result
+    """
+    Signals used by the worker thread.
+
+    :ivar result_ready: Signal emitted when the long-running function finishes execution and returns a result.
+    :vartype result_ready: pyqtSignal(object)
+    """
+    result_ready = pyqtSignal(object)
 
 class WorkerRunnable(QRunnable):
+    """
+    Runnable task to execute a long-running function in a separate thread.
+
+    :param long_running_function: The function to be executed in the thread.
+    :type long_running_function: callable
+    :param args: Positional arguments to pass to the function.
+    :type args: tuple
+    :param kwargs: Keyword arguments to pass to the function.
+    :type kwargs: dict
+    :ivar long_running_function: The function to execute in the thread.
+    :vartype long_running_function: callable
+    :ivar args: Positional arguments for the function.
+    :vartype args: tuple
+    :ivar kwargs: Keyword arguments for the function.
+    :vartype kwargs: dict
+    :ivar signals: Signals for communicating the result of the function execution.
+    :vartype signals: WorkerSignals
+    """
     def __init__(self, long_running_function, *args, **kwargs):
+        """
+        Initialize the WorkerRunnable.
+
+        :param long_running_function: The function to execute in the thread.
+        :type long_running_function: callable
+        :param args: Positional arguments to pass to the function.
+        :type args: tuple
+        :param kwargs: Keyword arguments to pass to the function.
+        :type kwargs: dict
+        """
         super().__init__()
         self.long_running_function = long_running_function
         self.args = args
@@ -45,9 +79,14 @@ class WorkerRunnable(QRunnable):
 
     @pyqtSlot()
     def run(self):
-        # Run the long-running function with arguments and capture the result
+        """
+        Execute the long-running function with the provided arguments.
+
+        :raises Exception: Propagates any exception raised by the long-running function.
+        :return: Emits the result of the function execution via the `result_ready` signal.
+        :rtype: None
+        """
         result = self.long_running_function(*self.args, **self.kwargs)
-        # Emit the result using the signal
         self.signals.result_ready.emit(result)
 
 class MainWindow(QMainWindow):
@@ -331,11 +370,15 @@ class MainWindow(QMainWindow):
         self.ensvis_btn_x2p.setEnabled(False)
         self.ensvis_btn_sgc.setEnabled(False)
 
-        self.performance_check_svd.setEnabled(False)
-        self.performance_check_pca.setEnabled(False)
-        self.performance_check_ica.setEnabled(False)
-        self.performance_check_x2p.setEnabled(False)
-        self.performance_check_sgc.setEnabled(False)
+        # Ensemble performance selectors
+        check_boxes = [self.performance_check_svd,
+                       self.performance_check_pca,
+                       self.performance_check_ica,
+                       self.performance_check_x2p,
+                       self.performance_check_sgc]
+        for obj in check_boxes:
+            obj.setEnabled(False)
+            obj.setChecked(False)
         self.performance_btn_compare.setEnabled(False)
 
         # Save tab
@@ -391,8 +434,10 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu').reset(default_txt)
 
         self.ensvis_edit_numens.setText("")
+        self.envis_slide_selectedens.blockSignals(True)
         self.envis_slide_selectedens.setMaximum(2)
         self.envis_slide_selectedens.setValue(1)
+        self.envis_slide_selectedens.blockSignals(False)
         self.ensvis_lbl_currentens.setText(f"{1}")
         self.ensvis_check_onlyens.setEnabled(False)
         self.ensvis_check_onlycont.setEnabled(False)
@@ -423,9 +468,13 @@ class MainWindow(QMainWindow):
         self.tempvars["showed_sim_maps"] = False
 
         # The general options
-        self.enscomp_visopts_showcells.setEnabled(False)
-        self.enscomp_visopts_neusize.setEnabled(False)
-        self.enscomp_visopts_setneusize.setEnabled(False)
+        options_objs = [self.enscomp_visopts_showcells, 
+                        self.enscomp_visopts_neusize, 
+                        self.enscomp_visopts_setneusize]
+        for obj in options_objs:
+            obj.blockSignals(True)
+            obj.setEnabled(False)
+            obj.blockSignals(False)
 
         # Clean the combo box of results
         elems_in_combox = self.enscomp_combo_select_result.count()
@@ -443,42 +492,39 @@ class MainWindow(QMainWindow):
         self.enscomp_check_neus.setEnabled(False)
         self.enscomp_btn_color.setEnabled(False)
 
-        self.enscomp_check_coords.setChecked(True)
-        self.enscomp_check_ens.setChecked(True)
-        self.enscomp_check_neus.setChecked(False)
+        options_objs = [(self.enscomp_check_coords, True), 
+                        (self.enscomp_check_ens, True), 
+                        (self.enscomp_check_neus, False)]
+        for obj, val in options_objs:
+            obj.blockSignals(True)
+            obj.setChecked(val)
+            obj.blockSignals(False)
         
-        self.enscomp_slider_svd.setEnabled(False)
-        self.enscomp_slider_lbl_min_svd.setEnabled(False)
-        self.enscomp_slider_lbl_max_svd.setEnabled(False)
-        self.enscomp_slider_svd.setMinimum(1)
-        self.enscomp_slider_svd.setMaximum(2)
-        self.enscomp_slider_svd.setValue(1)
-        self.enscomp_slider_lbl_min_svd.setText("1")
-        self.enscomp_slider_lbl_max_svd.setText("1")
-        self.enscomp_slider_pca.setEnabled(False)
-        self.enscomp_slider_lbl_min_pca.setEnabled(False)
-        self.enscomp_slider_lbl_max_pca.setEnabled(False)
-        self.enscomp_slider_pca.setMinimum(1)
-        self.enscomp_slider_pca.setMaximum(2)
-        self.enscomp_slider_pca.setValue(1)
-        self.enscomp_slider_lbl_min_pca.setText("1")
-        self.enscomp_slider_lbl_max_pca.setText("1")
-        self.enscomp_slider_ica.setEnabled(False)
-        self.enscomp_slider_lbl_min_ica.setEnabled(False)
-        self.enscomp_slider_lbl_max_ica.setEnabled(False)
-        self.enscomp_slider_ica.setMinimum(1)
-        self.enscomp_slider_ica.setMaximum(2)
-        self.enscomp_slider_ica.setValue(1)
-        self.enscomp_slider_lbl_min_ica.setText("1")
-        self.enscomp_slider_lbl_max_ica.setText("1")
-        self.enscomp_slider_x2p.setEnabled(False)
-        self.enscomp_slider_lbl_min_x2p.setEnabled(False)
-        self.enscomp_slider_lbl_max_x2p.setEnabled(False)
-        self.enscomp_slider_x2p.setMinimum(1)
-        self.enscomp_slider_x2p.setMaximum(2)
-        self.enscomp_slider_x2p.setValue(1)
-        self.enscomp_slider_lbl_min_x2p.setText("1")
-        self.enscomp_slider_lbl_max_x2p.setText("1")
+        # Sliders
+        sliders = [self.enscomp_slider_svd, 
+                   self.enscomp_slider_pca, 
+                   self.enscomp_slider_ica,
+                   self.enscomp_slider_x2p]
+        for obj in sliders:
+            obj.blockSignals(True)
+            obj.setEnabled(False)
+            obj.setMinimum(1)
+            obj.setMaximum(2)
+            obj.setValue(1)
+            obj.blockSignals(False)
+
+        slider_labels = [self.enscomp_slider_lbl_min_svd,
+                         self.enscomp_slider_lbl_max_svd,
+                         self.enscomp_slider_lbl_min_pca,
+                         self.enscomp_slider_lbl_max_pca,
+                         self.enscomp_slider_lbl_min_ica,
+                         self.enscomp_slider_lbl_max_ica,
+                         self.enscomp_slider_lbl_min_x2p,
+                         self.enscomp_slider_lbl_max_x2p]
+        for obj in slider_labels:
+            obj.setEnabled(False)
+            obj.setText("1")
+            
         if not hasattr(self, "data_stims"):
             self.enscomp_slider_stim.setEnabled(False)
             self.enscomp_slider_lbl_min_stim.setEnabled(False)
@@ -1219,8 +1265,6 @@ class MainWindow(QMainWindow):
         """
         Edits the currently visualized matrix by trimming its rows and/or columns based on user-specified indices.
 
-        :param self: Instance of the MainWindow class.
-        :type self: MainWindow
         :return: None
 
         This method uses the start and end indices entered by the user to trim the matrix currently selected for editing.
@@ -3402,6 +3446,8 @@ class MainWindow(QMainWindow):
             timecourse = self.results[method]['timecourse']
             stims = self.data_stims
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+            if np.isscalar(correlation):
+                    correlation = np.array([[correlation]])
             plot_widget.plot_perf_correlations_ens_group(correlation, m_idx, title=f"{method}".upper(), xlabel="Stims", group_labels=stim_labels)            
 
     def update_correlation_cells(self):
@@ -3450,6 +3496,9 @@ class MainWindow(QMainWindow):
                 activity_neus_in_ens = self.data_neuronal_activity[members, :]
                 cells_names = [member+1 for member in members]
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
+                # Convert scalar to a 1x1 matrix for plotting if the ensamble contained only one neuron
+                if np.isscalar(correlation):
+                    correlation = np.array([[correlation]])
                 plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
     def update_cross_ens_stim(self):
@@ -3539,6 +3588,8 @@ class MainWindow(QMainWindow):
             timecourse = self.results[method]['timecourse']
             stims = self.data_behavior
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
+            if np.isscalar(correlation):
+                correlation = np.array([[correlation]])
             plot_widget.plot_perf_correlations_ens_group(correlation, m_idx, title=f"{method}".upper(), xlabel="Behavior", group_labels=behavior_labels)
 
     def update_cross_behavior(self):
@@ -3732,17 +3783,15 @@ class MainWindow(QMainWindow):
         """
         Saves the current results to an HDF5 file.
 
-        This method retrieves the data to be saved using `get_data_to_save()`, prompts the user to choose 
-        a location and name for the file, and then saves the data in HDF5 format. 
-        The file is saved using the :meth:`MainWindow.save_data_to_hdf5()` method to recursively write 
+        This method retrieves the data to be saved using :meth:`MainWindow.get_data_to_save()`, 
+        prompts the user to choose a location and name for the file, and then saves the data in HDF5 format. 
+        The file is saved using the :meth:`MainWindow.save_data_to_hdf5` method to recursively write 
         the data into the file.
 
-        The file is named based on the current date and a prefix "EnsGUI_", and the user is prompted 
+        The file is named based on the current date and a prefix "EnsGUI", and the user is prompted 
         to choose a location and file name via a file dialog.
 
-        Raises:
-            IOError: If the file could not be saved.
-
+        :raises IOError: If the file could not be saved.
         """
 
         data_to_save = self.get_data_to_save()
@@ -3767,14 +3816,14 @@ class MainWindow(QMainWindow):
         the retrieved data into a Pickle (.pkl) file. 
         The Pickle format is a binary format used for serializing Python objects.
 
-        The default file name is based on the current date and a prefix "EnsGUI_". 
+        The default file name is based on the current date and a prefix "EnsGUI". 
         If the user cancels or does not provide a file name, the function will not proceed.
 
         If an error occurs while saving the file, an `IOError` is raised to notify the user that 
         the file could not be saved.
 
         :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
-        or the file cannot be written to.
+            or the file cannot be written to.
         """
         data_to_save = self.get_data_to_save()
         proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
@@ -3793,19 +3842,20 @@ class MainWindow(QMainWindow):
         """
         Saves the current results to a MATLAB (.mat) file.
 
-        This method retrieves the data to be saved using the :meth:`MainWindow.get_data_to_save()` method, 
+        This method retrieves the data to be saved using the :meth:`MainWindow.get_data_to_save` method, 
         prompts the user to choose a location and file name using a file dialog, and then saves 
         the retrieved data into a MATLAB .mat file using the `scipy.io.savemat()` function.
 
-        The default file name is based on the current date and a prefix "EnsGUI_". 
+        The default file name is based on the current date and a prefix "EnsGUI". 
         If the user cancels or does not provide a file name, the function will not proceed.
 
         If an error occurs while saving the file, an `IOError` is raised to notify the user that the 
         file could not be saved.
 
         :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
-        or the file cannot be written to.
+            or the file cannot be written to.
         """
+        
         data_to_save = self.get_data_to_save()
         proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save MATLAB Results File", proposed_name, "MATLAB Files (*.mat);;All files(*)")
@@ -3818,7 +3868,9 @@ class MainWindow(QMainWindow):
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
                 raise IOError(f"Could not save the file to {file_path}.")
 
-app = QApplication(sys.argv)
-window = MainWindow()
-window.show()
-app.exec()  
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    window = MainWindow()
+    window.show()
+    app.exec()  
+    #sys.exit(app.exec())
