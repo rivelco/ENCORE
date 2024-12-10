@@ -3026,7 +3026,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                  </font>
                 </property>
                 <property name="text">
-                 <string>Binary Neuronal Activity</string>
+                 <string>dFFo activity</string>
                 </property>
                </widget>
               </item>
@@ -3055,94 +3055,107 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               <string>Parameters to adjust</string>
              </property>
              <layout class="QFormLayout" name="formLayout_11">
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="sgc_lbl_shuff">
                 <property name="text">
                  <string>Shuffling rounds</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="3" column="1">
                <widget class="QLineEdit" name="sgc_edit_shuff">
                 <property name="text">
                  <string>1000</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="5" column="0">
                <widget class="QLabel" name="sgc_lbl_sig">
                 <property name="text">
                  <string>Coactivity significance level</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
+              <item row="6" column="0">
                <widget class="QLabel" name="sgc_lbl_monterounds">
                 <property name="text">
                  <string>Montecarlo rounds</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="0">
+              <item row="7" column="0">
                <widget class="QLabel" name="sgc_lbl_montesteps">
                 <property name="text">
                  <string>Montecarlo steps</string>
                 </property>
                </widget>
               </item>
-              <item row="6" column="0">
+              <item row="8" column="0">
                <widget class="QLabel" name="sgc_lbl_affthres">
                 <property name="text">
                  <string>Affinity threshold</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="5" column="1">
                <widget class="QLineEdit" name="sgc_edit_sig">
                 <property name="text">
                  <string>0.05</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
+              <item row="6" column="1">
                <widget class="QLineEdit" name="sgc_edit_monterounds">
                 <property name="text">
                  <string>5</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
+              <item row="7" column="1">
                <widget class="QLineEdit" name="sgc_edit_montesteps">
                 <property name="text">
-                 <string>50000</string>
+                 <string>10000</string>
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
+              <item row="8" column="1">
                <widget class="QLineEdit" name="sgc_edit_affthres">
                 <property name="text">
                  <string>0.2</string>
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
+              <item row="9" column="1">
                <widget class="QPushButton" name="sgc_btn_defaults">
                 <property name="text">
                  <string>Load default values</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label_29">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string>Standard deviations threshold</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="2" column="1">
                <widget class="QLineEdit" name="sgc_edit_stdthreshold">
                 <property name="text">
                  <string>2</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QCheckBox" name="sgc_check_firstderiv">
+                <property name="layoutDirection">
+                 <enum>Qt::RightToLeft</enum>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Use first derivative of dFFo</string>
                 </property>
                </widget>
               </item>
@@ -3180,6 +3193,9 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                <height>75</height>
               </size>
              </property>
+             <property name="plainText">
+              <string>L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience&quot;. Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056</string>
+             </property>
             </widget>
            </item>
           </layout>
@@ -3193,15 +3209,28 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
           <layout class="QVBoxLayout" name="verticalLayout_71">
            <item>
             <widget class="QTabWidget" name="tabWidget_3">
+             <property name="currentIndex">
+              <number>0</number>
+             </property>
              <widget class="QWidget" name="tab_52">
               <attribute name="title">
-               <string>Tab 1</string>
+               <string>Ensembles timecourse</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_81">
+               <item>
+                <widget class="MatplotlibWidget" name="sgc_plot_timecourse"/>
+               </item>
+              </layout>
              </widget>
              <widget class="QWidget" name="tab_53">
               <attribute name="title">
-               <string>Tab 2</string>
+               <string>Cells in ensmbles</string>
               </attribute>
+              <layout class="QVBoxLayout" name="verticalLayout_82">
+               <item>
+                <widget class="MatplotlibWidget" name="sgc_plot_cellsinens"/>
+               </item>
+              </layout>
              </widget>
             </widget>
            </item>
@@ -3549,66 +3578,129 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="label_11">
-                 <property name="toolTip">
-                  <string>Index of the cells that belongs to the selected ensemble (base 0).</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Members of this ensemble</string>
-                 </property>
+                <widget class="QWidget" name="widget_36" native="true">
+                 <layout class="QVBoxLayout" name="verticalLayout_86">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_11">
+                    <property name="toolTip">
+                     <string>Index of the cells that belongs to the selected ensemble (base 0).</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Members of this ensemble</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTextEdit" name="ensvis_edit_members">
+                    <property name="toolTip">
+                     <string/>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
-                <widget class="QTextEdit" name="ensvis_edit_members">
-                 <property name="toolTip">
-                  <string/>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
+                <widget class="QWidget" name="widget_35" native="true">
+                 <layout class="QVBoxLayout" name="verticalLayout_85">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_15">
+                    <property name="toolTip">
+                     <string>Index of the cells that belong only to the selected ensemble (base 0).</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Exclusive members of this ensemble</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTextEdit" name="ensvis_edit_exclusive">
+                    <property name="undoRedoEnabled">
+                     <bool>true</bool>
+                    </property>
+                    <property name="readOnly">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="label_15">
-                 <property name="toolTip">
-                  <string>Index of the cells that belong only to the selected ensemble (base 0).</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Exclusive members of this ensemble</string>
-                 </property>
+                <widget class="QWidget" name="widget_34" native="true">
+                 <layout class="QVBoxLayout" name="verticalLayout_84">
+                  <property name="spacing">
+                   <number>0</number>
+                  </property>
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLabel" name="label_12">
+                    <property name="toolTip">
+                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Timepoints of activation of the selected ensemble, in the same temporal unit of the input Binary Neuronal Activity data.&lt;/p&gt;&lt;p&gt;It is the index of every 1 in the rasterplot for this ensemble (base 0).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="text">
+                     <string>Timepoints of activation</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QTextEdit" name="ensvis_edit_timepoints"/>
+                  </item>
+                 </layout>
                 </widget>
-               </item>
-               <item>
-                <widget class="QTextEdit" name="ensvis_edit_exclusive">
-                 <property name="undoRedoEnabled">
-                  <bool>true</bool>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_12">
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Timepoints of activation of the selected ensemble, in the same temporal unit of the input Binary Neuronal Activity data.&lt;/p&gt;&lt;p&gt;It is the index of every 1 in the rasterplot for this ensemble (base 0).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Timepoints of activation</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QTextEdit" name="ensvis_edit_timepoints"/>
                </item>
               </layout>
              </widget>
@@ -3737,6 +3829,12 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
            <string>Data selector</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_61">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>9</number>
+           </property>
            <item>
             <widget class="QGroupBox" name="groupBox_35">
              <property name="sizePolicy">
@@ -3807,6 +3905,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     <item>
                      <widget class="QWidget" name="widget_9" native="true">
                       <layout class="QHBoxLayout" name="horizontalLayout_22">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item>
                         <widget class="QLabel" name="enscomp_slider_lbl_min_svd">
                          <property name="sizePolicy">
@@ -3970,6 +4080,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     <item>
                      <widget class="QWidget" name="widget_10" native="true">
                       <layout class="QHBoxLayout" name="horizontalLayout_23">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item>
                         <widget class="QLabel" name="enscomp_slider_lbl_min_pca">
                          <property name="font">
@@ -4127,6 +4249,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     <item>
                      <widget class="QWidget" name="widget_11" native="true">
                       <layout class="QHBoxLayout" name="horizontalLayout_24">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item>
                         <widget class="QLabel" name="enscomp_slider_lbl_min_ica">
                          <property name="font">
@@ -4287,6 +4421,18 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                     <item>
                      <widget class="QWidget" name="widget_12" native="true">
                       <layout class="QHBoxLayout" name="horizontalLayout_25">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
                        <item>
                         <widget class="QLabel" name="enscomp_slider_lbl_min_x2p">
                          <property name="font">
@@ -4379,6 +4525,154 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 </layout>
                </widget>
               </item>
+              <item>
+               <widget class="Line" name="line_5">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_33" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_42">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QWidget" name="widget_31" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_83">
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_32">
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>SGC</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_32" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_41">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_sgc">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_sgc">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="invertedAppearance">
+                          <bool>false</bool>
+                         </property>
+                         <property name="invertedControls">
+                          <bool>false</bool>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_sgc">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="enscomp_colorflag_sgc" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -4395,107 +4689,174 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_73">
               <item>
-               <widget class="QLabel" name="label_31">
-                <property name="font">
-                 <font>
-                  <pointsize>11</pointsize>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Stimuli</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="widget_13" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_26">
+               <widget class="QWidget" name="widget_28" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_39">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_min_stim">
-                   <property name="font">
-                    <font>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>1</string>
-                   </property>
+                  <widget class="QWidget" name="widget_27" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_72">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_31">
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Stimuli</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_13" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_26">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_stim">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_stim">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different stimulus from the Stimulation input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_stim">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of stimulus.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="enscomp_slider_lbl_stim">
+                      <property name="font">
+                       <font>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Label of the current stimulus.</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>5000</number>
+                      </property>
+                      <property name="text">
+                       <string>Label</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSlider" name="enscomp_slider_stim">
-                   <property name="enabled">
-                    <bool>false</bool>
+                  <widget class="QWidget" name="enscomp_colorflag_stims" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
                    </property>
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different stimulus from the Stimulation input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="maximum">
-                    <number>1</number>
-                   </property>
-                   <property name="pageStep">
-                    <number>1</number>
-                   </property>
-                   <property name="tracking">
-                    <bool>false</bool>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="tickPosition">
-                    <enum>QSlider::TicksAbove</enum>
-                   </property>
-                   <property name="tickInterval">
-                    <number>1</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_stim">
-                   <property name="font">
-                    <font>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>Total number of stimulus.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="text">
-                    <string>2</string>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
                 </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="enscomp_slider_lbl_stim">
-                <property name="font">
-                 <font>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>Label of the current stimulus.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Label</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
                </widget>
               </item>
               <item>
@@ -4506,104 +4867,171 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                </widget>
               </item>
               <item>
-               <widget class="QLabel" name="label_30">
-                <property name="font">
-                 <font>
-                  <pointsize>11</pointsize>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Behavior</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QWidget" name="widget_14" native="true">
-                <layout class="QHBoxLayout" name="horizontalLayout_27">
+               <widget class="QWidget" name="widget_30" native="true">
+                <layout class="QHBoxLayout" name="horizontalLayout_40">
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_min_behavior">
-                   <property name="font">
-                    <font>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>1</string>
-                   </property>
+                  <widget class="QWidget" name="widget_29" native="true">
+                   <layout class="QVBoxLayout" name="verticalLayout_80">
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <property name="leftMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="topMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="rightMargin">
+                     <number>0</number>
+                    </property>
+                    <property name="bottomMargin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <widget class="QLabel" name="label_30">
+                      <property name="font">
+                       <font>
+                        <pointsize>11</pointsize>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Behavior</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="widget_14" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_27">
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_min_behavior">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSlider" name="enscomp_slider_behavior">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="toolTip">
+                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different behavior from the Behavior input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                         </property>
+                         <property name="maximum">
+                          <number>1</number>
+                         </property>
+                         <property name="pageStep">
+                          <number>1</number>
+                         </property>
+                         <property name="tracking">
+                          <bool>false</bool>
+                         </property>
+                         <property name="orientation">
+                          <enum>Qt::Horizontal</enum>
+                         </property>
+                         <property name="tickPosition">
+                          <enum>QSlider::TicksAbove</enum>
+                         </property>
+                         <property name="tickInterval">
+                          <number>1</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="enscomp_slider_lbl_max_behavior">
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Total number of beaviors.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="enscomp_slider_lbl_behavior">
+                      <property name="font">
+                       <font>
+                        <bold>true</bold>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Label of the current behavior.</string>
+                      </property>
+                      <property name="toolTipDuration">
+                       <number>5000</number>
+                      </property>
+                      <property name="text">
+                       <string>Label</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QSlider" name="enscomp_slider_behavior">
-                   <property name="enabled">
-                    <bool>false</bool>
+                  <widget class="QWidget" name="enscomp_colorflag_behavior" native="true">
+                   <property name="minimumSize">
+                    <size>
+                     <width>10</width>
+                     <height>0</height>
+                    </size>
                    </property>
-                   <property name="toolTip">
-                    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different behavior from the Behavior input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                   </property>
-                   <property name="maximum">
-                    <number>1</number>
-                   </property>
-                   <property name="pageStep">
-                    <number>1</number>
-                   </property>
-                   <property name="tracking">
-                    <bool>false</bool>
-                   </property>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="tickPosition">
-                    <enum>QSlider::TicksAbove</enum>
-                   </property>
-                   <property name="tickInterval">
-                    <number>1</number>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_behavior">
-                   <property name="font">
-                    <font>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="toolTip">
-                    <string>Total number of beaviors.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
-                   <property name="text">
-                    <string>2</string>
+                   <property name="maximumSize">
+                    <size>
+                     <width>10</width>
+                     <height>16777215</height>
+                    </size>
                    </property>
                   </widget>
                  </item>
                 </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="enscomp_slider_lbl_behavior">
-                <property name="font">
-                 <font>
-                  <bold>true</bold>
-                 </font>
-                </property>
-                <property name="toolTip">
-                 <string>Label of the current behavior.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Label</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
                </widget>
               </item>
              </layout>

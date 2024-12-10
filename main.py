@@ -191,6 +191,7 @@ class MainWindow(QMainWindow):
             'file_log': ''
         }
         self.sgc_defaults = {
+            'use_first_derivative': False,
             'standard_deviations_threshold': 2,
             'shuffling_rounds': 1000,
             'coactivity_significance_level': 0.05,
@@ -255,6 +256,7 @@ class MainWindow(QMainWindow):
         self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
         self.ensvis_btn_ica.clicked.connect(self.vis_ensembles_ica)
         self.ensvis_btn_x2p.clicked.connect(self.vis_ensembles_x2p)
+        self.ensvis_btn_sgc.clicked.connect(self.vis_ensembles_sgc)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
         self.ensvis_check_onlyens.stateChanged.connect(self.update_ens_vis_coords)
         self.ensvis_check_onlycont.stateChanged.connect(self.update_ens_vis_coords)
@@ -265,7 +267,8 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        #self.enscomp_slider_stim.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_slider_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_slider_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
@@ -274,6 +277,8 @@ class MainWindow(QMainWindow):
         self.enscomp_check_coords.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_ens.stateChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_check_neus.stateChanged.connect(self.ensembles_compare_update_ensembles)
+
+        self.enscomp_check_show_stim.stateChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
 
@@ -310,6 +315,7 @@ class MainWindow(QMainWindow):
         self.performance_check_pca.stateChanged.connect(self.performance_check_change)
         self.performance_check_ica.stateChanged.connect(self.performance_check_change)
         self.performance_check_x2p.stateChanged.connect(self.performance_check_change)
+        self.performance_check_sgc.stateChanged.connect(self.performance_check_change)
         self.performance_btn_compare.clicked.connect(self.performance_compare)
 
         # Saving
@@ -433,6 +439,10 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'x2p_plot_onsemneu').reset(default_txt)
         self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu').reset(default_txt)
 
+        default_txt = "Perform the SGC analysis to see results"
+        self.findChild(MatplotlibWidget, 'sgc_plot_timecourse').reset(default_txt)
+        self.findChild(MatplotlibWidget, 'sgc_plot_cellsinens').reset(default_txt)
+
         self.ensvis_edit_numens.setText("")
         self.envis_slide_selectedens.blockSignals(True)
         self.envis_slide_selectedens.setMaximum(2)
@@ -462,6 +472,9 @@ class MainWindow(QMainWindow):
             "pca": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'blue', 'enabled': False},
             "ica": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'green', 'enabled': False},
             "x2p": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'orange', 'enabled': False},
+            "sgc": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'pink', 'enabled': False},
+            "stims": {'color': 'black'},
+            "behavior": {'color': 'yellow'},
             "sim_neus": {'method': 'Jaccard', 'colormap': 'viridis'},
             "sim_time": {'method': 'Cosine', 'colormap': 'plasma'},
         }
@@ -722,12 +735,14 @@ class MainWindow(QMainWindow):
                 self.lbl_pca_spikes_selected.setText(f"Loaded")
                 self.lbl_ica_spikes_selected.setText(f"Loaded")
                 self.lbl_x2p_spikes_selected.setText(f"Loaded")
-                self.lbl_sgc_spikes_selected.setText(f"Loaded")
             else:
                 self.lbl_sdv_spikes_selected.setText(f"Nothing selected")
                 self.lbl_pca_spikes_selected.setText(f"Nothing selected")
                 self.lbl_ica_spikes_selected.setText(f"Nothing selected")
                 self.lbl_x2p_spikes_selected.setText(f"Nothing selected")
+            if hasattr(self, "data_dFFo"):
+                self.lbl_sgc_spikes_selected.setText(f"Loaded")
+            else:
                 self.lbl_sgc_spikes_selected.setText(f"Nothing selected")
 
             # Validate data for SVD
@@ -747,7 +762,7 @@ class MainWindow(QMainWindow):
             self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
 
             # Validate needed data for sgc
-            needed_data = ["data_neuronal_activity"]
+            needed_data = ["data_dFFo"]
             self.btn_run_sgc.setEnabled(self.validate_needed_data(needed_data))
 
         if index == 7: #Ensembles compare tab
@@ -2409,6 +2424,7 @@ class MainWindow(QMainWindow):
         :return: None
         """
         defaults = self.sgc_defaults
+        self.sgc_check_firstderiv.setChecked(defaults['use_first_derivative'])
         self.sgc_edit_stdthreshold.setText(f"{defaults['standard_deviations_threshold']}")
         self.sgc_edit_shuff.setText(f"{defaults['shuffling_rounds']}")
         self.sgc_edit_sig.setText(f"{defaults['coactivity_significance_level']}")
@@ -2428,11 +2444,16 @@ class MainWindow(QMainWindow):
         # Temporarly disable the button
         self.btn_run_sgc.setEnabled(False)
         # Prepare data
-        data = self.data_neuronal_activity
-        spikes = matlab.double(data.tolist())
-
+        #data = self.data_neuronal_activity
+        #spikes = matlab.double(data.tolist())
+        self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
         data = self.data_dFFo
         dFFo = matlab.double(data.tolist())
+        # Check for the first derivative flag
+        use_first_derivative = self.sgc_check_firstderiv.isChecked()
+        if use_first_derivative:
+            dx = np.gradient(data, axis=1) # Axis 1 to get the derivative of the signal of every neuron
+            dFFo = matlab.double(dx.tolist())
         # Prepare parameters
         input_value = self.sgc_edit_stdthreshold.text()
         val_std_threshold = float(input_value) if len(input_value) > 0 else self.sgc_defaults['standard_deviations_threshold']
@@ -2449,6 +2470,7 @@ class MainWindow(QMainWindow):
 
         # Pack parameters
         pars = {
+            'use_first_derivative': use_first_derivative, 
             'standard_deviations_threshold': val_std_threshold,
             'shuffling_rounds': val_shuffling_rounds,
             'coactivity_significance_level': val_coactivity_significance_level,
@@ -2462,16 +2484,16 @@ class MainWindow(QMainWindow):
         # Clean all the figures in case there was something previously
         if 'sgc' in self.results:
             del self.results['sgc']
-        #algorithm_figs = ["x2p_plot_similarity", "x2p_plot_epi", "x2p_plot_onsemact", "x2p_plot_offsemact", "x2p_plot_activity", "x2p_plot_onsemneu", "x2p_plot_offsemneu"] 
-        #for fig_name in algorithm_figs:
-        #    self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
+        algorithm_figs = ["sgc_plot_timecourse", "sgc_plot_cellsinens"] 
+        for fig_name in algorithm_figs:
+            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
 
         self.update_console_log("Performing SGC...")
         self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_sgc = WorkerRunnable(self.run_sgc_parallel, spikes, dFFo, pars_matlab)
+        worker_sgc = WorkerRunnable(self.run_sgc_parallel, dFFo, pars_matlab)
         worker_sgc.signals.result_ready.connect(self.run_sgc_parallel_end)
         self.threadpool.start(worker_sgc)
-    def run_sgc_parallel(self, spikes, dFFo, pars_matlab):
+    def run_sgc_parallel(self, dFFo, pars_matlab):
         """
         Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data in parallel. 
         This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
@@ -2499,7 +2521,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Loaded MATLAB engine.")
         start_time = time.time()
         try:
-            answer = eng_sgc.EnsemblesGUI_linker_SGC(spikes, dFFo, pars_matlab)
+            answer = eng_sgc.EnsemblesGUI_linker_SGC(dFFo, pars_matlab)
         except:
             print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
             answer = None
@@ -2511,7 +2533,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
-            #self.algotrithm_results['sgc'] = answer
+            self.algotrithm_results['sgc'] = answer
             # Plotting results
             print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
@@ -2539,12 +2561,45 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
         self.btn_run_sgc.setEnabled(True)
     def plot_sgc_results(self, answer):
-        # Similarity map
-        pprint(answer)
-        #dataset = answer['similarity']
-        #plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_similarity')
-        #plot_widget.preview_dataset(dataset, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
-        
+        # Extracting neurons in ensembles
+        assemblies_raw = answer['assemblies']
+        assemblies = [np.array(list(assembly[0])) for assembly in assemblies_raw]
+        num_states = len(assemblies)
+        neurons_in_ensembles = np.zeros((num_states, self.cant_neurons))
+        for ens_idx, ensmeble in enumerate(assemblies):
+            ensemble_fixed = [cell-1 for cell in ensmeble]
+            neurons_in_ensembles[ens_idx, ensemble_fixed] = 1
+        # Extracting timepoints of activations
+        activity_raster_peaks_raw = answer['activity_raster_peaks']
+        activity_raster_peaks = np.array([int(np.array(raster_peak)[0][0])-1 for raster_peak in activity_raster_peaks_raw])
+        i_assembly_patterns_raw = answer['assembly_pattern_detection']['assemblyIActivityPatterns']
+        i_assembly_patterns = [np.array(list(assembly[0])).astype(int) for assembly in i_assembly_patterns_raw]
+        # Formatting ensmbles timecourse 
+        activations = [activity_raster_peaks[I-1] for I in i_assembly_patterns]
+        ensembles_timecourse = np.zeros((num_states, self.cant_timepoints))
+        for ens_idx, ensmeble_activations in enumerate(activations):
+            ensembles_timecourse[ens_idx, ensmeble_activations] = 1
+        # Saving results
+        self.results['sgc'] = {}
+        self.results['sgc']['timecourse'] = ensembles_timecourse
+        self.results['sgc']['ensembles_cant'] = ensembles_timecourse.shape[0]
+        self.results['sgc']['neus_in_ens'] = neurons_in_ensembles
+        # Correct the answer saved
+        self.algotrithm_results['sgc']['assemblies'] = {}
+        for idx, assembly in enumerate(assemblies):
+            self.algotrithm_results['sgc']['assemblies'][f"{idx}"] = assembly
+        self.algotrithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'] = {}
+        for idx, act_patt in enumerate(i_assembly_patterns):
+            self.algotrithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'][f"{idx}"] = act_patt
+
+
+        # Plot the cells in ensembles
+        plot_widget = self.findChild(MatplotlibWidget, 'sgc_plot_cellsinens')
+        plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Cell")
+        # Plot the ensmbles activations
+        plot_widget = self.findChild(MatplotlibWidget, 'sgc_plot_timecourse')
+        plot_widget.plot_ensembles_timecourse(ensembles_timecourse, xlabel="Timepoint")
+
 
     def we_have_results(self):
         """
@@ -2570,6 +2625,10 @@ class MainWindow(QMainWindow):
                 self.ensvis_btn_x2p.setEnabled(True)
                 self.performance_check_x2p.setEnabled(True)
                 self.ensembles_compare_update_opts('x2p')
+            elif analysis_name == 'sgc':
+                self.ensvis_btn_sgc.setEnabled(True)
+                self.performance_check_sgc.setEnabled(True)
+                self.ensembles_compare_update_opts('sgc')
         save_itms = [self.save_check_minimal,
                 self.save_check_params,
                 self.save_check_full,
@@ -2650,6 +2709,16 @@ class MainWindow(QMainWindow):
         Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
         """
         self.ensemble_currently_shown = "x2p"
+        self.update_analysis_results()
+    def vis_ensembles_sgc(self):
+        """
+        Loads the results of the SGC into the ensembles visualizer.
+
+        This is done this way to use only one function to update the ensembles visualizer.
+        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
+        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
+        """
+        self.ensemble_currently_shown = "sgc"
         self.update_analysis_results()
 
     def update_analysis_results(self):
@@ -2888,6 +2957,10 @@ class MainWindow(QMainWindow):
             ens_selector = self.enscomp_slider_x2p
             selector_label_min = self.enscomp_slider_lbl_min_x2p
             selector_label_max = self.enscomp_slider_lbl_max_x2p
+        elif algorithm == 'sgc':
+            ens_selector = self.enscomp_slider_sgc
+            selector_label_min = self.enscomp_slider_lbl_min_sgc
+            selector_label_max = self.enscomp_slider_lbl_max_sgc
 
         # Enable the general visualization options
         self.enscomp_visopts_showcells.setEnabled(True)
@@ -2975,6 +3048,7 @@ class MainWindow(QMainWindow):
             shp = self.data_behavior.shape
             max_val = shp[0] if len(shp) > 1 else 1
         # Activate the slider
+        slider.blockSignals(True)
         slider.setEnabled(True)
         slider.setMinimum(1)
         slider.setMaximum(max_val)
@@ -2985,6 +3059,7 @@ class MainWindow(QMainWindow):
         lbl_label.setEnabled(True)
         lbl_max.setText(f"{max_val}")
         lbl_max.setEnabled(True)
+        slider.blockSignals(False)
         # Update the toolbox options
         check_show.setEnabled(True)
         color_pick.setEnabled(True)
@@ -3006,20 +3081,30 @@ class MainWindow(QMainWindow):
             "svd": self.enscomp_slider_svd,
             "pca": self.enscomp_slider_pca,
             "ica": self.enscomp_slider_ica,
-            "x2p": self.enscomp_slider_x2p
+            "x2p": self.enscomp_slider_x2p,
+            "sgc": self.enscomp_slider_sgc,
+            "stims": self.enscomp_slider_stim
         }
         for key, slider in ens_selector.items():
             if slider.isEnabled():
                 ens_idx = slider.value()
-                ensembles_to_compare[key] = {}
-                ensembles_to_compare[key]["ens_idx"] = ens_idx-1
-                ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
-                ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
+                if key == 'stims':
+                    ensembles_to_compare[key] = {}
+                    ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                    ensembles_to_compare[key]["timecourse"] = self.data_stims[ens_idx-1,:].copy()
+                else:
+                    ensembles_to_compare[key] = {}
+                    ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                    ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
+                    ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
         
         self.enscomp_colorflag_svd.setStyleSheet(f"background-color: {self.enscomp_visopts['svd']['color']};")
         self.enscomp_colorflag_pca.setStyleSheet(f"background-color: {self.enscomp_visopts['pca']['color']};")
         self.enscomp_colorflag_ica.setStyleSheet(f"background-color: {self.enscomp_visopts['ica']['color']};")
         self.enscomp_colorflag_x2p.setStyleSheet(f"background-color: {self.enscomp_visopts['x2p']['color']};")
+        self.enscomp_colorflag_sgc.setStyleSheet(f"background-color: {self.enscomp_visopts['sgc']['color']};")
+        self.enscomp_colorflag_stims.setStyleSheet(f"background-color: {self.enscomp_visopts['stims']['color']};")
+        self.enscomp_colorflag_behavior.setStyleSheet(f"background-color: {self.enscomp_visopts['behavior']['color']};")
         
         # Update the visualization options
         current_method = self.enscomp_combo_select_result.currentText().lower()
@@ -3056,6 +3141,8 @@ class MainWindow(QMainWindow):
         list_colors_freq = [[] for l in range(self.cant_neurons)] 
 
         for key, ens_data in ensembles_to_compare.items():
+            if key == "stims":
+                continue
             if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_coords']:
                 new_members = ens_data["neus_in_ens"].copy()
                 if len(mixed_ens) == 0:
@@ -3103,22 +3190,37 @@ class MainWindow(QMainWindow):
         cells_activities = []
         new_ticks = []
         for key, ens_data in ensembles_to_compare.items():
-            if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_ens']:
-                new_timecourse = ens_data["timecourse"].copy()
+            if key == 'stims':
+                if self.enscomp_check_show_stim.isChecked():
+                    # Get the currently selected stimulation
+                    selected_stim = ens_data["ens_idx"]
+                    # Get the timecourse
+                    timecourses.append(ens_data["timecourse"].copy())
+                    # Get the label, if any
+                    if "stim" in self.varlabels:
+                        stim_labels = list(self.varlabels["stim"].values())
+                        stim_label = f"Stim {stim_labels[selected_stim]}"
+                    else:
+                        stim_label = f"Stim {selected_stim}"
+                    new_ticks.append(f"{stim_label}")
+                    colors.append(self.enscomp_visopts['stims']['color'])
             else:
-                new_timecourse = []
-            timecourses.append(new_timecourse)
+                if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_ens']:
+                    new_timecourse = ens_data["timecourse"].copy()
+                else:
+                    new_timecourse = []
+                timecourses.append(new_timecourse)
 
-            if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_neus']:
-                new_members = ens_data["neus_in_ens"].copy()
-                cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
-                cells_activity_count = np.sum(cells_activity_mat, axis=0)
-            else:
-                cells_activity_count = []
-            cells_activities.append(cells_activity_count)
+                if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_neus']:
+                    new_members = ens_data["neus_in_ens"].copy()
+                    cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
+                    cells_activity_count = np.sum(cells_activity_mat, axis=0)
+                else:
+                    cells_activity_count = []
+                cells_activities.append(cells_activity_count)
 
-            colors.append(self.enscomp_visopts[key]['color'])
-            new_ticks.append(key)
+                colors.append(self.enscomp_visopts[key]['color'])
+                new_ticks.append(key)
         
         cells_activities.reverse()
         timecourses.reverse()
@@ -3335,9 +3437,10 @@ class MainWindow(QMainWindow):
                         self.tempvars['performance_shown_tab0'] = True
                         self.update_corr_stim()
             elif index == 1:    # Correlations between cells
-                if not self.tempvars['performance_shown_tab1']:
-                    self.tempvars['performance_shown_tab1'] = True
-                    self.update_correlation_cells()
+                if hasattr(self, "data_neuronal_activity") or hasattr(self, "data_dFFo"):
+                    if not self.tempvars['performance_shown_tab1']:
+                        self.tempvars['performance_shown_tab1'] = True
+                        self.update_correlation_cells()
             elif index == 2:    # Cross correlations ensembles and stims
                 if hasattr(self, "data_stims"):
                     if not self.tempvars['performance_shown_tab2']:
@@ -3489,11 +3592,16 @@ class MainWindow(QMainWindow):
             max_ens = max(self.results[method]['ensembles_cant'], max_ens)
         plot_widget.canvas.setFixedHeight(450*max_ens)
 
+        if hasattr(self, "data_neuronal_activity"):
+            activity_to_correlate = self.data_neuronal_activity
+        elif hasattr(self, "data_dFFo"):
+            activity_to_correlate = self.data_dFFo
+
         plot_widget.set_subplots(max_ens, plot_colums)
         for col_idx, method in enumerate(methods_to_compare):
             for row_idx, ens in enumerate(self.results[method]['neus_in_ens']):
                 members = [c_idx for c_idx in range(len(ens)) if ens[c_idx] == 1]
-                activity_neus_in_ens = self.data_neuronal_activity[members, :]
+                activity_neus_in_ens = activity_to_correlate[members, :]
                 cells_names = [member+1 for member in members]
                 correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
                 # Convert scalar to a 1x1 matrix for plotting if the ensamble contained only one neuron
