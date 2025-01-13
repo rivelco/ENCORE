@@ -1544,7 +1544,7 @@ in two or more different ensembles.</string>
                  <number>5000</number>
                 </property>
                 <property name="text">
-                 <string>Perform analysis</string>
+                 <string>Run analysis</string>
                 </property>
                </widget>
               </item>
@@ -1968,7 +1968,7 @@ part of the analysis</string>
                  <number>5000</number>
                 </property>
                 <property name="text">
-                 <string>Perform analysis</string>
+                 <string>Run analysis</string>
                 </property>
                </widget>
               </item>
@@ -2536,7 +2536,7 @@ chosen.</string>
                  <number>5000</number>
                 </property>
                 <property name="text">
-                 <string>Perform analysis</string>
+                 <string>Run analysis</string>
                 </property>
                </widget>
               </item>
@@ -2865,7 +2865,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
               <number>5000</number>
              </property>
              <property name="text">
-              <string>Perform analysis</string>
+              <string>Run analysis</string>
              </property>
              <property name="checkable">
               <bool>false</bool>
@@ -3181,7 +3181,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               <bool>false</bool>
              </property>
              <property name="text">
-              <string>Perform analysis</string>
+              <string>Run analysis</string>
              </property>
             </widget>
            </item>
@@ -3194,7 +3194,8 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               </size>
              </property>
              <property name="plainText">
-              <string>L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience&quot;. Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056</string>
+              <string>For details about this method, see the following paper:
+L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience&quot;. Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056</string>
              </property>
             </widget>
            </item>
@@ -3752,7 +3753,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5412,7 +5413,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
              </property>
              <layout class="QHBoxLayout" name="horizontalLayout_33">
               <item>
-               <widget class="QCheckBox" name="enscomp_check_behavior_stim">
+               <widget class="QCheckBox" name="enscomp_check_show_behavior">
                 <property name="toolTip">
                  <string>Change to show/hide the selected behavior.</string>
                 </property>
@@ -5609,7 +5610,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5645,7 +5646,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5681,7 +5682,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5717,7 +5718,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5744,9 +5745,22 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
-        <string>Save/Load</string>
+        <string>Save</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_35">
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QGroupBox" name="groupBox_26">
           <property name="sizePolicy">
@@ -5936,112 +5950,17 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_41">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
-          <property name="title">
-           <string>Load previous results</string>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_18">
-           <item>
-            <widget class="QWidget" name="widget_26" native="true">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_37">
-              <item>
-               <widget class="QLineEdit" name="lineEdit"/>
-              </item>
-              <item>
-               <widget class="QPushButton" name="pushButton_3">
-                <property name="text">
-                 <string>Load EnsGUI file</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLineEdit" name="lineEdit_2">
-             <property name="inputMask">
-              <string/>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="frame">
-              <bool>false</bool>
-             </property>
-             <property name="placeholderText">
-              <string>Select a file to check its contents</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_6">
-             <property name="text">
-              <string>Input user data</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_7">
-             <property name="text">
-              <string>Minimal results used by Ensembles GUI</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_8">
-             <property name="text">
-              <string>Full results of every analysis</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_9">
-             <property name="text">
-              <string>Ensembles Compare analysis</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="checkBox_10">
-             <property name="text">
-              <string>Performance comparison</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="pushButton_4">
-             <property name="text">
-              <string>Load selection</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
+         </spacer>
         </item>
        </layout>
       </widget>
