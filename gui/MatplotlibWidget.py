@@ -417,22 +417,33 @@ class MatplotlibWidget(QWidget):
     def enscomp_update_timelines(self, ticks, cell_activities, ensemble_dffo, ensemble_timecourse, colors, limx):
         self.axes.clear()
 
+        # Auxiliar variable to move up the analysis timelines
+        stim_or_behav = 0
+
         # Iterate over the indices to create bands
         for acts in range(len(ensemble_timecourse)):
+            current_label = ticks[acts]
             cells_acts = ensemble_timecourse[acts]
             act_lenght = len(cells_acts)
             time_axis = range(0, act_lenght)
             if act_lenght > 0:
-                band_it = 0
-                while band_it < act_lenght:
-                    if cells_acts[band_it] == 1:
-                        start = band_it
-                        band_it = band_it + 1
-                        while band_it < act_lenght and cells_acts[band_it] == 1:
+                if "Behav" in current_label:
+                    cells_acts = cells_acts/np.max(cells_acts)
+                    self.axes.plot(time_axis, cells_acts, color=colors[acts], alpha=1)
+                    stim_or_behav += 1
+                else:
+                    band_it = 0
+                    while band_it < act_lenght:
+                        if cells_acts[band_it] == 1:
+                            start = band_it
                             band_it = band_it + 1
-                        end = band_it
-                        self.axes.fill_between(time_axis[start:end], acts, acts+1, color=colors[acts], alpha=1)
-                    band_it = band_it + 1
+                            while band_it < act_lenght and cells_acts[band_it] == 1:
+                                band_it = band_it + 1
+                            end = band_it
+                            self.axes.fill_between(time_axis[start:end], acts, acts+1, color=colors[acts], alpha=1)
+                        band_it = band_it + 1
+                if "Stim" in current_label:
+                    stim_or_behav += 1
 
         # Plot the neurons activitiesS
         valid_activities = []
@@ -456,15 +467,17 @@ class MatplotlibWidget(QWidget):
                 cells_acts = cell_activities[acts]
                 if len(cells_acts) > 0:
                     cant_timepoints = len(cells_acts)
-                    cells_acts = (cells_acts - Fmi) / (Fma - Fmi)
+                    cells_acts = ((cells_acts - Fmi) / (Fma - Fmi)) + stim_or_behav
                     self.axes.plot(np.arange(1, cant_timepoints + 1), acts + cells_acts, linewidth=1, color='black', alpha=0.6)
                     #self.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
 
         self.axes.set_xlim([0, limx])
         self.axes.set_ylim([0, len(ticks)])
         self.axes.set_xlabel('Time (timepoint)')
-        self.axes.set_yticks([tick+0.5 for tick in range(len(ticks))])
-        self.axes.set_yticklabels(ticks)
+        labels = ticks
+        ticks = [tick+0.5 for tick in range(len(ticks))]
+        self.axes.set_yticks(ticks = ticks, labels = labels, rotation=90, va='center')
+        #self.axes.set_yticklabels(ticks)
         for side in ['left', 'top', 'right']:
             self.axes.spines[side].set_visible(False)
 
@@ -472,11 +485,14 @@ class MatplotlibWidget(QWidget):
         self.canvas.draw()
 
     def enscomp_plot_similarity(self, matrix, labels, color):
+        if hasattr(self, "colorbar"):
+            self.colorbar.remove()
         self.axes.clear()
 
-        self.axes.imshow(matrix, aspect='equal', cmap=color)
+        cax = self.axes.imshow(matrix, aspect='equal', cmap=color)
         self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45)
         self.axes.set_yticks(ticks = np.arange(len(labels)), labels=labels, rotation=0)
+        self.colorbar = self.canvas.figure.colorbar(cax, ax=self.axes, orientation='vertical')
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
