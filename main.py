@@ -269,6 +269,7 @@ class MainWindow(QMainWindow):
         self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_slider_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_slider_behavior.valueChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
@@ -279,6 +280,10 @@ class MainWindow(QMainWindow):
         self.enscomp_check_neus.stateChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_check_show_stim.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_btn_color_stim.clicked.connect(self.enscomp_get_color_stims)
+
+        self.enscomp_check_show_behavior.stateChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_btn_color_behavior.clicked.connect(self.enscomp_get_color_behavior)
 
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
 
@@ -550,7 +555,7 @@ class MainWindow(QMainWindow):
             self.enscomp_slider_lbl_min_behavior.setEnabled(False)
             self.enscomp_slider_lbl_max_behavior.setEnabled(False)
             self.enscomp_slider_lbl_behavior.setEnabled(False)
-            self.enscomp_check_behavior_stim.setEnabled(False)
+            self.enscomp_check_show_behavior.setEnabled(False)
             self.enscomp_btn_color_behavior.setEnabled(False)
 
         self.tempvars['performance_shown_results'] = False
@@ -3043,7 +3048,7 @@ class MainWindow(QMainWindow):
             lbl_min = self.enscomp_slider_lbl_min_behavior
             lbl_max = self.enscomp_slider_lbl_max_behavior
             lbl_label = self.enscomp_slider_lbl_behavior
-            check_show = self.enscomp_check_behavior_stim
+            check_show = self.enscomp_check_show_behavior
             color_pick = self.enscomp_btn_color_behavior
             shp = self.data_behavior.shape
             max_val = shp[0] if len(shp) > 1 else 1
@@ -3083,7 +3088,8 @@ class MainWindow(QMainWindow):
             "ica": self.enscomp_slider_ica,
             "x2p": self.enscomp_slider_x2p,
             "sgc": self.enscomp_slider_sgc,
-            "stims": self.enscomp_slider_stim
+            "stims": self.enscomp_slider_stim,
+            "behavior": self.enscomp_slider_behavior
         }
         for key, slider in ens_selector.items():
             if slider.isEnabled():
@@ -3092,12 +3098,34 @@ class MainWindow(QMainWindow):
                     ensembles_to_compare[key] = {}
                     ensembles_to_compare[key]["ens_idx"] = ens_idx-1
                     ensembles_to_compare[key]["timecourse"] = self.data_stims[ens_idx-1,:].copy()
+                elif key == "behavior":
+                    ensembles_to_compare[key] = {}
+                    ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                    ensembles_to_compare[key]["timecourse"] = self.data_behavior[ens_idx-1,:].copy()
                 else:
                     ensembles_to_compare[key] = {}
                     ensembles_to_compare[key]["ens_idx"] = ens_idx-1
                     ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
                     ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
         
+        # Update the labels indicator
+        if ens_selector['stims'].isEnabled():
+            selected_stim = ens_selector['stims'].value()-1
+            if "stim" in self.varlabels:
+                stim_labels = list(self.varlabels["stim"].values())
+                stim_label = f"{stim_labels[selected_stim]}"
+            else:
+                stim_label = f"{selected_stim}"
+            self.enscomp_slider_lbl_stim.setText(stim_label)
+        if ens_selector['behavior'].isEnabled():
+            selected_behavior = ens_selector['behavior'].value()-1
+            if "behavior" in self.varlabels:
+                behavior_labels = list(self.varlabels["behavior"].values())
+                behavior_label = f"{behavior_labels[selected_behavior]}"
+            else:
+                behavior_label = f"{selected_behavior}"
+            self.enscomp_slider_lbl_behavior.setText(behavior_label)
+
         self.enscomp_colorflag_svd.setStyleSheet(f"background-color: {self.enscomp_visopts['svd']['color']};")
         self.enscomp_colorflag_pca.setStyleSheet(f"background-color: {self.enscomp_visopts['pca']['color']};")
         self.enscomp_colorflag_ica.setStyleSheet(f"background-color: {self.enscomp_visopts['ica']['color']};")
@@ -3142,6 +3170,8 @@ class MainWindow(QMainWindow):
 
         for key, ens_data in ensembles_to_compare.items():
             if key == "stims":
+                continue
+            if key == "behavior":
                 continue
             if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_coords']:
                 new_members = ens_data["neus_in_ens"].copy()
@@ -3204,6 +3234,20 @@ class MainWindow(QMainWindow):
                         stim_label = f"Stim {selected_stim}"
                     new_ticks.append(f"{stim_label}")
                     colors.append(self.enscomp_visopts['stims']['color'])
+            elif key == "behavior":
+                if self.enscomp_check_show_behavior.isChecked():
+                    # Get the currently selected stimulation
+                    selected_behavior = ens_data["ens_idx"]
+                    # Get the timecourse
+                    timecourses.append(ens_data["timecourse"].copy())
+                    # Get the label, if any
+                    if "behavior" in self.varlabels:
+                        behavior_labels = list(self.varlabels["behavior"].values())
+                        behavior_label = f"Behav {behavior_labels[selected_behavior]}"
+                    else:
+                        behavior_label = f"Behav {selected_behavior}"
+                    new_ticks.append(f"{behavior_label}")
+                    colors.append(self.enscomp_visopts['behavior']['color'])
             else:
                 if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_ens']:
                     new_timecourse = ens_data["timecourse"].copy()
@@ -3246,6 +3290,38 @@ class MainWindow(QMainWindow):
             color_hex = color.name()
             current_method = self.enscomp_combo_select_result.currentText().lower()
             self.enscomp_visopts[current_method]['color'] = color_hex
+            self.ensembles_compare_update_ensembles()
+    
+    def enscomp_get_color_stims(self):
+        """
+        Opens the QColorDialog to select a color for the stimulation.
+
+        The selected color will be applied to the elements of the stimulation.
+        :return: None
+        :rtype: None
+        """
+        color = QColorDialog.getColor()
+        # Check if a color was selected
+        if color.isValid():
+            # Convert the color to a Matplotlib-compatible format (hex string)
+            color_hex = color.name()
+            self.enscomp_visopts['stims']['color'] = color_hex
+            self.ensembles_compare_update_ensembles()
+
+    def enscomp_get_color_behavior(self):
+        """
+        Opens the QColorDialog to select a color for the behavior.
+
+        The selected color will be applied to the elements of the behavior.
+        :return: None
+        :rtype: None
+        """
+        color = QColorDialog.getColor()
+        # Check if a color was selected
+        if color.isValid():
+            # Convert the color to a Matplotlib-compatible format (hex string)
+            color_hex = color.name()
+            self.enscomp_visopts['behavior']['color'] = color_hex
             self.ensembles_compare_update_ensembles()
 
     def ensembles_compare_get_elements_labels(self, criteria):
