@@ -16,8 +16,7 @@ jobs:
       with:
         pre-build-command: |
           /usr/local/bin/python -m pip install --upgrade pip && \
-          apt-get update && apt-get install -y libgl1-mesa-glx && \
-          apt-get update && apt-get install -y libxkbcommon0
+          apt-get update && apt-get install -y libgl1-mesa-glx libxkbcommon0
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
