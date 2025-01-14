@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -238,7 +238,7 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
@@ -247,6 +247,1768 @@
           <section id="code-functions">
 <h1>Code functions<a class="headerlink" href="#code-functions" title="Link to this heading">¶</a></h1>
 <p>The <cite>MainWindow</cite> object is located in the <cite>main.py</cite> file. This object is the main window that opens when you run <cite>pyhon main.py</cite>. Here is every function that constitutes that window and how the data is processed by each function.</p>
+<dl class="py class" id="module-main">
+<dt class="sig sig-object py" id="main.MainWindow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.bin_matrix">
+<span class="sig-name descname"><span class="pre">bin_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_method</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.bin_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Bins the input matrix along the timepoints dimension using the specified binning method.</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mat</strong> (<em>numpy.ndarray</em><em> of </em><em>shape</em><em> (</em><em>n</em><em>, </em><em>t</em><em>)</em>) – The input matrix to be binned, where each row represents an element and each column represents a timepoint.</p></li>
+<li><p><strong>bin_size</strong> (<em>int</em>) – The number of timepoints to include in each bin. Must be smaller than the number of timepoints in <cite>mat</cite>.</p></li>
+<li><p><strong>bin_method</strong> (<em>str</em>) – The method used to bin the data. Options are “mean” to compute the mean of each bin, or “sum” to compute the sum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If <cite>bin_method</cite> is not one of the accepted values (“mean” or “sum”).</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A matrix with the same number of rows as <cite>mat</cite> but with columns reduced by the binning operation.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray of shape (n, b)</p>
+</dd>
+<dt class="field-odd">Example<span class="colon">:</span></dt>
+<dd class="field-odd"><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bin_size</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bin_method</span> <span class="o">=</span> <span class="s2">&quot;mean&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">binned_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_matrix</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">bin_size</span><span class="p">,</span> <span class="n">bin_method</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">binned_mat</span><span class="p">)</span>
+<span class="go">array([[1.5, 3.5],</span>
+<span class="go">    [5.5, 7.5]])</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.browse_files">
+<span class="sig-name descname"><span class="pre">browse_files</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.browse_files" title="Link to this definition">¶</a></dt>
+<dd><p>Opens a file browing dialog to open a new file.</p>
+<p>This function also loads the file tree model and shows it in the variable browser widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.clear_behavior">
+<span class="sig-name descname"><span class="pre">clear_behavior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.clear_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_behavior</span></code> variable.</p>
+<p>This function also updates the buttons related to load and clear the variable
+At the end the function clears visualization in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.clear_cells">
+<span class="sig-name descname"><span class="pre">clear_cells</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.clear_cells" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_cells</span></code> variable.</p>
+<p>This function also updates the buttons related to load and clear the variable
+At the end the function clears visualization in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.clear_coordinates">
+<span class="sig-name descname"><span class="pre">clear_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.clear_coordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_coordinates</span></code> variable.</p>
+<p>This function also updates the buttons related to load and clear the variable
+At the end the function clears visualization in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.clear_dFFo">
+<span class="sig-name descname"><span class="pre">clear_dFFo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.clear_dFFo" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_dFFo</span></code> variable.</p>
+<p>This function also updates the buttons related to load and clear the variable
+At the end the function clears visualization in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.clear_neuronal_activity">
+<span class="sig-name descname"><span class="pre">clear_neuronal_activity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.clear_neuronal_activity" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_neuronal_activity</span></code> variable.</p>
+<p>This function also updates the buttons related to load and clear the variable
+At the end the function clears visualization in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.clear_stims">
+<span class="sig-name descname"><span class="pre">clear_stims</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.clear_stims" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_stims</span></code> variable.</p>
+<p>This function also updates the buttons related to load and clear the variable
+At the end the function clears visualization in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.dict_to_matlab_struct">
+<span class="sig-name descname"><span class="pre">dict_to_matlab_struct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.dict_to_matlab_struct" title="Link to this definition">¶</a></dt>
+<dd><p>Converts a Python dictionary to a MATLAB struct.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pars_dict</strong> (<em>dict</em>) – A dictionary where keys represent the names of fields in the MATLAB struct and the values 
+represent the corresponding field values.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A MATLAB struct where the keys are the field names and the values are converted to the appropriate MATLAB data type.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p>This function recursively converts a Python dictionary to a MATLAB struct. It handles nested dictionaries by 
+recursively calling the conversion function. Numeric values (integers or floats) are converted into MATLAB 
+double type, while other data types are kept unchanged.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.edit_bin">
+<span class="sig-name descname"><span class="pre">edit_bin</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.edit_bin" title="Link to this definition">¶</a></dt>
+<dd><p>Reads the binning parameters and performs the binning in the selected dataset.</p>
+<p>Loads the bin size and bin method from the UI, and shows feedback to the user
+about the performed operation. If the input is invalid nothing is changed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.edit_transpose">
+<span class="sig-name descname"><span class="pre">edit_transpose</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.edit_transpose" title="Link to this definition">¶</a></dt>
+<dd><p>Transpose the currently visualized variable.</p>
+<p>Simple transpose of the data currently viewed in the MainWindow.data_preview widget.
+This method changes both the stored data and the visualization.
+Also, a message is shown to the user about the interpretation of the transpose.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.edit_trimmatrix">
+<span class="sig-name descname"><span class="pre">edit_trimmatrix</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.edit_trimmatrix" title="Link to this definition">¶</a></dt>
+<dd><p>Edits the currently visualized matrix by trimming its rows and/or columns based on user-specified indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p>This method uses the start and end indices entered by the user to trim the matrix currently selected for editing.
+Depending on the selection, it will trim one of the following datasets: dFFo, neuronal_activity, coordinates, stims, 
+cells, or behavior. For each dataset, if valid start and end indices are provided for the x-axis or y-axis, 
+it slices the data accordingly and updates the view for that dataset.</p>
+<p>After trimming, the console log is updated to notify the user, and the appropriate preview function is called to 
+display the updated dataset.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.enscomp_get_color">
+<span class="sig-name descname"><span class="pre">enscomp_get_color</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.enscomp_get_color" title="Link to this definition">¶</a></dt>
+<dd><p>Opens the QColorDialog to select a color for the selected analysis.</p>
+<p>The selected color will be applied to the elements of the algorithm selected
+in the combo box for the Ensemble Compare tab.
+:return: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.enscomp_get_color_behavior">
+<span class="sig-name descname"><span class="pre">enscomp_get_color_behavior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.enscomp_get_color_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Opens the QColorDialog to select a color for the behavior.</p>
+<p>The selected color will be applied to the elements of the behavior.
+:return: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.enscomp_get_color_stims">
+<span class="sig-name descname"><span class="pre">enscomp_get_color_stims</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.enscomp_get_color_stims" title="Link to this definition">¶</a></dt>
+<dd><p>Opens the QColorDialog to select a color for the stimulation.</p>
+<p>The selected color will be applied to the elements of the stimulation.
+:return: None
+:rtype: None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_get_elements_labels">
+<span class="sig-name descname"><span class="pre">ensembles_compare_get_elements_labels</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">criteria</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_get_elements_labels" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves elements and their labels for ensembles comparison based on a given criterion.</p>
+<p>This method extracts elements from the results dictionary according to the specified criterion 
+(e.g., neurons in ensemble or timecourse). It also generates labels for these elements, 
+indicating the algorithm and the ensemble index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>criteria</strong> (<em>string</em>) – The key used to extract elements from each algorithm’s results.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing the array of elements and their corresponding labels.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple (numpy.ndarray, list of string)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_get_simmatrix">
+<span class="sig-name descname"><span class="pre">ensembles_compare_get_simmatrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_elements</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_get_simmatrix" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the similarity matrix for a set of elements using the specified method.</p>
+<p>This method computes pairwise similarity or distance metrics (e.g., cosine, Euclidean, 
+correlation, Jaccard) and formats the result as a similarity matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>string</em>) – The similarity or distance metric to use. Valid options are:
+‘Cosine’, ‘Euclidean’, ‘Correlation’, ‘Jaccard’.</p></li>
+<li><p><strong>all_elements</strong> (<em>numpy.ndarray</em>) – A numpy array containing the elements to compare. Each row represents 
+a single element, and columns represent features.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an unsupported method is provided.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A similarity matrix where each entry represents the pairwise similarity between elements.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_similarity">
+<span class="sig-name descname"><span class="pre">ensembles_compare_similarity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">component</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_similarity" title="Link to this definition">¶</a></dt>
+<dd><p>Computes and visualizes the similarity matrix for ensembles based on a selected component.</p>
+<p>This method calculates the similarity matrix for ensembles using either the “Neurons” or 
+“Timecourses” component. It updates the visualization options and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>component</strong> (<em>str</em><em>, </em><em>optional</em>) – Specifies the component to compute the similarity for (“Neurons” or “Timecourses”).
+If not provided, the currently selected component in the GUI is used.</p></li>
+<li><p><strong>first_show</strong> (<em>bool</em><em>, </em><em>optional</em>) – Indicates whether this is the initial visualization, which determines default 
+visualization settings.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_similarity_update_combbox">
+<span class="sig-name descname"><span class="pre">ensembles_compare_similarity_update_combbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_similarity_update_combbox" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the combo boxes for similarity method and colormap based on the selected component.</p>
+<p>This method adjusts the currently displayed options in the similarity method and colormap 
+combo boxes to match the visualization settings for the selected component (“Neurons” or “Timecourses”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>string</em>) – The selected component, either “Neurons” or “Timecourses”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_tabchange">
+<span class="sig-name descname"><span class="pre">ensembles_compare_tabchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_tabchange" title="Link to this definition">¶</a></dt>
+<dd><p>Handles tab changes in the GUI, updating the interface and displaying similarity maps as needed.</p>
+<p>This method is triggered when the user switches tabs in the GUI. It updates the state 
+of dropdown menus and enables/disables specific components depending on the selected tab.
+If the user navigates to the tabs for “Neurons” or “Timecourses”, it ensures that the 
+similarity maps are displayed for the first time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – The index of the currently selected tab.
+- <cite>2</cite>: Neurons tab
+- <cite>3</cite>: Timecourses tab</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_update_combo_results">
+<span class="sig-name descname"><span class="pre">ensembles_compare_update_combo_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_update_combo_results" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the visualization options for the selected algorithm.</p>
+<p>This function is executed when the combo box value is changed. Loads the visualization
+options for the current algorithm.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>string</em>) – Name of the selected analysis as shown in the combo box.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_update_ensembles">
+<span class="sig-name descname"><span class="pre">ensembles_compare_update_ensembles</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_update_ensembles" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the ensembles comparison settings and visualizations.</p>
+<p>This method collects the selected ensembles from various methods (SVD, PCA, ICA, X2P),
+updates their corresponding properties (index, neurons in ensemble, and timecourse),
+and applies the visualization options to the GUI. The method also updates the comparison
+map and timecourse visualizations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_update_map">
+<span class="sig-name descname"><span class="pre">ensembles_compare_update_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles_to_compare</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_update_map" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the spatial map in ensembles compare.</p>
+<p>This function calculates the shared neurons between every ensemble according to the
+current visualization options, and asigns colors for each neuron in the map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ensembles_to_compare</strong> (<em>dict</em>) – Dictionary with where each key is the name of an algorithm,
+the value is another dictionary. The key used here is <cite>neus_in_ens</cite> with a
+binary numpy matrix with shape with the members of each ensemble.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_update_opts">
+<span class="sig-name descname"><span class="pre">ensembles_compare_update_opts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">algorithm</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_update_opts" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the option buttons with the data from the given analysis.</p>
+<p>This function receives the name of some algorithm and then updates the options
+in the <cite>Ensemble Compare</cite> tab. In this function the slider and labels of each 
+analysis is assigned and then the general buttons are loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>algorithm</strong> (<em>string</em>) – String with the name of the algorithm, in lower case and three chars syntax.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensembles_compare_update_timecourses">
+<span class="sig-name descname"><span class="pre">ensembles_compare_update_timecourses</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ensembles_to_compare</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensembles_compare_update_timecourses" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the timecourse plot in the ensembles compare tab.</p>
+<p>This function extracts the timecourse of the selected ensembles accordingly with the
+current visualization options and then plots those in the corresponding figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ensembles_to_compare</strong> (<em>dict</em>) – Dictionary with where each key is the name of an algorithm,
+the value is another dictionary. The keys used here are <cite>“neus_in_ens”</cite> with a
+binary numpy matrix with shape with the members of each ensemble and <cite>“timecourse”</cite>
+with a binary matrix describing the moment of activation of the selected ensembles.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.ensvis_tabchange">
+<span class="sig-name descname"><span class="pre">ensvis_tabchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.ensvis_tabchange" title="Link to this definition">¶</a></dt>
+<dd><p>Identifies the tab change in the ensamble visualizer for asynchronous loading of plots.</p>
+<p>The loading of all the comparations and plots could be slow when loaded all at the same time.
+For this, the plots are loaded only when the user reaches the relevant tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – Index of the tab opened by the user.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.get_data_to_save">
+<span class="sig-name descname"><span class="pre">get_data_to_save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.get_data_to_save" title="Link to this definition">¶</a></dt>
+<dd><p>Prepares data for saving based on the selected checkboxes in the GUI.</p>
+<p>This method compiles data from various sources, including input data, results, analysis parameters, 
+algorithms results, ensembles comparison, and performance metrics. It gathers and organizes the data 
+to be saved into a dictionary format, which can later be written to a file. The specific data included 
+depends on the user’s selections in the GUI checkboxes.</p>
+<p>It collects the following data:
+- Input data (e.g., dFFo, neuronal activity, stimuli, coordinates, behavior, etc.)
+- Results from the ensembles comparison
+- Parameters used in the analysis
+- Full algorithm results
+- Performance metrics for ensembles, including correlation with stimuli, behavior, and cross-correlation</p>
+<p>The method also generates a timestamp and stores it in the data under the key “EnsemblesGUI”.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A dictionary containing the data to be saved.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.initialize_ensemble_view">
+<span class="sig-name descname"><span class="pre">initialize_ensemble_view</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.initialize_ensemble_view" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the slider for ensemble selection for the chosen analysis and sets its limits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p>This function makes available the ensemble selector.
+This function also loads the visualization of the first ensemble.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.item_clicked">
+<span class="sig-name descname"><span class="pre">item_clicked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.item_clicked" title="Link to this definition">¶</a></dt>
+<dd><p>Handles the click event on a variable in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.tree_view</span></code>, displaying relevant information 
+about the selected variable and enabling or disabling assign and clear buttons in the UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>QModelIndex</em>) – The index of the clicked item in the file model.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p>This method retrieves information about the selected variable, including its path in the file, type, and size. 
+The item’s name is extracted from the path and displayed along with its description in the UI. 
+Depending on the type and size of the item, it enables or disables specific buttons related 
+to the assigning to a dataset. The relevant information is also stored for further processing.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.load_defaults_ica">
+<span class="sig-name descname"><span class="pre">load_defaults_ica</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.load_defaults_ica" title="Link to this definition">¶</a></dt>
+<dd><p>Loads default ICA parameter values into the UI fields.</p>
+<p>This method retrieves the default parameter values for ICA analysis from <cite>MainWindow.ica_defaults</cite> 
+and sets the corresponding values in the UI fields. It also updates the console log to 
+indicate that the default values have been successfully loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.load_defaults_pca">
+<span class="sig-name descname"><span class="pre">load_defaults_pca</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.load_defaults_pca" title="Link to this definition">¶</a></dt>
+<dd><p>Loads default PCA parameter values into the UI fields.</p>
+<p>This method retrieves the default parameter values for PCA analysis from <cite>MainWindow.pca_defaults</cite> 
+and sets the corresponding values in the UI fields. It also updates the console log to 
+indicate that the default values have been successfully loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.load_defaults_sgc">
+<span class="sig-name descname"><span class="pre">load_defaults_sgc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.load_defaults_sgc" title="Link to this definition">¶</a></dt>
+<dd><p>Loads default SGC parameter values into the UI fields.</p>
+<p>This method retrieves the default parameter values for SGC analysis from <cite>MainWindow.sgc_defaults</cite> 
+and sets the corresponding values in the UI fields. It also updates the console log to 
+indicate that the default values have been successfully loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.load_defaults_svd">
+<span class="sig-name descname"><span class="pre">load_defaults_svd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.load_defaults_svd" title="Link to this definition">¶</a></dt>
+<dd><p>Loads default SVD parameter values into the UI fields.</p>
+<p>This method retrieves the default parameter values for SVD analysis from <cite>MainWindow.svd_defaults</cite> 
+and sets the corresponding values in the UI fields. It also updates the console log to 
+indicate that the default values have been successfully loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.load_defaults_x2p">
+<span class="sig-name descname"><span class="pre">load_defaults_x2p</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.load_defaults_x2p" title="Link to this definition">¶</a></dt>
+<dd><p>Loads default Xsembles2P parameter values into the UI fields.</p>
+<p>This method retrieves the default parameter values for Xsembles2P analysis from <cite>MainWindow.x2p_defaults</cite> 
+and sets the corresponding values in the UI fields. It also updates the console log to 
+indicate that the default values have been successfully loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.main_tabs_change">
+<span class="sig-name descname"><span class="pre">main_tabs_change</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.main_tabs_change" title="Link to this definition">¶</a></dt>
+<dd><p>Identifies the change in tabs to load some data.</p>
+<p>This function allows the asynchronous verification and loading of some tabs identified by index.
+For the analysis tabs, the necessary data is evaluated and then change the text accordingly.
+For the ensembles compare tab the visualizations are only loaded when the user reaches this tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – Index of the currently open tab, 0 indexing.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.performance_check_change">
+<span class="sig-name descname"><span class="pre">performance_check_change</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.performance_check_change" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the list of selected methods for performance comparison based on user input.</p>
+<p>This method checks the state of multiple checkboxes corresponding to different analysis methods 
+(SVD, PCA, ICA, X2P, SGC) and updates the list of methods to compare. It also enables or disables 
+the compare button based on whether any methods are selected.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.performance_compare">
+<span class="sig-name descname"><span class="pre">performance_compare</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.performance_compare" title="Link to this definition">¶</a></dt>
+<dd><p>Performs performance comparison and initializes relevant performance tabs.</p>
+<p>This method sets up temporary variables to track which performance tabs have been displayed, 
+sets the default tab to the first tab, and updates the correlations with stimulus data 
+if such data is available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.performance_tabchange">
+<span class="sig-name descname"><span class="pre">performance_tabchange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.performance_tabchange" title="Link to this definition">¶</a></dt>
+<dd><p>Handles tab changes in the performance analysis section of the GUI, triggering updates for the selected tab.</p>
+<p>This method ensures that specific updates are performed when the user switches tabs in the 
+performance analysis section. Each tab corresponds to a different type of performance metric 
+or visualization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – The index of the currently selected tab.
+- <cite>0</cite>: Correlation with ensemble presentation
+- <cite>1</cite>: Correlations between cells
+- <cite>2</cite>: Cross correlations between ensembles and stimuli
+- <cite>3</cite>: Correlation with behavior
+- <cite>4</cite>: Cross correlations with behavior</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.plot_ICA_results">
+<span class="sig-name descname"><span class="pre">plot_ICA_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">answer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.plot_ICA_results" title="Link to this definition">¶</a></dt>
+<dd><p>Plots the results of the ICA algorithm, including assembly templates, time projections, 
+binary assembly templates, core cells and binary assemblies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>answer</strong> (<em>dict</em>) – Dictionary containing the ICA output data from MATLAB, including
+assembly templates, time projections, binary assembly templates, 
+and binary assemblies.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.plot_PCA_results">
+<span class="sig-name descname"><span class="pre">plot_PCA_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pars</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">answer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.plot_PCA_results" title="Link to this definition">¶</a></dt>
+<dd><p>Plots the results of the PCA algorithm, including eigen values, principal components, 
+rho and delta values, correlation of cells, core cells and ensembles time course.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>answer</strong> (<em>dict</em>) – Dictionary containing the PCA output data from MATLAB, including
+eigen values, principal components, rho and delta values, correlation of cells, 
+core cells and ensembles time course.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.plot_SVD_results">
+<span class="sig-name descname"><span class="pre">plot_SVD_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">answer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.plot_SVD_results" title="Link to this definition">¶</a></dt>
+<dd><p>Plots and saves the results of the SVD algorithm, including similarity maps, singular values, 
+components, and ensemble timecourses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>answer</strong> (<em>dict</em>) – Dictionary containing the SVD output data from MATLAB, including matrices for 
+similarity maps, singular values, component vectors, ensemble timecourses, 
+and neuron groupings.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.plot_X2P_results">
+<span class="sig-name descname"><span class="pre">plot_X2P_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">answer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.plot_X2P_results" title="Link to this definition">¶</a></dt>
+<dd><p>Plots the results of the X2P algorithm, including similarity map, EPI, 
+onsemble activity, offsemble activity, activity, onsembles neurons and offsemble neurons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>answer</strong> (<em>dict</em>) – Dictionary containing the X2P output data from MATLAB, including similaty map,
+EPI, onsemble activity, offsemble activity, activity, onnsembles neurons
+and offsemble neurons.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.plot_sgc_results">
+<span class="sig-name descname"><span class="pre">plot_sgc_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">answer</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.plot_sgc_results" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.reset_gui">
+<span class="sig-name descname"><span class="pre">reset_gui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.reset_gui" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the GUI, delete all the variables and analysis results.
+Also clears all the figures and restores the analysis and display options.
+The result is the GUI just like the first time you opened it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_ICA">
+<span class="sig-name descname"><span class="pre">run_ICA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_ICA" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves user-defined parameters for ICA from the GUI, applies default values 
+if fields are empty, and initiates the ICA analysis in parallel. The function also updates the console log 
+with messages about the current status and resets any previously displayed ICA figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_PCA">
+<span class="sig-name descname"><span class="pre">run_PCA</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_PCA" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves user-defined parameters for PCA from the GUI, applies default values 
+if fields are empty, and initiates the PCA analysis in parallel. The function also updates the console log 
+with messages about the current status and resets any previously displayed PCA figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_ica_parallel">
+<span class="sig-name descname"><span class="pre">run_ica_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spikes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_matlab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_ica_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data in parallel. 
+This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spikes</strong> (<em>matlab.double</em>) – Matrix of neural activity data to be processed.</p></li>
+<li><p><strong>pars_matlab</strong> (<em>dict</em>) – MATLAB structure of parameters for the ICA algorithm.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of times taken for MATLAB engine setup, ICA execution, and plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_ica_parallel_end">
+<span class="sig-name descname"><span class="pre">run_ica_parallel_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_ica_parallel_end" title="Link to this definition">¶</a></dt>
+<dd><p>Runs when the ICA execution process finishes, logging timing information for each stage of the computation, 
+and re-enables the ICA run button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List containing the time taken for MATLAB engine loading, algorithm execution, 
+and plotting in seconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_pca_parallel">
+<span class="sig-name descname"><span class="pre">run_pca_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_matlab</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_pca_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data in parallel. 
+This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster</strong> (<em>matlab.double</em>) – Matrix of neural activity data to be processed.</p></li>
+<li><p><strong>pars_matlab</strong> (<em>dict</em>) – MATLAB structure of parameters for the PCA algorithm.</p></li>
+<li><p><strong>pars</strong> (<em>dict</em>) – Python dictionary of parameters for the PCA algorithm, used for plotting.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of times taken for MATLAB engine setup, PCA execution, and plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_pca_parallel_end">
+<span class="sig-name descname"><span class="pre">run_pca_parallel_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_pca_parallel_end" title="Link to this definition">¶</a></dt>
+<dd><p>Runs when the PCA execution process finishes, logging timing information for each stage of the computation, 
+and re-enables the PCA run button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List containing the time taken for MATLAB engine loading, algorithm execution, 
+and plotting in seconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_sgc">
+<span class="sig-name descname"><span class="pre">run_sgc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_sgc" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves user-defined parameters for SGC from the GUI, applies default values 
+if fields are empty, and initiates the SGC analysis in parallel. The function also updates the console log 
+with messages about the current status and resets any previously displayed SGC figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_sgc_parallel">
+<span class="sig-name descname"><span class="pre">run_sgc_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dFFo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_matlab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_sgc_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data in parallel. 
+This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spikes</strong> (<em>matlab.double</em>) – Matrix of neural activity data to be processed.</p></li>
+<li><p><strong>dFFo</strong> (<em>matlab.double</em>) – Matrix of neural flourescence data to be processed</p></li>
+<li><p><strong>pars_matlab</strong> (<em>dict</em>) – MATLAB structure of parameters for the SGC algorithm.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of times taken for MATLAB engine setup, SGC execution, and plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_sgc_parallel_end">
+<span class="sig-name descname"><span class="pre">run_sgc_parallel_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_sgc_parallel_end" title="Link to this definition">¶</a></dt>
+<dd><p>Runs when the SGC execution process finishes, logging timing information for each stage of the computation, 
+and re-enables the SGC run button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List containing the time taken for MATLAB engine loading, algorithm execution, 
+and plotting in seconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_svd">
+<span class="sig-name descname"><span class="pre">run_svd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_svd" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves user-defined parameters for Singular Value Decomposition (SVD) from the GUI, applies default values 
+if fields are empty, and initiates the SVD analysis in parallel. The function also updates the console log 
+with messages about the current status and resets any previously displayed SVD figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_svd_parallel">
+<span class="sig-name descname"><span class="pre">run_svd_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spikes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coords_foo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_matlab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_svd_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data in parallel. 
+This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>spikes</strong> (<em>matlab.double</em>) – Matrix of neural activity data to be processed.</p></li>
+<li><p><strong>coords_foo</strong> (<em>matlab.double</em>) – Matrix of dummy coordinates used as input for the SVD function.</p></li>
+<li><p><strong>pars_matlab</strong> (<em>dict</em>) – MATLAB structure of parameters for the SVD algorithm.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of times taken for MATLAB engine setup, SVD execution, and plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_svd_parallel_end">
+<span class="sig-name descname"><span class="pre">run_svd_parallel_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_svd_parallel_end" title="Link to this definition">¶</a></dt>
+<dd><p>Finalizes the SVD execution process, logging timing information for each stage of the computation, 
+and re-enables the SVD run button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List containing the time taken for MATLAB engine loading, algorithm execution, 
+and plotting in seconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_x2p">
+<span class="sig-name descname"><span class="pre">run_x2p</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_x2p" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves user-defined parameters for Xsembles2P from the GUI, applies default values 
+if fields are empty, and initiates the X2P analysis in parallel. The function also updates the console log 
+with messages about the current status and resets any previously displayed X2P figures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_x2p_parallel">
+<span class="sig-name descname"><span class="pre">run_x2p_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raster</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pars_matlab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_x2p_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the X2P algorithm on neural activity data in parallel. 
+This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>raster</strong> (<em>matlab.double</em>) – Matrix of neural activity data to be processed.</p></li>
+<li><p><strong>pars_matlab</strong> (<em>dict</em>) – MATLAB structure of parameters for the X2P algorithm.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>List of times taken for MATLAB engine setup, X2P execution, and plotting.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[float]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.run_x2p_parallel_end">
+<span class="sig-name descname"><span class="pre">run_x2p_parallel_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.run_x2p_parallel_end" title="Link to this definition">¶</a></dt>
+<dd><p>Runs when the X2P execution process finishes, logging timing information for each stage of the computation, 
+and re-enables the X2P run button.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>times</strong> (<em>list</em><em>[</em><em>float</em><em>]</em>) – List containing the time taken for MATLAB engine loading, algorithm execution, 
+and plotting in seconds.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.save_data_to_hdf5">
+<span class="sig-name descname"><span class="pre">save_data_to_hdf5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.save_data_to_hdf5" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively saves data to an HDF5 file group.</p>
+<p>This method iterates through a dictionary and saves its contents to the provided HDF5 group. 
+If a value in the dictionary is another dictionary, it creates a subgroup and recursively saves 
+its contents. 
+If the value is a list, it attempts to create a dataset in the group, catching exceptions 
+if the data cannot be saved. 
+For other data types, the method directly stores the value in the group.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<em>h5py.Group</em>) – The HDF5 group to which the data will be saved.</p></li>
+<li><p><strong>data</strong> (<em>dict</em>) – The data to be saved, which can be a dictionary, list, or other types.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.save_results_hdf5">
+<span class="sig-name descname"><span class="pre">save_results_hdf5</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.save_results_hdf5" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the current results to an HDF5 file.</p>
+<p>This method retrieves the data to be saved using <a class="reference internal" href="#main.MainWindow.get_data_to_save" title="main.MainWindow.get_data_to_save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.get_data_to_save()</span></code></a>, 
+prompts the user to choose a location and name for the file, and then saves the data in HDF5 format. 
+The file is saved using the <a class="reference internal" href="#main.MainWindow.save_data_to_hdf5" title="main.MainWindow.save_data_to_hdf5"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.save_data_to_hdf5()</span></code></a> method to recursively write 
+the data into the file.</p>
+<p>The file is named based on the current date and a prefix “EnsGUI”, and the user is prompted 
+to choose a location and file name via a file dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>IOError</strong> – If the file could not be saved.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.save_results_mat">
+<span class="sig-name descname"><span class="pre">save_results_mat</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.save_results_mat" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the current results to a MATLAB (.mat) file.</p>
+<p>This method retrieves the data to be saved using the <a class="reference internal" href="#main.MainWindow.get_data_to_save" title="main.MainWindow.get_data_to_save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.get_data_to_save()</span></code></a> method, 
+prompts the user to choose a location and file name using a file dialog, and then saves 
+the retrieved data into a MATLAB .mat file using the <cite>scipy.io.savemat()</cite> function.</p>
+<p>The default file name is based on the current date and a prefix “EnsGUI”. 
+If the user cancels or does not provide a file name, the function will not proceed.</p>
+<p>If an error occurs while saving the file, an <cite>IOError</cite> is raised to notify the user that the 
+file could not be saved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>IOError</strong> – If there is an error saving the file, for example, if the file path is invalid 
+or the file cannot be written to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.save_results_pkl">
+<span class="sig-name descname"><span class="pre">save_results_pkl</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.save_results_pkl" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the current results to a Pickle (.pkl) file.</p>
+<p>This method retrieves the data to be saved using the <a class="reference internal" href="#main.MainWindow.get_data_to_save" title="main.MainWindow.get_data_to_save"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.get_data_to_save()</span></code></a> method, 
+prompts the user to choose a location and file name using a file dialog, and then saves 
+the retrieved data into a Pickle (.pkl) file. 
+The Pickle format is a binary format used for serializing Python objects.</p>
+<p>The default file name is based on the current date and a prefix “EnsGUI”. 
+If the user cancels or does not provide a file name, the function will not proceed.</p>
+<p>If an error occurs while saving the file, an <cite>IOError</cite> is raised to notify the user that 
+the file could not be saved.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>IOError</strong> – If there is an error saving the file, for example, if the file path is invalid 
+or the file cannot be written to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_able_edit_options">
+<span class="sig-name descname"><span class="pre">set_able_edit_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boolval</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_able_edit_options" title="Link to this definition">¶</a></dt>
+<dd><p>Changes the enabled status of the editing options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>boolval</strong> (<em>bool</em>) – When true, all the buttons for editing are enabled, dissabled otherwise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_behavior">
+<span class="sig-name descname"><span class="pre">set_behavior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_behavior</span></code> variable.</p>
+<p>The assigned value is the one of the selected variable in the variable broswer.
+This function also updates the buttons related to load and clear the variable
+and triggers the visualization function.
+At the end the function shows the loaded data in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_cells">
+<span class="sig-name descname"><span class="pre">set_cells</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_cells" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_cells</span></code> variable.</p>
+<p>The assigned value is the one of the selected variable in the variable broswer.
+This function also updates the buttons related to load and clear the variable
+and triggers the visualization function.
+At the end the function shows the loaded data in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_coordinates">
+<span class="sig-name descname"><span class="pre">set_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_coordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_coordinates</span></code> variable.</p>
+<p>The assigned value is the one of the selected variable in the variable broswer.
+Only the first two elements of the second dimention are assigned.
+This function also updates the buttons related to load and clear the variable
+and triggers the visualization function.
+At the end the function shows the loaded data in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_dFFo">
+<span class="sig-name descname"><span class="pre">set_dFFo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_dFFo" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.dFFo</span></code> dataset by assigning data from a file and updating the relevant UI components.</p>
+<p>This method loads the dFFo dataset from the selected file.
+It then updates the UI to reflect that the dataset has been
+assigned, enables buttons for further edition, and logs the update message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_neuronal_activity">
+<span class="sig-name descname"><span class="pre">set_neuronal_activity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_neuronal_activity" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_neuronal_activity</span></code> dataset by assigning data from a file and updating the relevant UI components.</p>
+<p>This method loads the data_neuronal_activity dataset from the selected file and extracts the number of cells 
+(cant_neurons) and time points (cant_timepoints). It then updates the UI to reflect that the dataset has been
+assigned, enables buttons for further edition, and logs the update message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.set_stims">
+<span class="sig-name descname"><span class="pre">set_stims</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.set_stims" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the value of the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_stims</span></code> variable.</p>
+<p>The assigned value is the one of the selected variable in the variable broswer.
+This function also updates the buttons related to load and clear the variable
+and triggers the visualization function.
+At the end the function shows the loaded data in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.data_preview</span></code> widget.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_analysis_results">
+<span class="sig-name descname"><span class="pre">update_analysis_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_analysis_results" title="Link to this definition">¶</a></dt>
+<dd><p>Pre-loads the <cite>General</cite> tab in the ensembles visualizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p>This function also saves the state of shown/not-shown of the other tabs for
+asynchronous loading and caching.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_console_log">
+<span class="sig-name descname"><span class="pre">update_console_log</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">msg_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'log'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_console_log" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the console log with a new message, formatted with a specific color based on the message type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<em>str</em>) – The message to be displayed in the console log.</p></li>
+<li><p><strong>msg_type</strong> (<em>str</em><em>, </em><em>optional</em>) – The type of the message, which determines its color. 
+It can be one of “log”, “error”, “warning”, or “complete”. 
+Defaults to “log”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p>This method formats the log entry by including the current timestamp and the provided message. The message 
+is displayed in a monospace font with different colors based on the message type. The new message is appended 
+to the console log, and the view is updated to scroll to the bottom to ensure the message is visible.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_corr_behavior">
+<span class="sig-name descname"><span class="pre">update_corr_behavior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_corr_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the plot of correlation with behavior data by initiating a parallel worker thread.</p>
+<p>This method retrieves the plot widget for displaying correlation with behavior, 
+and starts a worker thread to perform the correlation update in parallel, 
+which is then rendered in the plot widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_corr_behavior_parallel">
+<span class="sig-name descname"><span class="pre">update_corr_behavior_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_corr_behavior_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates and updates the correlation between the ensemble timecourses and behavior data.</p>
+<p>This method computes the correlation for each selected method (e.g., SVD, PCA, ICA, etc.) 
+between the ensemble timecourses and the behavior data, and then updates the plot widget 
+with the results. It handles the display by organizing the plots into a specified layout 
+based on the number of methods being compared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_widget</strong> (<em>MatplotlibWidget</em>) – The widget used to display the correlation plots.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_corr_stim">
+<span class="sig-name descname"><span class="pre">update_corr_stim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_corr_stim" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the plot of correlation with stimulus data by initiating a parallel worker thread.</p>
+<p>This method retrieves the plot widget for displaying correlation with stimuli, 
+and starts a worker thread to perform the correlation update in parallel, 
+which is then rendered in the plot widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_corr_stim_parallel">
+<span class="sig-name descname"><span class="pre">update_corr_stim_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_corr_stim_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates and updates the correlation between the ensemble timecourses and stimulus data.</p>
+<p>This method computes the correlation for each selected method (e.g., SVD, PCA, ICA, etc.) 
+between the ensemble timecourses and the stimulus data, and then updates the plot widget 
+with the results. It handles the display by organizing the plots into a specified layout 
+based on the number of methods being compared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_widget</strong> (<em>MatplotlibWidget</em>) – The widget used to display the correlation plots.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_correlation_cells">
+<span class="sig-name descname"><span class="pre">update_correlation_cells</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_correlation_cells" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the plot of correlation between the activations of the neurons 
+in the same ensemble by initiating a parallel worker thread.</p>
+<p>This method retrieves the plot widget for displaying correlation between the neurons 
+in the ensembles, and starts a worker thread to perform the correlation update in parallel, 
+which is then rendered in the plot widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_correlation_cells_parallel">
+<span class="sig-name descname"><span class="pre">update_correlation_cells_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_correlation_cells_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates and updates the correlation between the activation of the cells in the ensemble.</p>
+<p>This method computes the correlation for each selected method (e.g., SVD, PCA, ICA, etc.) 
+between the neurons in the ensemble, and then updates the plot widget with the results. 
+It handles the display by organizing the plots into a specified layout 
+based on the number of methods being compared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_widget</strong> (<em>MatplotlibWidget</em>) – The widget used to display the correlation plots.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_cross_behavior">
+<span class="sig-name descname"><span class="pre">update_cross_behavior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_cross_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the plot of cross-correlation with behavior data by initiating a parallel worker thread.</p>
+<p>This method retrieves the plot widget for displaying cross-correlation with behavior, 
+and starts a worker thread to perform the cross-correlation update in parallel, 
+which is then rendered in the plot widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_cross_behavior_parallel">
+<span class="sig-name descname"><span class="pre">update_cross_behavior_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_cross_behavior_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates and updates the cross-correlation between the ensemble timecourses and behavior data.</p>
+<p>This method computes the cross-correlation for each selected method (e.g., SVD, PCA, ICA, etc.) 
+between the ensemble timecourses and the behavior data, and then updates the plot widget 
+with the results. It handles the display by organizing the plots into a specified layout 
+based on the number of methods being compared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_widget</strong> (<em>MatplotlibWidget</em>) – The widget used to display the cross-correlation plots.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_cross_ens_stim">
+<span class="sig-name descname"><span class="pre">update_cross_ens_stim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_cross_ens_stim" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the plot of cross-correlation with stimulus data by initiating a parallel worker thread.</p>
+<p>This method retrieves the plot widget for displaying cross-correlation with stimuli, 
+and starts a worker thread to perform the cross-correlation update in parallel, 
+which is then rendered in the plot widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_cross_ens_stim_parallel">
+<span class="sig-name descname"><span class="pre">update_cross_ens_stim_parallel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_cross_ens_stim_parallel" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates and updates the cross-correlation between the ensemble timecourses and stimulus data.</p>
+<p>This method computes the cross-correlation for each selected method (e.g., SVD, PCA, ICA, etc.) 
+between the ensemble timecourses and the stimulus data, and then updates the plot widget 
+with the results. It handles the display by organizing the plots into a specified layout 
+based on the number of methods being compared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_widget</strong> (<em>MatplotlibWidget</em>) – The widget used to display the cross-correlation plots.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_edit_validators">
+<span class="sig-name descname"><span class="pre">update_edit_validators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lim_sup_x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lim_sup_y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_edit_validators" title="Link to this definition">¶</a></dt>
+<dd><p>Update the validators for bining and slicing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lim_sup_x</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum value possible for the x dimention, defaults to 10000000</p></li>
+<li><p><strong>lim_sup_y</strong> (<em>int</em><em>, </em><em>optional</em>) – Mavimum value possible for the y dimention, defaults to 10000000</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_ens_vis_coords">
+<span class="sig-name descname"><span class="pre">update_ens_vis_coords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_ens_vis_coords" title="Link to this definition">¶</a></dt>
+<dd><p>Shows the neurons maps in the ensembles visualizer and enables the visualizer buttons.</p>
+<p>This is a separated function to be executed also when the visualization options are updated
+and show the visualization with the new options in real time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_enscomp_options">
+<span class="sig-name descname"><span class="pre">update_enscomp_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">exp_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_enscomp_options" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the behavior or stimulation data into the <cite>Ensemble Compare</cite> tab.</p>
+<p>This function is executed when a dataset of behavior or stimulation is assigned.
+The data of this dataset is loaded in the corresponding field in the ensembles compare tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>exp_data</strong> (<em>string.</em>) – Kind of dataset, options are “behavior” and “stims”.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_ensemble_visualization">
+<span class="sig-name descname"><span class="pre">update_ensemble_visualization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_ensemble_visualization" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the visualization of the selected ensemble.</p>
+<p>This function shows the members of the ensemble, exclusive members and timepoints of
+activation of the selected ensemble in text boxes. If coordinates are provided, it also 
+loads the visualization of the coordinates and enables customization buttons
+If dFFo is provided it also plots the dFFo traces.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>int</em>) – Index of th eensamble to be shown, indexed at 1.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_ensvis_allbinary">
+<span class="sig-name descname"><span class="pre">update_ensvis_allbinary</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_ensvis_allbinary" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the binary activations of every neurons in every ensemble.</p>
+<p>This function creates a subplot for every ensemble and shows the activations of
+every neuron in every ensemble.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_ensvis_allcoords">
+<span class="sig-name descname"><span class="pre">update_ensvis_allcoords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_ensvis_allcoords" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the coordiantes of the neurons in every ensemble.</p>
+<p>This function creates a subplot for every ensemble and shows the neuron maps
+for every ensemble.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_ensvis_alldFFo">
+<span class="sig-name descname"><span class="pre">update_ensvis_alldFFo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_ensvis_alldFFo" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the dFFo of the neurons in every ensemble.</p>
+<p>This function creates a subplot for every ensemble and shows the dFFo traces for every
+neuron in every ensemble.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.update_ensvis_allens">
+<span class="sig-name descname"><span class="pre">update_ensvis_allens</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.update_ensvis_allens" title="Link to this definition">¶</a></dt>
+<dd><p>Plot the activations of every ensemble.</p>
+<p>This function creates figure with the timecourse of every ensemble identified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.validate_needed_data">
+<span class="sig-name descname"><span class="pre">validate_needed_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">needed_data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.validate_needed_data" title="Link to this definition">¶</a></dt>
+<dd><p>Validates that all required data for a given analysis are present in the current session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>needed_data</strong> (<em>list</em><em> of </em><em>str</em>) – A list of strings representing the names of the required attributes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if all required attributes are present, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+<p>This method checks whether the object has the necessary attributes as specified in the 
+<cite>needed_data</cite> list. If any required attribute is missing, it returns False, indicating 
+that the data is not valid. Otherwise, it returns True.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.varlabels_clear">
+<span class="sig-name descname"><span class="pre">varlabels_clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.varlabels_clear" title="Link to this definition">¶</a></dt>
+<dd><p>Clears the saved labels for the currently visualized dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p>Determines the label family based on the currently visualized dataset (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.currently_visualizing</span></code>) and removes 
+the corresponding entries from the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.varlabels</span></code> dictionary if they exist. This action clears all custom labels 
+previously assigned to the dataset.</p>
+<p>After clearing the labels, the function updates the view of the current dataset to reflect the removal of labels 
+and reinitializes the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.table_setlabels</span></code> widget to show empty label entries.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.varlabels_save">
+<span class="sig-name descname"><span class="pre">varlabels_save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.varlabels_save" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the labels entered by the user for the currently visualized dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+<p>Based on the current dataset selected (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.currently_visualizing</span></code>), this function assigns a label family, retrieves 
+the label values entered by the user in the second column of <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.table_setlabels</span></code>, and stores them in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.varlabels</span></code> 
+dictionary under the corresponding label family. If a label is missing for any row, the row index is used as the 
+default label.</p>
+<p>After saving, the function updates the view of the current dataset to reflect any changes and logs a message 
+to notify the user.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.varlabels_setup_tab">
+<span class="sig-name descname"><span class="pre">varlabels_setup_tab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows_cant</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.varlabels_setup_tab" title="Link to this definition">¶</a></dt>
+<dd><p>Sets up the table for labeling variables according to the currently visualized dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>rows_cant</strong> (<em>int</em>) – The number of rows to display in the table.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+<p>Based on the dataset currently selected for viewing (<code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.currently_visualizing</span></code>), this function configures the label 
+for the index column and initializes the label family. It sets the row count of <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.table_setlabels</span></code> to <cite>rows_cant</cite>, 
+populates the table with index values in the first column, and sets up editable label fields in the second column. 
+If labels have already been registered for the selected dataset type, these are pre-filled in the table; 
+otherwise, previous entries are cleared.</p>
+<p>The first column items are set as non-editable to prevent user modification of index values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.view_behavior">
+<span class="sig-name descname"><span class="pre">view_behavior</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.view_behavior" title="Link to this definition">¶</a></dt>
+<dd><p>Displays the data saved in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.behavior</span></code> variable.</p>
+<p>This function also runs update the status for editing the variable
+using <a class="reference internal" href="#main.MainWindow.set_able_edit_options" title="main.MainWindow.set_able_edit_options"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a> and updates validators
+using <a class="reference internal" href="#main.MainWindow.update_edit_validators" title="main.MainWindow.update_edit_validators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a>.
+This function also triggers the setup of the variable labels tab
+using <a class="reference internal" href="#main.MainWindow.varlabels_setup_tab" title="main.MainWindow.varlabels_setup_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.view_cells">
+<span class="sig-name descname"><span class="pre">view_cells</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.view_cells" title="Link to this definition">¶</a></dt>
+<dd><p>Displays the data saved in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.cells</span></code> variable.</p>
+<p>This function also runs update the status for editing the variable
+using <a class="reference internal" href="#main.MainWindow.set_able_edit_options" title="main.MainWindow.set_able_edit_options"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a> and updates validators
+using <a class="reference internal" href="#main.MainWindow.update_edit_validators" title="main.MainWindow.update_edit_validators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a>.
+This function also triggers the setup of the variable labels tab
+using <a class="reference internal" href="#main.MainWindow.varlabels_setup_tab" title="main.MainWindow.varlabels_setup_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.view_coordinates">
+<span class="sig-name descname"><span class="pre">view_coordinates</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.view_coordinates" title="Link to this definition">¶</a></dt>
+<dd><p>Displays the data saved in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.coordinates</span></code> variable.</p>
+<p>This function also runs update the status for editing the variable
+using <a class="reference internal" href="#main.MainWindow.set_able_edit_options" title="main.MainWindow.set_able_edit_options"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a> and updates validators
+using <a class="reference internal" href="#main.MainWindow.update_edit_validators" title="main.MainWindow.update_edit_validators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a>.
+This function also triggers the setup of the variable labels tab
+using <a class="reference internal" href="#main.MainWindow.varlabels_setup_tab" title="main.MainWindow.varlabels_setup_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.view_dFFo">
+<span class="sig-name descname"><span class="pre">view_dFFo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.view_dFFo" title="Link to this definition">¶</a></dt>
+<dd><p>Displays the data saved in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.dFFo</span></code> variable.</p>
+<p>This function also runs update the status for editing the variable
+using <a class="reference internal" href="#main.MainWindow.set_able_edit_options" title="main.MainWindow.set_able_edit_options"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a> and updates validators
+using <a class="reference internal" href="#main.MainWindow.update_edit_validators" title="main.MainWindow.update_edit_validators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a>.
+This function also triggers the setup of the variable labels tab
+using <a class="reference internal" href="#main.MainWindow.varlabels_setup_tab" title="main.MainWindow.varlabels_setup_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.view_neuronal_activity">
+<span class="sig-name descname"><span class="pre">view_neuronal_activity</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.view_neuronal_activity" title="Link to this definition">¶</a></dt>
+<dd><p>Displays the data saved in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.neuronal_activity</span></code> variable.</p>
+<p>This function also runs update the status for editing the variable
+using <a class="reference internal" href="#main.MainWindow.set_able_edit_options" title="main.MainWindow.set_able_edit_options"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a> and updates validators
+using <a class="reference internal" href="#main.MainWindow.update_edit_validators" title="main.MainWindow.update_edit_validators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a>.
+This function also triggers the setup of the variable labels tab
+using <a class="reference internal" href="#main.MainWindow.varlabels_setup_tab" title="main.MainWindow.varlabels_setup_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.view_stims">
+<span class="sig-name descname"><span class="pre">view_stims</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.view_stims" title="Link to this definition">¶</a></dt>
+<dd><p>Displays the data saved in the <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.stims</span></code> variable.</p>
+<p>This function also runs update the status for editing the variable
+using <a class="reference internal" href="#main.MainWindow.set_able_edit_options" title="main.MainWindow.set_able_edit_options"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a> and updates validators
+using <a class="reference internal" href="#main.MainWindow.update_edit_validators" title="main.MainWindow.update_edit_validators"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a>.
+This function also triggers the setup of the variable labels tab
+using <a class="reference internal" href="#main.MainWindow.varlabels_setup_tab" title="main.MainWindow.varlabels_setup_tab"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.vis_ensembles_ica">
+<span class="sig-name descname"><span class="pre">vis_ensembles_ica</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.vis_ensembles_ica" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the results of the ICA into the ensembles visualizer.</p>
+<p>This is done this way to use only one function to update the ensembles visualizer.
+The variable <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.ensemble_currently_shown</span></code> is used to set the algorithm to show.
+Then the global funtion <a class="reference internal" href="#main.MainWindow.update_analysis_results" title="main.MainWindow.update_analysis_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_analysis_results()</span></code></a> is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.vis_ensembles_pca">
+<span class="sig-name descname"><span class="pre">vis_ensembles_pca</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.vis_ensembles_pca" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the results of the PCA into the ensembles visualizer.</p>
+<p>This is done this way to use only one function to update the ensembles visualizer.
+The variable <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.ensemble_currently_shown</span></code> is used to set the algorithm to show.
+Then the global funtion <a class="reference internal" href="#main.MainWindow.update_analysis_results" title="main.MainWindow.update_analysis_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_analysis_results()</span></code></a> is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.vis_ensembles_sgc">
+<span class="sig-name descname"><span class="pre">vis_ensembles_sgc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.vis_ensembles_sgc" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the results of the SGC into the ensembles visualizer.</p>
+<p>This is done this way to use only one function to update the ensembles visualizer.
+The variable <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.ensemble_currently_shown</span></code> is used to set the algorithm to show.
+Then the global funtion <a class="reference internal" href="#main.MainWindow.update_analysis_results" title="main.MainWindow.update_analysis_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_analysis_results()</span></code></a> is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.vis_ensembles_svd">
+<span class="sig-name descname"><span class="pre">vis_ensembles_svd</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.vis_ensembles_svd" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the results of the SVD into the ensembles visualizer.</p>
+<p>This is done this way to use only one function to update the ensembles visualizer.
+The variable <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.ensemble_currently_shown</span></code> is used to set the algorithm to show.
+Then the global funtion <a class="reference internal" href="#main.MainWindow.update_analysis_results" title="main.MainWindow.update_analysis_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_analysis_results()</span></code></a> is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.vis_ensembles_x2p">
+<span class="sig-name descname"><span class="pre">vis_ensembles_x2p</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.vis_ensembles_x2p" title="Link to this definition">¶</a></dt>
+<dd><p>Loads the results of the X2P into the ensembles visualizer.</p>
+<p>This is done this way to use only one function to update the ensembles visualizer.
+The variable <code class="xref py py-attr docutils literal notranslate"><span class="pre">MainWindow.ensemble_currently_shown</span></code> is used to set the algorithm to show.
+Then the global funtion <a class="reference internal" href="#main.MainWindow.update_analysis_results" title="main.MainWindow.update_analysis_results"><code class="xref py py-meth docutils literal notranslate"><span class="pre">MainWindow.update_analysis_results()</span></code></a> is executed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="main.MainWindow.we_have_results">
+<span class="sig-name descname"><span class="pre">we_have_results</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.MainWindow.we_have_results" title="Link to this definition">¶</a></dt>
+<dd><p>Updates the UI for the ensembles compare and performance analysis given the available analysis results.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.WorkerRunnable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">WorkerRunnable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long_running_function</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#main.WorkerRunnable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QRunnable</span></code></p>
+<p>Runnable task to execute a long-running function in a separate thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>long_running_function</strong> (<em>callable</em>) – The function to be executed in the thread.</p></li>
+<li><p><strong>args</strong> (<em>tuple</em>) – Positional arguments to pass to the function.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments to pass to the function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>long_running_function</strong> (<em>callable</em>) – The function to execute in the thread.</p></li>
+<li><p><strong>args</strong> (<em>tuple</em>) – Positional arguments for the function.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict</em>) – Keyword arguments for the function.</p></li>
+<li><p><strong>signals</strong> (<a class="reference internal" href="#main.WorkerSignals" title="main.WorkerSignals"><em>WorkerSignals</em></a>) – Signals for communicating the result of the function execution.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="main.WorkerRunnable.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#main.WorkerRunnable.run" title="Link to this definition">¶</a></dt>
+<dd><p>Execute the long-running function with the provided arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Propagates any exception raised by the long-running function.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Emits the result of the function execution via the <cite>result_ready</cite> signal.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="main.WorkerSignals">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">main.</span></span><span class="sig-name descname"><span class="pre">WorkerSignals</span></span><a class="headerlink" href="#main.WorkerSignals" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>Signals used by the worker thread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>result_ready</strong> (<em>pyqtSignal</em><em>(</em><em>object</em><em>)</em>) – Signal emitted when the long-running function finishes execution and returns a result.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="main.WorkerSignals.result_ready">
+<span class="sig-name descname"><span class="pre">result_ready</span></span><a class="headerlink" href="#main.WorkerSignals.result_ready" title="Link to this definition">¶</a></dt>
+<dd><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name: str = …, revision: int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article>
@@ -284,8 +2046,143 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Code functions</a><ul>
+<li><a class="reference internal" href="#main.MainWindow"><code class="docutils literal notranslate"><span class="pre">MainWindow</span></code></a><ul>
+<li><a class="reference internal" href="#main.MainWindow.bin_matrix"><code class="docutils literal notranslate"><span class="pre">MainWindow.bin_matrix()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.browse_files"><code class="docutils literal notranslate"><span class="pre">MainWindow.browse_files()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.clear_behavior"><code class="docutils literal notranslate"><span class="pre">MainWindow.clear_behavior()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.clear_cells"><code class="docutils literal notranslate"><span class="pre">MainWindow.clear_cells()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.clear_coordinates"><code class="docutils literal notranslate"><span class="pre">MainWindow.clear_coordinates()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.clear_dFFo"><code class="docutils literal notranslate"><span class="pre">MainWindow.clear_dFFo()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.clear_neuronal_activity"><code class="docutils literal notranslate"><span class="pre">MainWindow.clear_neuronal_activity()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.clear_stims"><code class="docutils literal notranslate"><span class="pre">MainWindow.clear_stims()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.dict_to_matlab_struct"><code class="docutils literal notranslate"><span class="pre">MainWindow.dict_to_matlab_struct()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.edit_bin"><code class="docutils literal notranslate"><span class="pre">MainWindow.edit_bin()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.edit_transpose"><code class="docutils literal notranslate"><span class="pre">MainWindow.edit_transpose()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.edit_trimmatrix"><code class="docutils literal notranslate"><span class="pre">MainWindow.edit_trimmatrix()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.enscomp_get_color"><code class="docutils literal notranslate"><span class="pre">MainWindow.enscomp_get_color()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.enscomp_get_color_behavior"><code class="docutils literal notranslate"><span class="pre">MainWindow.enscomp_get_color_behavior()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.enscomp_get_color_stims"><code class="docutils literal notranslate"><span class="pre">MainWindow.enscomp_get_color_stims()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_get_elements_labels"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_get_elements_labels()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_get_simmatrix"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_get_simmatrix()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_similarity"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_similarity()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_similarity_update_combbox"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_similarity_update_combbox()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_tabchange"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_tabchange()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_update_combo_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_update_combo_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_update_ensembles"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_update_ensembles()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_update_map"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_update_map()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_update_opts"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_update_opts()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensembles_compare_update_timecourses"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensembles_compare_update_timecourses()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.ensvis_tabchange"><code class="docutils literal notranslate"><span class="pre">MainWindow.ensvis_tabchange()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.get_data_to_save"><code class="docutils literal notranslate"><span class="pre">MainWindow.get_data_to_save()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.initialize_ensemble_view"><code class="docutils literal notranslate"><span class="pre">MainWindow.initialize_ensemble_view()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.item_clicked"><code class="docutils literal notranslate"><span class="pre">MainWindow.item_clicked()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.load_defaults_ica"><code class="docutils literal notranslate"><span class="pre">MainWindow.load_defaults_ica()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.load_defaults_pca"><code class="docutils literal notranslate"><span class="pre">MainWindow.load_defaults_pca()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.load_defaults_sgc"><code class="docutils literal notranslate"><span class="pre">MainWindow.load_defaults_sgc()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.load_defaults_svd"><code class="docutils literal notranslate"><span class="pre">MainWindow.load_defaults_svd()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.load_defaults_x2p"><code class="docutils literal notranslate"><span class="pre">MainWindow.load_defaults_x2p()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.main_tabs_change"><code class="docutils literal notranslate"><span class="pre">MainWindow.main_tabs_change()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.performance_check_change"><code class="docutils literal notranslate"><span class="pre">MainWindow.performance_check_change()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.performance_compare"><code class="docutils literal notranslate"><span class="pre">MainWindow.performance_compare()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.performance_tabchange"><code class="docutils literal notranslate"><span class="pre">MainWindow.performance_tabchange()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.plot_ICA_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.plot_ICA_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.plot_PCA_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.plot_PCA_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.plot_SVD_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.plot_SVD_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.plot_X2P_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.plot_X2P_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.plot_sgc_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.plot_sgc_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.reset_gui"><code class="docutils literal notranslate"><span class="pre">MainWindow.reset_gui()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_ICA"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_ICA()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_PCA"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_PCA()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_ica_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_ica_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_ica_parallel_end"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_ica_parallel_end()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_pca_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_pca_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_pca_parallel_end"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_pca_parallel_end()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_sgc"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_sgc()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_sgc_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_sgc_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_sgc_parallel_end"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_sgc_parallel_end()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_svd"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_svd()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_svd_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_svd_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_svd_parallel_end"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_svd_parallel_end()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_x2p"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_x2p()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_x2p_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_x2p_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.run_x2p_parallel_end"><code class="docutils literal notranslate"><span class="pre">MainWindow.run_x2p_parallel_end()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.save_data_to_hdf5"><code class="docutils literal notranslate"><span class="pre">MainWindow.save_data_to_hdf5()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.save_results_hdf5"><code class="docutils literal notranslate"><span class="pre">MainWindow.save_results_hdf5()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.save_results_mat"><code class="docutils literal notranslate"><span class="pre">MainWindow.save_results_mat()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.save_results_pkl"><code class="docutils literal notranslate"><span class="pre">MainWindow.save_results_pkl()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_able_edit_options"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_able_edit_options()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_behavior"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_behavior()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_cells"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_cells()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_coordinates"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_coordinates()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_dFFo"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_dFFo()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_neuronal_activity"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_neuronal_activity()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.set_stims"><code class="docutils literal notranslate"><span class="pre">MainWindow.set_stims()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_analysis_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_analysis_results()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_console_log"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_console_log()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_corr_behavior"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_corr_behavior()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_corr_behavior_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_corr_behavior_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_corr_stim"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_corr_stim()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_corr_stim_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_corr_stim_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_correlation_cells"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_correlation_cells()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_correlation_cells_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_correlation_cells_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_cross_behavior"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_cross_behavior()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_cross_behavior_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_cross_behavior_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_cross_ens_stim"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_cross_ens_stim()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_cross_ens_stim_parallel"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_cross_ens_stim_parallel()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_edit_validators"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_edit_validators()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_ens_vis_coords"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_ens_vis_coords()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_enscomp_options"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_enscomp_options()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_ensemble_visualization"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_ensemble_visualization()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_ensvis_allbinary"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_ensvis_allbinary()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_ensvis_allcoords"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_ensvis_allcoords()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_ensvis_alldFFo"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_ensvis_alldFFo()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.update_ensvis_allens"><code class="docutils literal notranslate"><span class="pre">MainWindow.update_ensvis_allens()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.validate_needed_data"><code class="docutils literal notranslate"><span class="pre">MainWindow.validate_needed_data()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.varlabels_clear"><code class="docutils literal notranslate"><span class="pre">MainWindow.varlabels_clear()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.varlabels_save"><code class="docutils literal notranslate"><span class="pre">MainWindow.varlabels_save()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.varlabels_setup_tab"><code class="docutils literal notranslate"><span class="pre">MainWindow.varlabels_setup_tab()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.view_behavior"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_behavior()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.view_cells"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_cells()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.view_coordinates"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_coordinates()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.view_dFFo"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_dFFo()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.view_neuronal_activity"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_neuronal_activity()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.view_stims"><code class="docutils literal notranslate"><span class="pre">MainWindow.view_stims()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.vis_ensembles_ica"><code class="docutils literal notranslate"><span class="pre">MainWindow.vis_ensembles_ica()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.vis_ensembles_pca"><code class="docutils literal notranslate"><span class="pre">MainWindow.vis_ensembles_pca()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.vis_ensembles_sgc"><code class="docutils literal notranslate"><span class="pre">MainWindow.vis_ensembles_sgc()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.vis_ensembles_svd"><code class="docutils literal notranslate"><span class="pre">MainWindow.vis_ensembles_svd()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.vis_ensembles_x2p"><code class="docutils literal notranslate"><span class="pre">MainWindow.vis_ensembles_x2p()</span></code></a></li>
+<li><a class="reference internal" href="#main.MainWindow.we_have_results"><code class="docutils literal notranslate"><span class="pre">MainWindow.we_have_results()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#main.WorkerRunnable"><code class="docutils literal notranslate"><span class="pre">WorkerRunnable</span></code></a><ul>
+<li><a class="reference internal" href="#main.WorkerRunnable.run"><code class="docutils literal notranslate"><span class="pre">WorkerRunnable.run()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#main.WorkerSignals"><code class="docutils literal notranslate"><span class="pre">WorkerSignals</span></code></a><ul>
+<li><a class="reference internal" href="#main.WorkerSignals.result_ready"><code class="docutils literal notranslate"><span class="pre">WorkerSignals.result_ready</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
