@@ -1,101 +1,81 @@
 Usage
 =====
 
-System requirements
--------------------
+A general workflow using Ensembles GUI would look like this:
 
-The GUI is very low resource demanding. It is advisable to run it in a screen at least 1170 x 660 pixels to see all the buttons clearly. For the system requirements it is recommended a modern CPU and at least 16Gb of RAM. This for agile tuning and execution of the analysis.
+1. Execute EnsemblesGUI
+-----------------------
 
-This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI an the included analysis.
+    Once you have Ensembles GUI installed in your system, run `python main.py`
 
-Needed dependencies
-~~~~~~~~~~~~~~~~~~~
+2. Load Your Data
+-----------------
 
-The general requirements are MATLAB and Python. The limiting factor here is the communication between those two. Because Python is easier to install, I recommend installing the most recent version of python that your MATLAB installation can communicate with. Check `the MATLAB site <https://www.mathworks.com/support/requirements/python-compatibility.html>`_ for the versions of Python that are compatible with MATLAB.
+#. Navigate to the "Load file" tab.
+#. Click "Open file" and select your data file.
+#. Use the "File structure preview" panel to locate the variable you wish to load.
+#. In the "Set the selected variable as" panel, select the variable name to assign it.
+#. Preview the data in the "Input data preview" panel.
+#. If needed, modify the loaded variable using the "Edit variable" panel.
+#. Optionally, assign labels to the variable's elements.
+#. Repeat this process until all necessary variables are loaded.
 
-Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.
+3. Run Analyses
+---------------
 
-.. seealso::
-    Python 3.8 is compatible with MATLAB from R2020b to R2023a.
-    Python 3.9 is compatible with MATLAB from R2021b to R2024b.
+#. Open any analysis tab, such as SVD, PCA, ICA, Xsembles2P, or SGC.
+#. Ensure the "Input data" panel shows "Loaded" for the required data. If not, return to step 2.
+#. Use the "Load default values" button to explore the analysis or adjust parameters as needed.
+#. Click "Run analysis" to begin.
+#. Monitor the "Console log" panel and the terminal for additional information.
+#. Review the plots and adjust parameters as needed. Refer to the cited papers in each analysis tab for further understanding.
+#. Repeat this process for each analysis.
 
-.. tip::
-    Use at least Python 3.8. If you are using a MATLAB version older than R2020b consider upgrading.
+4. Visualize Results
+--------------------
 
-Needed MATLAB modules
-~~~~~~~~~~~~~~~~~~~~~
+#. Go to the "Ensembles visualizer" tab.
+#. Click on the name of the analysis you wish to review. Only completed analyses will be clickable.
+#. Explore the spatial distributions of neurons and the dFFo signal (if available).
+#. Use the slider in the "General" tab to select ensembles for visualization.
+#. Examine all visualizations, including the spatial distributions of recorded cells, their activations, and identified ensembles.
 
-- Parallel Computing Toolbox
+5. Compare Results
+------------------
 
-Installation
-------------
+#. Open the "Ensemble compare" tab.
+#. Use the "Similarities in members" or "Similarities in timecourses" tabs to identify similar results across algorithms.
+#. Adjust the sliders on the left to select ensembles for each algorithm.
+#. Optionally, filter by stimuli or behavior.
+#. Explore the "Space map" and "Time profiles" tabs to compare selected ensembles.
+#. Customize visualizations using the "Visualization options" panel.
 
-Clone or download the repo
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+6. Evaluate Algorithm Performance
+---------------------------------
 
-Use git to clone the repo or download it from the webpage. As stated in their webpage "Git  is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency."[#]_. If you don't have it already, install git in your computer, check the available installers at `the official download site <https://git-scm.com/downloads>`_.
+#. Go to the "Performance Comparison" tab.
+#. If stimuli or behavior data are loaded, view performance comparisons. Missing data will be indicated in the plots.
+#. Check the "Correlation between cells" tab to view correlations within ensembles.
+#. Select the most suitable analysis or adjust parameters as needed.
 
-Once installed git, run the following command and then change to the directory of the repository.
+7. Save Results
+---------------
 
-.. code-block:: console
+#. Open the "Save" tab.
+#. Choose the data to save:
+    - Minimal results used by Ensembles GUI: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.
+    - Full results of every analysis: Includes additional data used by the original algorithms.
+#. Select the desired export format.
 
-    git clone https://github.com/rivelco/EnsemblesGUI.git
-    cd EnsemblesGUI
+Additional Tips
+---------------
 
-The recommended installation method relies on Conda to manage your Python environments. I highly recommend using conda for this purpose. Also, if you have conda you only need to install the environment file to get the necessary dependencies. If you don't want to use Conda, you have to install the dependencies manually using pip.
+- Hover over any option or button to view tooltips with detailed explanations.
 
-Installation using conda
-~~~~~~~~~~~~~~~~~~~~~~~~
- 
-To install using this method simple open your conda terminal and type this commands.
+- Save plots using the "Save" icon below each figure.
 
-This commands creates a conda environment called `ensgui` and then activates it.
+- Interact with visualizations by moving or zooming with the cursor.
 
-.. code-block:: console
+- Plots will display helpful messages if additional data or analyses are required.
 
-    conda env create -f environment.yml
-    conda activate ensgui
-
-Manual installation using pip
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-If you want to install the needed modules one by one you can install your preferred python version (recommended 3.8 or above) and run:
-
-.. code-block:: console
-
-    pip install pyqt6
-    pip install numpy
-    pip install matplotlib
-    pip install h5py
-    pip install scikit-learn
-    pip install scipy
-
-Install the MATLAB engine for Python
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To run the algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path, to something like this:
-
-.. code-block:: console
-
-    cd C:\Program Files\MATLAB\R2023a\extern\engines\python
-
-The idea is to locate the engine for Python.
-
-Once you're there and with your correct python environment activated then simply run:
-
-.. code-block:: console
-
-    python -m pip install .
-
-It is possible that you need to run that command from an elevated terminal.
-
-Run the GUI
------------
-
-To run the GUI you now just need to call main.py from your configured python environment. Make sure you are in the path where you downloaded the repo.
-
-.. code-block:: console
-
-    python main.py
-
-.. [#] `<https://git-scm.com/>`_.
+- Check the "Console log" panel and Python console for additional information during analysis.

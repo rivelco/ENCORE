@@ -3,12 +3,13 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="EnsemblesGUI documentation" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Code functions" href="codeFunctions.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-        <title>Usage - EnsemblesGUI 0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+        <title>Usage - EnsemblesGUI 1.0-alpha documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
     
@@ -166,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">EnsemblesGUI 0.1 documentation</div></a>
+      <a href="index.html"><div class="brand">EnsemblesGUI 1.0-alpha documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">EnsemblesGUI 0.1 documentation</span>
+  <span class="sidebar-brand-text">EnsemblesGUI 1.0-alpha documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -200,7 +201,9 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="codeFunctions.html">Code functions</a></li>
 </ul>
 
 </div>
@@ -243,90 +246,92 @@
         <article role="main" id="furo-main-content">
           <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h1>
-<section id="system-requirements">
-<h2>System requirements<a class="headerlink" href="#system-requirements" title="Permalink to this heading">¶</a></h2>
-<p>The GUI is very low resource demanding. It is advisable to run it in a screen at least 1170 x 660 pixels to see all the buttons clearly. For the system requirements it is recommended a modern CPU and at least 16Gb of RAM. This for agile tuning and execution of the analysis.</p>
-<p>This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI an the included analysis.</p>
-<section id="needed-dependencies">
-<h3>Needed dependencies<a class="headerlink" href="#needed-dependencies" title="Permalink to this heading">¶</a></h3>
-<p>The general requirements are MATLAB and Python. The limiting factor here is the communication between those two. Because Python is easier to install, I recommend installing the most recent version of python that your MATLAB installation can communicate with. Check <a class="reference external" href="https://www.mathworks.com/support/requirements/python-compatibility.html">the MATLAB site</a> for the versions of Python that are compatible with MATLAB.</p>
-<p>Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Python 3.8 is compatible with MATLAB from R2020b to R2023a.
-Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
-</div>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>Use at least Python 3.8. If you are using a MATLAB version older than R2020b consider upgrading.</p>
-</div>
+<p>A general workflow using Ensembles GUI would look like this:</p>
+<section id="execute-ensemblesgui">
+<h2>1. Execute EnsemblesGUI<a class="headerlink" href="#execute-ensemblesgui" title="Permalink to this heading">¶</a></h2>
+<blockquote>
+<div><p>Once you have Ensembles GUI installed in your system, run <cite>python main.py</cite></p>
+</div></blockquote>
 </section>
-<section id="needed-matlab-modules">
-<h3>Needed MATLAB modules<a class="headerlink" href="#needed-matlab-modules" title="Permalink to this heading">¶</a></h3>
-<ul class="simple">
-<li><p>Parallel Computing Toolbox</p></li>
+<section id="load-your-data">
+<h2>2. Load Your Data<a class="headerlink" href="#load-your-data" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Navigate to the “Load file” tab.</p></li>
+<li><p>Click “Open file” and select your data file.</p></li>
+<li><p>Use the “File structure preview” panel to locate the variable you wish to load.</p></li>
+<li><p>In the “Set the selected variable as” panel, select the variable name to assign it.</p></li>
+<li><p>Preview the data in the “Input data preview” panel.</p></li>
+<li><p>If needed, modify the loaded variable using the “Edit variable” panel.</p></li>
+<li><p>Optionally, assign labels to the variable’s elements.</p></li>
+<li><p>Repeat this process until all necessary variables are loaded.</p></li>
+</ol>
+</section>
+<section id="run-analyses">
+<h2>3. Run Analyses<a class="headerlink" href="#run-analyses" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Open any analysis tab, such as SVD, PCA, ICA, Xsembles2P, or SGC.</p></li>
+<li><p>Ensure the “Input data” panel shows “Loaded” for the required data. If not, return to step 2.</p></li>
+<li><p>Use the “Load default values” button to explore the analysis or adjust parameters as needed.</p></li>
+<li><p>Click “Run analysis” to begin.</p></li>
+<li><p>Monitor the “Console log” panel and the terminal for additional information.</p></li>
+<li><p>Review the plots and adjust parameters as needed. Refer to the cited papers in each analysis tab for further understanding.</p></li>
+<li><p>Repeat this process for each analysis.</p></li>
+</ol>
+</section>
+<section id="visualize-results">
+<h2>4. Visualize Results<a class="headerlink" href="#visualize-results" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Go to the “Ensembles visualizer” tab.</p></li>
+<li><p>Click on the name of the analysis you wish to review. Only completed analyses will be clickable.</p></li>
+<li><p>Explore the spatial distributions of neurons and the dFFo signal (if available).</p></li>
+<li><p>Use the slider in the “General” tab to select ensembles for visualization.</p></li>
+<li><p>Examine all visualizations, including the spatial distributions of recorded cells, their activations, and identified ensembles.</p></li>
+</ol>
+</section>
+<section id="compare-results">
+<h2>5. Compare Results<a class="headerlink" href="#compare-results" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Open the “Ensemble compare” tab.</p></li>
+<li><p>Use the “Similarities in members” or “Similarities in timecourses” tabs to identify similar results across algorithms.</p></li>
+<li><p>Adjust the sliders on the left to select ensembles for each algorithm.</p></li>
+<li><p>Optionally, filter by stimuli or behavior.</p></li>
+<li><p>Explore the “Space map” and “Time profiles” tabs to compare selected ensembles.</p></li>
+<li><p>Customize visualizations using the “Visualization options” panel.</p></li>
+</ol>
+</section>
+<section id="evaluate-algorithm-performance">
+<h2>6. Evaluate Algorithm Performance<a class="headerlink" href="#evaluate-algorithm-performance" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Go to the “Performance Comparison” tab.</p></li>
+<li><p>If stimuli or behavior data are loaded, view performance comparisons. Missing data will be indicated in the plots.</p></li>
+<li><p>Check the “Correlation between cells” tab to view correlations within ensembles.</p></li>
+<li><p>Select the most suitable analysis or adjust parameters as needed.</p></li>
+</ol>
+</section>
+<section id="save-results">
+<h2>7. Save Results<a class="headerlink" href="#save-results" title="Permalink to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Open the “Save” tab.</p></li>
+<li><dl class="simple">
+<dt>Choose the data to save:</dt><dd><ul class="simple">
+<li><p>Minimal results used by Ensembles GUI: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.</p></li>
+<li><p>Full results of every analysis: Includes additional data used by the original algorithms.</p></li>
 </ul>
+</dd>
+</dl>
+</li>
+<li><p>Select the desired export format.</p></li>
+</ol>
 </section>
-</section>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h2>
-<section id="clone-or-download-the-repo">
-<h3>Clone or download the repo<a class="headerlink" href="#clone-or-download-the-repo" title="Permalink to this heading">¶</a></h3>
-<p>Use git to clone the repo or download it from the webpage. As stated in their webpage “Git  is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.”<a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. If you don’t have it already, install git in your computer, check the available installers at <a class="reference external" href="https://git-scm.com/downloads">the official download site</a>.</p>
-<p>Once installed git, run the following command and then change to the directory of the repository.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/rivelco/EnsemblesGUI.git</span>
-<span class="go">cd EnsemblesGUI</span>
-</pre></div>
-</div>
-<p>The recommended installation method relies on Conda to manage your Python environments. I highly recommend using conda for this purpose. Also, if you have conda you only need to install the environment file to get the necessary dependencies. If you don’t want to use Conda, you have to install the dependencies manually using pip.</p>
-</section>
-<section id="installation-using-conda">
-<h3>Installation using conda<a class="headerlink" href="#installation-using-conda" title="Permalink to this heading">¶</a></h3>
-<p>To install using this method simple open your conda terminal and type this commands.</p>
-<p>This commands creates a conda environment called <cite>ensgui</cite> and then activates it.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda env create -f environment.yml</span>
-<span class="go">conda activate ensgui</span>
-</pre></div>
-</div>
-</section>
-<section id="manual-installation-using-pip">
-<h3>Manual installation using pip<a class="headerlink" href="#manual-installation-using-pip" title="Permalink to this heading">¶</a></h3>
-<p>If you want to install the needed modules one by one you can install your preferred python version (recommended 3.8 or above) and run:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install pyqt6</span>
-<span class="go">pip install numpy</span>
-<span class="go">pip install matplotlib</span>
-<span class="go">pip install h5py</span>
-<span class="go">pip install scikit-learn</span>
-<span class="go">pip install scipy</span>
-</pre></div>
-</div>
-</section>
-<section id="install-the-matlab-engine-for-python">
-<h3>Install the MATLAB engine for Python<a class="headerlink" href="#install-the-matlab-engine-for-python" title="Permalink to this heading">¶</a></h3>
-<p>To run the algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path, to something like this:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd C:\Program Files\MATLAB\R2023a\extern\engines\python</span>
-</pre></div>
-</div>
-<p>The idea is to locate the engine for Python.</p>
-<p>Once you’re there and with your correct python environment activated then simply run:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install .</span>
-</pre></div>
-</div>
-<p>It is possible that you need to run that command from an elevated terminal.</p>
-</section>
-</section>
-<section id="run-the-gui">
-<h2>Run the GUI<a class="headerlink" href="#run-the-gui" title="Permalink to this heading">¶</a></h2>
-<p>To run the GUI you now just need to call main.py from your configured python environment. Make sure you are in the path where you downloaded the repo.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python main.py</span>
-</pre></div>
-</div>
-<aside class="footnote-list brackets">
-<aside class="footnote brackets" id="id2" role="doc-footnote">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
-<p><a class="reference external" href="https://git-scm.com/">https://git-scm.com/</a>.</p>
-</aside>
-</aside>
+<section id="additional-tips">
+<h2>Additional Tips<a class="headerlink" href="#additional-tips" title="Permalink to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Hover over any option or button to view tooltips with detailed explanations.</p></li>
+<li><p>Save plots using the “Save” icon below each figure.</p></li>
+<li><p>Interact with visualizations by moving or zooming with the cursor.</p></li>
+<li><p>Plots will display helpful messages if additional data or analyses are required.</p></li>
+<li><p>Check the “Console log” panel and Python console for additional information during analysis.</p></li>
+</ul>
 </section>
 </section>
 
@@ -335,15 +340,23 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
       <footer>
         
         <div class="related-pages">
-          
-          <a class="prev-page" href="index.html">
+          <a class="next-page" href="codeFunctions.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Code functions</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="installation.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Home</div>
+                <div class="title">Installation</div>
                 
               </div>
             </a>
@@ -378,19 +391,14 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Usage</a><ul>
-<li><a class="reference internal" href="#system-requirements">System requirements</a><ul>
-<li><a class="reference internal" href="#needed-dependencies">Needed dependencies</a></li>
-<li><a class="reference internal" href="#needed-matlab-modules">Needed MATLAB modules</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#installation">Installation</a><ul>
-<li><a class="reference internal" href="#clone-or-download-the-repo">Clone or download the repo</a></li>
-<li><a class="reference internal" href="#installation-using-conda">Installation using conda</a></li>
-<li><a class="reference internal" href="#manual-installation-using-pip">Manual installation using pip</a></li>
-<li><a class="reference internal" href="#install-the-matlab-engine-for-python">Install the MATLAB engine for Python</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#run-the-gui">Run the GUI</a></li>
+<li><a class="reference internal" href="#execute-ensemblesgui">1. Execute EnsemblesGUI</a></li>
+<li><a class="reference internal" href="#load-your-data">2. Load Your Data</a></li>
+<li><a class="reference internal" href="#run-analyses">3. Run Analyses</a></li>
+<li><a class="reference internal" href="#visualize-results">4. Visualize Results</a></li>
+<li><a class="reference internal" href="#compare-results">5. Compare Results</a></li>
+<li><a class="reference internal" href="#evaluate-algorithm-performance">6. Evaluate Algorithm Performance</a></li>
+<li><a class="reference internal" href="#save-results">7. Save Results</a></li>
+<li><a class="reference internal" href="#additional-tips">Additional Tips</a></li>
 </ul>
 </li>
 </ul>
@@ -402,9 +410,11 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=e031e9a9"></script>
+</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=c95b91dc"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
     </body>
 </html>

@@ -1,13 +1,13 @@
 <!doctype html>
 <html class="no-js" lang="en" data-content_root="">
-  <head>
-<meta charset="utf-8"/>
+  <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="#" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Usage" href="usage.html" /><link rel="prev" title="EnsemblesGUI documentation" href="index.html" />
 
     <!-- Generated with Sphinx 7.1.2 and Furo 2024.08.06 -->
-<meta name="robots" content="noindex" />
-<title>Search - EnsemblesGUI 1.0-alpha documentation</title><link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+        <title>Installation - EnsemblesGUI 1.0-alpha documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -179,7 +179,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -193,15 +193,15 @@
   
   <span class="sidebar-brand-text">EnsemblesGUI 1.0-alpha documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="#" role="search">
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<ul class="current">
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="codeFunctions.html">Code functions</a></li>
 </ul>
@@ -223,7 +223,13 @@
           <span>Back to top</span>
         </a>
         <div class="content-icon-container">
-          <div class="theme-toggle-container theme-toggle-content">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/installation.rst.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
             <button class="theme-toggle">
               <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
               <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
@@ -232,31 +238,134 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          
-<noscript>
-<div class="admonition error">
-  <p class="admonition-title">Error</p>
-  <p>
-    Please activate JavaScript to enable the search functionality.
-  </p>
+          <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
+<section id="system-requirements">
+<h2>System requirements<a class="headerlink" href="#system-requirements" title="Permalink to this heading">¶</a></h2>
+<p>The GUI is very low resource demanding. It is advisable to run it in a screen at least 1170 x 660 pixels to see all the buttons clearly. Full HD screens (1920 x 1080) or above are recommended. For the system requirements it is recommended a modern CPU and at least 16Gb of RAM. This for agile tuning and execution of the analysis.</p>
+<p>This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI and the included analysis.</p>
+<section id="needed-dependencies">
+<h3>Needed dependencies<a class="headerlink" href="#needed-dependencies" title="Permalink to this heading">¶</a></h3>
+<p>The general requirements are MATLAB and Python. The limiting factor here is the communication between those two. Because Python is easier to install, I recommend installing the most recent version of python that your MATLAB installation can communicate with. Check <a class="reference external" href="https://www.mathworks.com/support/requirements/python-compatibility.html">the MATLAB site</a> for the versions of Python that are compatible with MATLAB.</p>
+<p>Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Python 3.8 is compatible with MATLAB from R2020b to R2023a.n
+Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
 </div>
-</noscript>
-
-<div id="search-results"></div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use at least Python 3.8. If you are using a MATLAB version older than R2020b consider upgrading.</p>
+</div>
+</section>
+<section id="needed-matlab-modules">
+<h3>Needed MATLAB modules<a class="headerlink" href="#needed-matlab-modules" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Parallel Computing Toolbox</p></li>
+</ul>
+</section>
+</section>
+<section id="installation-of-the-python-environment">
+<h2>Installation of the python environment<a class="headerlink" href="#installation-of-the-python-environment" title="Permalink to this heading">¶</a></h2>
+<section id="clone-or-download-the-repo">
+<h3>1. Clone or download the repo<a class="headerlink" href="#clone-or-download-the-repo" title="Permalink to this heading">¶</a></h3>
+<p>Use git to clone the repo or download it from the website. As stated in their webpage “Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.”<a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. If you don’t have it already, install git in your computer, check the available installers at <a class="reference external" href="https://git-scm.com/downloads">the official download site</a>.</p>
+<p>Once installed git, run the following command and then change to the directory of the repository.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/rivelco/EnsemblesGUI.git</span>
+<span class="go">cd EnsemblesGUI</span>
+</pre></div>
+</div>
+<p>If you do not want to use the git command, you can download the repository by going to the repository <a class="reference external" href="https://github.com/rivelco/EnsemblesGUI">https://github.com/rivelco/EnsemblesGUI</a> and using the Download button:</p>
+<video width="600" controls>
+    <source src="_static/Installation_download.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+</video><p>This will download the repository as a compressed zip file. Uncompress the file to extract the folder.</p>
+<p>The recommended installation method relies on <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/index.html">Conda</a> to manage your Python environments. I highly recommend using Conda for this purpose. Also, if you have Conda you only need to install the environment file to get the necessary dependencies. If you don’t want to use Conda, you have to install the dependencies manually using pip.</p>
+</section>
+<section id="a-installation-using-conda">
+<h3>2.A Installation using conda<a class="headerlink" href="#a-installation-using-conda" title="Permalink to this heading">¶</a></h3>
+<p>To install using this method simple open your conda terminal, go to the EnsemblesGUI folder and type this commands.</p>
+<p>This commands creates a Conda environment called <cite>ensgui</cite> and then activates it.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda env create -f environment.yml</span>
+<span class="go">conda activate ensgui</span>
+</pre></div>
+</div>
+</section>
+<section id="b-manual-installation-using-pip">
+<h3>2.B Manual installation using pip<a class="headerlink" href="#b-manual-installation-using-pip" title="Permalink to this heading">¶</a></h3>
+<p>If you want to install the needed modules one by one you can install your preferred python version (recommended 3.8 or above) and run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install pyqt6</span>
+<span class="go">pip install numpy</span>
+<span class="go">pip install matplotlib</span>
+<span class="go">pip install h5py</span>
+<span class="go">pip install scikit-learn</span>
+<span class="go">pip install sphinx-copybutton</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="installation-of-the-matlab-engine-for-python">
+<h2>Installation of the MATLAB engine for Python<a class="headerlink" href="#installation-of-the-matlab-engine-for-python" title="Permalink to this heading">¶</a></h2>
+<p>To run the analysis algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path. The installation path in Windows usually looks something like this:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd C:\Program Files\MATLAB\R2023a\extern\engines\python</span>
+</pre></div>
+</div>
+<p>The idea is to locate the engine for Python. Notice in the example above that the MATLAB installation that will be used is the R2023a, you can chose the version that you prefer, just consider the compatibility with the current python version.</p>
+<p>Once you’re there and with your correct python environment activated then simply run:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python -m pip install .</span>
+</pre></div>
+</div>
+<p>It is possible that you need to run that command from an elevated terminal.</p>
+</section>
+<section id="run-the-gui">
+<h2>Run the GUI<a class="headerlink" href="#run-the-gui" title="Permalink to this heading">¶</a></h2>
+<p>To run the GUI you now just need to call main.py from your configured python environment. Make sure you are in the path where you downloaded the repo.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python main.py</span>
+</pre></div>
+</div>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading">¶</a></h2>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><a class="reference external" href="https://git-scm.com/">https://git-scm.com/</a>.</p>
+</aside>
+</aside>
+</section>
+</section>
 
         </article>
       </div>
       <footer>
         
         <div class="related-pages">
-          
-          
+          <a class="next-page" href="usage.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Usage</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Home</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -275,8 +384,40 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Installation</a><ul>
+<li><a class="reference internal" href="#system-requirements">System requirements</a><ul>
+<li><a class="reference internal" href="#needed-dependencies">Needed dependencies</a></li>
+<li><a class="reference internal" href="#needed-matlab-modules">Needed MATLAB modules</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-of-the-python-environment">Installation of the python environment</a><ul>
+<li><a class="reference internal" href="#clone-or-download-the-repo">1. Clone or download the repo</a></li>
+<li><a class="reference internal" href="#a-installation-using-conda">2.A Installation using conda</a></li>
+<li><a class="reference internal" href="#b-manual-installation-using-pip">2.B Manual installation using pip</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#installation-of-the-matlab-engine-for-python">Installation of the MATLAB engine for Python</a></li>
+<li><a class="reference internal" href="#run-the-gui">Run the GUI</a></li>
+<li><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
@@ -287,8 +428,5 @@
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="_static/copybutton.js?v=f281be69"></script>
-    
-<script src="_static/searchtools.js"></script>
-<script src="_static/language_data.js"></script>
-<script src="searchindex.js"></script></body>
+    </body>
 </html>
