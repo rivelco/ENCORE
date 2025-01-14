@@ -3,3 +3,4 @@ sphinx-copybutton==0.5.2
 h5py
 matplotlib
 numpy
+scikit-learn
