@@ -28,7 +28,7 @@ from gui.MatplotlibWidget import MatplotlibWidget
 
 import matplotlib.pyplot as plt
 
-#import matlab.engine
+import matlab.engine
 
 from pprint import pprint
 

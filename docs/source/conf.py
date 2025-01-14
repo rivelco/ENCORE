@@ -25,6 +25,9 @@ extensions = [
     'sphinx_copybutton',
 ]
 
+# Mock MATLAB during doc build
+autodoc_mock_imports = ["matlab", "matlab.engine"]
+
 templates_path = ['_templates']
 exclude_patterns = []
 
