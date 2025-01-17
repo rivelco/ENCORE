@@ -26,6 +26,7 @@ Needed MATLAB modules
 ~~~~~~~~~~~~~~~~~~~~~
 
 - Parallel Computing Toolbox
+- Statistics and Machine Learning Toolbox
 
 Installation of the python environment
 --------------------------------------
@@ -70,6 +71,15 @@ This commands creates a Conda environment called `ensgui` and then activates it.
 2.B Manual installation using pip
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+You can install the modules needed for EnsemblesGUI manually. It's still recommended that you do this using conda or some other environment manager. If you're using conda type:
+
+.. code-block:: console
+
+    conda create -n ensgui python=3.10
+    conda activate ensgui
+
+The above command will create a new environment called `ensgui` and with python 3.10 installed. You can choose the name of the environment replacing `ensgui` with the name you prefer. After the environment is created it must be activated.
+
 If you want to install the needed modules one by one you can install your preferred python version (recommended 3.8 or above) and run:
 
 .. code-block:: console
@@ -79,7 +89,6 @@ If you want to install the needed modules one by one you can install your prefer
     pip install matplotlib
     pip install h5py
     pip install scikit-learn
-    pip install sphinx-copybutton
 
 Installation of the MATLAB engine for Python
 --------------------------------------------
