@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
 project = 'EnsemblesGUI'
-copyright = '2024, rivelco'
+copyright = '2025, rivelco'
 author = 'rivelco'
 release = '1.0-alpha'
 
@@ -38,3 +38,18 @@ html_static_path = ['_static']
 
 html_theme = 'furo'
 html_static_path = ['_static']
+
+html_theme_options = {
+    "footer_icons": [
+        {
+            "name": "GitHub",
+            "url": "https://www.kavlifoundation.org/",
+            "html": """
+                <small>
+                    This project is funded by The Kavli Foundation.
+                </small>
+            """,
+            "class": "",
+        },
+    ],
+}
