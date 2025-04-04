@@ -10,6 +10,7 @@ from scipy.spatial.distance import pdist, squareform
 import time
 from datetime import datetime
 import pickle
+import json
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
@@ -22,6 +23,8 @@ from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
 
 import utils.metrics as metrics
+import utils.parameters_validators as parameters_validators
+import utils.data_converters as converters
 from utils.text_formatting import format_nums_to_string
 
 from gui.MatplotlibWidget import MatplotlibWidget
@@ -31,6 +34,7 @@ import matplotlib.pyplot as plt
 import matlab.engine
 
 from pprint import pprint
+import warnings
 
 class WorkerSignals(QObject):
     """
@@ -146,59 +150,11 @@ class MainWindow(QMainWindow):
         self.btn_clear_labels.clicked.connect(self.varlabels_clear)
 
         ## Set default values for analysis
-        self.svd_defaults = {
-            'pks': 3,
-            'scut': 0.22,
-            'hcut': 0.22,
-            'state_cut': 6,
-            'csi_start': 0.01,
-            'csi_step': 0.01,
-            'csi_end': 0.1,
-            'tf_idf_norm': True,
-            'parallel_processing': False
-        }
-        self.pca_defaults = {
-            'dc': 0.01,
-            'npcs': 3,
-            'minspk': 3,
-            'nsur': 1000,
-            'prct': 99.9,
-            'cent_thr': 99.9,
-            'inner_corr': 5,
-            'minsize': 3
-        }
-        self.ica_defaults = {
-            'threshold': {
-                'method': 'MarcenkoPastur',
-                'permutations_percentile': 95,
-                'number_of_permutations': 20
-            },
-            'Patterns': {
-                'method': 'ICA',
-                'number_of_iterations': 500
-            }
-        }
-        self.x2p_defaults = {
-            'network_bin': 1,
-            'network_iterations': 1000,
-            'network_significance': 0.05,
-            'coactive_neurons_threshold': 2,
-            'clustering_range_start': 3,
-            'clustering_range_end': 10,
-            'clustering_fixed': 0,
-            'iterations_ensemble': 1000,
-            'parallel_processing': False,
-            'file_log': ''
-        }
-        self.sgc_defaults = {
-            'use_first_derivative': False,
-            'standard_deviations_threshold': 2,
-            'shuffling_rounds': 1000,
-            'coactivity_significance_level': 0.05,
-            'montecarlo_rounds': 5,
-            'montecarlo_steps': 10000,
-            'affinity_threshold': 0.2
-        }
+        self.svd_defaults = self.load_defaults("svd_defaults")
+        self.pca_defaults = self.load_defaults("pca_defaults") 
+        self.ica_defaults = self.load_defaults("ica_defaults") 
+        self.x2p_defaults = self.load_defaults("x2p_defaults") 
+        self.sgc_defaults = self.load_defaults("sgc_defaults") 
 
         ## Numeric validator
         double_validator = QDoubleValidator()
@@ -599,6 +555,28 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements').reset(default_txt)
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_times').reset(default_txt)
 
+    def load_defaults(self, method):
+        """
+        Load the default parameters for a given method from a configuration file.
+
+        :param str method: The name of the method for which default parameters are requested.
+        :return: A dictionary containing the default parameters for the specified method.
+        :rtype: dict
+        :raises KeyError: If the specified method is not found in the configuration file.
+        :raises FileNotFoundError: If the configuration file is missing.
+        :raises json.JSONDecodeError: If the configuration file is not a valid JSON.
+        """
+        config_path = "config/default_parameters.json"
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"Configuration file not found: {config_path}")
+        with open(config_path, "r") as f:
+            try:
+                defaults = json.load(f)
+            except json.JSONDecodeError as e:
+                raise json.JSONDecodeError(f"Error decoding JSON in {config_path}: {e}", e.doc, e.pos)
+        if method not in defaults:
+            raise KeyError(f"Method '{method}' not found in default parameters.")
+        return defaults[method]
     def browse_files(self):
         """
         Opens a file browing dialog to open a new file.
@@ -1485,31 +1463,6 @@ class MainWindow(QMainWindow):
             self.view_behavior()
         self.varlabels_setup_tab(self.table_setlabels.rowCount())
         
-    def dict_to_matlab_struct(self, pars_dict):
-        """
-        Converts a Python dictionary to a MATLAB struct.
-
-        :param pars_dict: A dictionary where keys represent the names of fields in the MATLAB struct and the values 
-                        represent the corresponding field values.
-        :type pars_dict: dict
-
-        :return: A MATLAB struct where the keys are the field names and the values are converted to the appropriate MATLAB data type.
-        :rtype: dict
-
-        This function recursively converts a Python dictionary to a MATLAB struct. It handles nested dictionaries by 
-        recursively calling the conversion function. Numeric values (integers or floats) are converted into MATLAB 
-        double type, while other data types are kept unchanged.
-        """
-        matlab_struct = {}
-        for key, value in pars_dict.items():
-            if isinstance(value, dict):
-                matlab_struct[key] = self.dict_to_matlab_struct(value)
-            elif isinstance(value, (int, float)):
-                matlab_struct[key] = matlab.double([value])
-            else:
-                matlab_struct[key] = value
-        return matlab_struct
-
     def load_defaults_svd(self):
         """
         Loads default SVD parameter values into the UI fields.
@@ -1531,7 +1484,7 @@ class MainWindow(QMainWindow):
         self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
         self.svd_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default SVD parameter values", "complete")
-    def run_svd(self):
+    def collect_parameters_svd(self):
         """
         Retrieves user-defined parameters for Singular Value Decomposition (SVD) from the GUI, applies default values 
         if fields are empty, and initiates the SVD analysis in parallel. The function also updates the console log 
@@ -1551,39 +1504,20 @@ class MainWindow(QMainWindow):
 
         # Prepare parameters
         input_value = self.svd_edit_pks.text()
-        val_pks = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
+        val_pks = np.array([float(input_value)])
         input_value = self.svd_edit_scut.text()
-        val_scut = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
+        val_scut = np.array([float(input_value)])
+
         input_value = self.svd_edit_hcut.text()
-        if len(input_value) > 0:
-            val_hcut = float(input_value) 
-        else:
-            val_hcut = self.svd_defaults['hcut']
-            self.svd_edit_hcut.setText(f"{val_hcut}")
+        val_hcut = float(input_value)         
         input_value = self.svd_edit_statecut.text()
-        if len(input_value) > 0:
-            val_statecut = float(input_value)
-        else:
-            val_statecut = self.svd_defaults['statecut']
-            self.svd_edit_statecut.setText(f"{val_statecut}")
+        val_statecut = float(input_value)
         input_value = self.svd_edit_csistart.text()
-        if len(input_value) > 0:
-            val_csistart = float(input_value)
-        else:
-            val_csistart = self.svd_defaults['csi_start']
-            self.svd_edit_csistart.setText(f"{val_csistart}")
+        val_csistart = float(input_value)        
         input_value = self.svd_edit_csistep.text()
-        if len(input_value) > 0:
-            val_csistep = float(input_value)
-        else:
-            val_csistep = self.svd_defaults['statecut']
-            self.svd_edit_csistep.setText(f"{val_csistep}")
+        val_csistep = float(input_value)        
         input_value = self.svd_edit_csiend.text()
-        if len(input_value) > 0:
-            val_csiend = float(input_value)
-        else:
-            val_csiend = self.svd_defaults['statecut']
-            self.svd_edit_csiend.setText(f"{val_csiend}")
+        val_csiend = float(input_value)
         val_idtfd = self.svd_check_tfidf.isChecked()
         parallel_computing = self.svd_check_parallel.isChecked()
 
@@ -1599,8 +1533,19 @@ class MainWindow(QMainWindow):
             'csi_end': val_csiend,
             'parallel_processing': parallel_computing
         }
-        self.params['svd'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+
+        # Validate the parameters
+        pars_validated = parameters_validators.validate_parameters_svd(pars, self.svd_defaults)
+
+        # Fill the GUI spaces using the validated data, in case there are changes
+        self.svd_edit_hcut.setText(f"{pars_validated["hcut"]}")
+        self.svd_edit_statecut.setText(f"{pars_validated["statecut"]}")
+        self.svd_edit_csistart.setText(f"{pars_validated["csi_start"]}")
+        self.svd_edit_csistep.setText(f"{pars_validated["csi_step"]}")
+        self.svd_edit_csiend.setText(f"{pars_validated["csi_end"]}")
+
+        self.params['svd'] = pars_validated
+        pars_matlab = converters.dict_to_matlab_struct(pars_validated)
 
         # Clean all the figures in case there was something previously
         if 'svd' in self.results:
