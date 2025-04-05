@@ -22,6 +22,8 @@ from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
 
+import runners.svd_run as run_svd
+
 import utils.metrics as metrics
 import utils.parameters_validators as parameters_validators
 import utils.data_converters as converters
@@ -192,13 +194,13 @@ class MainWindow(QMainWindow):
 
         ## SVD analysis
         self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
-        self.btn_run_svd.clicked.connect(self.run_svd)
+        self.btn_run_svd.clicked.connect(self.collect_parameters_svd)
         ## PCA analysis
         self.pca_btn_defaults.clicked.connect(self.load_defaults_pca)
         self.btn_run_pca.clicked.connect(self.run_PCA)
         ## ICA analysis
         self.ica_btn_defaults.clicked.connect(self.load_defaults_ica)
-        self.btn_run_ica.clicked.connect(self.run_ICA)
+        self.btn_run_ica.clicked.connect(self.collect_parameters_ica)
         ## X2P analysis
         self.x2p_btn_defaults.clicked.connect(self.load_defaults_x2p)
         self.btn_run_x2p.clicked.connect(self.run_x2p)
@@ -320,7 +322,7 @@ class MainWindow(QMainWindow):
         """
         # Delete all previous results
         self.results = {}
-        self.algotrithm_results = {}
+        self.algorithm_results = {}
         self.params = {}
         self.varlabels = {}
         self.tempvars = {}
@@ -1496,8 +1498,8 @@ class MainWindow(QMainWindow):
         # Temporarly disable the button
         self.btn_run_svd.setEnabled(False)
         # Prepare data
-        data = self.data_neuronal_activity
-        spikes = matlab.double(data.tolist())
+        spikes = self.data_neuronal_activity
+        #spikes = matlab.double(data.tolist())
         #Prepare dummy data
         data = np.zeros((self.cant_neurons,2))
         coords_foo = matlab.double(data.tolist())
@@ -1509,15 +1511,15 @@ class MainWindow(QMainWindow):
         val_scut = np.array([float(input_value)])
 
         input_value = self.svd_edit_hcut.text()
-        val_hcut = float(input_value)         
+        val_hcut = input_value
         input_value = self.svd_edit_statecut.text()
-        val_statecut = float(input_value)
+        val_statecut = input_value
         input_value = self.svd_edit_csistart.text()
-        val_csistart = float(input_value)        
+        val_csistart = input_value
         input_value = self.svd_edit_csistep.text()
-        val_csistep = float(input_value)        
+        val_csistep = input_value
         input_value = self.svd_edit_csiend.text()
-        val_csiend = float(input_value)
+        val_csiend = input_value
         val_idtfd = self.svd_check_tfidf.isChecked()
         parallel_computing = self.svd_check_parallel.isChecked()
 
@@ -1538,11 +1540,11 @@ class MainWindow(QMainWindow):
         pars_validated = parameters_validators.validate_parameters_svd(pars, self.svd_defaults)
 
         # Fill the GUI spaces using the validated data, in case there are changes
-        self.svd_edit_hcut.setText(f"{pars_validated["hcut"]}")
-        self.svd_edit_statecut.setText(f"{pars_validated["statecut"]}")
-        self.svd_edit_csistart.setText(f"{pars_validated["csi_start"]}")
-        self.svd_edit_csistep.setText(f"{pars_validated["csi_step"]}")
-        self.svd_edit_csiend.setText(f"{pars_validated["csi_end"]}")
+        self.svd_edit_hcut.setText(f"{pars_validated['hcut']}")
+        self.svd_edit_statecut.setText(f"{pars_validated['statecut']}")
+        self.svd_edit_csistart.setText(f"{pars_validated['csi_start']}")
+        self.svd_edit_csistep.setText(f"{pars_validated['csi_step']}")
+        self.svd_edit_csiend.setText(f"{pars_validated['csi_end']}")
 
         self.params['svd'] = pars_validated
         pars_matlab = converters.dict_to_matlab_struct(pars_validated)
@@ -1557,10 +1559,10 @@ class MainWindow(QMainWindow):
         # Run the SVD in parallel
         self.update_console_log("Performing SVD...")
         self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_svd = WorkerRunnable(self.run_svd_parallel, spikes, coords_foo, pars_matlab)
-        worker_svd.signals.result_ready.connect(self.run_svd_parallel_end)
+        worker_svd = WorkerRunnable(self.run_svd_handler, spikes, coords_foo, pars_matlab)
+        worker_svd.signals.result_ready.connect(self.run_svd_handler_end)
         self.threadpool.start(worker_svd)
-    def run_svd_parallel(self, spikes, coords_foo, pars_matlab):
+    def run_svd_handler(self, spikes, coords_foo, pars_matlab):
         """
         Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data in parallel. 
         This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
@@ -1575,45 +1577,29 @@ class MainWindow(QMainWindow):
         :rtype: list[float]
         """
         log_flag = "GUI SVD:"
-        print(f"{log_flag} Starting MATLAB engine...")
-        start_time = time.time()
-        eng_svd = matlab.engine.start_matlab()
-        # Adding to path
         relative_folder_path = 'analysis/SVD'
-        folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng_svd.genpath(folder_path)
-        eng_svd.addpath(folder_path_with_subfolders, nargout=0)
-        end_time = time.time()
-        engine_time = end_time - start_time
-        print(f"{log_flag} Loaded MATLAB engine.")
-        start_time = time.time()
-        try:
-            answer = eng_svd.Stoixeion(spikes, coords_foo, pars_matlab)
-        except:
-            print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
-            answer = None
-        end_time = time.time()
-        algorithm_time = end_time - start_time
-        print(f"{log_flag} Done.")
-        print(f"{log_flag} Terminating MATLAB engine...")
-        eng_svd.quit()
-        print(f"{log_flag} Done.")
+        result = run_svd.run_svd(spikes, coords_foo, pars_matlab, relative_folder_path)
         plot_times = 0
-        if answer != None:
-            self.algotrithm_results['svd'] = answer
-            # Update pks and scut in case of automatic calculation
-            self.svd_edit_pks.setText(f"{int(answer['pks'])}")
-            self.svd_edit_scut.setText(f"{answer['scut']}")
+        if result["success"]:
+            # Save results
+            self.algorithm_results['svd'] = result["answer"]
+            self.results['svd'] = result["results"]
+
+            # Update pks and scut in the GUI in case of automatic calculation
+            self.svd_edit_pks.setText(f"{int(result['answer']['pks'])}")
+            self.svd_edit_scut.setText(f"{result['answer']['scut']}")
+
             # Plotting results
             print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
             start_time = time.time()
-            self.plot_SVD_results(answer)
+            self.plot_SVD_results(result["answer"])
             end_time = time.time()
             plot_times = end_time - start_time
             print(f"{log_flag} Done plotting and saving...")
-        return [engine_time, algorithm_time, plot_times]
-    def run_svd_parallel_end(self, times):
+            
+        return [result["engine_time"], result["algorithm_time"], plot_times]
+    def run_svd_handler_end(self, times):
         """
         Finalizes the SVD execution process, logging timing information for each stage of the computation, 
         and re-enables the SVD run button.
@@ -1668,38 +1654,17 @@ class MainWindow(QMainWindow):
             plot_widget.plot_states_from_svd(curent_comp, state_idx, row, col)
             
         # Plot the ensembles timecourse
-        Pks_Frame = np.array(answer['Pks_Frame'])
-        sec_Pk_Frame = np.array(answer['sec_Pk_Frame'])
-        ensembles_timecourse = np.zeros((num_state, self.cant_timepoints))
-        framesActiv = Pks_Frame.shape[1]
-        for it in range(framesActiv):
-            currentFrame = int(Pks_Frame[0, it])
-            currentEns = int(sec_Pk_Frame[it, 0])
-            if currentEns != 0: 
-                ensembles_timecourse[currentEns-1, currentFrame-1] = 1
+        ensembles_timecourse = self.results['svd']['timecourse']
         plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_timecourse')
         plot_widget.plot_ensembles_timecourse(ensembles_timecourse)
 
-        # Save the results
-        self.results['svd'] = {}
-        self.results['svd']['timecourse'] = ensembles_timecourse
-        self.results['svd']['ensembles_cant'] = ensembles_timecourse.shape[0]
-        Pools_coords = np.array(answer['Pools_coords'])
-        # Identify the neurons that belongs to each ensamble
-        neurons_in_ensembles = np.zeros((self.results['svd']['ensembles_cant'], self.cant_neurons))
-        for ens in range(self.results['svd']['ensembles_cant']):
-            cells_in_ens = Pools_coords[:, :, ens]
-            for neu in range(self.cant_neurons):
-                cell_id = int(cells_in_ens[neu][2])
-                if cell_id == 0:
-                    break
-                else:
-                    neurons_in_ensembles[ens, cell_id-1] = 1
-        self.results['svd']['neus_in_ens'] = neurons_in_ensembles
-        self.we_have_results()
-
+        # Plot neurons in ensembles
+        neurons_in_ensembles = self.results['svd']['neus_in_ens']
         plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
         plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Cell")
+
+        # Save the results
+        self.we_have_results()
 
     def load_defaults_pca(self):
         """
@@ -1821,7 +1786,7 @@ class MainWindow(QMainWindow):
         plot_times = 0
         # Plot the results
         if answer != None:
-            self.algotrithm_results['pca'] = answer
+            self.algorithm_results['pca'] = answer
             print(f"{log_flag} Plotting results...")
             start_time = time.time()
             self.plot_PCA_results(pars, answer)
@@ -1940,7 +1905,7 @@ class MainWindow(QMainWindow):
         self.ica_radio_method_ica.setChecked(True)
         self.ica_edit_iterations.setText(f"{defaults['Patterns']['number_of_iterations']}")
         self.update_console_log("Loaded default ICA parameter values", "complete")
-    def run_ICA(self):
+    def collect_parameters_ica(self):
         """
         Retrieves user-defined parameters for ICA from the GUI, applies default values 
         if fields are empty, and initiates the ICA analysis in parallel. The function also updates the console log 
@@ -2036,8 +2001,8 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done looking for patterns...")
 
         if answer != None:
-            self.algotrithm_results['ica'] = {}
-            self.algotrithm_results['ica']['patterns'] = answer
+            self.algorithm_results['ica'] = {}
+            self.algorithm_results['ica']['patterns'] = answer
             assembly_templates = np.array(answer['AssemblyTemplates']).T
             print(f"{log_flag} Looking for assembly activity...")
             try:
@@ -2054,7 +2019,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
-            self.algotrithm_results['ica']['assembly_activity'] = answer
+            self.algorithm_results['ica']['assembly_activity'] = answer
             start_time = time.time()
             time_projection = np.array(answer["time_projection"])
             ## Identify the significative values to binarize the matrix
@@ -2293,7 +2258,7 @@ class MainWindow(QMainWindow):
             answer['Ensembles']['Indices'] = new_clean['Indices']
             answer['Ensembles']['Durations'] = new_clean['Durations']
 
-            self.algotrithm_results['x2p'] = answer
+            self.algorithm_results['x2p'] = answer
             self.plot_X2P_results(clean_answer)
 
             print(f"{log_flag} Saving results...")
@@ -2483,7 +2448,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
-            self.algotrithm_results['sgc'] = answer
+            self.algorithm_results['sgc'] = answer
             # Plotting results
             print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
@@ -2535,12 +2500,12 @@ class MainWindow(QMainWindow):
         self.results['sgc']['ensembles_cant'] = ensembles_timecourse.shape[0]
         self.results['sgc']['neus_in_ens'] = neurons_in_ensembles
         # Correct the answer saved
-        self.algotrithm_results['sgc']['assemblies'] = {}
+        self.algorithm_results['sgc']['assemblies'] = {}
         for idx, assembly in enumerate(assemblies):
-            self.algotrithm_results['sgc']['assemblies'][f"{idx}"] = assembly
-        self.algotrithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'] = {}
+            self.algorithm_results['sgc']['assemblies'][f"{idx}"] = assembly
+        self.algorithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'] = {}
         for idx, act_patt in enumerate(i_assembly_patterns):
-            self.algotrithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'][f"{idx}"] = act_patt
+            self.algorithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'][f"{idx}"] = act_patt
 
 
         # Plot the cells in ensembles
@@ -3819,7 +3784,7 @@ class MainWindow(QMainWindow):
             data["parameters"] = self.params
         if self.save_check_full.isChecked() and self.save_check_full.isEnabled():
             print("GUI Save: Getting algorithms full results...")
-            data['algorithms_results'] = self.algotrithm_results
+            data['algorithms_results'] = self.algorithm_results
         if self.save_check_enscomp.isChecked() and self.save_check_enscomp.isEnabled():
             print("GUI Save: Getting ensembles compare...")
             data["ensembles_compare"] = {}

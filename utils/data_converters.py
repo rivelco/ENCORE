@@ -1,6 +1,6 @@
 import matlab.engine
 
-def dict_to_matlab_struct(self, pars_dict):
+def dict_to_matlab_struct(pars_dict):
     """
     Converts a Python dictionary to a MATLAB struct.
 
@@ -18,7 +18,7 @@ def dict_to_matlab_struct(self, pars_dict):
     matlab_struct = {}
     for key, value in pars_dict.items():
         if isinstance(value, dict):
-            matlab_struct[key] = self.dict_to_matlab_struct(value)
+            matlab_struct[key] = dict_to_matlab_struct(value)
         elif isinstance(value, (int, float)):
             matlab_struct[key] = matlab.double([value])
         else:

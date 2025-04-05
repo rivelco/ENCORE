@@ -1,4 +1,5 @@
 import warnings
+import numpy as np
 
 def validate_parameters_svd(params, defaults):
     """
