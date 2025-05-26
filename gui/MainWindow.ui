@@ -1572,8 +1572,8 @@ in two or more different ensembles.</string>
                  <bool>true</bool>
                 </property>
                 <property name="plainText">
-                 <string>For details about this method, see the following paper:
-Carrillo-Reid, et al. &quot;Endogenous sequential cortical activity evoked by visual stimuli.&quot; Journal of Neuroscience 35.23 (2015): 8813-8828.</string>
+                 <string>For details about this method, see the following chapter:
+Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal Ensembles from Similarity Maps Using Singular Value Decomposition. In: Carrillo-Reid, L. (eds) Identification, Characterization, and Manipulation of Neuronal Ensembles. Neuromethods, vol 215. Humana, New York, NY. https://doi.org/10.1007/978-1-0716-4208-5_5</string>
                 </property>
                </widget>
               </item>
