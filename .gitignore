@@ -8,3 +8,5 @@ gui/__pycache__/
 utils/__pycache__/
 
 docs/build/
+
+runners/__pycache__/
