@@ -45,6 +45,11 @@ def validate_parameters_svd(params, defaults):
         valid_params['statecut'] = defaults['statecut']
         warnings.warn(f"state_cut not specified, the default value {valid_params['statecut']} will be used", UserWarning)
 
+    if params['tf_idf_norm']:
+        valid_params['tf_idf_norm'] = True
+    else:
+        valid_params['tf_idf_norm'] = False
+
     if len(params['csi_start']) > 0:
         valid_params['csi_start'] = float(params['csi_start'])
     else:
@@ -63,4 +68,45 @@ def validate_parameters_svd(params, defaults):
         valid_params['csi_end'] = defaults['statecut']
         warnings.warn(f"csi_step not specified, the default value {valid_params['csi_end']} will be used", UserWarning)
 
+    if params['parallel_processing']:
+        valid_params['parallel_processing'] = True
+    else:
+        valid_params['parallel_processing'] = False
+
+    return valid_params
+
+def validate_parameters_ica(params, defaults):
+    valid_params = {
+        'threshold': {
+            'method': 0,
+            'permutations_percentile': 0,
+            'number_of_permutations': 0
+        },
+        'Patterns': {
+            'method': 0,
+            'number_of_iterations': 0
+        }
+    }
+
+    valid_params['threshold']['method'] = params['threshold']['method']
+
+    if len(params['threshold']['permutations_percentile']) > 0:
+        valid_params['threshold']['permutations_percentile'] = float(params['threshold']['permutations_percentile'])
+    else:
+        valid_params['threshold']['permutations_percentile'] = defaults['threshold']['permutations_percentile']
+
+    if len(params['threshold']['number_of_permutations']) > 0:
+        valid_params['threshold']['number_of_permutations'] = float(params['threshold']['number_of_permutations'])
+    else:
+        valid_params['threshold']['number_of_permutations'] = defaults['threshold']['number_of_permutations']
+
+    if params['Patterns']['method'] != "ICA" and params['Patterns']['method'] != "PCA":
+        valid_params['Patterns']['method'] = defaults['Patterns']['method']
+    else:
+        valid_params['Patterns']['method'] = params['Patterns']['method']
+
+    if len(params['Patterns']['number_of_iterations']) > 0:
+        valid_params['Patterns']['number_of_iterations'] = abs(float(params['Patterns']['number_of_iterations']))
+    else:
+        valid_params['Patterns']['number_of_iterations'] = defaults['Patterns']['number_of_iterations']
     return valid_params

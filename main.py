@@ -1917,8 +1917,8 @@ class MainWindow(QMainWindow):
         # Temporarly disable the button
         self.btn_run_ica.setEnabled(False)
         # Prepare data
-        data = self.data_neuronal_activity
-        spikes = matlab.double(data.tolist())
+        spikes = self.data_neuronal_activity
+        #spikes = matlab.double(data.tolist())
 
         # Prepare parameters
         if self.ica_radio_method_marcenko.isChecked():
@@ -1928,17 +1928,14 @@ class MainWindow(QMainWindow):
         elif self.ica_radio_method_shift.isChecked():
             threshold_method = "circularshift"
 
-        input_value = self.ica_edit_perpercentile.text()
-        val_per_percentile = float(input_value) if len(input_value) > 0 else self.ica_defaults['threshold']['permutations_percentile']
-        input_value = self.ica_edit_percant.text()
-        val_per_cant = float(input_value) if len(input_value) > 0 else self.ica_defaults['threshold']['number_of_permutations']
+        val_per_percentile = self.ica_edit_perpercentile.text()
+        val_per_cant = self.ica_edit_percant.text()
 
         if self.ica_radio_method_ica.isChecked():
             patterns_method = "ICA"
         elif self.ica_radio_method_pca.isChecked():
             patterns_method = "PCA"
-        input_value = self.ica_edit_iterations.text()
-        val_iteartions = float(input_value) if len(input_value) > 0 else self.ica_defaults['Patterns']['number_of_iterations']
+        val_iteartions = self.ica_edit_iterations.text()
 
         # Pack parameters
         pars = {
@@ -1952,8 +1949,10 @@ class MainWindow(QMainWindow):
                 'number_of_iterations': val_iteartions
             }
         }
-        self.params['ica'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_validated = parameters_validators.validate_parameters_ica(pars, self.ica_defaults)
+
+        self.params['ica'] = pars_validated
+        pars_matlab = converters.dict_to_matlab_struct(pars_validated)
 
         # Clean all the figures in case there was something previously
         if 'ica' in self.results:
