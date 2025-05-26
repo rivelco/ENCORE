@@ -16,7 +16,8 @@ The general requirements are MATLAB and Python. The limiting factor here is the 
 Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.
 
 .. seealso::
-    Python 3.8 is compatible with MATLAB from R2020b to R2023a.\n
+    Python 3.8 is compatible with MATLAB from R2020b to R2023a.
+    
     Python 3.9 is compatible with MATLAB from R2021b to R2024b.
 
 .. tip::
