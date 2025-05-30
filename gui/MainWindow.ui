@@ -1639,7 +1639,41 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
               </attribute>
               <layout class="QVBoxLayout" name="verticalLayout_29">
                <item>
-                <widget class="MatplotlibWidget" name="svd_plot_components"/>
+                <widget class="QScrollArea" name="scrollArea_6">
+                 <property name="widgetResizable">
+                  <bool>true</bool>
+                 </property>
+                 <widget class="QWidget" name="scrollAreaWidgetContents_6">
+                  <property name="geometry">
+                   <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>717</width>
+                    <height>531</height>
+                   </rect>
+                  </property>
+                  <layout class="QVBoxLayout" name="verticalLayout_18">
+                   <property name="spacing">
+                    <number>0</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <widget class="MatplotlibWidget" name="svd_plot_components"/>
+                   </item>
+                  </layout>
+                 </widget>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -3753,7 +3787,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5610,7 +5644,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5646,7 +5680,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5682,7 +5716,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5718,7 +5752,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>

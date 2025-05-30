@@ -490,7 +490,7 @@ class MatplotlibWidget(QWidget):
         self.axes.clear()
 
         cax = self.axes.imshow(matrix, aspect='equal', cmap=color)
-        self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45)
+        self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45, ha="right", rotation_mode="anchor")
         self.axes.set_yticks(ticks = np.arange(len(labels)), labels=labels, rotation=0)
         self.colorbar = self.canvas.figure.colorbar(cax, ax=self.axes, orientation='vertical')
 
