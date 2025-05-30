@@ -3244,6 +3244,8 @@ class MainWindow(QMainWindow):
         (e.g., neurons in ensemble or timecourse). It also generates labels for these elements, 
         indicating the algorithm and the ensemble index.
 
+        If a stimulation matrix is provided, each stimulus is added along with their label.
+
         :param criteria: The key used to extract elements from each algorithm's results.
         :type criteria: string
         :return: A tuple containing the array of elements and their corresponding labels.
@@ -3257,6 +3259,17 @@ class MainWindow(QMainWindow):
             for e_idx, element in enumerate(elements):
                 all_elements.append(element)
                 labels.append(f"{algorithm}-E{e_idx+1}")
+        if criteria == "timecourse":
+            if hasattr(self, "data_stims"):
+                stims, timepoints = self.data_stims.shape
+                for stim in range(stims):
+                    all_elements.append(self.data_stims[stim,:])
+                    if "stim" in self.varlabels:
+                        stim_labels = list(self.varlabels["stim"].values())
+                        stim_label = f"Stim {stim_labels[stim]}"
+                    else:
+                        stim_label = f"Stim {stim}"
+                    labels.append(stim_label)
         # Convert to numpy array
         all_elements = np.array(all_elements)
         return all_elements, labels
