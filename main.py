@@ -1650,6 +1650,7 @@ class MainWindow(QMainWindow):
         rows = math.ceil(math.sqrt(num_state))
         cols = math.ceil(num_state / rows)
         plot_widget.set_subplots(rows, cols)
+        plot_widget.canvas.setFixedHeight(400*rows)
         for state_idx in range(num_state):
             curent_comp = singular_vals[:, :, state_idx]
             row = state_idx // cols
@@ -3169,7 +3170,10 @@ class MainWindow(QMainWindow):
 
                 if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_neus']:
                     new_members = ens_data["neus_in_ens"].copy()
-                    cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
+                    if hasattr(self, "data_dFFo"):
+                        cells_activity_mat = self.data_dFFo[new_members.astype(bool), :]
+                    else:
+                        cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
                     cells_activity_count = np.sum(cells_activity_mat, axis=0)
                 else:
                     cells_activity_count = []
