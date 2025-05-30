@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal
-from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator
+from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator, QIcon
 
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
@@ -3963,6 +3963,7 @@ class MainWindow(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setWindowIcon(QIcon("gui/ENCORE_logo.png")) 
     window = MainWindow()
     window.show()
     app.exec()  
