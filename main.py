@@ -1508,7 +1508,10 @@ class MainWindow(QMainWindow):
         input_value = self.svd_edit_pks.text()
         val_pks = np.array([float(input_value)])
         input_value = self.svd_edit_scut.text()
-        val_scut = np.array([float(input_value)])
+        if len(input_value) > 0:
+            val_scut = np.array([float(input_value)])
+        else:
+            val_scut = np.array([])
 
         input_value = self.svd_edit_hcut.text()
         val_hcut = input_value
@@ -1731,7 +1734,7 @@ class MainWindow(QMainWindow):
             'minsize': minsize
         }
         self.params['pca'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'pca' in self.results:
@@ -2170,7 +2173,7 @@ class MainWindow(QMainWindow):
             'FileLog': ''
         }
         self.params['x2p'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'x2p' in self.results:
@@ -2393,7 +2396,7 @@ class MainWindow(QMainWindow):
             'affinity_threshold': val_affinity_threshold
         }
         self.params['sgc'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'sgc' in self.results:
