@@ -480,7 +480,10 @@ class MainWindow(QMainWindow):
         sliders = [self.enscomp_slider_svd, 
                    self.enscomp_slider_pca, 
                    self.enscomp_slider_ica,
-                   self.enscomp_slider_x2p]
+                   self.enscomp_slider_x2p,
+                   self.enscomp_slider_sgc,
+                   self.enscomp_slider_stim,
+                   self.enscomp_slider_behavior]
         for obj in sliders:
             obj.blockSignals(True)
             obj.setEnabled(False)
@@ -1506,7 +1509,10 @@ class MainWindow(QMainWindow):
 
         # Prepare parameters
         input_value = self.svd_edit_pks.text()
-        val_pks = np.array([float(input_value)])
+        if len(input_value) > 0:
+            val_pks = np.array([float(input_value)])
+        else:
+            val_pks = np.array([])
         input_value = self.svd_edit_scut.text()
         if len(input_value) > 0:
             val_scut = np.array([float(input_value)])
