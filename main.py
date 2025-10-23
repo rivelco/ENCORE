@@ -1921,7 +1921,7 @@ class MainWindow(QMainWindow):
         # Temporarly disable the button
         self.btn_run_ica.setEnabled(False)
         # Prepare data
-        spikes = self.data_neuronal_activity
+        spikes = matlab.double(self.data_neuronal_activity.tolist())
         #spikes = matlab.double(data.tolist())
 
         # Prepare parameters
