@@ -1648,7 +1648,7 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>98</width>
+                    <width>71</width>
                     <height>71</height>
                    </rect>
                   </property>
@@ -3787,7 +3787,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -3898,137 +3898,58 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_16" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_65">
-                    <property name="spacing">
-                     <number>0</number>
-                    </property>
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_7">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>SVD</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="widget_9" native="true">
-                      <layout class="QHBoxLayout" name="horizontalLayout_22">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_svd">
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_svd">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;SVD&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_svd">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>Total number of ensembles identified by the SVD analysis.</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                  <widget class="QLabel" name="label_7">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>SVD</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="enscomp_spinbox_svd"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_33">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>/</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_svd">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Total number of ensembles identified by the SVD analysis.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -4076,131 +3997,58 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_18" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_76">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_21">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>PCA</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="widget_10" native="true">
-                      <layout class="QHBoxLayout" name="horizontalLayout_23">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_pca">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_pca">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;PCA&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="value">
-                          <number>0</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_pca">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>Total number of ensembles identified by the PCA analysis.</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                  <widget class="QLabel" name="label_21">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>PCA</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="enscomp_spinbox_pca"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_34">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>/</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_pca">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Total number of ensembles identified by the PCA analysis.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -4245,128 +4093,58 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_21" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_77">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_22">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>ICA</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="widget_11" native="true">
-                      <layout class="QHBoxLayout" name="horizontalLayout_24">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_ica">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_ica">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;ICA&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_ica">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>Total number of ensembles identified by the ICA analysis.</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                  <widget class="QLabel" name="label_22">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>ICA</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="enscomp_spinbox_ica"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_35">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>/</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_ica">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Total number of ensembles identified by the ICA analysis.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -4411,134 +4189,64 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_24" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_78">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_23">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="toolTip">
-                       <string/>
-                      </property>
-                      <property name="toolTipDuration">
-                       <number>-1</number>
-                      </property>
-                      <property name="text">
-                       <string>Xsembles2P</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="widget_12" native="true">
-                      <layout class="QHBoxLayout" name="horizontalLayout_25">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_x2p">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_x2p">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="sizePolicy">
-                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                           <horstretch>0</horstretch>
-                           <verstretch>0</verstretch>
-                          </sizepolicy>
-                         </property>
-                         <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different ensemble from the &lt;span style=&quot; font-weight:700;&quot;&gt;Xsembles2P&lt;/span&gt; analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_x2p">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="toolTip">
-                          <string>Total number of ensembles identified by the Xsembles2P analysis.</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                  <widget class="QLabel" name="label_23">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string/>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>-1</number>
+                   </property>
+                   <property name="text">
+                    <string>Xsembles2P</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="enscomp_spinbox_x2p"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_36">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>/</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_x2p">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="toolTip">
+                    <string>Total number of ensembles identified by the Xsembles2P analysis.</string>
+                   </property>
+                   <property name="toolTipDuration">
+                    <number>5000</number>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -4583,110 +4291,52 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   <number>0</number>
                  </property>
                  <item>
-                  <widget class="QWidget" name="widget_31" native="true">
-                   <layout class="QVBoxLayout" name="verticalLayout_83">
-                    <property name="leftMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="topMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="rightMargin">
-                     <number>0</number>
-                    </property>
-                    <property name="bottomMargin">
-                     <number>0</number>
-                    </property>
-                    <item>
-                     <widget class="QLabel" name="label_32">
-                      <property name="font">
-                       <font>
-                        <pointsize>12</pointsize>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="text">
-                       <string>SGC</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QWidget" name="widget_32" native="true">
-                      <layout class="QHBoxLayout" name="horizontalLayout_41">
-                       <property name="leftMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="topMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="rightMargin">
-                        <number>0</number>
-                       </property>
-                       <property name="bottomMargin">
-                        <number>0</number>
-                       </property>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_sgc">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_sgc">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="invertedAppearance">
-                          <bool>false</bool>
-                         </property>
-                         <property name="invertedControls">
-                          <bool>false</bool>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_sgc">
-                         <property name="font">
-                          <font>
-                           <bold>true</bold>
-                          </font>
-                         </property>
-                         <property name="text">
-                          <string>2</string>
-                         </property>
-                        </widget>
-                       </item>
-                      </layout>
-                     </widget>
-                    </item>
-                   </layout>
+                  <widget class="QLabel" name="label_32">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>12</pointsize>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>SGC</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QSpinBox" name="enscomp_spinbox_sgc"/>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_37">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>/</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="enscomp_slider_lbl_max_sgc">
+                   <property name="font">
+                    <font>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>2</string>
+                   </property>
                   </widget>
                  </item>
                  <item>
@@ -4788,45 +4438,44 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         <number>0</number>
                        </property>
                        <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_stim">
+                        <widget class="QLabel" name="enscomp_slider_lbl_stim">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Label of the current stimulus.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>Label</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="enscomp_spinbox_stim"/>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_38">
                          <property name="font">
                           <font>
                            <bold>true</bold>
                           </font>
                          </property>
                          <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_stim">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different stimulus from the Stimulation input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
+                          <string>/</string>
                          </property>
                         </widget>
                        </item>
@@ -4849,27 +4498,6 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         </widget>
                        </item>
                       </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="enscomp_slider_lbl_stim">
-                      <property name="font">
-                       <font>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="toolTip">
-                       <string>Label of the current stimulus.</string>
-                      </property>
-                      <property name="toolTipDuration">
-                       <number>5000</number>
-                      </property>
-                      <property name="text">
-                       <string>Label</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -4966,42 +4594,44 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         <number>0</number>
                        </property>
                        <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_min_behavior">
+                        <widget class="QLabel" name="enscomp_slider_lbl_behavior">
+                         <property name="sizePolicy">
+                          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+                           <horstretch>0</horstretch>
+                           <verstretch>0</verstretch>
+                          </sizepolicy>
+                         </property>
+                         <property name="font">
+                          <font>
+                           <bold>true</bold>
+                          </font>
+                         </property>
+                         <property name="toolTip">
+                          <string>Label of the current behavior.</string>
+                         </property>
+                         <property name="toolTipDuration">
+                          <number>5000</number>
+                         </property>
+                         <property name="text">
+                          <string>Label</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QSpinBox" name="enscomp_spinbox_behavior"/>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_39">
                          <property name="font">
                           <font>
                            <bold>true</bold>
                           </font>
                          </property>
                          <property name="text">
-                          <string>1</string>
-                         </property>
-                        </widget>
-                       </item>
-                       <item>
-                        <widget class="QSlider" name="enscomp_slider_behavior">
-                         <property name="enabled">
-                          <bool>false</bool>
-                         </property>
-                         <property name="toolTip">
-                          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slide the selector to visualize a different behavior from the Behavior input variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                         </property>
-                         <property name="maximum">
-                          <number>1</number>
-                         </property>
-                         <property name="pageStep">
-                          <number>1</number>
-                         </property>
-                         <property name="tracking">
-                          <bool>false</bool>
-                         </property>
-                         <property name="orientation">
-                          <enum>Qt::Horizontal</enum>
-                         </property>
-                         <property name="tickPosition">
-                          <enum>QSlider::TicksAbove</enum>
-                         </property>
-                         <property name="tickInterval">
-                          <number>1</number>
+                          <string>/</string>
                          </property>
                         </widget>
                        </item>
@@ -5024,27 +4654,6 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         </widget>
                        </item>
                       </layout>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QLabel" name="enscomp_slider_lbl_behavior">
-                      <property name="font">
-                       <font>
-                        <bold>true</bold>
-                       </font>
-                      </property>
-                      <property name="toolTip">
-                       <string>Label of the current behavior.</string>
-                      </property>
-                      <property name="toolTipDuration">
-                       <number>5000</number>
-                      </property>
-                      <property name="text">
-                       <string>Label</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
                      </widget>
                     </item>
                    </layout>
@@ -5071,6 +4680,19 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -5644,7 +5266,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5680,7 +5302,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5716,7 +5338,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5752,7 +5374,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
