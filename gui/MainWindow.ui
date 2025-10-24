@@ -36,7 +36,7 @@
        <number>-1</number>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -79,12 +79,6 @@
            </item>
            <item>
             <widget class="QFrame" name="frame">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
              <layout class="QHBoxLayout" name="horizontalLayout">
               <property name="leftMargin">
                <number>0</number>
@@ -238,20 +232,119 @@
                <string>Edit variable</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_5">
-               <item row="3" column="1">
-                <widget class="QLabel" name="label_19">
+               <item row="1" column="1">
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>Bin size</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="2">
+                <widget class="QPushButton" name="edit_btn_trim">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="toolTip">
-                  <string>Method to use for the binning process.</string>
+                  <string>Trim dataset to use only certain range of your data.
+Use it to remove part of your dataset.</string>
                  </property>
                  <property name="toolTipDuration">
                   <number>5000</number>
                  </property>
                  <property name="text">
-                  <string>Bin method</string>
+                  <string>Trim matrix</string>
                  </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
+                </widget>
+               </item>
+               <item row="4" column="2">
+                <widget class="QWidget" name="widget_3" native="true">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QLineEdit" name="edit_edit_ystart">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>Index of the first element in the range to keep
+Including this element.
+Index 0 based.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="placeholderText">
+                     <string>Start</string>
+                    </property>
+                    <property name="clearButtonEnabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLineEdit" name="edit_edit_yend">
+                    <property name="enabled">
+                     <bool>false</bool>
+                    </property>
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="maximumSize">
+                     <size>
+                      <width>80</width>
+                      <height>16777215</height>
+                     </size>
+                    </property>
+                    <property name="toolTip">
+                     <string>End of the range to keep, except this element.</string>
+                    </property>
+                    <property name="toolTipDuration">
+                     <number>5000</number>
+                    </property>
+                    <property name="placeholderText">
+                     <string>End</string>
+                    </property>
+                    <property name="clearButtonEnabled">
+                     <bool>true</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </widget>
                </item>
                <item row="4" column="1">
@@ -307,10 +400,16 @@
                  </layout>
                 </widget>
                </item>
-               <item row="1" column="1">
-                <widget class="QLabel" name="label_16">
+               <item row="3" column="2">
+                <widget class="QLabel" name="label_18">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="text">
-                  <string>Bin size</string>
+                  <string>y dimention (cells)</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -330,83 +429,6 @@
                  </property>
                  <property name="text">
                   <string>Bin</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLineEdit" name="edit_edit_binsize">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="toolTip">
-                  <string>Bin size. Use the same timeunits from the dataset.</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="inputMethodHints">
-                  <set>Qt::ImhNone</set>
-                 </property>
-                 <property name="placeholderText">
-                  <string>Same time units</string>
-                 </property>
-                 <property name="clearButtonEnabled">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="2">
-                <widget class="QPushButton" name="edit_btn_trim">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>Trim dataset to use only certain range of your data.
-Use it to remove part of your dataset.</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Trim matrix</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QPushButton" name="btn_edit_transpose">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Transpose dataset</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="2">
-                <widget class="QLabel" name="label_17">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="text">
-                  <string>x dimention (time)</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
                  </property>
                 </widget>
                </item>
@@ -498,8 +520,8 @@ Index 0 based.</string>
                  </layout>
                 </widget>
                </item>
-               <item row="3" column="2">
-                <widget class="QLabel" name="label_18">
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_17">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -507,100 +529,85 @@ Index 0 based.</string>
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>y dimention (cells)</string>
+                  <string>x dimention (time)</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
                 </widget>
                </item>
-               <item row="4" column="2">
-                <widget class="QWidget" name="widget_3" native="true">
+               <item row="3" column="1">
+                <widget class="QLabel" name="label_19">
+                 <property name="toolTip">
+                  <string>Method to use for the binning process.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Bin method</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QLineEdit" name="edit_edit_binsize">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QLineEdit" name="edit_edit_ystart">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>80</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>Index of the first element in the range to keep
-Including this element.
-Index 0 based.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Start</string>
-                    </property>
-                    <property name="clearButtonEnabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="edit_edit_yend">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>80</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>End of the range to keep, except this element.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="placeholderText">
-                     <string>End</string>
-                    </property>
-                    <property name="clearButtonEnabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
+                 <property name="toolTip">
+                  <string>Bin size. Use the same timeunits from the dataset.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="inputMethodHints">
+                  <set>Qt::ImhNone</set>
+                 </property>
+                 <property name="placeholderText">
+                  <string>Same time units</string>
+                 </property>
+                 <property name="clearButtonEnabled">
+                  <bool>true</bool>
+                 </property>
                 </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="btn_edit_transpose">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Transpose dataset</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <spacer name="verticalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </widget>
@@ -708,7 +715,7 @@ Index 0 based.</string>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <property name="topMargin">
-            <number>3</number>
+            <number>6</number>
            </property>
            <property name="bottomMargin">
             <number>6</number>
@@ -1261,7 +1268,7 @@ Index 0 based.</string>
                <number>9</number>
               </property>
               <property name="topMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="rightMargin">
                <number>9</number>
@@ -1648,8 +1655,8 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>71</width>
-                    <height>71</height>
+                    <width>717</width>
+                    <height>527</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1758,7 +1765,7 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                <number>9</number>
               </property>
               <property name="topMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="rightMargin">
                <number>9</number>
@@ -2184,7 +2191,7 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                <number>9</number>
               </property>
               <property name="topMargin">
-               <number>0</number>
+               <number>9</number>
               </property>
               <property name="rightMargin">
                <number>9</number>
@@ -2263,7 +2270,7 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_22">
                     <property name="topMargin">
-                     <number>2</number>
+                     <number>9</number>
                     </property>
                     <item>
                      <widget class="QGroupBox" name="groupBox_21">
@@ -2436,7 +2443,7 @@ when 'MarcenkoPastur' is chosen.</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_21">
                     <property name="topMargin">
-                     <number>2</number>
+                     <number>9</number>
                     </property>
                     <property name="bottomMargin">
                      <number>9</number>
@@ -2682,7 +2689,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_50">
            <property name="topMargin">
-            <number>0</number>
+            <number>9</number>
            </property>
            <item>
             <widget class="QGroupBox" name="groupBox_28">
@@ -3038,7 +3045,7 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_70">
            <property name="topMargin">
-            <number>0</number>
+            <number>9</number>
            </property>
            <item>
             <widget class="QGroupBox" name="groupBox_44">
@@ -3295,10 +3302,10 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <property name="topMargin">
-            <number>0</number>
+            <number>9</number>
            </property>
            <property name="bottomMargin">
-            <number>2</number>
+            <number>9</number>
            </property>
            <item>
             <widget class="QPushButton" name="ensvis_btn_svd">
@@ -3750,13 +3757,13 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <number>3</number>
                </property>
                <property name="topMargin">
-                <number>2</number>
+                <number>5</number>
                </property>
                <property name="rightMargin">
                 <number>3</number>
                </property>
                <property name="bottomMargin">
-                <number>3</number>
+                <number>5</number>
                </property>
                <item>
                 <widget class="MatplotlibWidget" name="ensvis_plot_map"/>
@@ -3865,7 +3872,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_61">
            <property name="topMargin">
-            <number>0</number>
+            <number>9</number>
            </property>
            <property name="bottomMargin">
             <number>9</number>
@@ -3935,7 +3942,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_svd">
+                  <widget class="QLabel" name="enscomp_spinbox_lbl_max_svd">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -4034,7 +4041,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_pca">
+                  <widget class="QLabel" name="enscomp_spinbox_lbl_max_pca">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -4130,7 +4137,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_ica">
+                  <widget class="QLabel" name="enscomp_spinbox_lbl_max_ica">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -4232,7 +4239,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_x2p">
+                  <widget class="QLabel" name="enscomp_spinbox_lbl_max_x2p">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -4328,7 +4335,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="enscomp_slider_lbl_max_sgc">
+                  <widget class="QLabel" name="enscomp_spinbox_lbl_max_sgc">
                    <property name="font">
                     <font>
                      <bold>true</bold>
@@ -4438,7 +4445,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         <number>0</number>
                        </property>
                        <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_stim">
+                        <widget class="QLabel" name="enscomp_spinbox_lbl_stim">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                            <horstretch>0</horstretch>
@@ -4480,7 +4487,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_stim">
+                        <widget class="QLabel" name="enscomp_spinbox_lbl_max_stim">
                          <property name="font">
                           <font>
                            <bold>true</bold>
@@ -4594,7 +4601,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         <number>0</number>
                        </property>
                        <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_behavior">
+                        <widget class="QLabel" name="enscomp_spinbox_lbl_behavior">
                          <property name="sizePolicy">
                           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                            <horstretch>0</horstretch>
@@ -4636,7 +4643,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLabel" name="enscomp_slider_lbl_max_behavior">
+                        <widget class="QLabel" name="enscomp_spinbox_lbl_max_behavior">
                          <property name="font">
                           <font>
                            <bold>true</bold>
@@ -4748,7 +4755,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
           </widget>
           <widget class="QWidget" name="tab_50">
            <attribute name="title">
-            <string>Similarities in timecouses</string>
+            <string>Similarities in timecourse</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_67">
             <item>
@@ -4841,6 +4848,9 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                  </item>
                  <item>
                   <widget class="QToolButton" name="enscomp_visopts_setneusize">
+                   <property name="focusPolicy">
+                    <enum>Qt::TabFocus</enum>
+                   </property>
                    <property name="toolTip">
                     <string>Set the size of the neurons.</string>
                    </property>
@@ -5096,6 +5106,19 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
               </item>
              </layout>
             </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>
@@ -5623,18 +5646,43 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="label">
-      <property name="font">
-       <font>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="text">
-       <string>ENCORE log</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
+     <widget class="QWidget" name="widget_9" native="true">
+      <layout class="QHBoxLayout" name="horizontalLayout_22">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="font">
+          <font>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>ENCORE log</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="dark_mode">
+         <property name="text">
+          <string>Dark mode</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item>

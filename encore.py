@@ -12,6 +12,8 @@ from datetime import datetime
 import pickle
 import json
 
+import qdarktheme
+
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
@@ -96,22 +98,27 @@ class WorkerRunnable(QRunnable):
         self.signals.result_ready.emit(result)
 
 class MainWindow(QMainWindow):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, gui_colors={}, *args, **kwargs):
         #super().__init__(*args, **kwargs)
         super(MainWindow, self).__init__()
         loadUi("gui/MainWindow.ui", self)
-        self.setWindowTitle('Ensembles GUI')
+        self.setWindowTitle('ENCORE - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
-            "analyzer": "EnsemblesGUI",
+            "analyzer": "ENCORE",
             "date": "",
             "gui_version": 2.0
         }
+        
+        self.gui_colors = gui_colors
 
         self.threadpool = QThreadPool()
 
         # Initialize the GUI
         self.reset_gui()
+        
+        # Dark mode button
+        self.dark_mode.clicked.connect(self.set_theme)
         ## Browse files
         self.browseFile.clicked.connect(self.browse_files)
         # Connect the clicked signal of the tree view to a slot
@@ -221,13 +228,13 @@ class MainWindow(QMainWindow):
         self.ensvis_check_cellnum.stateChanged.connect(self.update_ens_vis_coords)
 
         # Ensemble compare
-        self.enscomp_slider_svd.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_behavior.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_svd.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_behavior.valueChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
@@ -285,6 +292,17 @@ class MainWindow(QMainWindow):
         self.save_btn_hdf5.clicked.connect(self.save_results_hdf5)
         self.save_btn_pkl.clicked.connect(self.save_results_pkl)
         self.save_btn_mat.clicked.connect(self.save_results_mat)
+        
+    def set_theme(self):
+        set_dark_mode = self.dark_mode.isChecked()
+        if set_dark_mode:
+            qdarktheme.setup_theme(
+                custom_colors=self.gui_colors
+            )
+        else:
+            qdarktheme.setup_theme("light",
+                custom_colors=self.gui_colors
+            )
         
     def update_console_log(self, message, msg_type="log"):
         """
@@ -365,7 +383,7 @@ class MainWindow(QMainWindow):
             btn.setEnabled(False)
 
         # Clear the preview plots
-        default_txt = "Load or select a variable\nto see a preview here"
+        default_txt = "Load or select a variable to see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
 
         # Clear the figures
@@ -477,45 +495,41 @@ class MainWindow(QMainWindow):
             obj.blockSignals(False)
         
         # Sliders
-        sliders = [self.enscomp_slider_svd, 
-                   self.enscomp_slider_pca, 
-                   self.enscomp_slider_ica,
-                   self.enscomp_slider_x2p,
-                   self.enscomp_slider_sgc,
-                   self.enscomp_slider_stim,
-                   self.enscomp_slider_behavior]
+        sliders = [self.enscomp_spinbox_svd, 
+                   self.enscomp_spinbox_pca, 
+                   self.enscomp_spinbox_ica,
+                   self.enscomp_spinbox_x2p,
+                   self.enscomp_spinbox_sgc,
+                   self.enscomp_spinbox_stim,
+                   self.enscomp_spinbox_behavior]
         for obj in sliders:
             obj.blockSignals(True)
             obj.setEnabled(False)
-            obj.setMinimum(1)
-            obj.setMaximum(2)
-            obj.setValue(1)
+            obj.setRange(0, 0)
+            obj.setValue(0)
             obj.blockSignals(False)
 
-        slider_labels = [self.enscomp_slider_lbl_min_svd,
-                         self.enscomp_slider_lbl_max_svd,
-                         self.enscomp_slider_lbl_min_pca,
-                         self.enscomp_slider_lbl_max_pca,
-                         self.enscomp_slider_lbl_min_ica,
-                         self.enscomp_slider_lbl_max_ica,
-                         self.enscomp_slider_lbl_min_x2p,
-                         self.enscomp_slider_lbl_max_x2p]
+        slider_labels = [self.enscomp_spinbox_lbl_max_svd,
+                         self.enscomp_spinbox_lbl_max_pca,
+                         self.enscomp_spinbox_lbl_max_ica,
+                         self.enscomp_spinbox_lbl_max_x2p,
+                         self.enscomp_spinbox_lbl_max_sgc]
         for obj in slider_labels:
             obj.setEnabled(False)
-            obj.setText("1")
+            obj.setText("0")
             
         if not hasattr(self, "data_stims"):
-            self.enscomp_slider_stim.setEnabled(False)
-            self.enscomp_slider_lbl_min_stim.setEnabled(False)
-            self.enscomp_slider_lbl_max_stim.setEnabled(False)
-            self.enscomp_slider_lbl_stim.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_stim.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_stim.setText("0")
+            self.enscomp_spinbox_lbl_stim.setEnabled(False)
+            self.enscomp_spinbox_lbl_stim.setText("Label")
             self.enscomp_check_show_stim.setEnabled(False)
             self.enscomp_btn_color_stim.setEnabled(False)
         if not hasattr(self, "data_behavior"):
-            self.enscomp_slider_behavior.setEnabled(False)
-            self.enscomp_slider_lbl_min_behavior.setEnabled(False)
-            self.enscomp_slider_lbl_max_behavior.setEnabled(False)
-            self.enscomp_slider_lbl_behavior.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_behavior.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_behavior.setText("0")
+            self.enscomp_spinbox_lbl_behavior.setEnabled(False)
+            self.enscomp_spinbox_lbl_behavior.setText("Label")
             self.enscomp_check_show_behavior.setEnabled(False)
             self.enscomp_btn_color_behavior.setEnabled(False)
 
@@ -2866,25 +2880,20 @@ class MainWindow(QMainWindow):
         :rtype: None
         """
         if algorithm == 'svd':
-            ens_selector = self.enscomp_slider_svd
-            selector_label_min = self.enscomp_slider_lbl_min_svd
-            selector_label_max = self.enscomp_slider_lbl_max_svd
+            ens_selector = self.enscomp_spinbox_svd
+            selector_label_max = self.enscomp_spinbox_lbl_max_svd
         elif algorithm == 'pca':
-            ens_selector = self.enscomp_slider_pca
-            selector_label_min = self.enscomp_slider_lbl_min_pca
-            selector_label_max = self.enscomp_slider_lbl_max_pca
+            ens_selector = self.enscomp_spinbox_pca
+            selector_label_max = self.enscomp_spinbox_lbl_max_pca
         elif algorithm == 'ica':
-            ens_selector = self.enscomp_slider_ica
-            selector_label_min = self.enscomp_slider_lbl_min_ica
-            selector_label_max = self.enscomp_slider_lbl_max_ica
+            ens_selector = self.enscomp_spinbox_ica
+            selector_label_max = self.enscomp_spinbox_lbl_max_ica
         elif algorithm == 'x2p':
-            ens_selector = self.enscomp_slider_x2p
-            selector_label_min = self.enscomp_slider_lbl_min_x2p
-            selector_label_max = self.enscomp_slider_lbl_max_x2p
+            ens_selector = self.enscomp_spinbox_x2p
+            selector_label_max = self.enscomp_spinbox_lbl_max_x2p
         elif algorithm == 'sgc':
-            ens_selector = self.enscomp_slider_sgc
-            selector_label_min = self.enscomp_slider_lbl_min_sgc
-            selector_label_max = self.enscomp_slider_lbl_max_sgc
+            ens_selector = self.enscomp_spinbox_sgc
+            selector_label_max = self.enscomp_spinbox_lbl_max_sgc
 
         # Enable the general visualization options
         self.enscomp_visopts_showcells.setEnabled(True)
@@ -2899,11 +2908,8 @@ class MainWindow(QMainWindow):
 
         # Activate the slider to select an ensemble of the given algorithm
         ens_selector.setEnabled(True)
-        ens_selector.setMinimum(1)   # Set the minimum value
-        ens_selector.setMaximum(self.results[algorithm]['ensembles_cant']) # Set the maximum value
+        ens_selector.setRange(1, self.results[algorithm]['ensembles_cant']) # Set the maximum value
         ens_selector.setValue(1)
-        selector_label_min.setEnabled(True)
-        selector_label_min.setText(f"{1}")
         selector_label_max.setEnabled(True)
         selector_label_max.setText(f"{self.results[algorithm]['ensembles_cant']}")
         # Update the toolbox options
@@ -2954,36 +2960,31 @@ class MainWindow(QMainWindow):
         :type exp_data: string.
         """
         if exp_data == "stims":
-            slider = self.enscomp_slider_stim
-            lbl_min = self.enscomp_slider_lbl_min_stim
-            lbl_max = self.enscomp_slider_lbl_max_stim
-            lbl_label = self.enscomp_slider_lbl_stim
+            spinbox = self.enscomp_spinbox_stim
+            lbl_max = self.enscomp_spinbox_lbl_max_stim
+            lbl_label = self.enscomp_spinbox_lbl_stim
             check_show = self.enscomp_check_show_stim
             color_pick = self.enscomp_btn_color_stim
             shp = self.data_stims.shape
             max_val = shp[0] if len(shp) > 1 else 1
         elif exp_data == "behavior":
-            slider = self.enscomp_slider_behavior
-            lbl_min = self.enscomp_slider_lbl_min_behavior
-            lbl_max = self.enscomp_slider_lbl_max_behavior
-            lbl_label = self.enscomp_slider_lbl_behavior
+            spinbox = self.enscomp_spinbox_behavior
+            lbl_max = self.enscomp_spinbox_lbl_max_behavior
+            lbl_label = self.enscomp_spinbox_lbl_behavior
             check_show = self.enscomp_check_show_behavior
             color_pick = self.enscomp_btn_color_behavior
             shp = self.data_behavior.shape
             max_val = shp[0] if len(shp) > 1 else 1
-        # Activate the slider
-        slider.blockSignals(True)
-        slider.setEnabled(True)
-        slider.setMinimum(1)
-        slider.setMaximum(max_val)
-        slider.setValue(1)
-        lbl_min.setText(f"{1}")
-        lbl_min.setEnabled(True)
+        # Activate the spinbox
+        spinbox.blockSignals(True)
+        spinbox.setEnabled(True)
+        spinbox.setRange(1, max_val)
+        spinbox.setValue(1)
         lbl_label.setText(f"{1}")
         lbl_label.setEnabled(True)
         lbl_max.setText(f"{max_val}")
         lbl_max.setEnabled(True)
-        slider.blockSignals(False)
+        spinbox.blockSignals(False)
         # Update the toolbox options
         check_show.setEnabled(True)
         color_pick.setEnabled(True)
@@ -3002,17 +3003,17 @@ class MainWindow(QMainWindow):
         """
         ensembles_to_compare = {}
         ens_selector = {
-            "svd": self.enscomp_slider_svd,
-            "pca": self.enscomp_slider_pca,
-            "ica": self.enscomp_slider_ica,
-            "x2p": self.enscomp_slider_x2p,
-            "sgc": self.enscomp_slider_sgc,
-            "stims": self.enscomp_slider_stim,
-            "behavior": self.enscomp_slider_behavior
+            "svd": self.enscomp_spinbox_svd,
+            "pca": self.enscomp_spinbox_pca,
+            "ica": self.enscomp_spinbox_ica,
+            "x2p": self.enscomp_spinbox_x2p,
+            "sgc": self.enscomp_spinbox_sgc,
+            "stims": self.enscomp_spinbox_stim,
+            "behavior": self.enscomp_spinbox_behavior
         }
-        for key, slider in ens_selector.items():
-            if slider.isEnabled():
-                ens_idx = slider.value()
+        for key, spinbox in ens_selector.items():
+            if spinbox.isEnabled():
+                ens_idx = spinbox.value()
                 if key == 'stims':
                     ensembles_to_compare[key] = {}
                     ensembles_to_compare[key]["ens_idx"] = ens_idx-1
@@ -3035,7 +3036,7 @@ class MainWindow(QMainWindow):
                 stim_label = f"{stim_labels[selected_stim]}"
             else:
                 stim_label = f"{selected_stim}"
-            self.enscomp_slider_lbl_stim.setText(stim_label)
+            self.enscomp_spinbox_lbl_stim.setText(stim_label)
         if ens_selector['behavior'].isEnabled():
             selected_behavior = ens_selector['behavior'].value()-1
             if "behavior" in self.varlabels:
@@ -3043,7 +3044,7 @@ class MainWindow(QMainWindow):
                 behavior_label = f"{behavior_labels[selected_behavior]}"
             else:
                 behavior_label = f"{selected_behavior}"
-            self.enscomp_slider_lbl_behavior.setText(behavior_label)
+            self.enscomp_spinbox_lbl_behavior.setText(behavior_label)
 
         self.enscomp_colorflag_svd.setStyleSheet(f"background-color: {self.enscomp_visopts['svd']['color']};")
         self.enscomp_colorflag_pca.setStyleSheet(f"background-color: {self.enscomp_visopts['pca']['color']};")
@@ -3988,9 +3989,23 @@ class MainWindow(QMainWindow):
                 raise IOError(f"Could not save the file to {file_path}.")
 
 if __name__ == "__main__":
+    qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
+    custom_colors = {
+        "[dark]": {
+            "primary": "#9a44dc",
+            "toolbar.background": "#736083"
+        },
+        "[light]": {
+            "primary": "#652d90",
+            "toolbar.background": "#c3b5cf"
+        }
+    }
+    qdarktheme.setup_theme("light",
+        custom_colors=custom_colors
+    )
     app.setWindowIcon(QIcon("gui/ENCORE_logo.png")) 
-    window = MainWindow()
+    window = MainWindow(gui_colors=custom_colors)
     window.show()
     app.exec()  
     #sys.exit(app.exec())

@@ -37,6 +37,7 @@ class CustomNavigationToolbar(NavigationToolbar):
 class MatplotlibWidget(QWidget):
     def __init__(self, rows=1, cols=1, parent=None):
         super().__init__(parent)
+        #plt.style.use('dark_background')
         self.canvas = FigureCanvas(Figure())
         self.toolbar = CustomNavigationToolbar(self.canvas, self)
         #self.toolbar = NavigationToolbar(self.canvas, self)
@@ -47,6 +48,7 @@ class MatplotlibWidget(QWidget):
         self.setLayout(layout)
         # Create subplots based on rows and cols
         self.set_subplots(rows, cols)
+        
 
     def set_subplots(self, rows, cols):
         # Clear existing subplots
@@ -75,7 +77,7 @@ class MatplotlibWidget(QWidget):
         transform=self.axes.transAxes)
         self.axes.set_axis_off()
         self.canvas.draw()
-
+    
     def preview_dataset(self, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
         self.axes.clear()
         n, t = dataset.shape
