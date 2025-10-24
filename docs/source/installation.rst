@@ -28,6 +28,7 @@ Needed MATLAB modules
 
 - Parallel Computing Toolbox
 - Statistics and Machine Learning Toolbox
+- Curve Fitting Toolbox
 
 Installation of the python environment
 --------------------------------------
