@@ -36,7 +36,7 @@
        <number>-1</number>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -737,6 +737,9 @@ Index 0 based.</string>
              </property>
              <property name="toolTipDuration">
               <number>5000</number>
+             </property>
+             <property name="autoFillBackground">
+              <bool>true</bool>
              </property>
              <property name="text">
               <string>Open file</string>
@@ -1655,8 +1658,8 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>717</width>
-                    <height>527</height>
+                    <width>71</width>
+                    <height>71</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -2350,20 +2353,8 @@ random circular shifts of original spike matrix.</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFrame" name="frame_4">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QFormLayout" name="formLayout_6">
+                     <widget class="QWidget" name="widget_11" native="true">
+                      <layout class="QFormLayout" name="formLayout_7">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -2488,14 +2479,8 @@ patterns. </string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QFrame" name="frame_3">
-                      <property name="frameShape">
-                       <enum>QFrame::StyledPanel</enum>
-                      </property>
-                      <property name="frameShadow">
-                       <enum>QFrame::Raised</enum>
-                      </property>
-                      <layout class="QFormLayout" name="formLayout_7">
+                     <widget class="QWidget" name="widget_10" native="true">
+                      <layout class="QHBoxLayout" name="horizontalLayout_23">
                        <property name="leftMargin">
                         <number>0</number>
                        </property>
@@ -2508,7 +2493,7 @@ patterns. </string>
                        <property name="bottomMargin">
                         <number>0</number>
                        </property>
-                       <item row="0" column="0">
+                       <item>
                         <widget class="QLabel" name="label_14">
                          <property name="toolTip">
                           <string>Number of iterations for fastICA
@@ -2523,7 +2508,7 @@ chosen.</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="1">
+                       <item>
                         <widget class="QLineEdit" name="ica_edit_iterations">
                          <property name="text">
                           <string>500</string>

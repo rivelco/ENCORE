@@ -492,7 +492,10 @@ class MatplotlibWidget(QWidget):
 
     def enscomp_plot_similarity(self, matrix, labels, color):
         if hasattr(self, "colorbar"):
-            self.colorbar.remove()
+            try:
+                self.colorbar.remove()
+            except:
+                pass
         self.axes.clear()
 
         cax = self.axes.imshow(matrix, aspect='equal', cmap=color)
