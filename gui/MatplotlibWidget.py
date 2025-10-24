@@ -112,8 +112,12 @@ class MatplotlibWidget(QWidget):
         
         self.axes.set_xlabel('X coordinates')
         self.axes.set_ylabel('Y coordinates')
-        self.axes.set_xlim([min(dataset[:,0]) - 10, max(dataset[:,0]) + 10])
-        self.axes.set_ylim([min(dataset[:,1]) - 10, max(dataset[:,1]) + 10])
+        min_x = int(min(dataset[:,0])) - 10
+        max_x = int(max(dataset[:,0])) + 10
+        min_y = int(min(dataset[:,1])) - 10
+        max_y = int(max(dataset[:,1])) + 10
+        self.axes.set_ylim([min_y, max_x])
+        self.axes.set_xlim([min_x, max_y])
         #self.axes.set_xticks([])
         #self.axes.set_yticks([])
         for side in ['left', 'top', 'right', 'bottom']:
