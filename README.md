@@ -37,6 +37,12 @@ This GUI currently incorporates five different algorithms:
 - Xsembles2P method: Pérez-Ortega, J., Akrouh, A. & Yuste, R. 2024. Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x
 - Similarity Graph Clustering method: L. Avitan et al. "Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience". Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056
 
+## Watch the demo
+
+<p align="center">
+  <img src="docs/media/gui_demo.gif" alt="Demo of NeuroAlign interface" width="700"/>
+</p>
+
 **More analysis and features coming soon...**
 
 > For detailed instructions about installation and usage, go to the [documentation website](https://rivelco.github.io/ENCORE/)
@@ -160,3 +166,4 @@ The main goal of this project is to be easily used to identify neuronal ensemble
 <!-- MARKDOWN LINKS & IMAGES -->
 [repo-link]: https://github.com/rivelco/ENCORE
 [gui-screenshot-ens-inspect]: readme_elements/images/Ensembles_Inspection_light.png
+[demo-vid]: readme_elements/vids/demo.mp4
