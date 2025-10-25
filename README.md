@@ -1,8 +1,33 @@
-# EnsemblesGUI
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/rivelco/ENCORE">
+    <img src="gui/ENCORE_logo.png" alt="Logo" width="80" height="80">
+  </a>
+
+  <h3 align="center">ENCORE - Ensembles Comparison and Recognition</h3>
+
+  <p align="center">
+    GUI to identify and compare neuronal ensembles in calcium or electrical recordings using five different algorithms.
+    <br />
+    <a href="https://rivelco.github.io/ENCORE/"><strong>Read the documentation</strong></a>
+    <br />
+    <br />
+    <a href="https://link.springer.com/book/10.1007/978-1-0716-4208-5">Read the book</a>
+    &middot;
+    <a href="https://github.com/rivelco/ENCORE/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+    &middot;
+    <a href="https://github.com/rivelco/ENCORE/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+  </p>
+</div>
+
+## About ENCORE
 
 Graphic User Interface to perform a variety of neuronal ensembles identification's methods.
 
 > This repo is under current development.
+
+[![Product Name Screen Shot][gui-screenshot-ens-inspect]]([repo-link])
 
 This GUI currently incorporates five different algorithms:
 
@@ -12,9 +37,15 @@ This GUI currently incorporates five different algorithms:
 - Xsembles2P method: Pérez-Ortega, J., Akrouh, A. & Yuste, R. 2024. Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x
 - Similarity Graph Clustering method: L. Avitan et al. "Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience". Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056
 
+## Watch the demo
+
+<p align="center">
+  <img src="readme_elements/vids/demo.mp4" alt="Demo of ENCORE interface" width="700"/>
+</p>
+
 **More analysis and features coming soon...**
 
-> For detailed instructions about installation and usage, go to the [documentation website](https://rivelco.github.io/EnsemblesGUI/)
+> For detailed instructions about installation and usage, go to the [documentation website](https://rivelco.github.io/ENCORE/)
 
 ## Installation
 
@@ -30,15 +61,18 @@ This specs, while recommended, are not mandatory. If you can run MATLAB 2020A th
 - Python 3.10 or above
 
 ### Needed MATLAB modules
+
 - Parallel Computing Toolbox
+- Statistics and Machine Learning Toolbox
+- Curve Fitting Toolbox
 
 ## Clone or download the repo
 
 Use git to clone the repo or download it from the webpage. Then change to that directory.
 
 ```bash
-git clone https://github.com/rivelco/EnsemblesGUI.git
-cd EnsemblesGUI
+git clone https://github.com/rivelco/ENCORE.git
+cd ENCORE
 ```
 
 ## Installation using conda
@@ -46,11 +80,11 @@ cd EnsemblesGUI
 The recommended installation method relies on Conda to manage your Python environments. I highly recommend using conda for this purpose. 
 To install using this method simple open your terminal and type this commands.
 
-This commands creates a conda environment called `ensgui` and then activates it.
+This commands creates a conda environment called `encore` and then activates it.
 
 ```bash
 conda env create -f environment.yml
-conda activate ensgui
+conda activate encore
 ```
 
 ## Installation using pip
@@ -64,6 +98,7 @@ pip install matplotlib
 pip install h5py
 pip install scikit-learn
 pip install scipy
+pip install pyqtdarktheme
 ```
 
 ## Install the MATLAB engine for Python
@@ -124,7 +159,11 @@ Binary matrix with shape `[groups, cell]`. The value `[group, cell] == 1` indica
 
 Binary matrix with shape `[behaviors, timepoints]`. The value `[behavior, timpoint] == 1` indicates that the behavior `behavior` was present in the timepoint `timepoint`. 
 
-
 ## Contribute to this project
 
 The main goal of this project is to be easily used to identify neuronal ensembles using different approaches. If you have suggestions, feature requests or bug reports, don't hesitate to use the Issues section of this repo.
+
+<!-- MARKDOWN LINKS & IMAGES -->
+[repo-link]: https://github.com/rivelco/ENCORE
+[gui-screenshot-ens-inspect]: readme_elements/images/Ensembles_Inspection_light.png
+[demo-vid]: readme_elements/vids/demo.mp4
