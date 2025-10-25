@@ -26,7 +26,7 @@ extensions = [
 ]
 
 # Mock MATLAB during doc build
-autodoc_mock_imports = ["matlab", "matlab.engine"]
+autodoc_mock_imports = ["matlab", "matlab.engine", "qdarktheme"]
 
 templates_path = ['_templates']
 exclude_patterns = []

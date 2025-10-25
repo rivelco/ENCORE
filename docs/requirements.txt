@@ -5,4 +5,3 @@ matplotlib
 numpy
 scikit-learn
 pyqt6==6.10.0
-pyqtdarktheme==2.1.0
