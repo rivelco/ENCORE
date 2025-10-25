@@ -1,17 +1,17 @@
 Usage
 =====
 
-A general workflow using Ensembles GUI would look like this:
+A general workflow using ENCORE would look like this:
 
-1. Execute EnsemblesGUI
------------------------
+1. Execute ENCORE
+-----------------
 
-    Once you have Ensembles GUI installed in your system, run `python main.py`
+    Once you have ENCORE installed in your system, run `python encore.py`
 
 2. Load Your Data
 -----------------
 
-#. Navigate to the "Load file" tab.
+#. Navigate to the "Load data" tab.
 #. Click "Open file" and select your data file.
 #. Use the "File structure preview" panel to locate the variable you wish to load.
 #. In the "Set the selected variable as" panel, select the variable name to assign it.
@@ -63,7 +63,7 @@ A general workflow using Ensembles GUI would look like this:
 
 #. Open the "Save" tab.
 #. Choose the data to save:
-    - Minimal results used by Ensembles GUI: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.
+    - Minimal results used by ENCORE: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.
     - Full results of every analysis: Includes additional data used by the original algorithms.
 #. Select the desired export format.
 
@@ -78,4 +78,4 @@ Additional Tips
 
 - Plots will display helpful messages if additional data or analyses are required.
 
-- Check the "Console log" panel and Python console for additional information during analysis.
+- Check the "ENCORE log" panel and Python console for additional information during analysis.

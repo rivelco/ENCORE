@@ -10,18 +10,25 @@ from scipy.spatial.distance import pdist, squareform
 import time
 from datetime import datetime
 import pickle
+import json
+
+import qdarktheme
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
 from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal
-from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator
+from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator, QIcon
 
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
 
+import runners.svd_run as run_svd
+
 import utils.metrics as metrics
+import utils.parameters_validators as parameters_validators
+import utils.data_converters as converters
 from utils.text_formatting import format_nums_to_string
 
 from gui.MatplotlibWidget import MatplotlibWidget
@@ -31,6 +38,7 @@ import matplotlib.pyplot as plt
 import matlab.engine
 
 from pprint import pprint
+import warnings
 
 class WorkerSignals(QObject):
     """
@@ -90,22 +98,27 @@ class WorkerRunnable(QRunnable):
         self.signals.result_ready.emit(result)
 
 class MainWindow(QMainWindow):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, gui_colors={}, *args, **kwargs):
         #super().__init__(*args, **kwargs)
         super(MainWindow, self).__init__()
         loadUi("gui/MainWindow.ui", self)
-        self.setWindowTitle('Ensembles GUI')
+        self.setWindowTitle('ENCORE - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
-            "analyzer": "EnsemblesGUI",
+            "analyzer": "ENCORE",
             "date": "",
             "gui_version": 2.0
         }
+        
+        self.gui_colors = gui_colors
 
         self.threadpool = QThreadPool()
 
         # Initialize the GUI
         self.reset_gui()
+        
+        # Dark mode button
+        self.dark_mode.clicked.connect(self.set_theme)
         ## Browse files
         self.browseFile.clicked.connect(self.browse_files)
         # Connect the clicked signal of the tree view to a slot
@@ -146,59 +159,11 @@ class MainWindow(QMainWindow):
         self.btn_clear_labels.clicked.connect(self.varlabels_clear)
 
         ## Set default values for analysis
-        self.svd_defaults = {
-            'pks': 3,
-            'scut': 0.22,
-            'hcut': 0.22,
-            'state_cut': 6,
-            'csi_start': 0.01,
-            'csi_step': 0.01,
-            'csi_end': 0.1,
-            'tf_idf_norm': True,
-            'parallel_processing': False
-        }
-        self.pca_defaults = {
-            'dc': 0.01,
-            'npcs': 3,
-            'minspk': 3,
-            'nsur': 1000,
-            'prct': 99.9,
-            'cent_thr': 99.9,
-            'inner_corr': 5,
-            'minsize': 3
-        }
-        self.ica_defaults = {
-            'threshold': {
-                'method': 'MarcenkoPastur',
-                'permutations_percentile': 95,
-                'number_of_permutations': 20
-            },
-            'Patterns': {
-                'method': 'ICA',
-                'number_of_iterations': 500
-            }
-        }
-        self.x2p_defaults = {
-            'network_bin': 1,
-            'network_iterations': 1000,
-            'network_significance': 0.05,
-            'coactive_neurons_threshold': 2,
-            'clustering_range_start': 3,
-            'clustering_range_end': 10,
-            'clustering_fixed': 0,
-            'iterations_ensemble': 1000,
-            'parallel_processing': False,
-            'file_log': ''
-        }
-        self.sgc_defaults = {
-            'use_first_derivative': False,
-            'standard_deviations_threshold': 2,
-            'shuffling_rounds': 1000,
-            'coactivity_significance_level': 0.05,
-            'montecarlo_rounds': 5,
-            'montecarlo_steps': 10000,
-            'affinity_threshold': 0.2
-        }
+        self.svd_defaults = self.load_defaults("svd_defaults")
+        self.pca_defaults = self.load_defaults("pca_defaults") 
+        self.ica_defaults = self.load_defaults("ica_defaults") 
+        self.x2p_defaults = self.load_defaults("x2p_defaults") 
+        self.sgc_defaults = self.load_defaults("sgc_defaults") 
 
         ## Numeric validator
         double_validator = QDoubleValidator()
@@ -236,13 +201,13 @@ class MainWindow(QMainWindow):
 
         ## SVD analysis
         self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
-        self.btn_run_svd.clicked.connect(self.run_svd)
+        self.btn_run_svd.clicked.connect(self.collect_parameters_svd)
         ## PCA analysis
         self.pca_btn_defaults.clicked.connect(self.load_defaults_pca)
         self.btn_run_pca.clicked.connect(self.run_PCA)
         ## ICA analysis
         self.ica_btn_defaults.clicked.connect(self.load_defaults_ica)
-        self.btn_run_ica.clicked.connect(self.run_ICA)
+        self.btn_run_ica.clicked.connect(self.collect_parameters_ica)
         ## X2P analysis
         self.x2p_btn_defaults.clicked.connect(self.load_defaults_x2p)
         self.btn_run_x2p.clicked.connect(self.run_x2p)
@@ -263,13 +228,13 @@ class MainWindow(QMainWindow):
         self.ensvis_check_cellnum.stateChanged.connect(self.update_ens_vis_coords)
 
         # Ensemble compare
-        self.enscomp_slider_svd.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_slider_behavior.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_svd.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
+        self.enscomp_spinbox_behavior.valueChanged.connect(self.ensembles_compare_update_ensembles)
 
         self.enscomp_visopts_setneusize.clicked.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_visopts_showcells.stateChanged.connect(self.ensembles_compare_update_ensembles)
@@ -328,6 +293,17 @@ class MainWindow(QMainWindow):
         self.save_btn_pkl.clicked.connect(self.save_results_pkl)
         self.save_btn_mat.clicked.connect(self.save_results_mat)
         
+    def set_theme(self):
+        set_dark_mode = self.dark_mode.isChecked()
+        if set_dark_mode:
+            qdarktheme.setup_theme(
+                custom_colors=self.gui_colors
+            )
+        else:
+            qdarktheme.setup_theme("light",
+                custom_colors=self.gui_colors
+            )
+        
     def update_console_log(self, message, msg_type="log"):
         """
         Updates the console log with a new message, formatted with a specific color based on the message type.
@@ -364,10 +340,13 @@ class MainWindow(QMainWindow):
         """
         # Delete all previous results
         self.results = {}
-        self.algotrithm_results = {}
+        self.algorithm_results = {}
         self.params = {}
         self.varlabels = {}
         self.tempvars = {}
+        if hasattr(self, "data_coordinates_generated"):
+            delattr(self, "data_coordinates")
+            self.data_coordinates_generated = False
         
         # Initialize buttons
         self.btn_run_svd.setEnabled(False)
@@ -407,7 +386,7 @@ class MainWindow(QMainWindow):
             btn.setEnabled(False)
 
         # Clear the preview plots
-        default_txt = "Load or select a variable\nto see a preview here"
+        default_txt = "Load or select a variable to see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
 
         # Clear the figures
@@ -519,42 +498,41 @@ class MainWindow(QMainWindow):
             obj.blockSignals(False)
         
         # Sliders
-        sliders = [self.enscomp_slider_svd, 
-                   self.enscomp_slider_pca, 
-                   self.enscomp_slider_ica,
-                   self.enscomp_slider_x2p]
+        sliders = [self.enscomp_spinbox_svd, 
+                   self.enscomp_spinbox_pca, 
+                   self.enscomp_spinbox_ica,
+                   self.enscomp_spinbox_x2p,
+                   self.enscomp_spinbox_sgc,
+                   self.enscomp_spinbox_stim,
+                   self.enscomp_spinbox_behavior]
         for obj in sliders:
             obj.blockSignals(True)
             obj.setEnabled(False)
-            obj.setMinimum(1)
-            obj.setMaximum(2)
-            obj.setValue(1)
+            obj.setRange(0, 0)
+            obj.setValue(0)
             obj.blockSignals(False)
 
-        slider_labels = [self.enscomp_slider_lbl_min_svd,
-                         self.enscomp_slider_lbl_max_svd,
-                         self.enscomp_slider_lbl_min_pca,
-                         self.enscomp_slider_lbl_max_pca,
-                         self.enscomp_slider_lbl_min_ica,
-                         self.enscomp_slider_lbl_max_ica,
-                         self.enscomp_slider_lbl_min_x2p,
-                         self.enscomp_slider_lbl_max_x2p]
+        slider_labels = [self.enscomp_spinbox_lbl_max_svd,
+                         self.enscomp_spinbox_lbl_max_pca,
+                         self.enscomp_spinbox_lbl_max_ica,
+                         self.enscomp_spinbox_lbl_max_x2p,
+                         self.enscomp_spinbox_lbl_max_sgc]
         for obj in slider_labels:
             obj.setEnabled(False)
-            obj.setText("1")
+            obj.setText("0")
             
         if not hasattr(self, "data_stims"):
-            self.enscomp_slider_stim.setEnabled(False)
-            self.enscomp_slider_lbl_min_stim.setEnabled(False)
-            self.enscomp_slider_lbl_max_stim.setEnabled(False)
-            self.enscomp_slider_lbl_stim.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_stim.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_stim.setText("0")
+            self.enscomp_spinbox_lbl_stim.setEnabled(False)
+            self.enscomp_spinbox_lbl_stim.setText("Label")
             self.enscomp_check_show_stim.setEnabled(False)
             self.enscomp_btn_color_stim.setEnabled(False)
         if not hasattr(self, "data_behavior"):
-            self.enscomp_slider_behavior.setEnabled(False)
-            self.enscomp_slider_lbl_min_behavior.setEnabled(False)
-            self.enscomp_slider_lbl_max_behavior.setEnabled(False)
-            self.enscomp_slider_lbl_behavior.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_behavior.setEnabled(False)
+            self.enscomp_spinbox_lbl_max_behavior.setText("0")
+            self.enscomp_spinbox_lbl_behavior.setEnabled(False)
+            self.enscomp_spinbox_lbl_behavior.setText("Label")
             self.enscomp_check_show_behavior.setEnabled(False)
             self.enscomp_btn_color_behavior.setEnabled(False)
 
@@ -599,6 +577,28 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements').reset(default_txt)
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_times').reset(default_txt)
 
+    def load_defaults(self, method):
+        """
+        Load the default parameters for a given method from a configuration file.
+
+        :param str method: The name of the method for which default parameters are requested.
+        :return: A dictionary containing the default parameters for the specified method.
+        :rtype: dict
+        :raises KeyError: If the specified method is not found in the configuration file.
+        :raises FileNotFoundError: If the configuration file is missing.
+        :raises json.JSONDecodeError: If the configuration file is not a valid JSON.
+        """
+        config_path = "config/default_parameters.json"
+        if not os.path.exists(config_path):
+            raise FileNotFoundError(f"Configuration file not found: {config_path}")
+        with open(config_path, "r") as f:
+            try:
+                defaults = json.load(f)
+            except json.JSONDecodeError as e:
+                raise json.JSONDecodeError(f"Error decoding JSON in {config_path}: {e}", e.doc, e.pos)
+        if method not in defaults:
+            raise KeyError(f"Method '{method}' not found in default parameters.")
+        return defaults[method]
     def browse_files(self):
         """
         Opens a file browing dialog to open a new file.
@@ -892,7 +892,12 @@ class MainWindow(QMainWindow):
         """
         data_behavior = assign_data_from_file(self)
         self.data_behavior = data_behavior
-        behaviors, timepoints = data_behavior.shape
+        behav_shape = data_behavior.shape
+        if len(behav_shape) > 1:
+            behaviors, timepoints = data_behavior.shape
+        else:
+            timepoints = data_behavior.shape[0]
+            behaviors = 1
         self.btn_clear_behavior.setEnabled(True)
         self.btn_view_behavior.setEnabled(True)
         self.lbl_behavior_select.setText("Assigned")
@@ -1128,7 +1133,12 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_behavior.shape[1], lim_sup_y=self.data_behavior.shape[0])
+        if len(self.data_behavior.shape) > 1:
+            behaviors, timepoints = self.data_behavior.shape
+        else:
+            timepoints = self.data_behavior.shape[0]
+            behaviors = 1
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=behaviors)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
         if len(preview_data.shape) == 1:
@@ -1219,20 +1229,30 @@ class MainWindow(QMainWindow):
                 [5.5, 7.5]])
 
         """
+        mat = np.atleast_2d(mat)  # ensures its 2D (1, N) even if originally 1D
         elements, timepoints = mat.shape
+
         if bin_size >= timepoints:
-            self.update_console_log(f"Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.", "warning")
-            return mat   
+            print("Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.")
+            return mat
+
         num_bins = timepoints // bin_size
         bin_mat = np.zeros((elements, num_bins))
+
         for i in range(num_bins):
+            window = mat[:, i * bin_size:(i + 1) * bin_size]
             if bin_method == "mean":
-                bin_mat[:, i] = np.mean(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+                bin_mat[:, i] = np.mean(window, axis=1)
             elif bin_method == "sum":
-                bin_mat[:, i] = np.sum(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+                bin_mat[:, i] = np.sum(window, axis=1)
             else:
                 raise ValueError("Invalid bin_method. Use 'mean' or 'sum'.")
-        return bin_mat 
+
+        # If input was 1D, return 1D output
+        if mat.shape[0] == 1:
+            return bin_mat.flatten()
+        return bin_mat
+    
     def edit_bin(self):
         """
         Reads the binning parameters and performs the binning in the selected dataset.
@@ -1485,31 +1505,6 @@ class MainWindow(QMainWindow):
             self.view_behavior()
         self.varlabels_setup_tab(self.table_setlabels.rowCount())
         
-    def dict_to_matlab_struct(self, pars_dict):
-        """
-        Converts a Python dictionary to a MATLAB struct.
-
-        :param pars_dict: A dictionary where keys represent the names of fields in the MATLAB struct and the values 
-                        represent the corresponding field values.
-        :type pars_dict: dict
-
-        :return: A MATLAB struct where the keys are the field names and the values are converted to the appropriate MATLAB data type.
-        :rtype: dict
-
-        This function recursively converts a Python dictionary to a MATLAB struct. It handles nested dictionaries by 
-        recursively calling the conversion function. Numeric values (integers or floats) are converted into MATLAB 
-        double type, while other data types are kept unchanged.
-        """
-        matlab_struct = {}
-        for key, value in pars_dict.items():
-            if isinstance(value, dict):
-                matlab_struct[key] = self.dict_to_matlab_struct(value)
-            elif isinstance(value, (int, float)):
-                matlab_struct[key] = matlab.double([value])
-            else:
-                matlab_struct[key] = value
-        return matlab_struct
-
     def load_defaults_svd(self):
         """
         Loads default SVD parameter values into the UI fields.
@@ -1531,7 +1526,7 @@ class MainWindow(QMainWindow):
         self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
         self.svd_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default SVD parameter values", "complete")
-    def run_svd(self):
+    def collect_parameters_svd(self):
         """
         Retrieves user-defined parameters for Singular Value Decomposition (SVD) from the GUI, applies default values 
         if fields are empty, and initiates the SVD analysis in parallel. The function also updates the console log 
@@ -1543,47 +1538,34 @@ class MainWindow(QMainWindow):
         # Temporarly disable the button
         self.btn_run_svd.setEnabled(False)
         # Prepare data
-        data = self.data_neuronal_activity
-        spikes = matlab.double(data.tolist())
+        spikes = self.data_neuronal_activity
+        #spikes = matlab.double(data.tolist())
         #Prepare dummy data
         data = np.zeros((self.cant_neurons,2))
         coords_foo = matlab.double(data.tolist())
 
         # Prepare parameters
         input_value = self.svd_edit_pks.text()
-        val_pks = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
+        if len(input_value) > 0:
+            val_pks = np.array([float(input_value)])
+        else:
+            val_pks = np.array([])
         input_value = self.svd_edit_scut.text()
-        val_scut = np.array([float(input_value)]) if len(input_value) > 0 else np.array([]) 
+        if len(input_value) > 0:
+            val_scut = np.array([float(input_value)])
+        else:
+            val_scut = np.array([])
+
         input_value = self.svd_edit_hcut.text()
-        if len(input_value) > 0:
-            val_hcut = float(input_value) 
-        else:
-            val_hcut = self.svd_defaults['hcut']
-            self.svd_edit_hcut.setText(f"{val_hcut}")
+        val_hcut = input_value
         input_value = self.svd_edit_statecut.text()
-        if len(input_value) > 0:
-            val_statecut = float(input_value)
-        else:
-            val_statecut = self.svd_defaults['statecut']
-            self.svd_edit_statecut.setText(f"{val_statecut}")
+        val_statecut = input_value
         input_value = self.svd_edit_csistart.text()
-        if len(input_value) > 0:
-            val_csistart = float(input_value)
-        else:
-            val_csistart = self.svd_defaults['csi_start']
-            self.svd_edit_csistart.setText(f"{val_csistart}")
+        val_csistart = input_value
         input_value = self.svd_edit_csistep.text()
-        if len(input_value) > 0:
-            val_csistep = float(input_value)
-        else:
-            val_csistep = self.svd_defaults['statecut']
-            self.svd_edit_csistep.setText(f"{val_csistep}")
+        val_csistep = input_value
         input_value = self.svd_edit_csiend.text()
-        if len(input_value) > 0:
-            val_csiend = float(input_value)
-        else:
-            val_csiend = self.svd_defaults['statecut']
-            self.svd_edit_csiend.setText(f"{val_csiend}")
+        val_csiend = input_value
         val_idtfd = self.svd_check_tfidf.isChecked()
         parallel_computing = self.svd_check_parallel.isChecked()
 
@@ -1599,8 +1581,19 @@ class MainWindow(QMainWindow):
             'csi_end': val_csiend,
             'parallel_processing': parallel_computing
         }
-        self.params['svd'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+
+        # Validate the parameters
+        pars_validated = parameters_validators.validate_parameters_svd(pars, self.svd_defaults)
+
+        # Fill the GUI spaces using the validated data, in case there are changes
+        self.svd_edit_hcut.setText(f"{pars_validated['hcut']}")
+        self.svd_edit_statecut.setText(f"{pars_validated['statecut']}")
+        self.svd_edit_csistart.setText(f"{pars_validated['csi_start']}")
+        self.svd_edit_csistep.setText(f"{pars_validated['csi_step']}")
+        self.svd_edit_csiend.setText(f"{pars_validated['csi_end']}")
+
+        self.params['svd'] = pars_validated
+        pars_matlab = converters.dict_to_matlab_struct(pars_validated)
 
         # Clean all the figures in case there was something previously
         if 'svd' in self.results:
@@ -1612,10 +1605,10 @@ class MainWindow(QMainWindow):
         # Run the SVD in parallel
         self.update_console_log("Performing SVD...")
         self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_svd = WorkerRunnable(self.run_svd_parallel, spikes, coords_foo, pars_matlab)
-        worker_svd.signals.result_ready.connect(self.run_svd_parallel_end)
+        worker_svd = WorkerRunnable(self.run_svd_handler, spikes, coords_foo, pars_matlab)
+        worker_svd.signals.result_ready.connect(self.run_svd_handler_end)
         self.threadpool.start(worker_svd)
-    def run_svd_parallel(self, spikes, coords_foo, pars_matlab):
+    def run_svd_handler(self, spikes, coords_foo, pars_matlab):
         """
         Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data in parallel. 
         This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
@@ -1630,45 +1623,29 @@ class MainWindow(QMainWindow):
         :rtype: list[float]
         """
         log_flag = "GUI SVD:"
-        print(f"{log_flag} Starting MATLAB engine...")
-        start_time = time.time()
-        eng_svd = matlab.engine.start_matlab()
-        # Adding to path
         relative_folder_path = 'analysis/SVD'
-        folder_path = os.path.abspath(relative_folder_path)
-        folder_path_with_subfolders = eng_svd.genpath(folder_path)
-        eng_svd.addpath(folder_path_with_subfolders, nargout=0)
-        end_time = time.time()
-        engine_time = end_time - start_time
-        print(f"{log_flag} Loaded MATLAB engine.")
-        start_time = time.time()
-        try:
-            answer = eng_svd.Stoixeion(spikes, coords_foo, pars_matlab)
-        except:
-            print(f"{log_flag} An error occurred while excecuting the algorithm. Check console logs for more info.")
-            answer = None
-        end_time = time.time()
-        algorithm_time = end_time - start_time
-        print(f"{log_flag} Done.")
-        print(f"{log_flag} Terminating MATLAB engine...")
-        eng_svd.quit()
-        print(f"{log_flag} Done.")
+        result = run_svd.run_svd(spikes, coords_foo, pars_matlab, relative_folder_path)
         plot_times = 0
-        if answer != None:
-            self.algotrithm_results['svd'] = answer
-            # Update pks and scut in case of automatic calculation
-            self.svd_edit_pks.setText(f"{int(answer['pks'])}")
-            self.svd_edit_scut.setText(f"{answer['scut']}")
+        if result["success"]:
+            # Save results
+            self.algorithm_results['svd'] = result["answer"]
+            self.results['svd'] = result["results"]
+
+            # Update pks and scut in the GUI in case of automatic calculation
+            self.svd_edit_pks.setText(f"{int(result['answer']['pks'])}")
+            self.svd_edit_scut.setText(f"{result['answer']['scut']}")
+
             # Plotting results
             print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
             start_time = time.time()
-            self.plot_SVD_results(answer)
+            self.plot_SVD_results(result["answer"])
             end_time = time.time()
             plot_times = end_time - start_time
             print(f"{log_flag} Done plotting and saving...")
-        return [engine_time, algorithm_time, plot_times]
-    def run_svd_parallel_end(self, times):
+            
+        return [result["engine_time"], result["algorithm_time"], plot_times]
+    def run_svd_handler_end(self, times):
         """
         Finalizes the SVD execution process, logging timing information for each stage of the computation, 
         and re-enables the SVD run button.
@@ -1715,7 +1692,10 @@ class MainWindow(QMainWindow):
         plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_components')
         rows = math.ceil(math.sqrt(num_state))
         cols = math.ceil(num_state / rows)
+        rows = rows+1 if rows == 1 else rows
+        cols = cols+1 if cols == 1 else cols
         plot_widget.set_subplots(rows, cols)
+        plot_widget.canvas.setFixedHeight(400*rows)
         for state_idx in range(num_state):
             curent_comp = singular_vals[:, :, state_idx]
             row = state_idx // cols
@@ -1723,38 +1703,17 @@ class MainWindow(QMainWindow):
             plot_widget.plot_states_from_svd(curent_comp, state_idx, row, col)
             
         # Plot the ensembles timecourse
-        Pks_Frame = np.array(answer['Pks_Frame'])
-        sec_Pk_Frame = np.array(answer['sec_Pk_Frame'])
-        ensembles_timecourse = np.zeros((num_state, self.cant_timepoints))
-        framesActiv = Pks_Frame.shape[1]
-        for it in range(framesActiv):
-            currentFrame = int(Pks_Frame[0, it])
-            currentEns = int(sec_Pk_Frame[it, 0])
-            if currentEns != 0: 
-                ensembles_timecourse[currentEns-1, currentFrame-1] = 1
+        ensembles_timecourse = self.results['svd']['timecourse']
         plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_timecourse')
         plot_widget.plot_ensembles_timecourse(ensembles_timecourse)
 
-        # Save the results
-        self.results['svd'] = {}
-        self.results['svd']['timecourse'] = ensembles_timecourse
-        self.results['svd']['ensembles_cant'] = ensembles_timecourse.shape[0]
-        Pools_coords = np.array(answer['Pools_coords'])
-        # Identify the neurons that belongs to each ensamble
-        neurons_in_ensembles = np.zeros((self.results['svd']['ensembles_cant'], self.cant_neurons))
-        for ens in range(self.results['svd']['ensembles_cant']):
-            cells_in_ens = Pools_coords[:, :, ens]
-            for neu in range(self.cant_neurons):
-                cell_id = int(cells_in_ens[neu][2])
-                if cell_id == 0:
-                    break
-                else:
-                    neurons_in_ensembles[ens, cell_id-1] = 1
-        self.results['svd']['neus_in_ens'] = neurons_in_ensembles
-        self.we_have_results()
-
+        # Plot neurons in ensembles
+        neurons_in_ensembles = self.results['svd']['neus_in_ens']
         plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
         plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Cell")
+
+        # Save the results
+        self.we_have_results()
 
     def load_defaults_pca(self):
         """
@@ -1821,7 +1780,7 @@ class MainWindow(QMainWindow):
             'minsize': minsize
         }
         self.params['pca'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'pca' in self.results:
@@ -1876,7 +1835,7 @@ class MainWindow(QMainWindow):
         plot_times = 0
         # Plot the results
         if answer != None:
-            self.algotrithm_results['pca'] = answer
+            self.algorithm_results['pca'] = answer
             print(f"{log_flag} Plotting results...")
             start_time = time.time()
             self.plot_PCA_results(pars, answer)
@@ -1937,7 +1896,10 @@ class MainWindow(QMainWindow):
         Nens = int(answer['Nens'])
         ens_cols = plt.cm.tab10(range(Nens * 2))
         plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_pca')
-        plot_widget.plot_pca(pcs, ens_labs=labels, ens_cols = ens_cols)
+        try:
+            plot_widget.plot_pca(pcs, ens_labs=labels, ens_cols = ens_cols)
+        except:
+            pass
 
         # Plot the rhos vs deltas
         rho = np.array(answer['rho'])
@@ -1995,7 +1957,7 @@ class MainWindow(QMainWindow):
         self.ica_radio_method_ica.setChecked(True)
         self.ica_edit_iterations.setText(f"{defaults['Patterns']['number_of_iterations']}")
         self.update_console_log("Loaded default ICA parameter values", "complete")
-    def run_ICA(self):
+    def collect_parameters_ica(self):
         """
         Retrieves user-defined parameters for ICA from the GUI, applies default values 
         if fields are empty, and initiates the ICA analysis in parallel. The function also updates the console log 
@@ -2007,8 +1969,8 @@ class MainWindow(QMainWindow):
         # Temporarly disable the button
         self.btn_run_ica.setEnabled(False)
         # Prepare data
-        data = self.data_neuronal_activity
-        spikes = matlab.double(data.tolist())
+        spikes = matlab.double(self.data_neuronal_activity.tolist())
+        #spikes = matlab.double(data.tolist())
 
         # Prepare parameters
         if self.ica_radio_method_marcenko.isChecked():
@@ -2018,17 +1980,14 @@ class MainWindow(QMainWindow):
         elif self.ica_radio_method_shift.isChecked():
             threshold_method = "circularshift"
 
-        input_value = self.ica_edit_perpercentile.text()
-        val_per_percentile = float(input_value) if len(input_value) > 0 else self.ica_defaults['threshold']['permutations_percentile']
-        input_value = self.ica_edit_percant.text()
-        val_per_cant = float(input_value) if len(input_value) > 0 else self.ica_defaults['threshold']['number_of_permutations']
+        val_per_percentile = self.ica_edit_perpercentile.text()
+        val_per_cant = self.ica_edit_percant.text()
 
         if self.ica_radio_method_ica.isChecked():
             patterns_method = "ICA"
         elif self.ica_radio_method_pca.isChecked():
             patterns_method = "PCA"
-        input_value = self.ica_edit_iterations.text()
-        val_iteartions = float(input_value) if len(input_value) > 0 else self.ica_defaults['Patterns']['number_of_iterations']
+        val_iteartions = self.ica_edit_iterations.text()
 
         # Pack parameters
         pars = {
@@ -2042,8 +2001,10 @@ class MainWindow(QMainWindow):
                 'number_of_iterations': val_iteartions
             }
         }
-        self.params['ica'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_validated = parameters_validators.validate_parameters_ica(pars, self.ica_defaults)
+
+        self.params['ica'] = pars_validated
+        pars_matlab = converters.dict_to_matlab_struct(pars_validated)
 
         # Clean all the figures in case there was something previously
         if 'ica' in self.results:
@@ -2091,8 +2052,8 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done looking for patterns...")
 
         if answer != None:
-            self.algotrithm_results['ica'] = {}
-            self.algotrithm_results['ica']['patterns'] = answer
+            self.algorithm_results['ica'] = {}
+            self.algorithm_results['ica']['patterns'] = answer
             assembly_templates = np.array(answer['AssemblyTemplates']).T
             print(f"{log_flag} Looking for assembly activity...")
             try:
@@ -2109,7 +2070,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
-            self.algotrithm_results['ica']['assembly_activity'] = answer
+            self.algorithm_results['ica']['assembly_activity'] = answer
             start_time = time.time()
             time_projection = np.array(answer["time_projection"])
             ## Identify the significative values to binarize the matrix
@@ -2261,7 +2222,7 @@ class MainWindow(QMainWindow):
             'FileLog': ''
         }
         self.params['x2p'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'x2p' in self.results:
@@ -2348,7 +2309,7 @@ class MainWindow(QMainWindow):
             answer['Ensembles']['Indices'] = new_clean['Indices']
             answer['Ensembles']['Durations'] = new_clean['Durations']
 
-            self.algotrithm_results['x2p'] = answer
+            self.algorithm_results['x2p'] = answer
             self.plot_X2P_results(clean_answer)
 
             print(f"{log_flag} Saving results...")
@@ -2484,7 +2445,7 @@ class MainWindow(QMainWindow):
             'affinity_threshold': val_affinity_threshold
         }
         self.params['sgc'] = pars
-        pars_matlab = self.dict_to_matlab_struct(pars)
+        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'sgc' in self.results:
@@ -2538,7 +2499,7 @@ class MainWindow(QMainWindow):
         print(f"{log_flag} Done.")
         plot_times = 0
         if answer != None:
-            self.algotrithm_results['sgc'] = answer
+            self.algorithm_results['sgc'] = answer
             # Plotting results
             print(f"{log_flag} Plotting and saving results...")
             # For this method the saving occurs in the same plotting function to avoid recomputation
@@ -2590,12 +2551,12 @@ class MainWindow(QMainWindow):
         self.results['sgc']['ensembles_cant'] = ensembles_timecourse.shape[0]
         self.results['sgc']['neus_in_ens'] = neurons_in_ensembles
         # Correct the answer saved
-        self.algotrithm_results['sgc']['assemblies'] = {}
+        self.algorithm_results['sgc']['assemblies'] = {}
         for idx, assembly in enumerate(assemblies):
-            self.algotrithm_results['sgc']['assemblies'][f"{idx}"] = assembly
-        self.algotrithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'] = {}
+            self.algorithm_results['sgc']['assemblies'][f"{idx}"] = assembly
+        self.algorithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'] = {}
         for idx, act_patt in enumerate(i_assembly_patterns):
-            self.algotrithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'][f"{idx}"] = act_patt
+            self.algorithm_results['sgc']['assembly_pattern_detection']['assemblyIActivityPatterns'][f"{idx}"] = act_patt
 
 
         # Plot the cells in ensembles
@@ -2947,25 +2908,20 @@ class MainWindow(QMainWindow):
         :rtype: None
         """
         if algorithm == 'svd':
-            ens_selector = self.enscomp_slider_svd
-            selector_label_min = self.enscomp_slider_lbl_min_svd
-            selector_label_max = self.enscomp_slider_lbl_max_svd
+            ens_selector = self.enscomp_spinbox_svd
+            selector_label_max = self.enscomp_spinbox_lbl_max_svd
         elif algorithm == 'pca':
-            ens_selector = self.enscomp_slider_pca
-            selector_label_min = self.enscomp_slider_lbl_min_pca
-            selector_label_max = self.enscomp_slider_lbl_max_pca
+            ens_selector = self.enscomp_spinbox_pca
+            selector_label_max = self.enscomp_spinbox_lbl_max_pca
         elif algorithm == 'ica':
-            ens_selector = self.enscomp_slider_ica
-            selector_label_min = self.enscomp_slider_lbl_min_ica
-            selector_label_max = self.enscomp_slider_lbl_max_ica
+            ens_selector = self.enscomp_spinbox_ica
+            selector_label_max = self.enscomp_spinbox_lbl_max_ica
         elif algorithm == 'x2p':
-            ens_selector = self.enscomp_slider_x2p
-            selector_label_min = self.enscomp_slider_lbl_min_x2p
-            selector_label_max = self.enscomp_slider_lbl_max_x2p
+            ens_selector = self.enscomp_spinbox_x2p
+            selector_label_max = self.enscomp_spinbox_lbl_max_x2p
         elif algorithm == 'sgc':
-            ens_selector = self.enscomp_slider_sgc
-            selector_label_min = self.enscomp_slider_lbl_min_sgc
-            selector_label_max = self.enscomp_slider_lbl_max_sgc
+            ens_selector = self.enscomp_spinbox_sgc
+            selector_label_max = self.enscomp_spinbox_lbl_max_sgc
 
         # Enable the general visualization options
         self.enscomp_visopts_showcells.setEnabled(True)
@@ -2980,11 +2936,8 @@ class MainWindow(QMainWindow):
 
         # Activate the slider to select an ensemble of the given algorithm
         ens_selector.setEnabled(True)
-        ens_selector.setMinimum(1)   # Set the minimum value
-        ens_selector.setMaximum(self.results[algorithm]['ensembles_cant']) # Set the maximum value
+        ens_selector.setRange(1, self.results[algorithm]['ensembles_cant']) # Set the maximum value
         ens_selector.setValue(1)
-        selector_label_min.setEnabled(True)
-        selector_label_min.setText(f"{1}")
         selector_label_max.setEnabled(True)
         selector_label_max.setText(f"{self.results[algorithm]['ensembles_cant']}")
         # Update the toolbox options
@@ -3035,36 +2988,31 @@ class MainWindow(QMainWindow):
         :type exp_data: string.
         """
         if exp_data == "stims":
-            slider = self.enscomp_slider_stim
-            lbl_min = self.enscomp_slider_lbl_min_stim
-            lbl_max = self.enscomp_slider_lbl_max_stim
-            lbl_label = self.enscomp_slider_lbl_stim
+            spinbox = self.enscomp_spinbox_stim
+            lbl_max = self.enscomp_spinbox_lbl_max_stim
+            lbl_label = self.enscomp_spinbox_lbl_stim
             check_show = self.enscomp_check_show_stim
             color_pick = self.enscomp_btn_color_stim
             shp = self.data_stims.shape
             max_val = shp[0] if len(shp) > 1 else 1
         elif exp_data == "behavior":
-            slider = self.enscomp_slider_behavior
-            lbl_min = self.enscomp_slider_lbl_min_behavior
-            lbl_max = self.enscomp_slider_lbl_max_behavior
-            lbl_label = self.enscomp_slider_lbl_behavior
+            spinbox = self.enscomp_spinbox_behavior
+            lbl_max = self.enscomp_spinbox_lbl_max_behavior
+            lbl_label = self.enscomp_spinbox_lbl_behavior
             check_show = self.enscomp_check_show_behavior
             color_pick = self.enscomp_btn_color_behavior
             shp = self.data_behavior.shape
             max_val = shp[0] if len(shp) > 1 else 1
-        # Activate the slider
-        slider.blockSignals(True)
-        slider.setEnabled(True)
-        slider.setMinimum(1)
-        slider.setMaximum(max_val)
-        slider.setValue(1)
-        lbl_min.setText(f"{1}")
-        lbl_min.setEnabled(True)
+        # Activate the spinbox
+        spinbox.blockSignals(True)
+        spinbox.setEnabled(True)
+        spinbox.setRange(1, max_val)
+        spinbox.setValue(1)
         lbl_label.setText(f"{1}")
         lbl_label.setEnabled(True)
         lbl_max.setText(f"{max_val}")
         lbl_max.setEnabled(True)
-        slider.blockSignals(False)
+        spinbox.blockSignals(False)
         # Update the toolbox options
         check_show.setEnabled(True)
         color_pick.setEnabled(True)
@@ -3083,17 +3031,17 @@ class MainWindow(QMainWindow):
         """
         ensembles_to_compare = {}
         ens_selector = {
-            "svd": self.enscomp_slider_svd,
-            "pca": self.enscomp_slider_pca,
-            "ica": self.enscomp_slider_ica,
-            "x2p": self.enscomp_slider_x2p,
-            "sgc": self.enscomp_slider_sgc,
-            "stims": self.enscomp_slider_stim,
-            "behavior": self.enscomp_slider_behavior
+            "svd": self.enscomp_spinbox_svd,
+            "pca": self.enscomp_spinbox_pca,
+            "ica": self.enscomp_spinbox_ica,
+            "x2p": self.enscomp_spinbox_x2p,
+            "sgc": self.enscomp_spinbox_sgc,
+            "stims": self.enscomp_spinbox_stim,
+            "behavior": self.enscomp_spinbox_behavior
         }
-        for key, slider in ens_selector.items():
-            if slider.isEnabled():
-                ens_idx = slider.value()
+        for key, spinbox in ens_selector.items():
+            if spinbox.isEnabled():
+                ens_idx = spinbox.value()
                 if key == 'stims':
                     ensembles_to_compare[key] = {}
                     ensembles_to_compare[key]["ens_idx"] = ens_idx-1
@@ -3116,7 +3064,7 @@ class MainWindow(QMainWindow):
                 stim_label = f"{stim_labels[selected_stim]}"
             else:
                 stim_label = f"{selected_stim}"
-            self.enscomp_slider_lbl_stim.setText(stim_label)
+            self.enscomp_spinbox_lbl_stim.setText(stim_label)
         if ens_selector['behavior'].isEnabled():
             selected_behavior = ens_selector['behavior'].value()-1
             if "behavior" in self.varlabels:
@@ -3124,7 +3072,7 @@ class MainWindow(QMainWindow):
                 behavior_label = f"{behavior_labels[selected_behavior]}"
             else:
                 behavior_label = f"{selected_behavior}"
-            self.enscomp_slider_lbl_behavior.setText(behavior_label)
+            self.enscomp_spinbox_lbl_behavior.setText(behavior_label)
 
         self.enscomp_colorflag_svd.setStyleSheet(f"background-color: {self.enscomp_visopts['svd']['color']};")
         self.enscomp_colorflag_pca.setStyleSheet(f"background-color: {self.enscomp_visopts['pca']['color']};")
@@ -3159,6 +3107,7 @@ class MainWindow(QMainWindow):
         """
         if not hasattr(self, "data_coordinates"):
             self.data_coordinates = np.random.randint(1, 351, size=(self.cant_neurons, 2))
+            self.data_coordinates_generated = True
         # Stablish the dimention of the map
         max_x = np.max(self.data_coordinates[:, 0])
         max_y = np.max(self.data_coordinates[:, 1])
@@ -3257,7 +3206,10 @@ class MainWindow(QMainWindow):
 
                 if self.enscomp_visopts[key]['enabled'] and self.enscomp_visopts[key]['enscomp_check_neus']:
                     new_members = ens_data["neus_in_ens"].copy()
-                    cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
+                    if hasattr(self, "data_dFFo"):
+                        cells_activity_mat = self.data_dFFo[new_members.astype(bool), :]
+                    else:
+                        cells_activity_mat = self.data_neuronal_activity[new_members.astype(bool), :]
                     cells_activity_count = np.sum(cells_activity_mat, axis=0)
                 else:
                     cells_activity_count = []
@@ -3332,6 +3284,8 @@ class MainWindow(QMainWindow):
         (e.g., neurons in ensemble or timecourse). It also generates labels for these elements, 
         indicating the algorithm and the ensemble index.
 
+        If a stimulation matrix is provided, each stimulus is added along with their label.
+
         :param criteria: The key used to extract elements from each algorithm's results.
         :type criteria: string
         :return: A tuple containing the array of elements and their corresponding labels.
@@ -3345,6 +3299,17 @@ class MainWindow(QMainWindow):
             for e_idx, element in enumerate(elements):
                 all_elements.append(element)
                 labels.append(f"{algorithm}-E{e_idx+1}")
+        if criteria == "timecourse":
+            if hasattr(self, "data_stims"):
+                stims, timepoints = self.data_stims.shape
+                for stim in range(stims):
+                    all_elements.append(self.data_stims[stim,:])
+                    if "stim" in self.varlabels:
+                        stim_labels = list(self.varlabels["stim"].values())
+                        stim_label = f"Stim {stim_labels[stim]}"
+                    else:
+                        stim_label = f"Stim {stim}"
+                    labels.append(stim_label)
         # Convert to numpy array
         all_elements = np.array(all_elements)
         return all_elements, labels
@@ -3874,7 +3839,7 @@ class MainWindow(QMainWindow):
             data["parameters"] = self.params
         if self.save_check_full.isChecked() and self.save_check_full.isEnabled():
             print("GUI Save: Getting algorithms full results...")
-            data['algorithms_results'] = self.algotrithm_results
+            data['algorithms_results'] = self.algorithm_results
         if self.save_check_enscomp.isChecked() and self.save_check_enscomp.isEnabled():
             print("GUI Save: Getting ensembles compare...")
             data["ensembles_compare"] = {}
@@ -4053,8 +4018,23 @@ class MainWindow(QMainWindow):
                 raise IOError(f"Could not save the file to {file_path}.")
 
 if __name__ == "__main__":
+    qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
-    window = MainWindow()
+    custom_colors = {
+        "[dark]": {
+            "primary": "#9a44dc",
+            "toolbar.background": "#736083"
+        },
+        "[light]": {
+            "primary": "#652d90",
+            "toolbar.background": "#c3b5cf"
+        }
+    }
+    qdarktheme.setup_theme("light",
+        custom_colors=custom_colors
+    )
+    app.setWindowIcon(QIcon("gui/ENCORE_logo.png")) 
+    window = MainWindow(gui_colors=custom_colors)
     window.show()
     app.exec()  
     #sys.exit(app.exec())

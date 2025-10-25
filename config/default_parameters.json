@@ -1,0 +1,55 @@
+{
+    "svd_defaults": {
+        "pks": 3,
+        "scut": 0.22,
+        "hcut": 0.22,
+        "state_cut": 6,
+        "csi_start": 0.01,
+        "csi_step": 0.01,
+        "csi_end": 0.1,
+        "tf_idf_norm": true,
+        "parallel_processing": false
+    },
+    "pca_defaults": {
+        "dc": 0.01,
+        "npcs": 3,
+        "minspk": 3,
+        "nsur": 1000,
+        "prct": 99.9,
+        "cent_thr": 99.9,
+        "inner_corr": 5,
+        "minsize": 3
+    },
+    "ica_defaults": {
+        "threshold": {
+            "method": "MarcenkoPastur",
+            "permutations_percentile": 95,
+            "number_of_permutations": 20
+        },
+        "Patterns": {
+            "method": "ICA",
+            "number_of_iterations": 500
+        }
+    },
+    "x2p_defaults": {
+        "network_bin": 1,
+        "network_iterations": 1000,
+        "network_significance": 0.05,
+        "coactive_neurons_threshold": 2,
+        "clustering_range_start": 3,
+        "clustering_range_end": 10,
+        "clustering_fixed": 0,
+        "iterations_ensemble": 1000,
+        "parallel_processing": false,
+        "file_log": ""
+    },
+    "sgc_defaults": {
+        "use_first_derivative": false,
+        "standard_deviations_threshold": 2,
+        "shuffling_rounds": 1000,
+        "coactivity_significance_level": 0.05,
+        "montecarlo_rounds": 5,
+        "montecarlo_steps": 10000,
+        "affinity_threshold": 0.2
+    }
+}

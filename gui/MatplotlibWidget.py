@@ -37,6 +37,7 @@ class CustomNavigationToolbar(NavigationToolbar):
 class MatplotlibWidget(QWidget):
     def __init__(self, rows=1, cols=1, parent=None):
         super().__init__(parent)
+        #plt.style.use('dark_background')
         self.canvas = FigureCanvas(Figure())
         self.toolbar = CustomNavigationToolbar(self.canvas, self)
         #self.toolbar = NavigationToolbar(self.canvas, self)
@@ -47,6 +48,7 @@ class MatplotlibWidget(QWidget):
         self.setLayout(layout)
         # Create subplots based on rows and cols
         self.set_subplots(rows, cols)
+        
 
     def set_subplots(self, rows, cols):
         # Clear existing subplots
@@ -75,7 +77,7 @@ class MatplotlibWidget(QWidget):
         transform=self.axes.transAxes)
         self.axes.set_axis_off()
         self.canvas.draw()
-
+    
     def preview_dataset(self, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
         self.axes.clear()
         n, t = dataset.shape
@@ -110,8 +112,12 @@ class MatplotlibWidget(QWidget):
         
         self.axes.set_xlabel('X coordinates')
         self.axes.set_ylabel('Y coordinates')
-        self.axes.set_xlim([min(dataset[:,0]) - 10, max(dataset[:,0]) + 10])
-        self.axes.set_ylim([min(dataset[:,1]) - 10, max(dataset[:,1]) + 10])
+        min_x = int(min(dataset[:,0])) - 10
+        max_x = int(max(dataset[:,0])) + 10
+        min_y = int(min(dataset[:,1])) - 10
+        max_y = int(max(dataset[:,1])) + 10
+        self.axes.set_ylim([min_y, max_x])
+        self.axes.set_xlim([min_x, max_y])
         #self.axes.set_xticks([])
         #self.axes.set_yticks([])
         for side in ['left', 'top', 'right', 'bottom']:
@@ -486,11 +492,14 @@ class MatplotlibWidget(QWidget):
 
     def enscomp_plot_similarity(self, matrix, labels, color):
         if hasattr(self, "colorbar"):
-            self.colorbar.remove()
+            try:
+                self.colorbar.remove()
+            except:
+                pass
         self.axes.clear()
 
         cax = self.axes.imshow(matrix, aspect='equal', cmap=color)
-        self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45)
+        self.axes.set_xticks(ticks = np.arange(len(labels)), labels=labels, rotation=45, ha="right", rotation_mode="anchor")
         self.axes.set_yticks(ticks = np.arange(len(labels)), labels=labels, rotation=0)
         self.colorbar = self.canvas.figure.colorbar(cax, ax=self.axes, orientation='vertical')
 

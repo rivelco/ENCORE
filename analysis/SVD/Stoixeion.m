@@ -99,7 +99,9 @@ end
 % S_index_ti = sindex(tf_idf_Rasterbin);
 disp("> Calculating cosine similarity...")
 if parallel_processing
+    tic
     parpool('local');
+    toc
     % Assuming rasterbin is your input matrix
     n = size(tf_idf_Rasterbin, 2); % Number of columns (vectors)
     S_index_ti = zeros(n, n); % Preallocate the result matrix

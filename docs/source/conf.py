@@ -10,10 +10,10 @@ import pathlib
 import sys
 sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
-project = 'EnsemblesGUI'
+project = 'ENCORE'
 copyright = '2025, rivelco'
 author = 'rivelco'
-release = '1.0-alpha'
+release = '1.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
