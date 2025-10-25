@@ -40,7 +40,7 @@ This GUI currently incorporates five different algorithms:
 ## Watch the demo
 
 <p align="center">
-  <img src="docs/media/gui_demo.gif" alt="Demo of NeuroAlign interface" width="700"/>
+  <img src="readme_elements/vids/demo.mp4" alt="Demo of ENCORE interface" width="700"/>
 </p>
 
 **More analysis and features coming soon...**
