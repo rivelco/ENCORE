@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Usage" href="usage.html" /><link rel="prev" title="EnsemblesGUI documentation" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Usage" href="usage.html" /><link rel="prev" title="ENCORE documentation" href="index.html" />
 
     <!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
-        <title>Installation - EnsemblesGUI 1.0-alpha documentation</title>
+        <title>Installation - ENCORE 1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">EnsemblesGUI 1.0-alpha documentation</div></a>
+      <a href="index.html"><div class="brand">ENCORE 1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">EnsemblesGUI 1.0-alpha documentation</span>
+  <span class="sidebar-brand-text">ENCORE 1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -257,8 +257,8 @@
 <p>Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p>Python 3.8 is compatible with MATLAB from R2020b to R2023a.n
-Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
+<p>Python 3.8 is compatible with MATLAB from R2020b to R2023a.</p>
+<p>Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
 </div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -270,6 +270,7 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
 <ul class="simple">
 <li><p>Parallel Computing Toolbox</p></li>
 <li><p>Statistics and Machine Learning Toolbox</p></li>
+<li><p>Curve Fitting Toolbox</p></li>
 </ul>
 </section>
 </section>
@@ -279,11 +280,11 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
 <h3>1. Clone or download the repo<a class="headerlink" href="#clone-or-download-the-repo" title="Link to this heading">¶</a></h3>
 <p>Use git to clone the repo or download it from the website. As stated in their webpage “Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.”<a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a>. If you don’t have it already, install git in your computer, check the available installers at <a class="reference external" href="https://git-scm.com/downloads">the official download site</a>.</p>
 <p>Once installed git, run the following command and then change to the directory of the repository.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/rivelco/EnsemblesGUI.git</span>
-<span class="go">cd EnsemblesGUI</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/rivelco/ENCORE.git</span>
+<span class="go">cd ENCORE</span>
 </pre></div>
 </div>
-<p>If you do not want to use the git command, you can download the repository by going to the repository <a class="reference external" href="https://github.com/rivelco/EnsemblesGUI">https://github.com/rivelco/EnsemblesGUI</a> and using the Download button:</p>
+<p>If you do not want to use the git command, you can download the repository by going to the repository <a class="reference external" href="https://github.com/rivelco/ENCORE">https://github.com/rivelco/ENCORE</a> and using the Download button:</p>
 <video width="600" controls>
     <source src="_static/Installation_download.mp4" type="video/mp4">
     Your browser does not support the video tag.
@@ -293,26 +294,27 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
 <section id="a-installation-using-conda">
 <h3>2.A Installation using conda<a class="headerlink" href="#a-installation-using-conda" title="Link to this heading">¶</a></h3>
 <p>To install using this method simple open your conda terminal, go to the EnsemblesGUI folder and type this commands.</p>
-<p>This commands creates a Conda environment called <cite>ensgui</cite> and then activates it.</p>
+<p>This commands creates a Conda environment called <cite>encore</cite> and then activates it.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda env create -f environment.yml</span>
-<span class="go">conda activate ensgui</span>
+<span class="go">conda activate encore</span>
 </pre></div>
 </div>
 </section>
 <section id="b-manual-installation-using-pip">
 <h3>2.B Manual installation using pip<a class="headerlink" href="#b-manual-installation-using-pip" title="Link to this heading">¶</a></h3>
 <p>You can install the modules needed for EnsemblesGUI manually. It’s still recommended that you do this using conda or some other environment manager. If you’re using conda type:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n ensgui python=3.10</span>
-<span class="go">conda activate ensgui</span>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">conda create -n encore python=3.10</span>
+<span class="go">conda activate encore</span>
 </pre></div>
 </div>
-<p>The above command will create a new environment called <cite>ensgui</cite> and with python 3.10 installed. You can choose the name of the environment replacing <cite>ensgui</cite> with the name you prefer. After the environment is created it must be activated.</p>
+<p>The above command will create a new environment called <cite>encore</cite> and with python 3.10 installed. You can choose the name of the environment replacing <cite>encore</cite> with the name you prefer. After the environment is created it must be activated.</p>
 <p>If you want to install the needed modules one by one you can install your preferred python version (recommended 3.8 or above) and run:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pip install pyqt6</span>
 <span class="go">pip install numpy</span>
 <span class="go">pip install matplotlib</span>
 <span class="go">pip install h5py</span>
 <span class="go">pip install scikit-learn</span>
+<span class="go">pip install pyqtdarktheme</span>
 </pre></div>
 </div>
 </section>
@@ -332,8 +334,8 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
 </section>
 <section id="run-the-gui">
 <h2>Run the GUI<a class="headerlink" href="#run-the-gui" title="Link to this heading">¶</a></h2>
-<p>To run the GUI you now just need to call main.py from your configured python environment. Make sure you are in the path where you downloaded the repo.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python main.py</span>
+<p>To run the GUI you now just need to call encore.py from your configured python environment. Make sure you are in the path where you downloaded the repo.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python encore.py</span>
 </pre></div>
 </div>
 </section>
@@ -436,7 +438,7 @@ Python 3.9 is compatible with MATLAB from R2021b to R2024b.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=1e4f7814"></script>
+</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

@@ -16,7 +16,8 @@ The general requirements are MATLAB and Python. The limiting factor here is the 
 Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.
 
 .. seealso::
-    Python 3.8 is compatible with MATLAB from R2020b to R2023a.\n
+    Python 3.8 is compatible with MATLAB from R2020b to R2023a.
+    
     Python 3.9 is compatible with MATLAB from R2021b to R2024b.
 
 .. tip::
@@ -27,6 +28,7 @@ Needed MATLAB modules
 
 - Parallel Computing Toolbox
 - Statistics and Machine Learning Toolbox
+- Curve Fitting Toolbox
 
 Installation of the python environment
 --------------------------------------
@@ -40,10 +42,10 @@ Once installed git, run the following command and then change to the directory o
 
 .. code-block:: console
 
-    git clone https://github.com/rivelco/EnsemblesGUI.git
-    cd EnsemblesGUI
+    git clone https://github.com/rivelco/ENCORE.git
+    cd ENCORE
 
-If you do not want to use the git command, you can download the repository by going to the repository `<https://github.com/rivelco/EnsemblesGUI>`_ and using the Download button:
+If you do not want to use the git command, you can download the repository by going to the repository `<https://github.com/rivelco/ENCORE>`_ and using the Download button:
 
 .. raw:: html
 
@@ -61,12 +63,12 @@ The recommended installation method relies on `Conda <https://docs.conda.io/proj
  
 To install using this method simple open your conda terminal, go to the EnsemblesGUI folder and type this commands.
 
-This commands creates a Conda environment called `ensgui` and then activates it.
+This commands creates a Conda environment called `encore` and then activates it.
 
 .. code-block:: console
 
     conda env create -f environment.yml
-    conda activate ensgui
+    conda activate encore
 
 2.B Manual installation using pip
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -75,10 +77,10 @@ You can install the modules needed for EnsemblesGUI manually. It's still recomme
 
 .. code-block:: console
 
-    conda create -n ensgui python=3.10
-    conda activate ensgui
+    conda create -n encore python=3.10
+    conda activate encore
 
-The above command will create a new environment called `ensgui` and with python 3.10 installed. You can choose the name of the environment replacing `ensgui` with the name you prefer. After the environment is created it must be activated.
+The above command will create a new environment called `encore` and with python 3.10 installed. You can choose the name of the environment replacing `encore` with the name you prefer. After the environment is created it must be activated.
 
 If you want to install the needed modules one by one you can install your preferred python version (recommended 3.8 or above) and run:
 
@@ -89,6 +91,7 @@ If you want to install the needed modules one by one you can install your prefer
     pip install matplotlib
     pip install h5py
     pip install scikit-learn
+    pip install pyqtdarktheme
 
 Installation of the MATLAB engine for Python
 --------------------------------------------
@@ -112,11 +115,11 @@ It is possible that you need to run that command from an elevated terminal.
 Run the GUI
 -----------
 
-To run the GUI you now just need to call main.py from your configured python environment. Make sure you are in the path where you downloaded the repo.
+To run the GUI you now just need to call encore.py from your configured python environment. Make sure you are in the path where you downloaded the repo.
 
 .. code-block:: console
 
-    python main.py
+    python encore.py
 
 References
 ----------

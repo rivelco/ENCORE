@@ -1,10 +1,10 @@
-.. EnsemblesGUI documentation master file, created by
+.. ENCORE documentation master file, created by
    sphinx-quickstart on Fri Oct  4 13:38:59 2024.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-EnsemblesGUI documentation
-==========================
+ENCORE documentation
+====================
 
 Graphic User Interface to perform a variety of neuronal ensembles identification's methods using calcium or electrical recordings.
 
