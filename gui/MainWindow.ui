@@ -36,7 +36,7 @@
        <number>-1</number>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -1658,7 +1658,7 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>71</width>
+                    <width>98</width>
                     <height>71</height>
                    </rect>
                   </property>
@@ -3779,7 +3779,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5274,7 +5274,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -5310,7 +5310,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5346,7 +5346,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -5382,7 +5382,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>

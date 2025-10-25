@@ -344,6 +344,9 @@ class MainWindow(QMainWindow):
         self.params = {}
         self.varlabels = {}
         self.tempvars = {}
+        if hasattr(self, "data_coordinates_generated"):
+            delattr(self, "data_coordinates")
+            self.data_coordinates_generated = False
         
         # Initialize buttons
         self.btn_run_svd.setEnabled(False)
@@ -889,7 +892,12 @@ class MainWindow(QMainWindow):
         """
         data_behavior = assign_data_from_file(self)
         self.data_behavior = data_behavior
-        behaviors, timepoints = data_behavior.shape
+        behav_shape = data_behavior.shape
+        if len(behav_shape) > 1:
+            behaviors, timepoints = data_behavior.shape
+        else:
+            timepoints = data_behavior.shape[0]
+            behaviors = 1
         self.btn_clear_behavior.setEnabled(True)
         self.btn_view_behavior.setEnabled(True)
         self.lbl_behavior_select.setText("Assigned")
@@ -1125,7 +1133,12 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_behavior.shape[1], lim_sup_y=self.data_behavior.shape[0])
+        if len(self.data_behavior.shape) > 1:
+            behaviors, timepoints = self.data_behavior.shape
+        else:
+            timepoints = self.data_behavior.shape[0]
+            behaviors = 1
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=behaviors)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
         if len(preview_data.shape) == 1:
@@ -1216,20 +1229,30 @@ class MainWindow(QMainWindow):
                 [5.5, 7.5]])
 
         """
+        mat = np.atleast_2d(mat)  # ensures its 2D (1, N) even if originally 1D
         elements, timepoints = mat.shape
+
         if bin_size >= timepoints:
-            self.update_console_log(f"Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.", "warning")
-            return mat   
+            print("Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.")
+            return mat
+
         num_bins = timepoints // bin_size
         bin_mat = np.zeros((elements, num_bins))
+
         for i in range(num_bins):
+            window = mat[:, i * bin_size:(i + 1) * bin_size]
             if bin_method == "mean":
-                bin_mat[:, i] = np.mean(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+                bin_mat[:, i] = np.mean(window, axis=1)
             elif bin_method == "sum":
-                bin_mat[:, i] = np.sum(mat[:, i*bin_size:(i+1)*bin_size], axis=1)
+                bin_mat[:, i] = np.sum(window, axis=1)
             else:
                 raise ValueError("Invalid bin_method. Use 'mean' or 'sum'.")
-        return bin_mat 
+
+        # If input was 1D, return 1D output
+        if mat.shape[0] == 1:
+            return bin_mat.flatten()
+        return bin_mat
+    
     def edit_bin(self):
         """
         Reads the binning parameters and performs the binning in the selected dataset.
@@ -1669,6 +1692,8 @@ class MainWindow(QMainWindow):
         plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_components')
         rows = math.ceil(math.sqrt(num_state))
         cols = math.ceil(num_state / rows)
+        rows = rows+1 if rows == 1 else rows
+        cols = cols+1 if cols == 1 else cols
         plot_widget.set_subplots(rows, cols)
         plot_widget.canvas.setFixedHeight(400*rows)
         for state_idx in range(num_state):
@@ -1871,7 +1896,10 @@ class MainWindow(QMainWindow):
         Nens = int(answer['Nens'])
         ens_cols = plt.cm.tab10(range(Nens * 2))
         plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_pca')
-        plot_widget.plot_pca(pcs, ens_labs=labels, ens_cols = ens_cols)
+        try:
+            plot_widget.plot_pca(pcs, ens_labs=labels, ens_cols = ens_cols)
+        except:
+            pass
 
         # Plot the rhos vs deltas
         rho = np.array(answer['rho'])
@@ -3079,6 +3107,7 @@ class MainWindow(QMainWindow):
         """
         if not hasattr(self, "data_coordinates"):
             self.data_coordinates = np.random.randint(1, 351, size=(self.cant_neurons, 2))
+            self.data_coordinates_generated = True
         # Stablish the dimention of the map
         max_x = np.max(self.data_coordinates[:, 0])
         max_y = np.max(self.data_coordinates[:, 1])
