@@ -19,6 +19,8 @@ def dict_to_matlab_struct(pars_dict):
     for key, value in pars_dict.items():
         if isinstance(value, dict):
             matlab_struct[key] = dict_to_matlab_struct(value)
+        elif isinstance(value, bool):
+            matlab_struct[key] = matlab.logical(value)
         elif isinstance(value, (int, float)):
             matlab_struct[key] = matlab.double([value])
         else:
