@@ -1527,22 +1527,13 @@ class MainWindow(QMainWindow):
         spikes = self.data_neuronal_activity
 
         # Get the parameters
-        input_value = self.svd_edit_pks.text()
-        if len(input_value) > 0:
-            val_pks = np.array([float(input_value)])
-        else:
-            val_pks = np.array([])
-        input_value = self.svd_edit_scut.text()
-        if len(input_value) > 0:
-            val_scut = np.array([float(input_value)])
-        else:
-            val_scut = np.array([])
-
-        val_hcut = self.svd_edit_hcut.text()
-        val_statecut = self.svd_edit_statecut.text()
-        val_csistart = self.svd_edit_csistart.text()
-        val_csistep = self.svd_edit_csistep.text()
-        val_csiend = self.svd_edit_csiend.text()
+        val_pks = self.svd_edit_pks.value()
+        val_scut = self.svd_edit_scut.value()
+        val_hcut = self.svd_edit_hcut.value()
+        val_statecut = self.svd_edit_statecut.value()
+        val_csistart = self.svd_edit_csistart.value()
+        val_csistep = self.svd_edit_csistep.value()
+        val_csiend = self.svd_edit_csiend.value()
         val_idtfd = self.svd_check_tfidf.isChecked()
         parallel_computing = self.svd_check_parallel.isChecked()
 
@@ -1560,11 +1551,11 @@ class MainWindow(QMainWindow):
         }
 
         # Validate the parameters
-        pars_validated = parameters_validators.validate_parameters_svd(pars, self.svd_defaults)
+        pars_validated = parameters_validators.validate_params(pars, self.svd_defaults)
 
         # Fill the GUI spaces using the validated data, in case there are changes
         self.svd_edit_hcut.setValue(pars_validated['hcut'])
-        self.svd_edit_statecut.setValue(pars_validated['statecut'])
+        self.svd_edit_statecut.setValue(pars_validated['state_cut'])
         self.svd_edit_csistart.setValue(pars_validated['csi_start'])
         self.svd_edit_csistep.setValue(pars_validated['csi_step'])
         self.svd_edit_csiend.setValue(pars_validated['csi_end'])
@@ -1743,14 +1734,14 @@ class MainWindow(QMainWindow):
         raster = self.data_neuronal_activity
 
         # Collect parameters
-        dc = self.pca_edit_dc.text()
-        npcs = self.pca_edit_npcs.text()
-        minspk = self.pca_edit_minspk.text()
-        nsur = self.pca_edit_nsur.text()
-        prct = self.pca_edit_prct.text()
-        cent_thr = self.pca_edit_centthr.text()
-        inner_corr = self.pca_edit_innercorr.text()
-        minsize = self.pca_edit_minsize.text()
+        dc = self.pca_edit_dc.value()
+        npcs = self.pca_edit_npcs.value()
+        minspk = self.pca_edit_minspk.value()
+        nsur = self.pca_edit_nsur.value()
+        prct = self.pca_edit_prct.value()
+        cent_thr = self.pca_edit_centthr.value()
+        inner_corr = self.pca_edit_innercorr.value()
+        minsize = self.pca_edit_minsize.value()
 
         # Pack data
         pars = {
@@ -1765,7 +1756,7 @@ class MainWindow(QMainWindow):
         }
         
         # Valiate the parameters
-        pars_validated = parameters_validators.validate_parameters_pca(pars, self.pca_defaults)
+        pars_validated = parameters_validators.validate_params(pars, self.pca_defaults)
         
         # Fill the GUI spaces using the validated data, in case there are changes
         self.pca_edit_dc.setValue(pars_validated['dc'])
@@ -1965,14 +1956,14 @@ class MainWindow(QMainWindow):
         elif self.ica_radio_method_shift.isChecked():
             threshold_method = "circularshift"
 
-        val_per_percentile = self.ica_edit_perpercentile.text()
-        val_per_cant = self.ica_edit_percant.text()
+        val_per_percentile = self.ica_edit_perpercentile.value()
+        val_per_cant = self.ica_edit_percant.value()
 
         if self.ica_radio_method_ica.isChecked():
             patterns_method = "ICA"
         elif self.ica_radio_method_pca.isChecked():
             patterns_method = "PCA"
-        val_iteartions = self.ica_edit_iterations.text()
+        val_iteartions = self.ica_edit_iterations.value()
 
         # Pack parameters
         pars = {
@@ -1988,7 +1979,7 @@ class MainWindow(QMainWindow):
         }
         
         # Validate the parameters
-        pars_validated = parameters_validators.validate_parameters_ica(pars, self.ica_defaults)
+        pars_validated = parameters_validators.validate_params(pars, self.ica_defaults)
 
         # Fill the GUI fields with the validated data
         self.ica_edit_perpercentile.setValue(pars_validated['threshold']['permutations_percentile'])
@@ -2141,14 +2132,14 @@ class MainWindow(QMainWindow):
         raster = self.data_neuronal_activity
         
         # Prepare parameters
-        val_network_bin = self.x2p_edit_bin.text()
-        val_network_iterations = self.x2p_edit_iterations.text()
-        val_network_significance = self.x2p_edit_significance.text()
-        val_coactive_neurons_threshold = self.x2p_edit_threshold.text()
-        val_clustering_range_start = self.x2p_edit_rangestart.text()
-        val_clustering_range_end = self.x2p_edit_rangeend.text()
-        val_clustering_fixed = self.x2p_edit_fixed.text()
-        val_iterations_ensemble = self.x2p_edit_itensemble.text()
+        val_network_bin = self.x2p_edit_bin.value()
+        val_network_iterations = self.x2p_edit_iterations.value()
+        val_network_significance = self.x2p_edit_significance.value()
+        val_coactive_neurons_threshold = self.x2p_edit_threshold.value()
+        val_clustering_range_start = self.x2p_edit_rangestart.value()
+        val_clustering_range_end = self.x2p_edit_rangeend.value()
+        val_clustering_fixed = self.x2p_edit_fixed.value()
+        val_iterations_ensemble = self.x2p_edit_itensemble.value()
         parallel = self.x2p_check_parallel.isChecked()
 
         # Pack parameters
@@ -2166,7 +2157,7 @@ class MainWindow(QMainWindow):
         }
         
         # Validate the parameters
-        pars_validated = parameters_validators.validate_parameters_x2p(pars, self.x2p_defaults)
+        pars_validated = parameters_validators.validate_params(pars, self.x2p_defaults)
         
         # Fill the GUI spaces using the validated data, in case there are changes
         self.x2p_edit_bin.setValue(pars_validated['NetworkBin'])
@@ -2334,12 +2325,12 @@ class MainWindow(QMainWindow):
         
         # Prepare parameters
         use_first_derivative = self.sgc_check_firstderiv.isChecked()
-        val_std_threshold = self.sgc_edit_stdthreshold.text()
-        val_shuffling_rounds = self.sgc_edit_shuff.text()
-        val_coactivity_significance_level = self.sgc_edit_sig.text()
-        val_montecarlo_rounds = self.sgc_edit_monterounds.text()
-        val_montecarlo_steps = self.sgc_edit_montesteps.text()
-        val_affinity_threshold = self.sgc_edit_affthres.text()
+        val_std_threshold = self.sgc_edit_stdthreshold.value()
+        val_shuffling_rounds = self.sgc_edit_shuff.value()
+        val_coactivity_significance_level = self.sgc_edit_sig.value()
+        val_montecarlo_rounds = self.sgc_edit_monterounds.value()
+        val_montecarlo_steps = self.sgc_edit_montesteps.value()
+        val_affinity_threshold = self.sgc_edit_affthres.value()
         
         # Pack parameters
         pars = {
@@ -2353,7 +2344,7 @@ class MainWindow(QMainWindow):
         }
         
         # Validate the parameters
-        pars_validated = parameters_validators.validate_parameters_sgc(pars, self.sgc_defaults)
+        pars_validated = parameters_validators.validate_params(pars, self.sgc_defaults)
         
         # Fill the GUI spaces using the validated data, in case there are changes
         self.sgc_edit_stdthreshold.setValue(pars_validated['standard_deviations_threshold'])
