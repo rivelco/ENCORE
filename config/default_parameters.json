@@ -32,16 +32,16 @@
         }
     },
     "x2p_defaults": {
-        "network_bin": 1,
-        "network_iterations": 1000,
-        "network_significance": 0.05,
-        "coactive_neurons_threshold": 2,
-        "clustering_range_start": 3,
-        "clustering_range_end": 10,
-        "clustering_fixed": 0,
-        "iterations_ensemble": 1000,
-        "parallel_processing": false,
-        "file_log": ""
+        "NetworkBin": 1,
+        "NetworkIterations": 1000,
+        "NetworkSignificance": 0.05,
+        "CoactiveNeuronsThreshold": 2,
+        "ClusteringRangeStart": 3,
+        "ClusteringRangeEnd": 10,
+        "ClusteringFixed": 0,
+        "EnsembleIterations": 1000,
+        "ParallelProcessing": false,
+        "FileLog": ""
     },
     "sgc_defaults": {
         "use_first_derivative": false,

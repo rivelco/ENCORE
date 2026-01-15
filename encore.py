@@ -2116,15 +2116,15 @@ class MainWindow(QMainWindow):
         :return: None
         """
         defaults = self.x2p_defaults
-        self.x2p_edit_bin.setValue(defaults['network_bin'])
-        self.x2p_edit_iterations.setValue(defaults['network_iterations'])
-        self.x2p_edit_significance.setValue(defaults['network_significance'])
-        self.x2p_edit_threshold.setValue(defaults['coactive_neurons_threshold'])
-        self.x2p_edit_rangestart.setValue(defaults['clustering_range_start'])
-        self.x2p_edit_rangeend.setValue(defaults['clustering_range_end'])
-        self.x2p_edit_fixed.setValue(defaults['clustering_fixed'])
-        self.x2p_edit_itensemble.setValue(defaults['iterations_ensemble'])
-        self.x2p_check_parallel.setChecked(defaults['parallel_processing'])
+        self.x2p_edit_bin.setValue(defaults['NetworkBin'])
+        self.x2p_edit_iterations.setValue(defaults['NetworkIterations'])
+        self.x2p_edit_significance.setValue(defaults['NetworkSignificance'])
+        self.x2p_edit_threshold.setValue(defaults['CoactiveNeuronsThreshold'])
+        self.x2p_edit_rangestart.setValue(defaults['ClusteringRangeStart'])
+        self.x2p_edit_rangeend.setValue(defaults['ClusteringRangeEnd'])
+        self.x2p_edit_fixed.setValue(defaults['ClusteringFixed'])
+        self.x2p_edit_itensemble.setValue(defaults['EnsembleIterations'])
+        self.x2p_check_parallel.setChecked(defaults['ParallelProcessing'])
         self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
     def collect_parameters_x2p(self):
         """
