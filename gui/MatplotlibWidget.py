@@ -196,6 +196,8 @@ class MatplotlibWidget(QWidget):
         self.axes.spines['top'].set_visible(False)   # Hide the top line for everyone except the first
         self.axes.spines['right'].set_visible(False) # Hide the rigth line for everyone except the first
         self.axes.yaxis.set_major_locator(plt.MaxNLocator(integer=True)) # Show only integers in the y axis
+        if ensembles_cant == 0:
+            ensembles_cant = 1
         self.axes.set_ylim([0.5, ensembles_cant+0.5])       # Set the y axis limit
         self.axes.set_xlim([0, frames_cant]) # Set the x axis limit
         self.axes.set_ylabel('Ensemble') 
