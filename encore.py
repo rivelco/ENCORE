@@ -165,41 +165,11 @@ class MainWindow(QMainWindow):
         self.ica_defaults = self.load_defaults("ica_defaults") 
         self.x2p_defaults = self.load_defaults("x2p_defaults") 
         self.sgc_defaults = self.load_defaults("sgc_defaults") 
-
-        ## Numeric validator
-        double_validator = QDoubleValidator()
-        double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
-
-        double_validator.setRange(-1000000.0, 1000000.0, 10)
-        ## Set validators to QLineEdit widgets
-        # For the SVD analysis
-        self.svd_edit_pks.setValidator(double_validator)
-        self.svd_edit_scut.setValidator(double_validator)
-        self.svd_edit_hcut.setValidator(double_validator)
-        self.svd_edit_statecut.setValidator(double_validator)
-        # For the PCA analysis
-        self.pca_edit_dc.setValidator(double_validator)
-        self.pca_edit_npcs.setValidator(double_validator)
-        self.pca_edit_minspk.setValidator(double_validator)
-        self.pca_edit_nsur.setValidator(double_validator)
-        self.pca_edit_prct.setValidator(double_validator)
-        self.pca_edit_centthr.setValidator(double_validator)
-        self.pca_edit_innercorr.setValidator(double_validator)
-        self.pca_edit_minsize.setValidator(double_validator)
-        # For ICA analysis
-        self.ica_edit_perpercentile.setValidator(double_validator)
-        self.ica_edit_percant.setValidator(double_validator)
-        self.ica_edit_iterations.setValidator(double_validator)
-        # For X2P analysis
-        self.x2p_edit_bin.setValidator(double_validator)
-        self.x2p_edit_iterations.setValidator(double_validator)
-        self.x2p_edit_significance.setValidator(double_validator)
-        self.x2p_edit_threshold.setValidator(double_validator)
-        self.x2p_edit_rangestart.setValidator(double_validator)
-        self.x2p_edit_rangeend.setValidator(double_validator)
-        self.x2p_edit_fixed.setValidator(double_validator)
-        self.x2p_edit_itensemble.setValidator(double_validator)
-
+        
+        # Initialize input fields validator for analysis
+        analysis_defaults = self.load_defaults("all")
+        analysis_limits.limit_gui_fields_analysis(self, analysis_defaults)
+        
         ## SVD analysis
         self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
         self.btn_run_svd.clicked.connect(self.collect_parameters_svd)
@@ -252,6 +222,10 @@ class MainWindow(QMainWindow):
         self.enscomp_btn_color_behavior.clicked.connect(self.enscomp_get_color_behavior)
 
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
+
+        ## Numeric validator
+        double_validator = QDoubleValidator()
+        double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
 
         # Populate the similarity maps combo box
         double_validator.setRange(0.0, 100.0, 2)
@@ -1197,13 +1171,19 @@ class MainWindow(QMainWindow):
         :type lim_sup_y: int, optional
         """
         # For the edit options
-        int_validator = QIntValidator(0, lim_sup_x)
-        self.edit_edit_binsize.setValidator(int_validator)
-        self.edit_edit_xstart.setValidator(int_validator)
-        self.edit_edit_xend.setValidator(int_validator)
-        int_validator = QIntValidator(0, lim_sup_y)
-        self.edit_edit_ystart.setValidator(int_validator)
-        self.edit_edit_yend.setValidator(int_validator)
+        self.edit_edit_binsize.setRange(1, lim_sup_x)
+        self.edit_edit_xstart.setRange(0, lim_sup_x)
+        self.edit_edit_xend.setRange(1, lim_sup_x)
+        self.edit_edit_ystart.setRange(0, lim_sup_y)
+        self.edit_edit_yend.setRange(1, lim_sup_y)
+        
+        #int_validator = QIntValidator(0, lim_sup_x)
+        #self.edit_edit_binsize.setValidator(int_validator)
+        #self.edit_edit_xstart.setValidator(int_validator)
+        #self.edit_edit_xend.setValidator(int_validator)
+        #int_validator = QIntValidator(0, lim_sup_y)
+        #self.edit_edit_ystart.setValidator(int_validator)
+        #self.edit_edit_yend.setValidator(int_validator)
 
     def bin_matrix(self, mat, bin_size, bin_method):
         """
@@ -1517,13 +1497,13 @@ class MainWindow(QMainWindow):
         :return: None
         """
         defaults = self.svd_defaults
-        self.svd_edit_pks.setText(f"{defaults['pks']}")
-        self.svd_edit_scut.setText(f"{defaults['scut']}")
-        self.svd_edit_hcut.setText(f"{defaults['hcut']}")
-        self.svd_edit_statecut.setText(f"{defaults['state_cut']}")
-        self.svd_edit_csistart.setText(f"{defaults['csi_start']}")
-        self.svd_edit_csistep.setText(f"{defaults['csi_step']}")
-        self.svd_edit_csiend.setText(f"{defaults['csi_end']}")
+        self.svd_edit_pks.setValue(defaults['pks'])
+        self.svd_edit_scut.setValue(defaults['scut'])
+        self.svd_edit_hcut.setValue(defaults['hcut'])
+        self.svd_edit_statecut.setValue(defaults['state_cut'])
+        self.svd_edit_csistart.setValue(defaults['csi_start'])
+        self.svd_edit_csistep.setValue(defaults['csi_step'])
+        self.svd_edit_csiend.setValue(defaults['csi_end'])
         self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
         self.svd_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default SVD parameter values", "complete")
@@ -1557,16 +1537,11 @@ class MainWindow(QMainWindow):
         else:
             val_scut = np.array([])
 
-        input_value = self.svd_edit_hcut.text()
-        val_hcut = input_value
-        input_value = self.svd_edit_statecut.text()
-        val_statecut = input_value
-        input_value = self.svd_edit_csistart.text()
-        val_csistart = input_value
-        input_value = self.svd_edit_csistep.text()
-        val_csistep = input_value
-        input_value = self.svd_edit_csiend.text()
-        val_csiend = input_value
+        val_hcut = self.svd_edit_hcut.text()
+        val_statecut = self.svd_edit_statecut.text()
+        val_csistart = self.svd_edit_csistart.text()
+        val_csistep = self.svd_edit_csistep.text()
+        val_csiend = self.svd_edit_csiend.text()
         val_idtfd = self.svd_check_tfidf.isChecked()
         parallel_computing = self.svd_check_parallel.isChecked()
 
@@ -1587,11 +1562,11 @@ class MainWindow(QMainWindow):
         pars_validated = parameters_validators.validate_parameters_svd(pars, self.svd_defaults)
 
         # Fill the GUI spaces using the validated data, in case there are changes
-        self.svd_edit_hcut.setText(f"{pars_validated['hcut']}")
-        self.svd_edit_statecut.setText(f"{pars_validated['statecut']}")
-        self.svd_edit_csistart.setText(f"{pars_validated['csi_start']}")
-        self.svd_edit_csistep.setText(f"{pars_validated['csi_step']}")
-        self.svd_edit_csiend.setText(f"{pars_validated['csi_end']}")
+        self.svd_edit_hcut.setValue(pars_validated['hcut'])
+        self.svd_edit_statecut.setValue(pars_validated['statecut'])
+        self.svd_edit_csistart.setValue(pars_validated['csi_start'])
+        self.svd_edit_csistep.setValue(pars_validated['csi_step'])
+        self.svd_edit_csiend.setValue(pars_validated['csi_end'])
 
         self.params['svd'] = pars_validated
         pars_matlab = converters.dict_to_matlab_struct(pars_validated)
@@ -1727,16 +1702,16 @@ class MainWindow(QMainWindow):
         :return: None
         """
         defaults = self.pca_defaults
-        self.pca_edit_dc.setText(f"{defaults['dc']}")
-        self.pca_edit_npcs.setText(f"{defaults['npcs']}")
-        self.pca_edit_minspk.setText(f"{defaults['minspk']}")
-        self.pca_edit_nsur.setText(f"{defaults['nsur']}")
-        self.pca_edit_prct.setText(f"{defaults['prct']}")
-        self.pca_edit_centthr.setText(f"{defaults['cent_thr']}")
-        self.pca_edit_innercorr.setText(f"{defaults['inner_corr']}")
-        self.pca_edit_minsize.setText(f"{defaults['minsize']}")
+        self.pca_edit_dc.setValue(defaults['dc'])
+        self.pca_edit_npcs.setValue(defaults['npcs'])
+        self.pca_edit_minspk.setValue(defaults['minspk'])
+        self.pca_edit_nsur.setValue(defaults['nsur'])
+        self.pca_edit_prct.setValue(defaults['prct'])
+        self.pca_edit_centthr.setValue(defaults['cent_thr'])
+        self.pca_edit_innercorr.setValue(defaults['inner_corr'])
+        self.pca_edit_minsize.setValue(defaults['minsize'])
         self.update_console_log("Loaded default PCA parameter values", "complete")
-    def run_PCA(self):
+    def collect_parameters_pca(self):
         """
         Retrieves user-defined parameters for PCA from the GUI, applies default values 
         if fields are empty, and initiates the PCA analysis in parallel. The function also updates the console log 
@@ -1751,23 +1726,15 @@ class MainWindow(QMainWindow):
         data = self.data_neuronal_activity
         raster = matlab.double(data.tolist())
 
-        # Prepare parameters
-        input_value = self.pca_edit_dc.text()
-        dc = float(input_value) if len(input_value) > 0 else self.pca_defaults['dc']
-        input_value = self.pca_edit_npcs.text()
-        npcs = float(input_value) if len(input_value) > 0 else self.pca_defaults['npcs']
-        input_value = self.pca_edit_minspk.text()
-        minspk = float(input_value) if len(input_value) > 0 else self.pca_defaults['minspk']
-        input_value = self.pca_edit_nsur.text()
-        nsur = float(input_value) if len(input_value) > 0 else self.pca_defaults['nsur']
-        input_value = self.pca_edit_prct.text()
-        prct = float(input_value) if len(input_value) > 0 else self.pca_defaults['prct']
-        input_value = self.pca_edit_centthr.text()
-        cent_thr = float(input_value) if len(input_value) > 0 else self.pca_defaults['cent_thr']
-        input_value = self.pca_edit_innercorr.text()
-        inner_corr = float(input_value) if len(input_value) > 0 else self.pca_defaults['inner_corr']
-        input_value = self.pca_edit_minsize.text()
-        minsize = float(input_value) if len(input_value) > 0 else self.pca_defaults['minsize']
+        # Collect parameters
+        dc = self.pca_edit_dc.text()
+        npcs = self.pca_edit_npcs.text()
+        minspk = self.pca_edit_minspk.text()
+        nsur = self.pca_edit_nsur.text()
+        prct = self.pca_edit_prct.text()
+        cent_thr = self.pca_edit_centthr.text()
+        inner_corr = self.pca_edit_innercorr.text()
+        minsize = self.pca_edit_minsize.text()
 
         # Pack data
         pars = {
@@ -1782,6 +1749,18 @@ class MainWindow(QMainWindow):
         }
         self.params['pca'] = pars
         pars_matlab = converters.dict_to_matlab_struct(pars)
+        
+        # Fill the GUI spaces using the validated data, in case there are changes
+        self.pca_edit_dc.setValue(pars_validated['dc'])
+        self.pca_edit_npcs.setValue(pars_validated['npcs'])
+        self.pca_edit_minspk.setValue(pars_validated['minspk'])
+        self.pca_edit_nsur.setValue(pars_validated['nsur'])
+        self.pca_edit_prct.setValue(pars_validated['prct'])
+        self.pca_edit_centthr.setValue(pars_validated['cent_thr'])
+        self.pca_edit_innercorr.setValue(pars_validated['inner_corr'])
+        self.pca_edit_minsize.setValue(pars_validated['minsize'])
+        
+        self.params['pca'] = pars_validated
 
         # Clean all the figures in case there was something previously
         if 'pca' in self.results:
@@ -1953,10 +1932,10 @@ class MainWindow(QMainWindow):
         """
         defaults = self.ica_defaults
         self.ica_radio_method_marcenko.setChecked(True)
-        self.ica_edit_perpercentile.setText(f"{defaults['threshold']['permutations_percentile']}")
-        self.ica_edit_percant.setText(f"{defaults['threshold']['number_of_permutations']}")
+        self.ica_edit_perpercentile.setValue(defaults['threshold']['permutations_percentile'])
+        self.ica_edit_percant.setValue(defaults['threshold']['number_of_permutations'])
         self.ica_radio_method_ica.setChecked(True)
-        self.ica_edit_iterations.setText(f"{defaults['Patterns']['number_of_iterations']}")
+        self.ica_edit_iterations.setValue(defaults['Patterns']['number_of_iterations'])
         self.update_console_log("Loaded default ICA parameter values", "complete")
     def collect_parameters_ica(self):
         """
@@ -2002,6 +1981,7 @@ class MainWindow(QMainWindow):
                 'number_of_iterations': val_iteartions
             }
         }
+        # Validate the parameters
         pars_validated = parameters_validators.validate_parameters_ica(pars, self.ica_defaults)
 
         self.params['ica'] = pars_validated
