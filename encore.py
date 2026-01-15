@@ -1981,9 +1981,15 @@ class MainWindow(QMainWindow):
                 'number_of_iterations': val_iteartions
             }
         }
+        
         # Validate the parameters
         pars_validated = parameters_validators.validate_parameters_ica(pars, self.ica_defaults)
 
+        # Fill the GUI fields with the validated data
+        self.ica_edit_perpercentile.setValue(pars_validated['threshold']['permutations_percentile'])
+        self.ica_edit_percant.setValue(pars_validated['threshold']['number_of_permutations'])
+        self.ica_edit_iterations.setValue(pars_validated['Patterns']['number_of_iterations'])
+        
         self.params['ica'] = pars_validated
         pars_matlab = converters.dict_to_matlab_struct(pars_validated)
 
@@ -2144,14 +2150,14 @@ class MainWindow(QMainWindow):
         :return: None
         """
         defaults = self.x2p_defaults
-        self.x2p_edit_bin.setText(f"{defaults['network_bin']}")
-        self.x2p_edit_iterations.setText(f"{defaults['network_iterations']}")
-        self.x2p_edit_significance.setText(f"{defaults['network_significance']}")
-        self.x2p_edit_threshold.setText(f"{defaults['coactive_neurons_threshold']}")
-        self.x2p_edit_rangestart.setText(f"{defaults['clustering_range_start']}")
-        self.x2p_edit_rangeend.setText(f"{defaults['clustering_range_end']}")
-        self.x2p_edit_fixed.setText(f"{defaults['clustering_fixed']}")
-        self.x2p_edit_itensemble.setText(f"{defaults['iterations_ensemble']}")
+        self.x2p_edit_bin.setValue(defaults['network_bin'])
+        self.x2p_edit_iterations.setValue(defaults['network_iterations'])
+        self.x2p_edit_significance.setValue(defaults['network_significance'])
+        self.x2p_edit_threshold.setValue(defaults['coactive_neurons_threshold'])
+        self.x2p_edit_rangestart.setValue(defaults['clustering_range_start'])
+        self.x2p_edit_rangeend.setValue(defaults['clustering_range_end'])
+        self.x2p_edit_fixed.setValue(defaults['clustering_fixed'])
+        self.x2p_edit_itensemble.setValue(defaults['iterations_ensemble'])
         self.x2p_check_parallel.setChecked(defaults['parallel_processing'])
         self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
     def run_x2p(self):
@@ -2170,25 +2176,15 @@ class MainWindow(QMainWindow):
         raster = matlab.logical(data.tolist())
 
         # Prepare parameters
-        input_value = self.x2p_edit_bin.text()
-        val_network_bin = float(input_value) if len(input_value) > 0 else self.x2p_defaults['network_bin']
-        input_value = self.x2p_edit_iterations.text()
-        val_network_iterations = float(input_value) if len(input_value) > 0 else self.x2p_defaults['network_iterations']
-        input_value = self.x2p_edit_significance.text()
-        val_network_significance = float(input_value) if len(input_value) > 0 else self.x2p_defaults['network_significance']
-        input_value = self.x2p_edit_threshold.text()
-        val_coactive_neurons_threshold = float(input_value) if len(input_value) > 0 else self.x2p_defaults['coactive_neurons_threshold']
-        input_value = self.x2p_edit_rangestart.text()
-        val_clustering_range_start = float(input_value) if len(input_value) > 0 else self.x2p_defaults['clustering_range_start']
-        input_value = self.x2p_edit_rangeend.text()
-        val_clustering_range_end = float(input_value) if len(input_value) > 0 else self.x2p_defaults['clustering_range_end']
-        val_clustering_range = range(int(val_clustering_range_start), int(val_clustering_range_end)+1)
-        val_clustering_range = matlab.double(val_clustering_range)
-        input_value = self.x2p_edit_fixed.text()
-        val_clustering_fixed = float(input_value) if len(input_value) > 0 else self.x2p_defaults['clustering_fixed']
-        input_value = self.x2p_edit_itensemble.text()
-        val_iterations_ensemble = float(input_value) if len(input_value) > 0 else self.x2p_defaults['iterations_ensemble']
-        parallel = matlab.logical(self.x2p_check_parallel.isChecked())
+        val_network_bin = self.x2p_edit_bin.text()
+        val_network_iterations = self.x2p_edit_iterations.text()
+        val_network_significance = self.x2p_edit_significance.text()
+        val_coactive_neurons_threshold = self.x2p_edit_threshold.text()
+        val_clustering_range_start = self.x2p_edit_rangestart.text()
+        val_clustering_range_end = self.x2p_edit_rangeend.text()
+        val_clustering_fixed = self.x2p_edit_fixed.text()
+        val_iterations_ensemble = self.x2p_edit_itensemble.text()
+        parallel = self.x2p_check_parallel.isChecked()
 
         # Pack parameters
         pars = {
@@ -2202,9 +2198,22 @@ class MainWindow(QMainWindow):
             'ParallelProcessing': parallel,
             'FileLog': ''
         }
-        self.params['x2p'] = pars
-        pars_matlab = converters.dict_to_matlab_struct(pars)
-
+        
+        # Validate the parameters
+        pars_validated = parameters_validators.validate_parameters_x2p(pars, self.x2p_defaults)
+        
+        # Fill the GUI spaces using the validated data, in case there are changes
+        self.x2p_edit_bin.setValue(pars_validated['NetworkBin'])
+        self.x2p_edit_iterations.setValue(pars_validated['NetworkIterations'])
+        self.x2p_edit_significance.setValue(pars_validated['NetworkSignificance'])
+        self.x2p_edit_threshold.setValue(pars_validated['CoactiveNeuronsThreshold'])
+        self.x2p_edit_rangestart.setValue(pars_validated['ClusteringRangeStart'])
+        self.x2p_edit_rangeend.setValue(pars_validated['ClusteringRangeEnd'])
+        self.x2p_edit_fixed.setValue(pars_validated['ClusteringFixed'])
+        self.x2p_edit_itensemble.setValue(pars_validated['EnsembleIterations'])
+        
+        self.params['x2p'] = pars_validated
+        
         # Clean all the figures in case there was something previously
         if 'x2p' in self.results:
             del self.results['x2p']
@@ -2372,12 +2381,12 @@ class MainWindow(QMainWindow):
         """
         defaults = self.sgc_defaults
         self.sgc_check_firstderiv.setChecked(defaults['use_first_derivative'])
-        self.sgc_edit_stdthreshold.setText(f"{defaults['standard_deviations_threshold']}")
-        self.sgc_edit_shuff.setText(f"{defaults['shuffling_rounds']}")
-        self.sgc_edit_sig.setText(f"{defaults['coactivity_significance_level']}")
-        self.sgc_edit_monterounds.setText(f"{defaults['montecarlo_rounds']}")
-        self.sgc_edit_montesteps.setText(f"{defaults['montecarlo_steps']}")
-        self.sgc_edit_affthres.setText(f"{defaults['affinity_threshold']}")
+        self.sgc_edit_stdthreshold.setValue(defaults['standard_deviations_threshold'])
+        self.sgc_edit_shuff.setValue(defaults['shuffling_rounds'])
+        self.sgc_edit_sig.setValue(defaults['coactivity_significance_level'])
+        self.sgc_edit_monterounds.setValue(defaults['montecarlo_rounds'])
+        self.sgc_edit_montesteps.setValue(defaults['montecarlo_steps'])
+        self.sgc_edit_affthres.setValue(defaults['affinity_threshold'])
         self.update_console_log("Loaded default SGC parameter values", "complete")
     def run_sgc(self):
         """
@@ -2402,19 +2411,14 @@ class MainWindow(QMainWindow):
             dx = np.gradient(data, axis=1) # Axis 1 to get the derivative of the signal of every neuron
             dFFo = matlab.double(dx.tolist())
         # Prepare parameters
-        input_value = self.sgc_edit_stdthreshold.text()
-        val_std_threshold = float(input_value) if len(input_value) > 0 else self.sgc_defaults['standard_deviations_threshold']
-        input_value = self.sgc_edit_shuff.text()
-        val_shuffling_rounds = int(input_value) if len(input_value) > 0 else self.sgc_defaults['shuffling_rounds']
-        input_value = self.sgc_edit_sig.text()
-        val_coactivity_significance_level = float(input_value) if len(input_value) > 0 else self.sgc_defaults['coactivity_significance_level']
-        input_value = self.sgc_edit_monterounds.text()
-        val_montecarlo_rounds = int(input_value) if len(input_value) > 0 else self.sgc_defaults['montecarlo_rounds']
-        input_value = self.sgc_edit_montesteps.text()
-        val_montecarlo_steps = int(input_value) if len(input_value) > 0 else self.sgc_defaults['montecarlo_steps']
-        input_value = self.sgc_edit_affthres.text()
-        val_affinity_threshold = float(input_value) if len(input_value) > 0 else self.sgc_defaults['affinity_threshold']
-
+        use_first_derivative = self.sgc_check_firstderiv.isChecked()
+        val_std_threshold = self.sgc_edit_stdthreshold.text()
+        val_shuffling_rounds = self.sgc_edit_shuff.text()
+        val_coactivity_significance_level = self.sgc_edit_sig.text()
+        val_montecarlo_rounds = self.sgc_edit_monterounds.text()
+        val_montecarlo_steps = self.sgc_edit_montesteps.text()
+        val_affinity_threshold = self.sgc_edit_affthres.text()
+        
         # Pack parameters
         pars = {
             'use_first_derivative': use_first_derivative, 
@@ -2425,6 +2429,18 @@ class MainWindow(QMainWindow):
             'montecarlo_steps': val_montecarlo_steps,
             'affinity_threshold': val_affinity_threshold
         }
+        
+        # Validate the parameters
+        pars_validated = parameters_validators.validate_parameters_sgc(pars, self.sgc_defaults)
+        
+        # Fill the GUI spaces using the validated data, in case there are changes
+        self.sgc_edit_stdthreshold.setValue(pars_validated['standard_deviations_threshold'])
+        self.sgc_edit_shuff.setValue(pars_validated['shuffling_rounds'])
+        self.sgc_edit_sig.setValue(pars_validated['coactivity_significance_level'])
+        self.sgc_edit_monterounds.setValue(pars_validated['montecarlo_rounds'])
+        self.sgc_edit_montesteps.setValue(pars_validated['montecarlo_steps'])
+        self.sgc_edit_affthres.setValue(pars_validated['affinity_threshold'])
+        
         self.params['sgc'] = pars
         pars_matlab = converters.dict_to_matlab_struct(pars)
 
