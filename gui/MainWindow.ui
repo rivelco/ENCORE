@@ -232,6 +232,22 @@
                <string>Edit variable</string>
               </attribute>
               <layout class="QGridLayout" name="gridLayout_5">
+               <item row="0" column="1">
+                <widget class="QPushButton" name="edit_btn_bin">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bin matrix on the x axis. &lt;/p&gt;&lt;p&gt;Useful for electrical recordings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Bin</string>
+                 </property>
+                </widget>
+               </item>
                <item row="1" column="1">
                 <widget class="QLabel" name="label_16">
                  <property name="text">
@@ -259,92 +275,59 @@ Use it to remove part of your dataset.</string>
                  </property>
                 </widget>
                </item>
-               <item row="4" column="2">
-                <widget class="QWidget" name="widget_3" native="true">
+               <item row="1" column="2">
+                <widget class="QLabel" name="label_17">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <layout class="QHBoxLayout" name="horizontalLayout_3">
-                  <property name="leftMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="topMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="rightMargin">
-                   <number>0</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>0</number>
-                  </property>
-                  <item>
-                   <widget class="QLineEdit" name="edit_edit_ystart">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>80</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>Index of the first element in the range to keep
-Including this element.
-Index 0 based.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Start</string>
-                    </property>
-                    <property name="clearButtonEnabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QLineEdit" name="edit_edit_yend">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>80</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>End of the range to keep, except this element.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="placeholderText">
-                     <string>End</string>
-                    </property>
-                    <property name="clearButtonEnabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
-                  </item>
-                 </layout>
+                 <property name="text">
+                  <string>x dimention (time)</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QPushButton" name="btn_edit_transpose">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="toolTip">
+                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Transpose dataset</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QSpinBox" name="edit_edit_binsize">
+                 <property name="correctionMode">
+                  <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QLabel" name="label_19">
+                 <property name="toolTip">
+                  <string>Method to use for the binning process.</string>
+                 </property>
+                 <property name="toolTipDuration">
+                  <number>5000</number>
+                 </property>
+                 <property name="text">
+                  <string>Bin method</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
                 </widget>
                </item>
                <item row="4" column="1">
@@ -400,37 +383,18 @@ Index 0 based.</string>
                  </layout>
                 </widget>
                </item>
-               <item row="3" column="2">
-                <widget class="QLabel" name="label_18">
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
+               <item row="5" column="1" rowspan="2">
+                <spacer name="verticalSpacer_9">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
                  </property>
-                 <property name="text">
-                  <string>y dimention (cells)</string>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
                  </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="0" column="1">
-                <widget class="QPushButton" name="edit_btn_bin">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bin matrix on the x axis. &lt;/p&gt;&lt;p&gt;Useful for electrical recordings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Bin</string>
-                 </property>
-                </widget>
+                </spacer>
                </item>
                <item row="2" column="2">
                 <widget class="QWidget" name="widget_2" native="true">
@@ -454,74 +418,29 @@ Index 0 based.</string>
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QLineEdit" name="edit_edit_xstart">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
+                   <widget class="QSpinBox" name="edit_edit_xstart"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_40">
                     <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>80</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>Index of the first element in the range to keep
-Including this element.
-Index 0 based.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="placeholderText">
-                     <string>Start</string>
-                    </property>
-                    <property name="clearButtonEnabled">
-                     <bool>true</bool>
+                    <property name="text">
+                     <string>to</string>
                     </property>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QLineEdit" name="edit_edit_xend">
-                    <property name="enabled">
-                     <bool>false</bool>
-                    </property>
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="maximumSize">
-                     <size>
-                      <width>80</width>
-                      <height>16777215</height>
-                     </size>
-                    </property>
-                    <property name="toolTip">
-                     <string>End of the range to keep, except this element.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="placeholderText">
-                     <string>End</string>
-                    </property>
-                    <property name="clearButtonEnabled">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
+                   <widget class="QSpinBox" name="edit_edit_xend"/>
                   </item>
                  </layout>
                 </widget>
                </item>
-               <item row="1" column="2">
-                <widget class="QLabel" name="label_17">
+               <item row="3" column="2">
+                <widget class="QLabel" name="label_18">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -529,85 +448,55 @@ Index 0 based.</string>
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>x dimention (time)</string>
+                  <string>y dimention (cells)</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
-                <widget class="QLabel" name="label_19">
-                 <property name="toolTip">
-                  <string>Method to use for the binning process.</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Bin method</string>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QLineEdit" name="edit_edit_binsize">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
+               <item row="4" column="2">
+                <widget class="QWidget" name="widget_3" native="true">
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
                  </property>
-                 <property name="toolTip">
-                  <string>Bin size. Use the same timeunits from the dataset.</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="inputMethodHints">
-                  <set>Qt::ImhNone</set>
-                 </property>
-                 <property name="placeholderText">
-                  <string>Same time units</string>
-                 </property>
-                 <property name="clearButtonEnabled">
-                  <bool>true</bool>
-                 </property>
+                 <layout class="QHBoxLayout" name="horizontalLayout_3">
+                  <property name="leftMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="topMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="rightMargin">
+                   <number>0</number>
+                  </property>
+                  <property name="bottomMargin">
+                   <number>0</number>
+                  </property>
+                  <item>
+                   <widget class="QSpinBox" name="edit_edit_ystart"/>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_41">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>to</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="edit_edit_yend"/>
+                  </item>
+                 </layout>
                 </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QPushButton" name="btn_edit_transpose">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="text">
-                  <string>Transpose dataset</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="1">
-                <spacer name="verticalSpacer_9">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
                </item>
               </layout>
              </widget>
@@ -1352,7 +1241,7 @@ Index 0 based.</string>
                  <string>Parameters to adjust</string>
                 </property>
                 <layout class="QFormLayout" name="formLayout">
-                 <item row="0" column="0">
+                 <item row="1" column="0">
                   <widget class="QLabel" name="svd_lbl_pks">
                    <property name="toolTip">
                     <string>Minimul amount of active neurons in a single
@@ -1367,17 +1256,7 @@ Leave it empty for an automatic threshold.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="svd_edit_pks">
-                   <property name="text">
-                    <string>3</string>
-                   </property>
-                   <property name="clearButtonEnabled">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
+                 <item row="4" column="0">
                   <widget class="QLabel" name="svd_lbl_scut">
                    <property name="toolTip">
                     <string>This is a threshold of coactivity. Suggested range 0.22-0.25
@@ -1391,17 +1270,7 @@ Leave it empty if you want an automated threshold.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="svd_edit_scut">
-                   <property name="text">
-                    <string>0.22</string>
-                   </property>
-                   <property name="clearButtonEnabled">
-                    <bool>true</bool>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
+                 <item row="6" column="0">
                   <widget class="QLabel" name="svd_lbl_hcut">
                    <property name="toolTip">
                     <string>Another threshold for coactivity. Further removes noise.</string>
@@ -1414,14 +1283,7 @@ Leave it empty if you want an automated threshold.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="1">
-                  <widget class="QLineEdit" name="svd_edit_hcut">
-                   <property name="text">
-                    <string>0.22</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="0">
+                 <item row="8" column="0">
                   <widget class="QLabel" name="svd_lbl_statecut">
                    <property name="toolTip">
                     <string>The maximum number of states is a fraction
@@ -1436,14 +1298,7 @@ This statates the maximum number of states. </string>
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="1">
-                  <widget class="QLineEdit" name="svd_edit_statecut">
-                   <property name="text">
-                    <string>6</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="10" column="1">
+                 <item row="15" column="1">
                   <widget class="QCheckBox" name="svd_check_tfidf">
                    <property name="toolTip">
                     <string>Wheter of not to perform TF-IDF normalization.
@@ -1461,7 +1316,7 @@ in two or more different ensembles.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="12" column="1">
+                 <item row="17" column="1">
                   <widget class="QPushButton" name="svd_btn_defaults">
                    <property name="toolTip">
                     <string>Load default parameters for the SVD analysis.</string>
@@ -1474,55 +1329,101 @@ in two or more different ensembles.</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="8" column="0">
+                 <item row="12" column="0">
                   <widget class="QLabel" name="svd_lbl_csistep">
                    <property name="text">
                     <string>csi_vec_step</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="0">
+                 <item row="10" column="0">
                   <widget class="QLabel" name="svd_lbl_csistart">
                    <property name="text">
                     <string>csi_vec_start</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="0">
+                 <item row="14" column="0">
                   <widget class="QLabel" name="svd_lbl_csiend">
                    <property name="text">
                     <string>csi_vec_end</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="1">
-                  <widget class="QLineEdit" name="svd_edit_csistart">
+                 <item row="16" column="1">
+                  <widget class="QCheckBox" name="svd_check_parallel">
                    <property name="text">
-                    <string>0.01</string>
+                    <string>Parallel processing</string>
                    </property>
-                   <property name="placeholderText">
-                    <string/>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QSpinBox" name="svd_edit_pks">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <number>3</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="4" column="1">
+                  <widget class="QDoubleSpinBox" name="svd_edit_scut">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <double>0.220000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="6" column="1">
+                  <widget class="QDoubleSpinBox" name="svd_edit_hcut">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <double>0.220000000000000</double>
                    </property>
                   </widget>
                  </item>
                  <item row="8" column="1">
-                  <widget class="QLineEdit" name="svd_edit_csistep">
-                   <property name="text">
-                    <string>0.01</string>
+                  <widget class="QSpinBox" name="svd_edit_statecut">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <number>6</number>
                    </property>
                   </widget>
                  </item>
-                 <item row="9" column="1">
-                  <widget class="QLineEdit" name="svd_edit_csiend">
-                   <property name="text">
-                    <string>0.1</string>
+                 <item row="10" column="1">
+                  <widget class="QDoubleSpinBox" name="svd_edit_csistart">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <double>0.010000000000000</double>
                    </property>
                   </widget>
                  </item>
-                 <item row="11" column="1">
-                  <widget class="QCheckBox" name="svd_check_parallel">
-                   <property name="text">
-                    <string>Parallel processing</string>
+                 <item row="12" column="1">
+                  <widget class="QDoubleSpinBox" name="svd_edit_csistep">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <double>0.010000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="14" column="1">
+                  <widget class="QDoubleSpinBox" name="svd_edit_csiend">
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                   </property>
+                   <property name="value">
+                    <double>0.100000000000000</double>
                    </property>
                   </widget>
                  </item>
@@ -1825,7 +1726,7 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                  <string>Parameters to adjust</string>
                 </property>
                 <layout class="QFormLayout" name="formLayout_4">
-                 <item row="0" column="0">
+                 <item row="1" column="0">
                   <widget class="QLabel" name="pca_lbl_dc">
                    <property name="toolTip">
                     <string>Cut off for distances.</string>
@@ -1838,14 +1739,7 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    </property>
                   </widget>
                  </item>
-                 <item row="0" column="1">
-                  <widget class="QLineEdit" name="pca_edit_dc">
-                   <property name="text">
-                    <string>0.01</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
+                 <item row="3" column="0">
                   <widget class="QLabel" name="pca_lbl_npcs">
                    <property name="toolTip">
                     <string>Number of principal components to use to extract ensembles.</string>
@@ -1858,14 +1752,7 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    </property>
                   </widget>
                  </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="pca_edit_npcs">
-                   <property name="text">
-                    <string>3</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="0">
+                 <item row="5" column="0">
                   <widget class="QLabel" name="pca_lbl_minspk">
                    <property name="toolTip">
                     <string>Minimum number of active neurons to be considered
@@ -1879,14 +1766,7 @@ part of the analysis</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="pca_edit_minspk">
-                   <property name="text">
-                    <string>3</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="3" column="0">
+                 <item row="7" column="0">
                   <widget class="QLabel" name="pca_lbl_nsur">
                    <property name="toolTip">
                     <string>Surrogates for core-cells, should be 1000 or more.</string>
@@ -1899,14 +1779,7 @@ part of the analysis</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="3" column="1">
-                  <widget class="QLineEdit" name="pca_edit_nsur">
-                   <property name="text">
-                    <string>1000</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="4" column="0">
+                 <item row="9" column="0">
                   <widget class="QLabel" name="pca_lbl_prct">
                    <property name="toolTip">
                     <string>Percentile on the core cell distribution.</string>
@@ -1916,42 +1789,21 @@ part of the analysis</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="4" column="1">
-                  <widget class="QLineEdit" name="pca_edit_prct">
-                   <property name="text">
-                    <string>99.9</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="5" column="0">
+                 <item row="11" column="0">
                   <widget class="QLabel" name="pca_lbl_centthr">
                    <property name="text">
                     <string>Centroid detection threshold</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="5" column="1">
-                  <widget class="QLineEdit" name="pca_edit_centthr">
-                   <property name="text">
-                    <string>99.9</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="6" column="0">
+                 <item row="13" column="0">
                   <widget class="QLabel" name="pca_lbl_innercorr">
                    <property name="text">
                     <string>Inter-assembly correlation threshold</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="6" column="1">
-                  <widget class="QLineEdit" name="pca_edit_innercorr">
-                   <property name="text">
-                    <string>5</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="7" column="0">
+                 <item row="15" column="0">
                   <widget class="QLabel" name="pca_lbl_minsize">
                    <property name="toolTip">
                     <string>Minimum number of cells that can form an ensemble.</string>
@@ -1964,14 +1816,7 @@ part of the analysis</string>
                    </property>
                   </widget>
                  </item>
-                 <item row="7" column="1">
-                  <widget class="QLineEdit" name="pca_edit_minsize">
-                   <property name="text">
-                    <string>3</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="8" column="1">
+                 <item row="16" column="1">
                   <widget class="QPushButton" name="pca_btn_defaults">
                    <property name="toolTip">
                     <string>Load default parameters for the PCA analysis.</string>
@@ -1981,6 +1826,65 @@ part of the analysis</string>
                    </property>
                    <property name="text">
                     <string>Load default values</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QDoubleSpinBox" name="pca_edit_dc">
+                   <property name="value">
+                    <double>0.010000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QSpinBox" name="pca_edit_npcs">
+                   <property name="value">
+                    <number>3</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="5" column="1">
+                  <widget class="QSpinBox" name="pca_edit_minspk">
+                   <property name="value">
+                    <number>3</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="7" column="1">
+                  <widget class="QSpinBox" name="pca_edit_nsur">
+                   <property name="maximum">
+                    <number>100000</number>
+                   </property>
+                   <property name="value">
+                    <number>1000</number>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="9" column="1">
+                  <widget class="QDoubleSpinBox" name="pca_edit_prct">
+                   <property name="value">
+                    <double>99.900000000000006</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="11" column="1">
+                  <widget class="QDoubleSpinBox" name="pca_edit_centthr">
+                   <property name="value">
+                    <double>99.900000000000006</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="13" column="1">
+                  <widget class="QDoubleSpinBox" name="pca_edit_innercorr">
+                   <property name="value">
+                    <double>5.000000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="15" column="1">
+                  <widget class="QSpinBox" name="pca_edit_minsize">
+                   <property name="value">
+                    <number>3</number>
                    </property>
                   </widget>
                  </item>
@@ -2367,7 +2271,7 @@ random circular shifts of original spike matrix.</string>
                        <property name="bottomMargin">
                         <number>0</number>
                        </property>
-                       <item row="0" column="0">
+                       <item row="1" column="0">
                         <widget class="QLabel" name="label_10">
                          <property name="toolTip">
                           <string>Defines which percentile of the
@@ -2383,14 +2287,17 @@ recommended). Not used when 'MarcenkoPastur' is chosen.</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="0" column="1">
-                        <widget class="QLineEdit" name="ica_edit_perpercentile">
-                         <property name="text">
-                          <string>95</string>
+                       <item row="1" column="1">
+                        <widget class="QDoubleSpinBox" name="ica_edit_perpercentile">
+                         <property name="correctionMode">
+                          <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                         </property>
+                         <property name="value">
+                          <double>95.000000000000000</double>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="0">
+                       <item row="2" column="0">
                         <widget class="QLabel" name="label_13">
                          <property name="toolTip">
                           <string>Defines how many surrogate
@@ -2405,10 +2312,13 @@ when 'MarcenkoPastur' is chosen.</string>
                          </property>
                         </widget>
                        </item>
-                       <item row="1" column="1">
-                        <widget class="QLineEdit" name="ica_edit_percant">
-                         <property name="text">
-                          <string>20</string>
+                       <item row="2" column="1">
+                        <widget class="QSpinBox" name="ica_edit_percant">
+                         <property name="correctionMode">
+                          <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                         </property>
+                         <property name="value">
+                          <number>20</number>
                          </property>
                         </widget>
                        </item>
@@ -2509,9 +2419,15 @@ chosen.</string>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QLineEdit" name="ica_edit_iterations">
-                         <property name="text">
-                          <string>500</string>
+                        <widget class="QSpinBox" name="ica_edit_iterations">
+                         <property name="correctionMode">
+                          <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                         </property>
+                         <property name="maximum">
+                          <number>10000</number>
+                         </property>
+                         <property name="value">
+                          <number>500</number>
                          </property>
                         </widget>
                        </item>
@@ -2725,119 +2641,63 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
               <string>Parameters to adjust</string>
              </property>
              <layout class="QFormLayout" name="formLayout_9">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QLabel" name="x2p_lbl_bin">
                 <property name="text">
                  <string>Network bin</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="x2p_edit_bin">
-                <property name="text">
-                 <string>1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="x2p_lbl_iterations">
                 <property name="text">
                  <string>Network iterations</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="x2p_edit_iterations">
-                <property name="text">
-                 <string>1000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
+              <item row="5" column="0">
                <widget class="QLabel" name="x2p_lbl_significance">
                 <property name="text">
                  <string>Network significance</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="x2p_edit_significance">
-                <property name="text">
-                 <string>0.05</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
+              <item row="7" column="0">
                <widget class="QLabel" name="x2p_lbl_threshold">
                 <property name="text">
                  <string>Coactive neurons threshold</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="x2p_edit_threshold">
-                <property name="text">
-                 <string>2</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="0">
+              <item row="9" column="0">
                <widget class="QLabel" name="x2p_lbl_rangestart">
                 <property name="text">
                  <string>Clustering range start</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="x2p_edit_rangestart">
-                <property name="text">
-                 <string>3</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
+              <item row="11" column="0">
                <widget class="QLabel" name="x2p_lbl_rangeend">
                 <property name="text">
                  <string>Clustering range end</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
-               <widget class="QLineEdit" name="x2p_edit_rangeend">
-                <property name="text">
-                 <string>10</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
+              <item row="13" column="0">
                <widget class="QLabel" name="x2p_lbl_fixed">
                 <property name="text">
                  <string>Clustering fixed</string>
                 </property>
                </widget>
               </item>
-              <item row="6" column="1">
-               <widget class="QLineEdit" name="x2p_edit_fixed">
-                <property name="text">
-                 <string>0</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
+              <item row="15" column="0">
                <widget class="QLabel" name="x2p_lbl_itensemble">
                 <property name="text">
                  <string>Iterations ensemble</string>
                 </property>
                </widget>
               </item>
-              <item row="7" column="1">
-               <widget class="QLineEdit" name="x2p_edit_itensemble">
-                <property name="text">
-                 <string>1000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="1">
+              <item row="17" column="1">
                <widget class="QPushButton" name="x2p_btn_defaults">
                 <property name="toolTip">
                  <string>Load default parameters for the Xsembles2P analysis.</string>
@@ -2850,7 +2710,7 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 </property>
                </widget>
               </item>
-              <item row="8" column="1">
+              <item row="16" column="1">
                <widget class="QCheckBox" name="x2p_check_parallel">
                 <property name="layoutDirection">
                  <enum>Qt::LeftToRight</enum>
@@ -2860,6 +2720,64 @@ Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large
                 </property>
                 <property name="checked">
                  <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QSpinBox" name="x2p_edit_bin">
+                <property name="value">
+                 <number>1</number>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QSpinBox" name="x2p_edit_iterations">
+                <property name="maximum">
+                 <number>100000</number>
+                </property>
+                <property name="value">
+                 <number>1000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QDoubleSpinBox" name="x2p_edit_significance">
+                <property name="value">
+                 <double>0.050000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QSpinBox" name="x2p_edit_threshold">
+                <property name="value">
+                 <number>2</number>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QSpinBox" name="x2p_edit_rangestart">
+                <property name="value">
+                 <number>3</number>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="1">
+               <widget class="QSpinBox" name="x2p_edit_rangeend">
+                <property name="value">
+                 <number>10</number>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="1">
+               <widget class="QSpinBox" name="x2p_edit_fixed"/>
+              </item>
+              <item row="15" column="1">
+               <widget class="QSpinBox" name="x2p_edit_itensemble">
+                <property name="maximum">
+                 <number>10000</number>
+                </property>
+                <property name="value">
+                 <number>1000</number>
                 </property>
                </widget>
               </item>
@@ -3081,97 +2999,6 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
               <string>Parameters to adjust</string>
              </property>
              <layout class="QFormLayout" name="formLayout_11">
-              <item row="3" column="0">
-               <widget class="QLabel" name="sgc_lbl_shuff">
-                <property name="text">
-                 <string>Shuffling rounds</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="sgc_edit_shuff">
-                <property name="text">
-                 <string>1000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="0">
-               <widget class="QLabel" name="sgc_lbl_sig">
-                <property name="text">
-                 <string>Coactivity significance level</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="0">
-               <widget class="QLabel" name="sgc_lbl_monterounds">
-                <property name="text">
-                 <string>Montecarlo rounds</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="0">
-               <widget class="QLabel" name="sgc_lbl_montesteps">
-                <property name="text">
-                 <string>Montecarlo steps</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="0">
-               <widget class="QLabel" name="sgc_lbl_affthres">
-                <property name="text">
-                 <string>Affinity threshold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="5" column="1">
-               <widget class="QLineEdit" name="sgc_edit_sig">
-                <property name="text">
-                 <string>0.05</string>
-                </property>
-               </widget>
-              </item>
-              <item row="6" column="1">
-               <widget class="QLineEdit" name="sgc_edit_monterounds">
-                <property name="text">
-                 <string>5</string>
-                </property>
-               </widget>
-              </item>
-              <item row="7" column="1">
-               <widget class="QLineEdit" name="sgc_edit_montesteps">
-                <property name="text">
-                 <string>10000</string>
-                </property>
-               </widget>
-              </item>
-              <item row="8" column="1">
-               <widget class="QLineEdit" name="sgc_edit_affthres">
-                <property name="text">
-                 <string>0.2</string>
-                </property>
-               </widget>
-              </item>
-              <item row="9" column="1">
-               <widget class="QPushButton" name="sgc_btn_defaults">
-                <property name="text">
-                 <string>Load default values</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_29">
-                <property name="text">
-                 <string>Standard deviations threshold</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="sgc_edit_stdthreshold">
-                <property name="text">
-                 <string>2</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="0">
                <widget class="QCheckBox" name="sgc_check_firstderiv">
                 <property name="layoutDirection">
@@ -3182,6 +3009,103 @@ Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. 2024. Stimulus encoding by specifi
                 </property>
                 <property name="text">
                  <string>Use first derivative of dFFo</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_29">
+                <property name="text">
+                 <string>Standard deviations threshold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="sgc_lbl_shuff">
+                <property name="text">
+                 <string>Shuffling rounds</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QSpinBox" name="sgc_edit_shuff">
+                <property name="maximum">
+                 <number>100000</number>
+                </property>
+                <property name="value">
+                 <number>1000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0">
+               <widget class="QLabel" name="sgc_lbl_sig">
+                <property name="text">
+                 <string>Coactivity significance level</string>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="sgc_lbl_monterounds">
+                <property name="text">
+                 <string>Montecarlo rounds</string>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="0">
+               <widget class="QLabel" name="sgc_lbl_montesteps">
+                <property name="text">
+                 <string>Montecarlo steps</string>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="0">
+               <widget class="QLabel" name="sgc_lbl_affthres">
+                <property name="text">
+                 <string>Affinity threshold</string>
+                </property>
+               </widget>
+              </item>
+              <item row="14" column="1">
+               <widget class="QPushButton" name="sgc_btn_defaults">
+                <property name="text">
+                 <string>Load default values</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="1">
+               <widget class="QDoubleSpinBox" name="sgc_edit_sig">
+                <property name="value">
+                 <double>0.050000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="9" column="1">
+               <widget class="QSpinBox" name="sgc_edit_monterounds">
+                <property name="value">
+                 <number>5</number>
+                </property>
+               </widget>
+              </item>
+              <item row="11" column="1">
+               <widget class="QSpinBox" name="sgc_edit_montesteps">
+                <property name="maximum">
+                 <number>1000000</number>
+                </property>
+                <property name="value">
+                 <number>10000</number>
+                </property>
+               </widget>
+              </item>
+              <item row="13" column="1">
+               <widget class="QDoubleSpinBox" name="sgc_edit_affthres">
+                <property name="value">
+                 <double>0.200000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QDoubleSpinBox" name="sgc_edit_stdthreshold">
+                <property name="value">
+                 <double>2.000000000000000</double>
                 </property>
                </widget>
               </item>
@@ -3454,93 +3378,69 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
                <item>
-                <widget class="QLabel" name="label_5">
-                 <property name="text">
-                  <string>Number of ensembles detected</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLineEdit" name="ensvis_edit_numens">
-                 <property name="toolTip">
-                  <string>Number of ensembles detected by the selected analysis.</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
-                 <property name="alignment">
-                  <set>Qt::AlignCenter</set>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QLabel" name="label_9">
-                 <property name="text">
-                  <string>Select ensemble to visualize</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QWidget" name="widget" native="true">
-                 <layout class="QFormLayout" name="formLayout_8">
-                  <property name="topMargin">
-                   <number>6</number>
-                  </property>
-                  <property name="bottomMargin">
-                   <number>6</number>
-                  </property>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="ensvis_lbl_currentens">
+                <widget class="QWidget" name="widget_12" native="true">
+                 <layout class="QHBoxLayout" name="horizontalLayout_24">
+                  <item>
+                   <widget class="QLabel" name="label_42">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Visualizing ensemble</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QSpinBox" name="envis_slide_selectedens">
+                    <property name="keyboardTracking">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="label_43">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>of a total of</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QLabel" name="ensvis_edit_numens">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
                     <property name="font">
                      <font>
                       <bold>true</bold>
                      </font>
                     </property>
-                    <property name="toolTip">
-                     <string>Index (base 1) of the currently shown ensemble.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
                     <property name="text">
-                     <string>1</string>
+                     <string>0</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1">
-                   <widget class="QSlider" name="envis_slide_selectedens">
-                    <property name="enabled">
-                     <bool>false</bool>
+                  <item>
+                   <widget class="QLabel" name="label_45">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
                     </property>
-                    <property name="toolTip">
-                     <string>Slide the selector to visualize a different ensemble.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
-                    <property name="minimum">
-                     <number>1</number>
-                    </property>
-                    <property name="maximum">
-                     <number>2</number>
-                    </property>
-                    <property name="pageStep">
-                     <number>1</number>
-                    </property>
-                    <property name="tracking">
-                     <bool>false</bool>
-                    </property>
-                    <property name="orientation">
-                     <enum>Qt::Horizontal</enum>
-                    </property>
-                    <property name="tickPosition">
-                     <enum>QSlider::TicksAbove</enum>
-                    </property>
-                    <property name="tickInterval">
-                     <number>1</number>
+                    <property name="text">
+                     <string>ensembles</string>
                     </property>
                    </widget>
                   </item>
