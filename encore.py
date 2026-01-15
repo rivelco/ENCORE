@@ -1648,6 +1648,10 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
         self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
         self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        if times[3] > 0:
+            self.update_console_log(f"The SVD analysis found {times[3]} ensembles", "complete")
+        else:
+            self.update_console_log(f"The SVD analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
         self.btn_run_svd.setEnabled(True)
     def plot_SVD_results(self, answer):
         """
@@ -1845,8 +1849,12 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
         self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
         self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        if times[3] > 0:
+            self.update_console_log(f"The PCA analysis found {times[3]} ensembles", "complete")
+        else:
+            self.update_console_log(f"The PCA analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
         self.btn_run_pca.setEnabled(True)
-    def plot_PCA_results(self, pars, answer):
+    def plot_PCA_results(self, answer):
         """
         Plots the results of the PCA algorithm, including eigen values, principal components, 
         rho and delta values, correlation of cells, core cells and ensembles time course.
@@ -1860,9 +1868,8 @@ class MainWindow(QMainWindow):
         """
         ## Plot the eigs
         eigs = np.array(answer['exp_var'])
-        seleig = int(pars['npcs'])
         plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_eigs')
-        plot_widget.plot_eigs(eigs, seleig)
+        plot_widget.plot_eigs(eigs, answer['seleig'])
 
         # Plot the PCA
         pcs = np.array(answer['pcs'])
@@ -2058,6 +2065,10 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
         self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
         self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        if times[3] > 0:
+            self.update_console_log(f"The ICA analysis found {times[3]} ensembles", "complete")
+        else:
+            self.update_console_log(f"The ICA analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
         self.btn_run_ica.setEnabled(True)
     def plot_ICA_results(self, answer):
         """
@@ -2236,8 +2247,12 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
         self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
         self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        if times[3] > 0:
+            self.update_console_log(f"The X2P analysis found {times[3]} ensembles", "complete")
+        else:
+            self.update_console_log(f"The X2P analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
         self.btn_run_x2p.setEnabled(True)
-    def plot_X2P_results(self, answer):
+    def plot_x2p_results(self, answer):
         """
         Plots the results of the X2P algorithm, including similarity map, EPI, 
         onsemble activity, offsemble activity, activity, onsembles neurons and offsemble neurons.
@@ -2421,6 +2436,10 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"- Importing the functions took {times[0]:.2f} seconds") 
         self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
         self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        if times[3] > 0:
+            self.update_console_log(f"The SGC analysis found {times[3]} ensembles", "complete")
+        else:
+            self.update_console_log(f"The SGC analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
         self.btn_run_sgc.setEnabled(True)
     def plot_sgc_results(self, answer):
         ensembles_timecourse = answer['timecourse']
