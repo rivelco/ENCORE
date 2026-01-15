@@ -24,7 +24,7 @@ from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator, QIcon
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
 
-import runners.svd_run as run_svd
+import runners.encore
 
 import utils.metrics as metrics
 import utils.parameters_validators as parameters_validators
