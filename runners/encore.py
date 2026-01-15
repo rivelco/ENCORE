@@ -462,3 +462,124 @@ def run_x2p(raster, pars_validated, relative_folder_path = 'analysis/Xsembles2P'
         results['answer'] = clean_answer
 
     return results
+
+def run_sgc(dFFo, pars_validated, relative_folder_path = 'analysis/SGC_neural_assembly_detection', include_answer = True, log_function = None):
+    """
+    Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data. 
+    This function also handles MATLAB path setup and data conversion to MATLAB.
+
+    :param raster: Matrix of neural activity data to be processed.
+    :type raster: numpy.ndarray
+    :param pars_validated: Dictionary with parameters for the SVD algorithm.
+    :type pars_validated: dict
+    :param relative_folder_path: String with the path to the analysis code. Defaults to 'analysis/SGC_neural_assembly_detection'
+    :type relative_folder_path: str, optional
+    :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
+    :type include_answer: bool, optional
+    :param log_function: Function to show the log of the function execution. 
+        This function should receive two strings as parameters, just like MainWindow.update_console_log.
+        Defaults to None.
+    :type log_function: function, optional
+    :return: Dictionary with the result of the algorithm. 
+    :rtype: dict
+    """
+    log_flag = "SGC:"
+    success = True
+    
+    if log_function:
+        log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    
+    # Check for the first derivative flag
+    if pars_validated['use_first_derivative']:
+        dx = np.gradient(dFFo, axis=1) # Axis 1 to get the derivative of the signal of every neuron
+        dFFo_mat = matlab.double(dx.tolist())
+    else:
+        # Convert the dFFo matrix
+        dFFo_mat = matlab.double(dFFo.tolist())
+    # Prepare MATLAB parameters
+    pars_matlab = converters.dict_to_matlab_struct(pars_validated)
+    if log_function:
+        log_function.emit(f"{log_flag} Done converting.", "complete")
+    
+    if log_function:
+        log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
+    start_time = time.time()
+    eng_sgc = matlab.engine.start_matlab()
+    # Adding to path
+    folder_path = os.path.abspath(relative_folder_path)
+    folder_path_with_subfolders = eng_sgc.genpath(folder_path)
+    eng_sgc.addpath(folder_path_with_subfolders, nargout=0)
+    end_time = time.time()
+    engine_time = end_time - start_time
+    if log_function:
+        log_function.emit(f"{log_flag} Loaded MATLAB engine.", "complete")
+    
+    if log_function:
+        log_function.emit(f"{log_flag} Running SGC algorithm...", "log")
+    start_time = time.time()
+    try:
+        answer = eng_sgc.EnsemblesGUI_linker_SGC(dFFo_mat, pars_matlab)
+    except:
+        if log_function:
+            log_function.emit(f"{log_flag} An error occurred while executing the algorithm. Check console logs for more info.", "error")
+        answer = None
+    end_time = time.time()
+    algorithm_time = end_time - start_time
+    if log_function:
+        log_function.emit(f"{log_flag} Done.", "complete")
+        log_function.emit(f"{log_flag} Terminating MATLAB engine...", "log")
+    eng_sgc.quit()
+    if log_function:
+        log_function.emit(f"{log_flag} Done.", "complete")
+        
+    ensgui_results = {}
+    
+    if answer != None:
+        cant_neurons, cant_timepoints = dFFo.shape
+        
+        # Extracting neurons in ensembles
+        assemblies_raw = answer['assemblies']
+        assemblies = [np.array(list(assembly[0])) for assembly in assemblies_raw]
+        num_states = len(assemblies)
+        neurons_in_ensembles = np.zeros((num_states, cant_neurons))
+        for ens_idx, ensmeble in enumerate(assemblies):
+            ensemble_fixed = [cell-1 for cell in ensmeble]
+            neurons_in_ensembles[ens_idx, ensemble_fixed] = 1
+        # Extracting timepoints of activations
+        activity_raster_peaks_raw = answer['activity_raster_peaks']
+        activity_raster_peaks = np.array([int(np.array(raster_peak)[0][0])-1 for raster_peak in activity_raster_peaks_raw])
+        i_assembly_patterns_raw = answer['assembly_pattern_detection']['assemblyIActivityPatterns']
+        i_assembly_patterns = [np.array(list(assembly[0])).astype(int) for assembly in i_assembly_patterns_raw]
+        # Formatting ensmbles timecourse 
+        activations = [activity_raster_peaks[I-1] for I in i_assembly_patterns]
+        ensembles_timecourse = np.zeros((num_states, cant_timepoints))
+        for ens_idx, ensmeble_activations in enumerate(activations):
+            ensembles_timecourse[ens_idx, ensmeble_activations] = 1
+        
+        # Saving results
+        ensgui_results['timecourse'] = ensembles_timecourse
+        ensgui_results['ensembles_cant'] = ensembles_timecourse.shape[0]
+        ensgui_results['neus_in_ens'] = neurons_in_ensembles
+        
+        # Correct the answer saved
+        answer['assemblies'] = {}
+        for idx, assembly in enumerate(assemblies):
+            answer['assemblies'][f"{idx}"] = assembly
+        answer['assembly_pattern_detection']['assemblyIActivityPatterns'] = {}
+        for idx, act_patt in enumerate(i_assembly_patterns):
+            answer['assembly_pattern_detection']['assemblyIActivityPatterns'][f"{idx}"] = act_patt
+
+    else:
+        success = False
+
+    results = {
+        "results": ensgui_results,
+        "engine_time": engine_time,
+        "algorithm_time": algorithm_time,
+        "success": success
+    }
+
+    if include_answer: 
+        results["answer"] = answer
+
+    return results
