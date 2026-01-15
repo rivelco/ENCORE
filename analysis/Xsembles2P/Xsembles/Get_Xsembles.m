@@ -68,15 +68,15 @@ parallel_processing = inputs.Results.ParallelProcessing;
 file_log = inputs.Results.FileLog;
 
 %% Create a log of computations
-if isfile([file_log '_log_XsembleAnalysis.txt'])
-    delete([file_log '_log_XsembleAnalysis.txt'])
-end
-diary([file_log '_log_XsembleAnalysis.txt'])
+%if isfile([file_log '_log_XsembleAnalysis.txt'])
+%    delete([file_log '_log_XsembleAnalysis.txt'])
+%end
+%diary([file_log '_log_XsembleAnalysis.txt'])
 disp('---Xsembles---')
 disp('Extraction of neuronal ensembles (onsembles and offsembles)...')
 disp(datetime)
-disp('   Saving log in')
-disp(['      ' file_log '_log_XsembleAnalysis.txt'])
+%disp('   Saving log in')
+%disp(['      ' file_log '_log_XsembleAnalysis.txt'])
 
 % Get initial time point
 t_initial = tic;
@@ -316,4 +316,4 @@ analysis.Ensembles.Iterations = ensemble_iterations;
 t_final = toc(t_initial);
 disp(['You are all set! (total time: ' num2str(t_final) ' seconds)'])
 disp(datetime)
-analysis.Log = readlines([file_log '_log_XsembleAnalysis.txt']);
+analysis.Log = ''; %readlines([file_log '_log_XsembleAnalysis.txt']);
