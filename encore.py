@@ -193,6 +193,7 @@ class MainWindow(QMainWindow):
         self.ensvis_btn_ica.clicked.connect(self.vis_ensembles_ica)
         self.ensvis_btn_x2p.clicked.connect(self.vis_ensembles_x2p)
         self.ensvis_btn_sgc.clicked.connect(self.vis_ensembles_sgc)
+        self.envis_slide_selectedens.editingFinished.connect(self.update_ensemble_visualization)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
         self.ensvis_check_onlyens.stateChanged.connect(self.update_ens_vis_coords)
         self.ensvis_check_onlycont.stateChanged.connect(self.update_ens_vis_coords)
@@ -402,12 +403,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'sgc_plot_timecourse').reset(default_txt)
         self.findChild(MatplotlibWidget, 'sgc_plot_cellsinens').reset(default_txt)
 
-        self.ensvis_edit_numens.setText("")
+        self.ensvis_edit_numens.setText("0")
+        self.envis_slide_selectedens.setEnabled(False)
         self.envis_slide_selectedens.blockSignals(True)
         self.envis_slide_selectedens.setMaximum(2)
         self.envis_slide_selectedens.setValue(1)
         self.envis_slide_selectedens.blockSignals(False)
-        self.ensvis_lbl_currentens.setText(f"{1}")
         self.ensvis_check_onlyens.setEnabled(False)
         self.ensvis_check_onlycont.setEnabled(False)
         self.ensvis_check_cellnum.setEnabled(False)
@@ -2591,10 +2592,9 @@ class MainWindow(QMainWindow):
         self.envis_slide_selectedens.setMinimum(1)   # Set the minimum value
         self.envis_slide_selectedens.setMaximum(self.results[curr_show]['ensembles_cant']) # Set the maximum value
         self.envis_slide_selectedens.setValue(1)
-        self.ensvis_lbl_currentens.setText(f"{1}")
         self.update_ensemble_visualization(1)
 
-    def update_ensemble_visualization(self, value):
+    def update_ensemble_visualization(self, value=-1):
         """
         Loads the visualization of the selected ensemble.
 
@@ -2608,9 +2608,11 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
+        if value == -1:
+            value = self.envis_slide_selectedens.value()
+            
         curr_analysis = self.ensemble_currently_shown
         curr_ensemble = value
-        self.ensvis_lbl_currentens.setText(f"{curr_ensemble}")
 
         # Get the members of this ensemble
         members = []
