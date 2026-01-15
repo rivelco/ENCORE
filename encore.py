@@ -30,6 +30,7 @@ import utils.metrics as metrics
 import utils.parameters_validators as parameters_validators
 import utils.data_converters as converters
 from utils.text_formatting import format_nums_to_string
+import utils.analysis_fields_formatters as analysis_limits
 
 from gui.MatplotlibWidget import MatplotlibWidget
 
@@ -108,7 +109,7 @@ class MainWindow(QMainWindow):
         self.ensgui_desc = {
             "analyzer": "ENCORE",
             "date": "",
-            "gui_version": 2.0
+            "gui_version": "2.0.0"
         }
         
         self.gui_colors = gui_colors
@@ -572,6 +573,8 @@ class MainWindow(QMainWindow):
                 defaults = json.load(f)
             except json.JSONDecodeError as e:
                 raise json.JSONDecodeError(f"Error decoding JSON in {config_path}: {e}", e.doc, e.pos)
+        if method == "all":
+            return defaults
         if method not in defaults:
             raise KeyError(f"Method '{method}' not found in default parameters.")
         return defaults[method]
@@ -2154,7 +2157,8 @@ class MainWindow(QMainWindow):
             'NetworkIterations': val_network_iterations,
             'NetworkSignificance': val_network_significance,
             'CoactiveNeuronsThreshold': val_coactive_neurons_threshold,
-            'ClusteringRange': val_clustering_range,
+            'ClusteringRangeStart': val_clustering_range_start,
+            'ClusteringRangeEnd': val_clustering_range_end,
             'ClusteringFixed': val_clustering_fixed,
             'EnsembleIterations': val_iterations_ensemble,
             'ParallelProcessing': parallel,
@@ -2360,7 +2364,6 @@ class MainWindow(QMainWindow):
         self.sgc_edit_affthres.setValue(pars_validated['affinity_threshold'])
         
         self.params['sgc'] = pars
-        pars_matlab = converters.dict_to_matlab_struct(pars)
 
         # Clean all the figures in case there was something previously
         if 'sgc' in self.results:
