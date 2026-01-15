@@ -77,6 +77,7 @@ class MatplotlibWidget(QWidget):
         transform=self.axes.transAxes)
         self.axes.set_axis_off()
         self.canvas.draw()
+        self.canvas.flush_events()
     
     def preview_dataset(self, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
         self.axes.clear()
@@ -105,6 +106,7 @@ class MatplotlibWidget(QWidget):
             self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def preview_coordinates2D(self, dataset):
         self.axes.clear()
@@ -125,6 +127,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_aspect('equal', adjustable='box')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def raster_plot(self, data_neuronal_activity):
         self.axes.clear()
@@ -147,6 +150,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     # Plots for the SVD analysis
     def plot_singular_values(self, singulars, num_states):
@@ -165,6 +169,7 @@ class MatplotlibWidget(QWidget):
             self.axes.spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_states_from_svd(self, svd_sig, comp_n, row, col):
         self.axes[row][col].clear()
@@ -176,6 +181,7 @@ class MatplotlibWidget(QWidget):
         self.axes[row][col].set_title(f'Components ensemble {comp_n+1}')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_ensembles_timecourse(self, timecourse, xlabel="Timepoint"):
         self.axes.clear()
@@ -196,6 +202,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_ens_seq(self, tt, ens_labs, ens_cols, sellabs):
         self.axes.clear()
@@ -220,6 +227,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_yticklabels(sellabs)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     # Plots for the PCA 
     def plot_eigs(self, eigs, seleig):
@@ -236,6 +244,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_pca(self, pcs, ens_labs=None, ens_cols=None):
         self.axes.clear()
@@ -278,6 +287,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_delta_rho(self, rho, delta, cents, predbounds, ens_cols):
         self.axes.clear()
@@ -301,6 +311,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_ylabel(r'$\delta$')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_core_cells(self, core_cells, clims):
         # Clear the axes
@@ -332,6 +343,7 @@ class MatplotlibWidget(QWidget):
         self.axes.spines['left'].set_visible(True)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_ens_corr(self, ens_corr, corr_thr, ens_cols):
         # Clear the axes
@@ -350,6 +362,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_ylabel('Core-Cells Mean Correlation')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     # Plots for the ICA
     def plot_assembly_patterns(self, Patterns, row_idx, title=None, plot_xaxis=False):
@@ -369,6 +382,7 @@ class MatplotlibWidget(QWidget):
             self.axes[row_idx].set_xticks([])
         
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_cell_assemblies_activity(self, activities):
         self.axes.clear()
@@ -384,6 +398,7 @@ class MatplotlibWidget(QWidget):
         self.axes.legend()
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     # Plot the ensembles compare
     def enscomp_update_map(self, lims, members_idx, members_freqs, members_coords, members_colors, neuron_size):
@@ -419,6 +434,7 @@ class MatplotlibWidget(QWidget):
         self.axes.set_aspect('equal')
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def enscomp_update_timelines(self, ticks, cell_activities, ensemble_dffo, ensemble_timecourse, colors, limx):
         self.axes.clear()
@@ -489,6 +505,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def enscomp_plot_similarity(self, matrix, labels, color):
         if hasattr(self, "colorbar"):
@@ -505,6 +522,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
 
     def plot_coordinates2D_highlight(self, coordinates, highlight_idxs, exclusives, only_ens, only_contours, show_numbers):
@@ -557,6 +575,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_ensemble_dFFo(self, dFFo_ens, cell_names, ens_activity):
         self.axes.clear()
@@ -597,6 +616,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_all_dFFo(self, dFFo_ens, core_names, plot_ax):
         self.axes[plot_ax].clear()
@@ -623,6 +643,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_all_coords(self, coordinates, highlight_idxs, exclusives, row, col):
         self.axes[row, col].clear()
@@ -654,6 +675,7 @@ class MatplotlibWidget(QWidget):
 
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_all_binary(self, bin_matrix, cells_names, ens_idx, plot_idx):
         self.axes[plot_idx].clear()
@@ -672,6 +694,7 @@ class MatplotlibWidget(QWidget):
             self.axes[plot_idx].spines[side].set_visible(False)
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_perf_correlations_ens_group(self, correlations, col_idx, title=None, xlabel="Group", group_labels=[]):
         self.axes[col_idx].clear()
@@ -701,6 +724,7 @@ class MatplotlibWidget(QWidget):
         
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
     
     def plot_perf_correlations_cells(self, correlations, cells_names, col_idx, row_idx, title=None):
         self.axes[row_idx][col_idx].clear()
@@ -728,6 +752,7 @@ class MatplotlibWidget(QWidget):
         
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
 
     def plot_perf_cross_ens_stims(self, cross_corrs, lags, col_idx, row_idx, group_prefix="Group", title=None, group_labels=[]):
         self.axes[row_idx][col_idx].clear()
@@ -752,3 +777,4 @@ class MatplotlibWidget(QWidget):
         
         self.canvas.figure.tight_layout()
         self.canvas.draw()
+        self.canvas.flush_events()
