@@ -29,7 +29,7 @@ disp(" -> Running Stoixeion")
 pks = pars.pks;
 scut = pars.scut;
 hcut = pars.hcut;
-statecut = pars.statecut;
+statecut = pars.state_cut;
 csi_vec_start = pars.csi_start;
 csi_vec_step = pars.csi_step;
 csi_vec_end = pars.csi_end;
