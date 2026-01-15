@@ -590,9 +590,10 @@ class MainWindow(QMainWindow):
             file_extension = os.path.splitext(fname)[1]
             if file_extension == '.h5' or file_extension == '.hdf5' or file_extension == ".nwb":
                 self.update_console_log("Generating file structure...")
-                hdf5_file = h5py.File(fname, 'r')
-                self.file_model_type = "hdf5"
-                self.file_model = FileTreeModel(hdf5_file, model_type="hdf5")
+                with h5py.File(fname, 'r') as hdf_file:
+                    #hdf5_file = h5py.File(fname, 'r')
+                    self.file_model_type = "hdf5"
+                    self.file_model = FileTreeModel(hdf_file, model_type="hdf5")
                 self.tree_view.setModel(self.file_model)
                 self.update_console_log("Done loading file.", "complete")
             elif file_extension == ".pkl":
@@ -3702,89 +3703,90 @@ class MainWindow(QMainWindow):
         now = datetime.now()
         formatted_time = now.strftime("%d%m%y_%H%M%S")
         self.ensgui_desc["date"] = formatted_time
-        data["EnsemblesGUI"] = self.ensgui_desc
+        data["ENCORE"] = {}
+        data["ENCORE"]["info"] = self.ensgui_desc
         if self.save_check_input.isChecked() and self.save_check_input.isEnabled():
             print("GUI Save: Getting input data...")
-            data['input_data'] = {}
+            data["ENCORE"]['input_data'] = {}
             if hasattr(self, "data_dFFo"):
-                data['input_data']["dFFo"] = self.data_dFFo
+                data["ENCORE"]['input_data']["dFFo"] = self.data_dFFo
             if hasattr(self, "data_neuronal_activity"):
-                data['input_data']["neuronal_activity"] = self.data_neuronal_activity
+                data["ENCORE"]['input_data']["neuronal_activity"] = self.data_neuronal_activity
             if hasattr(self, "data_coordinates"):
-                data['input_data']["coordinates"] = self.data_coordinates
+                data["ENCORE"]['input_data']["coordinates"] = self.data_coordinates
             if hasattr(self, "data_stims"):
-                data['input_data']["stims"] = self.data_stims
+                data["ENCORE"]['input_data']["stims"] = self.data_stims
             if hasattr(self, "data_cells"):
-                data['input_data']["cells"] = self.data_cells
+                data["ENCORE"]['input_data']["cells"] = self.data_cells
             if hasattr(self, "data_behavior"):
-                data['input_data']["behavior"] = self.data_behavior
+                data["ENCORE"]['input_data']["behavior"] = self.data_behavior
         if self.save_check_minimal.isChecked() and self.save_check_minimal.isEnabled():
             print("GUI Save: Getting minimal results...")
-            data['results'] = self.results
+            data["ENCORE"]['results'] = self.results
         if self.save_check_params.isChecked() and self.save_check_params.isEnabled():
             print("GUI Save: Getting analysis parameters...")
-            data["parameters"] = self.params
+            data["ENCORE"]["parameters"] = self.params
         if self.save_check_full.isChecked() and self.save_check_full.isEnabled():
             print("GUI Save: Getting algorithms full results...")
-            data['algorithms_results'] = self.algorithm_results
+            data["ENCORE"]['algorithms_results'] = self.algorithm_results
         if self.save_check_enscomp.isChecked() and self.save_check_enscomp.isEnabled():
             print("GUI Save: Getting ensembles compare...")
-            data["ensembles_compare"] = {}
+            data["ENCORE"]["ensembles_compare"] = {}
             for criteria in ["neus_in_ens", "timecourse"]:
-                data["ensembles_compare"][criteria] = {}
+                data["ENCORE"]["ensembles_compare"][criteria] = {}
                 all_elements, labels = self.ensembles_compare_get_elements_labels(criteria)
                 for method in ["Cosine", "Euclidean", "Correlation", "Jaccard"]:
                     similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
-                    data["ensembles_compare"][criteria][method] = similarity_matrix
-            data["ensembles_compare"]["labels"] = labels
+                    data["ENCORE"]["ensembles_compare"][criteria][method] = similarity_matrix
+            data["ENCORE"]["ensembles_compare"]["labels"] = labels
         if self.save_check_perf.isChecked() and self.save_check_perf.isEnabled():
             print("GUI Save: Getting ensembles performance...")
-            data["ensembles_performance"] = {}
+            data["ENCORE"]["ensembles_performance"] = {}
 
-            data["ensembles_performance"]["correlation_cells"] = {}
+            data["ENCORE"]["ensembles_performance"]["correlation_cells"] = {}
             for method in list(self.results.keys()):
-                data["ensembles_performance"]["correlation_cells"][method] = {}
+                data["ENCORE"]["ensembles_performance"]["correlation_cells"][method] = {}
                 for ens_idx, ens in enumerate(self.results[method]['neus_in_ens']):
                     members = [c_idx for c_idx in range(len(ens)) if ens[c_idx] == 1]
                     activity_neus_in_ens = self.data_neuronal_activity[members, :]
                     correlation = metrics.compute_correlation_inside_ensemble(activity_neus_in_ens)
-                    data["ensembles_performance"]["correlation_cells"][method][f"Ensemble {ens_idx+1}"] = correlation
+                    data["ENCORE"]["ensembles_performance"]["correlation_cells"][method][f"Ensemble {ens_idx+1}"] = correlation
 
             if hasattr(self, "data_stims"):
-                data["ensembles_performance"]["correlation_ensembles_stimuli"] = {}
+                data["ENCORE"]["ensembles_performance"]["correlation_ensembles_stimuli"] = {}
                 stims = self.data_stims
                 for method in list(self.results.keys()):
                     timecourse = self.results[method]['timecourse']
                     correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
-                    data["ensembles_performance"]["correlation_ensembles_stimuli"][method] = correlation
+                    data["ENCORE"]["ensembles_performance"]["correlation_ensembles_stimuli"][method] = correlation
                 
-                data["ensembles_performance"]["crosscorr_ensembles_stimuli"] = {}
+                data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_stimuli"] = {}
                 for method in self.results.keys():
-                    data["ensembles_performance"]["crosscorr_ensembles_stimuli"][method] = {}
+                    data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_stimuli"][method] = {}
                     for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
                         cross_corrs = []
                         for stimtime in self.data_stims:
                             cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                             cross_corrs.append(cross_corr)
-                        data["ensembles_performance"]["crosscorr_ensembles_stimuli"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
+                        data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_stimuli"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
             
             if hasattr(self, "data_behavior"):
-                data["ensembles_performance"]["correlation_ensembles_behavior"] = {}
+                data["ENCORE"]["ensembles_performance"]["correlation_ensembles_behavior"] = {}
                 behavior = self.data_behavior
                 for method in list(self.results.keys()):
                     timecourse = self.results[method]['timecourse']
                     correlation = metrics.compute_correlation_with_stimuli(timecourse, behavior)
-                    data["ensembles_performance"]["correlation_ensembles_behavior"][method] = correlation
+                    data["ENCORE"]["ensembles_performance"]["correlation_ensembles_behavior"][method] = correlation
                 
-                data["ensembles_performance"]["crosscorr_ensembles_behavior"] = {}
+                data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_behavior"] = {}
                 for method in self.results.keys():
-                    data["ensembles_performance"]["crosscorr_ensembles_behavior"][method] = {}
+                    data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_behavior"][method] = {}
                     for ens_idx, enstime in enumerate(self.results[method]['timecourse']):
                         cross_corrs = []
                         for stimtime in behavior:
                             cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                             cross_corrs.append(cross_corr)
-                        data["ensembles_performance"]["crosscorr_ensembles_behavior"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
+                        data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_behavior"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
         return data
 
     def save_data_to_hdf5(self, group, data):
@@ -3805,6 +3807,9 @@ class MainWindow(QMainWindow):
         """
 
         for key, value in data.items():
+            if key in group:
+                del group[key]
+                
             if isinstance(value, dict):
                 subgroup = group.create_group(str(key))
                 self.save_data_to_hdf5(subgroup, value)
@@ -3831,17 +3836,30 @@ class MainWindow(QMainWindow):
         """
 
         data_to_save = self.get_data_to_save()
-        proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
+        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save HDF5 Results File", proposed_name, "HDF5 Files (*.h5);;All files(*)")
         if file_path:
-            try:
-                self.update_console_log("Saving results in HDF5 file...")
-                with h5py.File(file_path, 'w') as hdf_file:
-                    self.save_data_to_hdf5(hdf_file, data_to_save)
-                self.update_console_log("Done saving.", "complete")
-            except Exception as e:
-                self.update_console_log(f"Error saving file: {str(e)}", "error")
-                raise IOError(f"Could not save the file to {file_path}.")
+            from pathlib import Path
+            file_path = Path(file_path)
+            if file_path.exists:
+                # Save on place
+                try:
+                    self.update_console_log("Saving results in HDF5 file...")
+                    with h5py.File(file_path, 'a') as hdf_file:
+                        self.save_data_to_hdf5(hdf_file, data_to_save)
+                    self.update_console_log("Done saving.", "complete")
+                except Exception as e:
+                    self.update_console_log(f"Error saving file: {str(e)}", "error")
+                    raise IOError(f"Could not save the file to {file_path}.")
+            else:
+                try:
+                    self.update_console_log("Saving results in HDF5 file...")
+                    with h5py.File(file_path, 'w') as hdf_file:
+                        self.save_data_to_hdf5(hdf_file, data_to_save)
+                    self.update_console_log("Done saving.", "complete")
+                except Exception as e:
+                    self.update_console_log(f"Error saving file: {str(e)}", "error")
+                    raise IOError(f"Could not save the file to {file_path}.")
 
     def save_results_pkl(self):
         """
