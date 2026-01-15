@@ -91,28 +91,29 @@ def initialize_x2p_fields(widgets, defaults):
     """
     
     widgets['x2p_edit_bin'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_bin'].setValue(defaults['network_bin'])
+    widgets['x2p_edit_bin'].setValue(defaults['NetworkBin'])
 
     widgets['x2p_edit_iterations'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_iterations'].setValue(defaults['network_iterations'])
+    widgets['x2p_edit_iterations'].setValue(defaults['NetworkIterations'])
 
     widgets['x2p_edit_significance'].setRange(0.00001, MAX_INTEGER)
-    widgets['x2p_edit_significance'].setValue(defaults['network_significance'])
+    widgets['x2p_edit_significance'].setValue(defaults['NetworkSignificance'])
 
     widgets['x2p_edit_threshold'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_threshold'].setValue(defaults['coactive_neurons_threshold'])
+    widgets['x2p_edit_threshold'].setValue(defaults['CoactiveNeuronsThreshold'])
 
     widgets['x2p_edit_rangestart'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_rangestart'].setValue(defaults['clustering_range_start'])
+    widgets['x2p_edit_rangestart'].setValue(defaults['ClusteringRangeStart'])
 
     widgets['x2p_edit_rangeend'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_rangeend'].setValue(defaults['clustering_range_end'])
+    widgets['x2p_edit_rangeend'].setValue(defaults['ClusteringRangeEnd'])
 
     widgets['x2p_edit_fixed'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_fixed'].setValue(defaults['clustering_fixed'])
+    widgets['x2p_edit_fixed'].setValue(defaults['ClusteringFixed'])
 
     widgets['x2p_edit_itensemble'].setRange(1, MAX_INTEGER)
-    widgets['x2p_edit_itensemble'].setValue(defaults['iterations_ensemble'])
+    widgets['x2p_edit_itensemble'].setValue(defaults['EnsembleIterations'])
+    
 
 def initialize_sgc_fields(widgets, defaults):
     """This function sets the limit for the input widgets of the SGC analysis and 
