@@ -169,7 +169,7 @@ class MainWindow(QMainWindow):
         
         # Initialize input fields validator for analysis
         analysis_defaults = self.load_defaults("all")
-        analysis_limits.limit_gui_fields_analysis(self, analysis_defaults)
+        analysis_limits.initialize_encore_analysis_fields(self, analysis_defaults)
         
         ## SVD analysis
         self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
