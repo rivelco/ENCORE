@@ -27,7 +27,9 @@ default_network_bin = varargin{2}.NetworkBin;
 default_network_iterations = varargin{2}.NetworkIterations;
 default_network_significance = varargin{2}.NetworkSignificance;
 default_coactive_neurons_threshold = varargin{2}.CoactiveNeuronsThreshold;
-default_clustering_range = varargin{2}.ClusteringRange;
+default_clustering_range_start = varargin{2}.ClusteringRangeStart;
+default_clustering_range_end = varargin{2}.ClusteringRangeEnd;
+default_clustering_range = default_clustering_range_start:default_clustering_range_end;
 default_clustering_fixed = varargin{2}.ClusteringFixed; % if zero, it will select recommended clusters 
 default_iterations_ensemble = varargin{2}.EnsembleIterations;
 default_parallel_processing = varargin{2}.ParallelProcessing;
@@ -48,6 +50,8 @@ addParameter(inputs,'ClusteringFixed',default_clustering_fixed,...
     @(x)validateattributes(x,{'numeric'},{'nonnegative'}))
 addParameter(inputs,'EnsembleIterations',default_iterations_ensemble,valid_scalar_pos);
 addParameter(inputs,'ParallelProcessing',default_parallel_processing,@islogical);
+addParameter(inputs,'ClusteringRangeStart',default_clustering_range_start,valid_scalar_pos)
+addParameter(inputs,'ClusteringRangeEnd',default_clustering_range_end,valid_scalar_pos)
 addParameter(inputs,'FileLog',default_file_log,@(x)isstring(x)||ischar(x))
 parse(inputs,varargin{:});
 
