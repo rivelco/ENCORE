@@ -245,3 +245,40 @@ def validate_parameters_x2p(params, defaults):
     valid_params['FileLog'] = params['FileLog']
     
     return valid_params
+
+def validate_parameters_sgc(params, defaults):
+    valid_params = {}
+    
+    valid_params['use_first_derivative'] = params['use_first_derivative']
+    
+    if len(params['standard_deviations_threshold']) > 0:
+        valid_params['standard_deviations_threshold'] = float(params['standard_deviations_threshold'])
+    else:
+        valid_params['standard_deviations_threshold'] = defaults['standard_deviations_threshold']
+        
+    if len(params['shuffling_rounds']) > 0:
+        valid_params['shuffling_rounds'] = int(params['shuffling_rounds'])
+    else:
+        valid_params['shuffling_rounds'] = defaults['shuffling_rounds']
+    
+    if len(params['coactivity_significance_level']) > 0:
+        valid_params['coactivity_significance_level'] = float(params['coactivity_significance_level'])
+    else:
+        valid_params['coactivity_significance_level'] = defaults['coactivity_significance_level']
+    
+    if len(params['montecarlo_rounds']) > 0:
+        valid_params['montecarlo_rounds'] = int(params['montecarlo_rounds'])
+    else:
+        valid_params['montecarlo_rounds'] = defaults['montecarlo_rounds']
+    
+    if len(params['montecarlo_steps']) > 0:
+        valid_params['montecarlo_steps'] = int(params['montecarlo_steps'])
+    else:
+        valid_params['montecarlo_steps'] = defaults['montecarlo_steps']  
+    
+    if len(params['affinity_threshold']) > 0:
+        valid_params['affinity_threshold'] = float(params['affinity_threshold'])
+    else:
+        valid_params['affinity_threshold'] = defaults['affinity_threshold']
+        
+    return valid_params
