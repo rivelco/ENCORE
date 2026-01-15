@@ -48,6 +48,7 @@ class WorkerSignals(QObject):
     :vartype result_ready: pyqtSignal(object)
     """
     result_ready = pyqtSignal(object)
+    log = pyqtSignal(str, str)
 
 class WorkerRunnable(QRunnable):
     """
@@ -94,7 +95,7 @@ class WorkerRunnable(QRunnable):
         :return: Emits the result of the function execution via the `result_ready` signal.
         :rtype: None
         """
-        result = self.long_running_function(*self.args, **self.kwargs)
+        result = self.long_running_function(*self.args, **self.kwargs, log_signal=self.signals.log)
         self.signals.result_ready.emit(result)
 
 class MainWindow(QMainWindow):
