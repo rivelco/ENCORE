@@ -1559,8 +1559,8 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>98</width>
-                    <height>71</height>
+                    <width>717</width>
+                    <height>527</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -5302,6 +5302,39 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
              </widget>
             </item>
            </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_54">
+       <attribute name="title">
+        <string>User algorithms</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_65">
+        <item>
+         <widget class="QTabWidget" name="user_algorithms_tabs">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab_55">
+           <attribute name="title">
+            <string>Tab 1</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="0" column="0">
+             <widget class="QPushButton" name="load_user_algorithms">
+              <property name="text">
+               <string>Load algorithms</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_56">
+           <attribute name="title">
+            <string>Tab 2</string>
+           </attribute>
           </widget>
          </widget>
         </item>
