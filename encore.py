@@ -2492,26 +2492,18 @@ class MainWindow(QMainWindow):
         :rtype: None
         """
         for analysis_name in self.results.keys():
-            if analysis_name == 'svd':
-                self.ensvis_btn_svd.setEnabled(True)
-                self.performance_check_svd.setEnabled(True)
-                self.ensembles_compare_update_opts('svd')
-            elif analysis_name == 'pca':
-                self.ensvis_btn_pca.setEnabled(True)
-                self.performance_check_pca.setEnabled(True)
-                self.ensembles_compare_update_opts('pca')
-            elif analysis_name == 'ica':
-                self.ensvis_btn_ica.setEnabled(True)
-                self.performance_check_ica.setEnabled(True)
-                self.ensembles_compare_update_opts('ica')
-            elif analysis_name == 'x2p':
-                self.ensvis_btn_x2p.setEnabled(True)
-                self.performance_check_x2p.setEnabled(True)
-                self.ensembles_compare_update_opts('x2p')
-            elif analysis_name == 'sgc':
-                self.ensvis_btn_sgc.setEnabled(True)
-                self.performance_check_sgc.setEnabled(True)
-                self.ensembles_compare_update_opts('sgc')
+            ensvis_button_name = f'ensvis_btn_{analysis_name}_2'
+            ensvis_button = self.findChild(QWidget, ensvis_button_name)
+            if ensvis_button:
+                ensvis_button.setEnabled(True)
+            
+            performance_check_name = f'performance_check_{analysis_name}_2'
+            performance_check = self.findChild(QWidget, performance_check_name)
+            if performance_check:
+                performance_check.setEnabled(True)
+            
+            self.ensembles_compare_update_opts(analysis_name)
+    
         save_itms = [self.save_check_minimal,
                 self.save_check_params,
                 self.save_check_full,
@@ -2553,7 +2545,18 @@ class MainWindow(QMainWindow):
                     self.tempvars['ensvis_shown_tab4'] = True
                     self.update_ensvis_allens()
 
-    def vis_ensembles_svd(self):
+    def visualize_ensembles(self, algorithm_cfg:dict):
+        """
+        Loads the results of the SVD into the ensembles visualizer.
+
+        This is done this way to use only one function to update the ensembles visualizer.
+        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
+        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
+        """
+        self.ensemble_currently_shown = algorithm_cfg['short_name']
+        self.update_analysis_results()
+
+    def vis_ensembles_svd(self, algorithm_cfg:dict):
         """
         Loads the results of the SVD into the ensembles visualizer.
 
