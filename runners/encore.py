@@ -115,11 +115,17 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
         "results": ensgui_results,
         "engine_time": engine_time,
         "algorithm_time": algorithm_time,
-        "success": success
+        "success": success,
+        "update_params": {
+            'pks': int(answer['pks']),
+            'scut': answer['scut']
+        }
     }
 
     if include_answer: 
         results["answer"] = answer
+        results["answer"]['timecourse'] = ensembles_timecourse
+        results["answer"]['neus_in_ens'] = neurons_in_ensembles
 
     return results
 
@@ -601,5 +607,7 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
 
     if include_answer: 
         results["answer"] = answer
+        results["answer"]['timecourse'] = ensembles_timecourse
+        results["answer"]['neus_in_ens'] = neurons_in_ensembles
 
     return results
