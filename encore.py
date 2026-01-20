@@ -62,6 +62,13 @@ from PyQt6.QtWidgets import (
 
 import importlib
 
+class QtLoggerAdapter:
+    def __init__(self, log_signal):
+        self.log_signal = log_signal
+
+    def __call__(self, message, level="log"):
+        self.log_signal.emit(message, level)
+
 class WorkerSignals(QObject):
     """
     Signals used by the worker thread.
@@ -117,7 +124,8 @@ class WorkerRunnable(QRunnable):
         :return: Emits the result of the function execution via the `result_ready` signal.
         :rtype: None
         """
-        result = self.long_running_function(*self.args, **self.kwargs, log_signal=self.signals.log)
+        logger = QtLoggerAdapter(self.signals.log)
+        result = self.long_running_function(*self.args, **self.kwargs, logger=logger)
         self.signals.result_ready.emit(result)
 
 class MainWindow(QMainWindow):
