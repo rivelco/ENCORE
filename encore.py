@@ -743,6 +743,7 @@ class MainWindow(QMainWindow):
         :param index: Index of the currently open tab, 0 indexing.
         :type index: int
         """
+        current_tab_name = self.main_tabs.tabText(index)
         if index > 0 and index < 6: # Analysis tabs
             if hasattr(self, "data_neuronal_activity"):
                 self.lbl_sdv_spikes_selected.setText(f"Loaded")
@@ -779,9 +780,12 @@ class MainWindow(QMainWindow):
             needed_data = ["data_dFFo"]
             self.btn_run_sgc.setEnabled(self.validate_needed_data(needed_data))
 
-        if index == 7: #Ensembles compare tab
+        if current_tab_name == "Ensembles compare": #Ensembles compare tab
             if len(self.results) > 0:
                 self.ensembles_compare_update_ensembles()
+        
+        if current_tab_name == "ENCORE algorithms":
+            self.update_user_analysis_requirements()
 
     ## Set variables from input file
     def set_dFFo(self):
