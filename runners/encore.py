@@ -18,18 +18,19 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     :type relative_folder_path: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
-    :param log_function: Function to show the log of the function execution. 
+    :param logger: Function to show the log of the function execution. 
         This function should receive two strings as parameters, just like MainWindow.update_console_log.
         Defaults to None.
-    :type log_function: function, optional
+    :type logger: function, optional
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
     log_flag = "SVD:"
     success = True
     
-    if log_function:
-        log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    if logger:
+        logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    
     # The raster is at the first position
     raster = input_data[0]
     # Convert the raster to a MATLAB matrix
@@ -39,11 +40,11 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     coords_foo = matlab.double(data.tolist())
     # Prepare MATLAB parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
-    if log_function:
-        log_function.emit(f"{log_flag} Done converting.", "complete")
+    if logger:
+        logger(f"{log_flag} Done converting.", "complete")
 
-    if log_function:
-        log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Starting MATLAB engine...", "log")
     start_time = time.time()
     eng_svd = matlab.engine.start_matlab()
     # Adding to path
@@ -52,26 +53,26 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     eng_svd.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
     engine_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Loaded MATLAB engine.", "complete")
+    if logger:
+        logger(f"{log_flag} Loaded MATLAB engine.", "complete")
 
-    if log_function:
-        log_function.emit(f"{log_flag} Running SVD algorithm...", "log")
+    if logger:
+        logger(f"{log_flag} Running SVD algorithm...", "log")
     start_time = time.time()
     try:
         answer = eng_svd.Stoixeion(raster_mat, coords_foo, pars_matlab)
     except:
-        if log_function:
-            log_function.emit(f"{log_flag} An error occurred while executing the algorithm. Check console logs for more info.", "error")
+        if logger:
+            logger(f"{log_flag} An error occurred while executing the algorithm. Check console logs for more info.", "error")
         answer = None
     end_time = time.time()
     algorithm_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
-        log_function.emit(f"{log_flag} Terminating MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
+        logger(f"{log_flag} Terminating MATLAB engine...", "log")
     eng_svd.quit()
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
 
     ensgui_results = {}
 
@@ -135,28 +136,28 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
     :type relative_folder_path: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
-    :param log_function: Function to show the log of the function execution. 
+    :param logger: Function to show the log of the function execution. 
         This function should receive two strings as parameters, just like MainWindow.update_console_log.
         Defaults to None.
-    :type log_function: function, optional
+    :type logger: function, optional
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
     log_flag = "PCA:"
     success = True
     
-    if log_function:
-        log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    if logger:
+        logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     # Prepare the raster
     raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
-    if log_function:
-        log_function.emit(f"{log_flag} Done converting.", "complete")
+    if logger:
+        logger(f"{log_flag} Done converting.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Starting MATLAB engine...", "log")
     start_time = time.time()
     eng_pca = matlab.engine.start_matlab()
     # Adding to path
@@ -165,26 +166,26 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
     eng_pca.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
     engine_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Loaded MATLAB engine.", "complete")
+    if logger:
+        logger(f"{log_flag} Loaded MATLAB engine.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Running PCA algorithm...", "log")
+    if logger:
+        logger(f"{log_flag} Running PCA algorithm...", "log")
     start_time = time.time()
     try:
         answer = eng_pca.raster2ens_by_density(raster_mat, pars_matlab)
     except:
-        if log_function:
-            log_function.emit(f"{log_flag} An error occurred while executing the algorithm. Check the Python console for more info.", "error")
+        if logger:
+            logger(f"{log_flag} An error occurred while executing the algorithm. Check the Python console for more info.", "error")
         answer = None
     end_time = time.time()
     algorithm_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
-        log_function.emit(f"{log_flag} Terminating MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
+        logger(f"{log_flag} Terminating MATLAB engine...", "log")
     eng_pca.quit()
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
     
     ensgui_results = {}
     
@@ -225,18 +226,18 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
     :type relative_folder_path: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
-    :param log_function: Function to show the log of the function execution. 
+    :param logger: Function to show the log of the function execution. 
         This function should receive two strings as parameters, just like MainWindow.update_console_log.
         Defaults to None.
-    :type log_function: function, optional
+    :type logger: function, optional
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
     log_flag = "ICA:"
     success = True
     
-    if log_function:
-        log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    if logger:
+        logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     # Convert the raster
     raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
@@ -254,9 +255,11 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
         }
     }
     pars_matlab = converters.dict_to_matlab_struct(parameters_reformatted)
+    if logger:
+        logger(f"{log_flag} Done converting.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Starting MATLAB engine...", "log")
     start_time = time.time()
     eng_ica = matlab.engine.start_matlab()
     # Adding to path
@@ -265,20 +268,20 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
     eng_ica.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
     engine_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Loaded MATLAB engine.", "complete")
+    if logger:
+        logger(f"{log_flag} Loaded MATLAB engine.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Looking for patterns...", "log")
+    if logger:
+        logger(f"{log_flag} Looking for patterns...", "log")
     start_time = time.time()
     try:
         answer = eng_ica.assembly_patterns(raster_mat, pars_matlab)
     except:
-        if log_function:
-            log_function.emit(f"{log_flag} An error occurred while executing the algorithm, while looking for patterns. Check the Python console for more info.", "error")
+        if logger:
+            logger(f"{log_flag} An error occurred while executing the algorithm, while looking for patterns. Check the Python console for more info.", "error")
         answer = None
-    if log_function:
-        log_function.emit(f"{log_flag} Done looking for patterns.", "complete")
+    if logger:
+        logger(f"{log_flag} Done looking for patterns.", "complete")
     
     ensgui_results = {}
     original_results = {}
@@ -289,25 +292,25 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
         if include_answer: 
             original_results["original_answer"]['patterns'] = answer
         assembly_templates = np.array(answer['AssemblyTemplates']).T
-        if log_function:
-            log_function.emit(f"{log_flag} Looking for assembly activity...", "log")
+        if logger:
+            logger(f"{log_flag} Looking for assembly activity...", "log")
         try:
             answer = eng_ica.assembly_activity(answer['AssemblyTemplates'],raster_mat)
         except:
-            if log_function:
-                log_function.emit(f"{log_flag} An error occurred while executing the algorithm, looking for assembly activity. Check the Python console for more info.", "error")
+            if logger:
+                logger(f"{log_flag} An error occurred while executing the algorithm, looking for assembly activity. Check the Python console for more info.", "error")
             answer = None
-        if log_function:
-            log_function.emit(f"{log_flag} Done looking for assembly activity.", "complete")
+        if logger:
+            logger(f"{log_flag} Done looking for assembly activity.", "complete")
     end_time = time.time()
     algorithm_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
-    if log_function:
-        log_function.emit(f"{log_flag} Terminating MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
+    if logger:
+        logger(f"{log_flag} Terminating MATLAB engine...", "log")
     eng_ica.quit()
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
     
     if answer != None:
         if include_answer:
@@ -368,29 +371,29 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
     :type relative_folder_path: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
-    :param log_function: Function to show the log of the function execution. 
+    :param logger: Function to show the log of the function execution. 
         This function should receive two strings as parameters, just like MainWindow.update_console_log.
         Defaults to None.
-    :type log_function: function, optional
+    :type logger: function, optional
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
     log_flag = "X2P:"
     success = True
     
-    if log_function:
-        log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    if logger:
+        logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     # Convert the raster to logical MATLAB
     raster = input_data[0]
     raster_mat = matlab.logical(raster.tolist())
     # Convert the parameters
     pars_validated['FileLog'] = ''
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
-    if log_function:
-        log_function.emit(f"{log_flag} Done converting.", "complete")
+    if logger:
+        logger(f"{log_flag} Done converting.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Starting MATLAB engine...", "log")
     start_time = time.time()
     eng_x2p = matlab.engine.start_matlab()
     # Adding to path
@@ -399,26 +402,26 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
     eng_x2p.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
     engine_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Loaded MATLAB engine.", "complete")
+    if logger:
+        logger(f"{log_flag} Loaded MATLAB engine.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Running X2P algorithm...", "log")
+    if logger:
+        logger(f"{log_flag} Running X2P algorithm...", "log")
     start_time = time.time()
     try:
         answer = eng_x2p.Get_Xsembles(raster_mat, pars_matlab)
     except:
-        if log_function:
-            log_function.emit(f"{log_flag} An error occurred while executing the algorithm. Check the Python console for more info.", "error")
+        if logger:
+            logger(f"{log_flag} An error occurred while executing the algorithm. Check the Python console for more info.", "error")
         answer = None
     end_time = time.time()
     algorithm_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
-        log_function.emit(f"{log_flag} Terminating MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
+        logger(f"{log_flag} Terminating MATLAB engine...", "log")
     eng_x2p.quit()
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
         
     ensgui_results = {}
     
@@ -492,18 +495,18 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
     :type relative_folder_path: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
-    :param log_function: Function to show the log of the function execution. 
+    :param logger: Function to show the log of the function execution. 
         This function should receive two strings as parameters, just like MainWindow.update_console_log.
         Defaults to None.
-    :type log_function: function, optional
+    :type logger: function, optional
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
     log_flag = "SGC:"
     success = True
     
-    if log_function:
-        log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    if logger:
+        logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
     # Check for the first derivative flag
     dFFo = input_data[0]
@@ -515,11 +518,11 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
         dFFo_mat = matlab.double(dFFo.tolist())
     # Prepare MATLAB parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
-    if log_function:
-        log_function.emit(f"{log_flag} Done converting.", "complete")
+    if logger:
+        logger(f"{log_flag} Done converting.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Starting MATLAB engine...", "log")
     start_time = time.time()
     eng_sgc = matlab.engine.start_matlab()
     # Adding to path
@@ -528,26 +531,26 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
     eng_sgc.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
     engine_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Loaded MATLAB engine.", "complete")
+    if logger:
+        logger(f"{log_flag} Loaded MATLAB engine.", "complete")
     
-    if log_function:
-        log_function.emit(f"{log_flag} Running SGC algorithm...", "log")
+    if logger:
+        logger(f"{log_flag} Running SGC algorithm...", "log")
     start_time = time.time()
     try:
         answer = eng_sgc.EnsemblesGUI_linker_SGC(dFFo_mat, pars_matlab)
     except:
-        if log_function:
-            log_function.emit(f"{log_flag} An error occurred while executing the algorithm. Check console logs for more info.", "error")
+        if logger:
+            logger(f"{log_flag} An error occurred while executing the algorithm. Check console logs for more info.", "error")
         answer = None
     end_time = time.time()
     algorithm_time = end_time - start_time
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
-        log_function.emit(f"{log_flag} Terminating MATLAB engine...", "log")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
+        logger(f"{log_flag} Terminating MATLAB engine...", "log")
     eng_sgc.quit()
-    if log_function:
-        log_function.emit(f"{log_flag} Done.", "complete")
+    if logger:
+        logger(f"{log_flag} Done.", "complete")
         
     ensgui_results = {}
     
