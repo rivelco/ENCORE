@@ -5,7 +5,7 @@ import numpy as np
 import scipy.stats as stats
 import utils.data_converters as converters
 
-def run_svd(raster, pars_validated, relative_folder_path = 'analysis/SVD', include_answer = True, log_function = None):
+def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', include_answer = True, logger = None):
     """
     Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -30,6 +30,8 @@ def run_svd(raster, pars_validated, relative_folder_path = 'analysis/SVD', inclu
     
     if log_function:
         log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    # The raster is at the first position
+    raster = input_data[0]
     # Convert the raster to a MATLAB matrix
     raster_mat = matlab.double(raster.tolist())
     #Prepare dummy data
@@ -120,7 +122,7 @@ def run_svd(raster, pars_validated, relative_folder_path = 'analysis/SVD', inclu
 
     return results
 
-def run_pca(raster, pars_validated, relative_folder_path = 'analysis/NeuralEnsembles', include_answer = True, log_function = None):
+def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralEnsembles', include_answer = True, logger = None):
     """
     Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -148,6 +150,7 @@ def run_pca(raster, pars_validated, relative_folder_path = 'analysis/NeuralEnsem
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     # Prepare the raster
+    raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
     if log_function:
         log_function.emit(f"{log_flag} Done converting.", "complete")
@@ -209,7 +212,7 @@ def run_pca(raster, pars_validated, relative_folder_path = 'analysis/NeuralEnsem
 
     return results
 
-def run_ica(raster, pars_validated, relative_folder_path = 'analysis/Cell-Assembly-Detection', include_answer = True, log_function = None):
+def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-Assembly-Detection', include_answer = True, logger = None):
     """
     Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -235,11 +238,22 @@ def run_ica(raster, pars_validated, relative_folder_path = 'analysis/Cell-Assemb
     if log_function:
         log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
     # Convert the raster
+    raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
     # Convert the parameters
-    pars_matlab = converters.dict_to_matlab_struct(pars_validated)
-    if log_function:
-        log_function.emit(f"{log_flag} Done converting.", "complete")
+    
+    parameters_reformatted = {
+        "threshold": {
+            "method": pars_validated['threshold_method'],
+            "permutations_percentile": pars_validated['permutations_percentile'],
+            "number_of_permutations": pars_validated['number_of_permutations'],
+        },
+        "Patterns": {
+            "method": pars_validated['patterns_method'],
+            "number_of_iterations": pars_validated['number_of_iterations']
+        }
+    }
+    pars_matlab = converters.dict_to_matlab_struct(parameters_reformatted)
     
     if log_function:
         log_function.emit(f"{log_flag} Starting MATLAB engine...", "log")
@@ -341,7 +355,7 @@ def run_ica(raster, pars_validated, relative_folder_path = 'analysis/Cell-Assemb
 
     return results
 
-def run_x2p(raster, pars_validated, relative_folder_path = 'analysis/Xsembles2P', include_answer = True, log_function = None):
+def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsembles2P', include_answer = True, logger = None):
     """
     Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -367,8 +381,10 @@ def run_x2p(raster, pars_validated, relative_folder_path = 'analysis/Xsembles2P'
     if log_function:
         log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
     # Convert the raster to logical MATLAB
+    raster = input_data[0]
     raster_mat = matlab.logical(raster.tolist())
     # Convert the parameters
+    pars_validated['FileLog'] = ''
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     if log_function:
         log_function.emit(f"{log_flag} Done converting.", "complete")
@@ -463,7 +479,7 @@ def run_x2p(raster, pars_validated, relative_folder_path = 'analysis/Xsembles2P'
 
     return results
 
-def run_sgc(dFFo, pars_validated, relative_folder_path = 'analysis/SGC_neural_assembly_detection', include_answer = True, log_function = None):
+def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neural_assembly_detection', include_answer = True, logger = None):
     """
     Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -490,6 +506,7 @@ def run_sgc(dFFo, pars_validated, relative_folder_path = 'analysis/SGC_neural_as
         log_function.emit(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
     # Check for the first derivative flag
+    dFFo = input_data[0]
     if pars_validated['use_first_derivative']:
         dx = np.gradient(dFFo, axis=1) # Axis 1 to get the derivative of the signal of every neuron
         dFFo_mat = matlab.double(dx.tolist())
