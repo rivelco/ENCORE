@@ -3480,7 +3480,7 @@ class MainWindow(QMainWindow):
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
         worker_corrstim = WorkerRunnable(self.update_corr_stim_parallel, plot_widget)
         self.threadpool.start(worker_corrstim) 
-    def update_corr_stim_parallel(self, plot_widget):
+    def update_corr_stim_parallel(self, plot_widget, logger=None):
         """
         Calculates and updates the correlation between the ensemble timecourses and stimulus data.
 
@@ -3580,7 +3580,7 @@ class MainWindow(QMainWindow):
         worker_crosstim = WorkerRunnable(self.update_cross_ens_stim_parallel, plot_widget)
         #worker_crosstim.signals.result_ready.connect(self.update_cross_ens_stim_end)
         self.threadpool.start(worker_crosstim) 
-    def update_cross_ens_stim_parallel(self, plot_widget):
+    def update_cross_ens_stim_parallel(self, plot_widget, logger=None):
         """
         Calculates and updates the cross-correlation between the ensemble timecourses and stimulus data.
 
@@ -3628,7 +3628,7 @@ class MainWindow(QMainWindow):
         worker_corrbeha = WorkerRunnable(self.update_corr_behavior_parallel, plot_widget)
         #worker_corrbeha.signals.result_ready.connect(self.update_cross_ens_stim_end)
         self.threadpool.start(worker_corrbeha) 
-    def update_corr_behavior_parallel(self, plot_widget):
+    def update_corr_behavior_parallel(self, plot_widget, logger=None):
         """
         Calculates and updates the correlation between the ensemble timecourses and behavior data.
 
@@ -3671,7 +3671,7 @@ class MainWindow(QMainWindow):
         worker_crossbeha = WorkerRunnable(self.update_cross_behavior_parallel, plot_widget)
         #worker_crossbeha.signals.result_ready.connect(self.update_cross_ens_stim_end)
         self.threadpool.start(worker_crossbeha)
-    def update_cross_behavior_parallel(self, plot_widget):
+    def update_cross_behavior_parallel(self, plot_widget, logger=None):
         """
         Calculates and updates the cross-correlation between the ensemble timecourses and behavior data.
 
