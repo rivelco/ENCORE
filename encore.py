@@ -144,6 +144,9 @@ class MainWindow(QMainWindow):
         self.gui_colors = gui_colors
 
         self.threadpool = QThreadPool()
+        
+        # Initialize algorithms
+        self.initialize_user_algorithms()
 
         # Initialize the GUI
         self.reset_gui()
@@ -3948,6 +3951,628 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
                 raise IOError(f"Could not save the file to {file_path}.")
+
+    def initialize_user_algorithms(self):
+        """
+        Build algorithm tabs dynamically from YAML configuration.
+        """
+        # Read the config file             
+        config = {}
+        with open("config\encore_runners_config.yaml", 'r') as file:
+            config = yaml.safe_load(file)
+        
+        # Extract the runners from config
+        runners = config.get("encore_runners", {})
+        self.algorithms_config = dict(runners)
+        
+        # Create one tab per algorithm
+        encore_algorithms_tab = self.findChild(QWidget, 'main_encore_algorithms_tab')
+        if encore_algorithms_tab:
+            self.encore_algorithms_tab_layout = QVBoxLayout(encore_algorithms_tab)
+        
+            tabs = QTabWidget()
+            tabs.setObjectName("encore_algorithms_tabs")
+            self.encore_algorithms_tab_layout.addWidget(tabs)
+
+            for algorithm_key, algorithm_cfg in runners.items():
+                algorithm_cfg['short_name'] = algorithm_key
+                self._create_algorithm_tab(algorithm_cfg)
+        else:
+            raise RuntimeError("The tab 'main_encore_algorithms_tab' could not be found, make sure it's present in the main tabs.")
+
+        # Update buttons for ensemble visualization
+        buttons_container = self.findChild(QWidget, 'ensvis_algorithm_buttons_box')
+        if buttons_container:
+            buttons_layout = QHBoxLayout(buttons_container)
+            buttons_layout.setObjectName('ensvis_algorithm_buttons_box_layout')
+            for algorithm_key, algorithm_cfg in runners.items():
+                button_name = f'ensvis_btn_{algorithm_key}_2'
+                button = QPushButton(algorithm_key.upper())
+                button.setObjectName(button_name)
+                button.clicked.connect(
+                    lambda _, cfg=algorithm_cfg: self.visualize_ensembles(cfg)
+                )
+                button.setEnabled(False)
+                buttons_layout.addWidget(button)
+        
+        # Update check boxes for performance comparison
+        checks_container = self.findChild(QWidget, 'performance_checks_box')
+        if checks_container:
+            checks_layout = QHBoxLayout(checks_container)
+            checks_layout.setObjectName('performance_checks_box_layout')
+            for algorithm_key, algorithm_cfg in runners.items():
+                check_name = f'performance_check_{algorithm_key}_2'
+                check = QCheckBox(algorithm_key.upper())
+                check.setObjectName(check_name)
+                check.setEnabled(False)
+                check.stateChanged.connect(self.performance_check_change)
+                checks_layout.addWidget(check)
+        
+            button = QPushButton("Compare")
+            button.setObjectName('performance_btn_compare_2')
+            button.clicked.connect(self.performance_compare)
+            button.setEnabled(False)
+            checks_layout.addWidget(button)
+        
+        # Update the ensembles selectors in ensembles comparison
+        enscomp_box = self.findChild(QWidget, 'enscomp_selector_box')
+        if enscomp_box:
+            big_font = QFont()
+            big_font.setPointSize(12)
+            big_font.setBold(True)
+            
+            size_policy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+            size_policy.setHorizontalStretch(0)
+            size_policy.setVerticalStretch(0)
+        
+            enscomp_layout = QVBoxLayout(enscomp_box)
+            enscomp_layout.setObjectName('enscomp_selector_box_layout')
+            size_policy.setHeightForWidth(enscomp_box.sizePolicy().hasHeightForWidth())
+            enscomp_box.setSizePolicy(size_policy)
+            for algorithm_key, algorithm_cfg in runners.items():
+                # Small container for the elements
+                container_widget = QWidget(enscomp_box)
+                container_widget_layout = QHBoxLayout(container_widget)
+                container_widget_layout.setContentsMargins(0, 0, 0, 0)
+                
+                # Label for the name of the algorithm
+                label_with_name = QLabel(algorithm_key.upper())
+                label_with_name.setObjectName(f"enscomp_algo_lbl_{algorithm_key}")
+                label_with_name.setFont(big_font)
+                label_with_name.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                size_policy.setHeightForWidth(label_with_name.sizePolicy().hasHeightForWidth())
+                label_with_name.setSizePolicy(size_policy)
+                container_widget_layout.addWidget(label_with_name)
+                
+                # Spinbox to select the ensemble
+                spinbox = QSpinBox()
+                spinbox.setObjectName(f"enscomp_spinbox_{algorithm_key}_2")
+                spinbox.setEnabled(False)
+                spinbox.valueChanged.connect(self.ensembles_compare_update_ensembles)
+                container_widget_layout.addWidget(spinbox)
+                
+                # Simple label just to separate the spinbox and the total ensembles label
+                label_separator = QLabel("/")
+                label_separator.setObjectName(f"enscomp_separe_lbl_{algorithm_key}")
+                label_separator.setFont(big_font)
+                container_widget_layout.addWidget(label_separator)
+                
+                # Label for the maximum amount of ensembles to select from
+                label_with_max = QLabel("0")
+                label_with_max.setObjectName(f"enscomp_spinbox_lbl_max_{algorithm_key}_2")
+                label_with_max.setEnabled(False)
+                container_widget_layout.addWidget(label_with_max)
+                
+                # Empty widget to show the color of the current ensemble
+                color_flag = QWidget()
+                color_flag.setObjectName(f"enscomp_colorflag_{algorithm_key}_2")
+                color_flag.setMinimumSize(QSize(10, 0))
+                color_flag.setMaximumSize(QSize(10, 16777215))
+                color_flag.setAutoFillBackground(False)
+                container_widget_layout.addWidget(color_flag)
+                
+                enscomp_layout.addWidget(container_widget)
+            
+    
+    def _create_algorithm_tab(self, algorithm_cfg: dict):
+        tab = QWidget()
+        main_layout = QHBoxLayout(tab)
+
+        # Analysis parameters on the left
+        parameters_box = self._create_parameters_box(algorithm_cfg)
+        main_layout.addWidget(parameters_box, stretch=1)
+
+        # Results visualization on the right
+        figures_box = self._create_figures_box(algorithm_cfg.get("figures", []))
+        main_layout.addWidget(figures_box, stretch=2)
+
+        # Add the tab with the new algorithm
+        encore_algorithms_tabs = self.findChild(QWidget, 'encore_algorithms_tabs')
+        encore_algorithms_tabs.addTab(tab, algorithm_cfg.get("full_name", "Algorithm"))
+        
+    def _create_parameters_box(self, algorithm_cfg: dict) -> QGroupBox:
+        """
+        Creates the 'Analysis parameters' box for one algorithm.
+        """
+        short_name = algorithm_cfg.get("short_name", "algo")
+        
+        analysis_box = QGroupBox("Analysis parameters")
+        analysis_box.setMinimumSize(QSize(370, 0))
+        analysis_box.setMaximumSize(QSize(370, 16777215))
+        analysis_layout = QVBoxLayout(analysis_box)
+        analysis_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        # Input data box
+        input_data_box = QGroupBox("Input data")
+        input_form = QFormLayout(input_data_box)
+        input_form.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+
+        needed_data = algorithm_cfg.get("needed_data", [])
+        
+        needed_data_names = {
+            'data_neuronal_activity': 'Binary Neuronal Activity',
+            'data_dFFo': 'dFFo Activity',
+            'data_coordinates': 'Coordinates',
+            'data_stims': 'Stimulation data',
+            'data_cells': 'Cells data',
+            'data_behavior': 'Behavior data'
+        }
+        
+        for data_key in needed_data:
+            data_name = needed_data_names.get(data_key, f"Unknown: {data_key}")
+            left_label = QLabel(data_name)
+            bold_font = QFont()
+            bold_font.setBold(True)
+            left_label.setFont(bold_font)
+            if hasattr(self, data_key):
+                right_label = QLabel("Loaded")
+            else:
+                right_label = QLabel("Nothing selected")
+            right_label.setObjectName(f"{short_name}_{data_key}_status_label")
+
+            input_form.addRow(left_label, right_label)
+
+        analysis_layout.addWidget(input_data_box)
+
+        # Parameters to adjust
+        params_box = QGroupBox("Parameters to adjust")
+        params_layout = QVBoxLayout(params_box)
+
+        form_layout = QFormLayout()
+        form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+        form_layout.setFormAlignment(Qt.AlignmentFlag.AlignTop)
+
+        parameters = algorithm_cfg.get("parameters", {})
+
+        for param_key, param_cfg in parameters.items():
+            label = QLabel(param_cfg["display_name"])
+            widget = self._create_parameter_widget(param_cfg)
+            form_layout.addRow(label, widget)
+
+        params_layout.addLayout(form_layout)
+        
+        # Load defaults button
+        load_defaults_btn = QPushButton("Load default values")
+        load_defaults_btn.clicked.connect(
+            lambda _, cfg=algorithm_cfg: self.load_algorithm_defaults(cfg)
+        )
+        params_layout.addWidget(load_defaults_btn, alignment=Qt.AlignmentFlag.AlignRight)
+        analysis_layout.addWidget(params_box)
+        analysis_layout.addStretch()
+
+        # Run analysis button
+        run_button = QPushButton("Run analysis")
+        run_button.setObjectName(f"{short_name}_run_analysis_button")
+        run_button.clicked.connect(
+            lambda _, cfg=algorithm_cfg: self.run_algorithm(cfg)
+        )
+
+        analysis_layout.addWidget(run_button)
+
+        # Algorithm source text
+        description = algorithm_cfg.get("source", "")
+        description_box = QPlainTextEdit()
+        description_box.setReadOnly(True)
+        description_box.setPlainText(description)
+        description_box.setMaximumSize(QSize(16777215, 75))
+        analysis_layout.addWidget(description_box)
+
+        return analysis_box
+
+    def _create_parameter_widget(self, cfg: dict):
+        default = cfg.get("default_value")
+        min_val = cfg.get("min_value")
+        max_val = cfg.get("max_value")
+        
+        MAX_INT = 250000000
+        
+        if cfg.get("type", "") == "enum":
+            widget = QWidget()
+            layout = QVBoxLayout(widget)
+            layout.setContentsMargins(0, 0, 0, 0)
+
+            button_group = QButtonGroup(widget)
+            button_group.setExclusive(True)
+
+            default = cfg.get("default_value")
+
+            for option in cfg.get("options", []):
+                radio = QRadioButton(option["label"])
+                value = option["value"]
+
+                # Store value in Qt user data
+                radio.setProperty("value", value)
+
+                if value == default:
+                    radio.setChecked(True)
+                
+                # Add a unique name for each radial button
+                button_name = cfg.get("object_name", "") + f"_{value}"
+                radio.setObjectName(button_name)
+
+                button_group.addButton(radio)
+                layout.addWidget(radio)
+
+            # Keep reference for later retrieval
+            widget.button_group = button_group
+        
+        # Boolean
+        elif isinstance(default, bool):
+            widget = QCheckBox()
+            widget.setChecked(default)
+
+        # Integer
+        elif isinstance(default, int):
+            widget = QSpinBox()
+            if min_val is not None:
+                widget.setMinimum(min_val)
+            if max_val is not None:
+                if max_val == 'MAX_INT':
+                    max_val = MAX_INT
+                widget.setMaximum(max_val)
+            widget.setValue(default)
+
+        # Float
+        elif isinstance(default, float):
+            widget = QDoubleSpinBox()
+            widget.setDecimals(3)
+            if min_val is not None:
+                widget.setMinimum(min_val)
+            if max_val is not None:
+                if max_val == 'MAX_INT':
+                    max_val = MAX_INT
+                widget.setMaximum(max_val)
+            widget.setValue(default)
+
+        # Fallback: string
+        else:
+            widget = QLineEdit()
+            widget.setText(str(default))
+        widget.setObjectName(cfg.get("object_name", ""))
+        widget.setToolTip(cfg.get("description", ""))
+
+        return widget
+
+    def load_algorithm_defaults(self, algorithm_cfg: dict):
+        """
+        Load default values from config into parameter widgets.
+        """
+        self.update_console_log("Loaded default values.")
+        parameters = algorithm_cfg.get("parameters", {})
+
+        for param_cfg in parameters.values():
+            obj_name = param_cfg.get("object_name")
+            default = param_cfg.get("default_value")
+            possible_type = param_cfg.get("type", "")
+            
+            if possible_type == "enum":
+                obj_name = f"{obj_name}_{default}"
+                default = True
+
+            widget = self.findChild(QWidget, obj_name)
+            if widget is None:
+                continue
+
+            if hasattr(widget, "setValue"):
+                widget.setValue(default)
+            elif hasattr(widget, "setChecked"):
+                widget.setChecked(default)
+            elif hasattr(widget, "setText"):
+                widget.setText(str(default))
+
+    def run_algorithm(self, algorithm_cfg: dict):
+        # Deactivate the running button while running 
+        short_name = algorithm_cfg.get('short_name', 'Algorithm')
+        run_button = self.findChild(QWidget, f"{short_name}_run_analysis_button")
+        if run_button:
+            run_button.setEnabled(False)
+            
+        params = self.collect_algorithm_parameters(algorithm_cfg)
+        data = self.collect_algorithm_data(algorithm_cfg)
+        
+        # Save the parameters used
+        self.params[short_name] = params
+
+        # Clean all the figures in case there was something previously
+        if short_name in self.results:
+            del self.results[short_name]
+        figures_list = algorithm_cfg.get("figures", [])
+        for figure_info in figures_list:
+            object_name = figure_info.get("name", None)
+            if object_name:
+                gui_object = self.findChild(MatplotlibWidget, object_name)
+                if object_name:
+                    gui_object.reset("Waiting for new plots...")
+
+        worker = WorkerRunnable(
+            self.run_analysis_function,
+            algorithm_cfg,
+            params,
+            data,
+        )
+
+        worker.signals.result_ready.connect(
+            lambda result, cfg=algorithm_cfg: self.run_algorithm_end(cfg, result)
+        )
+        worker.signals.log.connect(self.update_console_log)
+
+        self.threadpool.start(worker)
+    
+    def run_algorithm_end(self, algorithm_cfg, times):
+        short_name = algorithm_cfg.get("short_name", "").upper()
+        self.update_console_log(f"Done executing the {short_name} algorithm", "complete") 
+        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
+        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
+        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
+        if times[3] > 0:
+            self.update_console_log(f"The {short_name} analysis found {times[3]} ensembles", "complete")
+        else:
+            self.update_console_log(f"The {short_name} analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
+        
+        # Rectivate the button once the algorithm finishes
+        short_name = algorithm_cfg.get('short_name', 'Algorithm')
+        run_button = self.findChild(QWidget, f"{short_name}_run_analysis_button")
+        if run_button:
+            run_button.setEnabled(True)
+        
+    def plot_algorithm_plots(self, algorithm_cfg: dict, answer: dict):
+        function_name = algorithm_cfg.get("plot_function")
+        short_name = algorithm_cfg.get("short_name")
+
+        if not function_name:
+            raise RuntimeError("No plot_function defined in algorithm config")
+
+        module_path = "plotters.encore"
+
+        # Import module
+        try:
+            module = importlib.import_module(module_path)
+        except ImportError as exc:
+            raise RuntimeError(f"Plot module '{module_path}' could not be imported") from exc
+
+        # Retrieve function
+        func = getattr(module, function_name, None)
+        if func is None or not callable(func):
+            raise RuntimeError(f"Function '{function_name}' not found or not callable in '{module_path}'")
+
+        # Collect the plots for the selected algorithm
+        figures_list = algorithm_cfg.get("figures", [])
+        figures_dict = {}
+        for figure_info in figures_list:
+            object_name = figure_info.get("name", None)
+            if object_name:
+                gui_object = self.findChild(MatplotlibWidget, object_name)
+                if object_name:
+                    figures_dict[object_name] = gui_object
+                        
+        # Plot
+        try:
+            func(figures_dict, answer)
+        except Exception as exc:
+            raise RuntimeError(
+                f"Error while executing plot function for '{function_name}'"
+            ) from exc
+        
+    def _create_figures_box(self, figures: list) -> QGroupBox:
+        figures_box = QGroupBox("Results visualization")
+        figures_layout = QVBoxLayout(figures_box)
+
+        tabs = QTabWidget()
+
+        for fig in figures:
+            tab = QWidget()
+            layout = QVBoxLayout(tab)
+
+            plot = MatplotlibWidget()
+            plot.reset(f"Run this analysis to see results here")
+            plot.setObjectName(fig["name"])
+
+            layout.addWidget(plot)
+            tabs.addTab(tab, fig["display_name"])
+
+        figures_layout.addWidget(tabs)
+        return figures_box
+
+    def collect_algorithm_parameters(self, algorithm_cfg: dict) -> dict:
+        """
+        Collect parameters for one algorithm from the UI using YAML configuration.
+
+        :param algorithm_cfg: Algorithm configuration dictionary from YAML
+        :return: Dictionary of parameter_name -> value
+        """
+        collected_params = {}
+
+        parameters = algorithm_cfg.get("parameters", {})
+
+        for param_name, param_cfg in parameters.items():
+            obj_name = param_cfg.get("object_name")
+            default = param_cfg.get("default_value")
+
+            widget = self.findChild(QWidget, obj_name)
+
+            # Widget missing so fallback to default
+            if widget is None:
+                collected_params[param_name] = default
+                continue
+
+            # Type-aware extraction
+            try:
+                if param_cfg.get("type", "") == "enum":
+                    for btn in widget.button_group.buttons():
+                        if btn.isChecked():
+                            value = btn.property("value")
+                            break
+                    else:
+                        value = default
+                elif isinstance(default, bool) and isinstance(widget, QCheckBox):
+                    value = widget.isChecked()
+                elif isinstance(default, int) and isinstance(widget, QSpinBox):
+                    value = widget.value()
+                elif isinstance(default, float) and isinstance(widget, QDoubleSpinBox):
+                    value = widget.value()
+                elif isinstance(default, str) and isinstance(widget, QLineEdit):
+                    value = widget.text()
+                # Fallback: try generic accessors
+                elif hasattr(widget, "value"):
+                    value = widget.value()
+                elif hasattr(widget, "text"):
+                    value = widget.text()
+                else:
+                    value = default
+            except Exception:
+                value = default
+
+            collected_params[param_name] = value
+
+        return collected_params
+
+    def collect_algorithm_data(self, algorithm_cfg: dict) -> list:
+        requested_data = []
+        needed_data = algorithm_cfg.get("needed_data", [])
+        for data_key in needed_data:
+            if hasattr(self, data_key):
+                requested_data.append(getattr(self, data_key))
+                if data_key == 'data_dFFo':
+                    self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
+                elif data_key == 'data_neuronal_activity':
+                    self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+            else:
+                self.update_console_log(f"The requested data key '{data_key}' has not been loaded", "error")
+                raise RuntimeError("Internal variable assignation error")
+        return requested_data
+    
+    def run_analysis_function(self, algorithm_cfg: dict, params: dict, data: np.ndarray, logger=None):
+        """
+        Dynamically load and execute an analysis function.
+
+        :param algorithm_cfg: Algorithm configuration from YAML
+        :param params: Validated parameters dictionary
+        :param data: NumPy data matrix
+        :raises RuntimeError: If function cannot be loaded or executed
+        """
+        function_name = algorithm_cfg.get("analysis_function")
+        code_folder_path = algorithm_cfg.get("folder_path")
+        short_name = algorithm_cfg.get("short_name")
+
+        if not function_name:
+            raise RuntimeError("No analysis_function defined in algorithm config")
+
+        module_path = "runners.encore"
+
+        # Import module
+        try:
+            module = importlib.import_module(module_path)
+        except ImportError as exc:
+            raise RuntimeError(f"Analysis module '{module_path}' could not be imported") from exc
+
+        # Retrieve function
+        func = getattr(module, function_name, None)
+        if func is None or not callable(func):
+            raise RuntimeError(f"Function '{function_name}' not found or not callable in '{module_path}'")
+
+        # Execute
+        try:
+            result = func(
+                data,
+                params,
+                relative_folder_path=code_folder_path,
+                include_answer=True,
+                logger=logger
+            )
+            if result["success"]:
+                # Check if the analysis found any ensemble
+                if result['results']['ensembles_cant'] > 0:
+                    num_ensembles = result['results']['ensembles_cant']
+
+                    # Update parameters that where calculated
+                    parameters_info = algorithm_cfg.get("parameters", {})
+                    params_to_update = result.get('update_params', {})
+                    for param_name, param_value in params_to_update.items():
+                        param_info = parameters_info.get(param_name, {})
+                        param_object_name = param_info.get("object_name")
+                        gui_object = self.findChild(QWidget, param_object_name)
+                        if hasattr(gui_object, "setValue"):
+                            gui_object.setValue(param_value)
+                        elif hasattr(gui_object, "setChecked"):
+                            gui_object.setChecked(param_value)
+                        elif hasattr(gui_object, "setText"):
+                            gui_object.setText(str(param_value))
+
+                    # Plotting results
+                    logger(f"{short_name} Plotting and saving results...", "log")
+                    start_time = time.time()
+                    # Save results
+                    self.algorithm_results[short_name] = result["answer"]
+                    self.results[short_name] = result["results"]
+                    # Plot the results
+                    try:
+                        self.plot_algorithm_plots(algorithm_cfg, result["answer"])
+                    except Exception as exc:
+                        raise RuntimeError(
+                            f"Error while plotting the results of the algorithm for '{function_name}'"
+                        ) from exc
+                    # Update the GUI
+                    self.we_have_results()
+                    end_time = time.time()
+                    plot_times = end_time - start_time
+                
+                    logger(f"{short_name} Done plotting and saving...", "complete")
+                else:
+                    logger(f"{short_name} Plotting results...", "log")
+                    start_time = time.time()
+                    self.plot_algorithm_plots(algorithm_cfg, result["answer"])
+                    end_time = time.time()
+                    plot_times = end_time - start_time
+                    logger(f"{short_name} Done plotting...", "complete")
+                
+            return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
+        except Exception as exc:
+            raise RuntimeError(
+                f"Error while executing analysis function '{function_name}'"
+            ) from exc
+
+    def update_user_analysis_requirements(self):
+        algorithms_config = self.algorithms_config
+        
+        for algorithm in algorithms_config.values():
+            needed_loaded = True
+            short_name = algorithm.get("short_name")
+            needed_data = algorithm.get("needed_data", [])
+            for data in needed_data:
+                if hasattr(self, data):
+                    status_label = "Loaded"
+                else:
+                    status_label = "Not loaded"
+                    needed_loaded = False
+            label_name = f"{short_name}_{data}_status_label"
+            status_label_widget = self.findChild(QLabel, label_name)
+            
+            if status_label_widget:
+                status_label_widget.setText(status_label)
+        
+            run_button = self.findChild(QWidget, f"{short_name}_run_analysis_button")
+            if run_button:
+                run_button.setEnabled(needed_loaded)
 
 if __name__ == "__main__":
     qdarktheme.enable_hi_dpi()
