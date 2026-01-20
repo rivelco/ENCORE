@@ -461,16 +461,21 @@ class MainWindow(QMainWindow):
 
         # Ensembles compare
         self.enscomp_visopts = {
-            "svd": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'red', 'enabled': False},
-            "pca": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'blue', 'enabled': False},
-            "ica": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'green', 'enabled': False},
-            "x2p": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'orange', 'enabled': False},
-            "sgc": {'enscomp_check_coords': True, 'enscomp_check_ens': True, 'enscomp_check_neus': False, 'color': 'pink', 'enabled': False},
             "stims": {'color': 'black'},
             "behavior": {'color': 'yellow'},
             "sim_neus": {'method': 'Jaccard', 'colormap': 'viridis'},
             "sim_time": {'method': 'Cosine', 'colormap': 'plasma'},
         }
+        # Update visualizations options for the ensembles comparison
+        for algorithm_key, algorithm_cfg in self.algorithms_config.items():
+            selected_color = algorithm_cfg.get("ensemble_color", "black")
+            self.enscomp_visopts[algorithm_key] = {
+                'enscomp_check_coords': True, 
+                'enscomp_check_ens': True, 
+                'enscomp_check_neus': False, 
+                'color': selected_color, 
+                'enabled': False
+            }
         self.tempvars["showed_sim_maps"] = False
 
         # The general options
@@ -2996,11 +3001,6 @@ class MainWindow(QMainWindow):
                 behavior_label = f"{selected_behavior}"
             self.enscomp_spinbox_lbl_behavior.setText(behavior_label)
 
-        self.enscomp_colorflag_svd.setStyleSheet(f"background-color: {self.enscomp_visopts['svd']['color']};")
-        self.enscomp_colorflag_pca.setStyleSheet(f"background-color: {self.enscomp_visopts['pca']['color']};")
-        self.enscomp_colorflag_ica.setStyleSheet(f"background-color: {self.enscomp_visopts['ica']['color']};")
-        self.enscomp_colorflag_x2p.setStyleSheet(f"background-color: {self.enscomp_visopts['x2p']['color']};")
-        self.enscomp_colorflag_sgc.setStyleSheet(f"background-color: {self.enscomp_visopts['sgc']['color']};")
         self.enscomp_colorflag_stims.setStyleSheet(f"background-color: {self.enscomp_visopts['stims']['color']};")
         self.enscomp_colorflag_behavior.setStyleSheet(f"background-color: {self.enscomp_visopts['behavior']['color']};")
         
