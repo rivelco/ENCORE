@@ -2828,21 +2828,15 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
-        if algorithm == 'svd':
-            ens_selector = self.enscomp_spinbox_svd
-            selector_label_max = self.enscomp_spinbox_lbl_max_svd
-        elif algorithm == 'pca':
-            ens_selector = self.enscomp_spinbox_pca
-            selector_label_max = self.enscomp_spinbox_lbl_max_pca
-        elif algorithm == 'ica':
-            ens_selector = self.enscomp_spinbox_ica
-            selector_label_max = self.enscomp_spinbox_lbl_max_ica
-        elif algorithm == 'x2p':
-            ens_selector = self.enscomp_spinbox_x2p
-            selector_label_max = self.enscomp_spinbox_lbl_max_x2p
-        elif algorithm == 'sgc':
-            ens_selector = self.enscomp_spinbox_sgc
-            selector_label_max = self.enscomp_spinbox_lbl_max_sgc
+        ens_selector_name = f"enscomp_spinbox_{algorithm}_2"
+        ens_selector = self.findChild(QWidget, ens_selector_name)
+        if not ens_selector:
+            raise RuntimeError(f"The ensemble selector for {algorithm} is missing")
+        
+        selector_label_max_name = f"enscomp_spinbox_lbl_max_{algorithm}_2"
+        selector_label_max = self.findChild(QWidget, selector_label_max_name)
+        if not selector_label_max:
+            raise RuntimeError(f"The ensemble selector label for {algorithm} is missing")
 
         # Enable the general visualization options
         self.enscomp_visopts_showcells.setEnabled(True)
@@ -2952,14 +2946,21 @@ class MainWindow(QMainWindow):
         """
         ensembles_to_compare = {}
         ens_selector = {
-            "svd": self.enscomp_spinbox_svd,
-            "pca": self.enscomp_spinbox_pca,
-            "ica": self.enscomp_spinbox_ica,
-            "x2p": self.enscomp_spinbox_x2p,
-            "sgc": self.enscomp_spinbox_sgc,
             "stims": self.enscomp_spinbox_stim,
             "behavior": self.enscomp_spinbox_behavior
         }
+        for algorithm_key in self.algorithms_config.keys():
+            enscomp_spinbox_name = f"enscomp_spinbox_{algorithm_key}_2"
+            enscomp_spinbox = self.findChild(QWidget, enscomp_spinbox_name)
+            if enscomp_spinbox:
+                ens_selector[algorithm_key] = enscomp_spinbox
+                
+                # Update the color of the ensemble
+                color_flag_name = f"enscomp_colorflag_{algorithm_key}_2"
+                color_flag = self.findChild(QWidget, color_flag_name)
+                if color_flag:
+                    color_flag.setStyleSheet(f"background-color: {self.enscomp_visopts[algorithm_key]['color']};")
+                
         for key, spinbox in ens_selector.items():
             if spinbox.isEnabled():
                 ens_idx = spinbox.value()
