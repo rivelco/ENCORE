@@ -3431,24 +3431,22 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
-
         methods_to_compare = []
-        if self.performance_check_svd.isChecked():
-            methods_to_compare.append("svd")
-        if self.performance_check_pca.isChecked():
-            methods_to_compare.append("pca")
-        if self.performance_check_ica.isChecked():
-            methods_to_compare.append("ica")
-        if self.performance_check_x2p.isChecked():
-            methods_to_compare.append("x2p")
-        if self.performance_check_sgc.isChecked():
-            methods_to_compare.append("sgc")
+        for algorithm_key in self.algorithms_config.keys():
+            check_name = f"performance_check_{algorithm_key}_2"
+            check = self.findChild(QWidget, check_name)
+            if check:
+                if check.isChecked():
+                    methods_to_compare.append(algorithm_key)
+
         self.tempvars['methods_to_compare'] = methods_to_compare
         self.tempvars['cant_methods_compare'] = len(methods_to_compare)
-        if self.tempvars['cant_methods_compare'] > 0:
-            self.performance_btn_compare.setEnabled(True)
-        else:
-            self.performance_btn_compare.setEnabled(False)
+        compare_button = self.findChild(QWidget, 'performance_btn_compare_2')
+        if compare_button:
+            if self.tempvars['cant_methods_compare'] > 0:
+                compare_button.setEnabled(True)
+            else:
+                compare_button.setEnabled(False)
 
     def performance_compare(self):
         """
