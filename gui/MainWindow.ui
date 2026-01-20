@@ -1559,8 +1559,8 @@ Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal En
                    <rect>
                     <x>0</x>
                     <y>0</y>
-                    <width>717</width>
-                    <height>527</height>
+                    <width>98</width>
+                    <height>71</height>
                    </rect>
                   </property>
                   <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -1958,7 +1958,7 @@ Herzog et al. 2021 &quot;Scalable and accurate automated method for neuronal ens
            <item>
             <widget class="QTabWidget" name="tabWidget_2">
              <property name="currentIndex">
-              <number>0</number>
+              <number>7</number>
              </property>
              <property name="movable">
               <bool>true</bool>
@@ -3196,7 +3196,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_23">
         <item>
-         <widget class="QGroupBox" name="groupBox_23">
+         <widget class="QGroupBox" name="ensvis_algorithm_buttons">
           <property name="title">
            <string>Load results from</string>
           </property>
@@ -3297,6 +3297,13 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="ensvis_algorithm_buttons_box">
+          <property name="title">
+           <string>Load results from</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -3729,7 +3736,7 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
       </widget>
       <widget class="QWidget" name="tab_46">
        <attribute name="title">
-        <string>Ensemble compare</string>
+        <string>Ensembles compare</string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_21">
         <item>
@@ -4251,6 +4258,13 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
                </widget>
               </item>
              </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="enscomp_selector_box">
+             <property name="title">
+              <string>Ensemble selector</string>
+             </property>
             </widget>
            </item>
            <item>
@@ -5133,6 +5147,13 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="performance_checks_box">
+          <property name="title">
+           <string>Algorithm to compare</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QTabWidget" name="performance_tabs">
           <property name="enabled">
            <bool>true</bool>
@@ -5307,38 +5328,10 @@ L. Avitan et al. &quot;Spontaneous Activity in the Zebrafish Tectum Reorganizes 
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="tab_54">
+      <widget class="QWidget" name="main_encore_algorithms_tab">
        <attribute name="title">
-        <string>User algorithms</string>
+        <string>ENCORE algorithms</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_65">
-        <item>
-         <widget class="QTabWidget" name="user_algorithms_tabs">
-          <property name="currentIndex">
-           <number>0</number>
-          </property>
-          <widget class="QWidget" name="tab_55">
-           <attribute name="title">
-            <string>Tab 1</string>
-           </attribute>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <item row="0" column="0">
-             <widget class="QPushButton" name="load_user_algorithms">
-              <property name="text">
-               <string>Load algorithms</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="tab_56">
-           <attribute name="title">
-            <string>Tab 2</string>
-           </attribute>
-          </widget>
-         </widget>
-        </item>
-       </layout>
       </widget>
       <widget class="QWidget" name="tab_2">
        <attribute name="title">
