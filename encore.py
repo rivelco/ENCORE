@@ -4,7 +4,6 @@ import os
 import scipy.io 
 import math
 import numpy as np
-import scipy.stats as stats
 from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import pdist, squareform
 import time
@@ -18,8 +17,8 @@ from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
 
 from PyQt6.uic import loadUi
-from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal
-from PyQt6.QtGui import QTextCursor, QDoubleValidator, QIntValidator, QIcon
+from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal, QSize
+from PyQt6.QtGui import QTextCursor, QDoubleValidator, QFont, QIcon
 
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
@@ -35,11 +34,33 @@ import utils.analysis_fields_formatters as analysis_limits
 from gui.MatplotlibWidget import MatplotlibWidget
 
 import matplotlib.pyplot as plt
-
-import matlab.engine
+import plotters.encore_plots as encore_plots
 
 from pprint import pprint
-import warnings
+
+import yaml
+
+from PyQt6.QtWidgets import (
+    QWidget,
+    QTabWidget,
+    QHBoxLayout,
+    QVBoxLayout,
+    QFormLayout,
+    QGroupBox,
+    QLabel,
+    QSpinBox,
+    QDoubleSpinBox,
+    QCheckBox,
+    QLineEdit,
+    QPushButton,
+    QTextEdit,
+    QPlainTextEdit,
+    QRadioButton,
+    QButtonGroup,
+    QSizePolicy
+)
+
+import importlib
 
 class WorkerSignals(QObject):
     """
