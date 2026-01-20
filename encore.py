@@ -1052,7 +1052,7 @@ class MainWindow(QMainWindow):
         self.update_edit_validators(lim_sup_x=self.data_dFFo.shape[1], lim_sup_y=self.data_dFFo.shape[0])
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
-        plot_widget.preview_dataset(self.data_dFFo, ylabel='Cell', yitems_labels=cell_labels)
+        encore_plots.preview_dataset(plot_widget, self.data_dFFo, ylabel='Cell', yitems_labels=cell_labels)
         self.varlabels_setup_tab(self.data_dFFo.shape[0])
     def view_neuronal_activity(self):
         """
@@ -1069,7 +1069,7 @@ class MainWindow(QMainWindow):
         self.update_edit_validators(lim_sup_x=self.data_neuronal_activity.shape[1], lim_sup_y=self.data_neuronal_activity.shape[0])
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
-        plot_widget.preview_dataset(self.data_neuronal_activity==0, ylabel='Cell', cmap='gray', yitems_labels=cell_labels)
+        encore_plots.preview_dataset(plot_widget, self.data_neuronal_activity==0, ylabel='Cell', cmap='gray', yitems_labels=cell_labels)
         self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
     def view_coordinates(self):
         """
@@ -1084,8 +1084,8 @@ class MainWindow(QMainWindow):
         self.currently_visualizing = "coordinates"
         self.set_able_edit_options(True)
         self.update_edit_validators(lim_sup_x=2, lim_sup_y=self.data_coordinates.shape[0])
-        self.plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
-        self.plot_widget.preview_coordinates2D(self.data_coordinates)
+        plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
+        encore_plots.preview_coordinates2D(plot_widget, self.data_coordinates)
         self.varlabels_setup_tab(self.data_coordinates.shape[0])
     def view_stims(self):
         """
@@ -1108,7 +1108,7 @@ class MainWindow(QMainWindow):
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("stims")
         stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
-        plot_widget.preview_dataset(preview_data==0, ylabel='Stim', cmap='gray', yitems_labels=stim_labels)
+        encore_plots.preview_dataset(plot_widget, preview_data==0, ylabel='Stim', cmap='gray', yitems_labels=stim_labels)
     def view_cells(self):
         """
         Displays the data saved in the :attr:`MainWindow.cells` variable.
@@ -1129,7 +1129,7 @@ class MainWindow(QMainWindow):
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         selectcell_labels = list(self.varlabels["selected_cell"].values()) if "selected_cell" in self.varlabels else []
-        plot_widget.preview_dataset(preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
+        encore_plots.preview_dataset(plot_widget, preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
     def view_behavior(self):
         """
         Displays the data saved in the :attr:`MainWindow.behavior` variable.
@@ -1156,7 +1156,7 @@ class MainWindow(QMainWindow):
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("behavior")
         behavior_labels = list(self.varlabels["behavior"].values()) if "behavior" in self.varlabels else []
-        plot_widget.preview_dataset(preview_data, ylabel='Behavior', yitems_labels=behavior_labels)
+        encore_plots.preview_dataset(plot_widget, preview_data, ylabel='Behavior', yitems_labels=behavior_labels)
 
     ## Edit buttons
     def edit_transpose(self):
@@ -2693,7 +2693,7 @@ class MainWindow(QMainWindow):
         if hasattr(self, "data_dFFo"):
             plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
             dFFo_ens = self.data_dFFo[idx_corrected_members, :]
-            plot_widget.plot_ensemble_dFFo(dFFo_ens, idx_corrected_members, ensemble_timecourse)
+            encore_plots.plot_ensemble_dFFo(plot_widget, dFFo_ens, idx_corrected_members, ensemble_timecourse)
     
     def update_ens_vis_coords(self):
         """
@@ -2708,8 +2708,8 @@ class MainWindow(QMainWindow):
         only_ens = self.ensvis_check_onlyens.isChecked()
         only_contours = self.ensvis_check_onlycont.isChecked()
         show_numbers = self.ensvis_check_cellnum.isChecked()
-        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_map')
-        self.plot_widget.plot_coordinates2D_highlight(self.data_coordinates, self.current_idx_corrected_members, self.current_idx_corrected_exclusive, only_ens, only_contours, show_numbers)
+        plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_map')
+        encore_plots.plot_coordinates2D_highlight(plot_widget, self.data_coordinates, self.current_idx_corrected_members, self.current_idx_corrected_exclusive, only_ens, only_contours, show_numbers)
 
     def update_ensvis_alldFFo(self):
         """
@@ -2732,7 +2732,7 @@ class MainWindow(QMainWindow):
             members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
             idx_corrected_members = [idx-1 for idx in members]
             dFFo_ens = self.data_dFFo[idx_corrected_members, :]
-            plot_widget.plot_all_dFFo(dFFo_ens, idx_corrected_members, current_ens)
+            encore_plots.plot_all_dFFo(plot_widget, dFFo_ens, idx_corrected_members, current_ens)
 
     def update_ensvis_allcoords(self):
         """
@@ -2768,7 +2768,7 @@ class MainWindow(QMainWindow):
             exc_elems = [cell+1 for cell in range(len(mask_e)) if mask_e[cell] and sum_mask[cell] == 1]
             idx_corrected_exclusive = [idx-1 for idx in exc_elems]
             
-            plot_widget.plot_all_coords(self.data_coordinates, idx_corrected_members, idx_corrected_exclusive, row, col)
+            encore_plots.plot_all_coords(plot_widget, self.data_coordinates, idx_corrected_members, idx_corrected_exclusive, row, col)
 
     def update_ensvis_allbinary(self):
         """
@@ -2790,7 +2790,7 @@ class MainWindow(QMainWindow):
             members = [cell+1 for cell in range(len(ensemble)) if ensemble[cell] > 0]
             idx_corrected_members = [idx-1 for idx in members]
             activity = self.data_neuronal_activity[idx_corrected_members, :] == 0
-            plot_widget.plot_all_binary(activity, members, current_ens, current_ens)
+            encore_plots.plot_all_binary(plot_widget, activity, members, current_ens, current_ens)
 
     def update_ensvis_allens(self):
         """
@@ -2802,8 +2802,8 @@ class MainWindow(QMainWindow):
         :rtype: None
         """
         curr_analysis = self.ensemble_currently_shown
-        self.plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allens')
-        self.plot_widget.plot_ensembles_timecourse(self.results[curr_analysis]['timecourse'])
+        plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_allens')
+        encore_plots.plot_ensembles_timecourse(plot_widget, self.results[curr_analysis]['timecourse'])
 
     def ensembles_compare_update_opts(self, algorithm):
         """
@@ -3058,7 +3058,7 @@ class MainWindow(QMainWindow):
             members_idx = [idx for idx in range(len(mixed_ens)) if mixed_ens[idx] > 0]
 
         map_plot = self.findChild(MatplotlibWidget, 'enscomp_plot_map')
-        map_plot.enscomp_update_map(lims, members_idx, members_freq, members_coords, members_colors, neuron_size)
+        encore_plots.enscomp_update_map(map_plot, lims, members_idx, members_freq, members_coords, members_colors, neuron_size)
 
     def ensembles_compare_update_timecourses(self, ensembles_to_compare):
         """
@@ -3135,7 +3135,7 @@ class MainWindow(QMainWindow):
         new_ticks.reverse()
 
         plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_neusact')
-        plot_widget.enscomp_update_timelines(new_ticks, cells_activities, [], timecourses, colors, self.cant_timepoints)
+        encore_plots.enscomp_update_timelines(plot_widget, new_ticks, cells_activities, [], timecourses, colors, self.cant_timepoints)
 
     def enscomp_get_color(self):
         """
@@ -3149,7 +3149,7 @@ class MainWindow(QMainWindow):
         color = QColorDialog.getColor()
         # Check if a color was selected
         if color.isValid():
-            # Convert the color to a Matplotlib-compatible format (hex string)
+            # Convert the color to a Matplotlib compatible format (hex string)
             color_hex = color.name()
             current_method = self.enscomp_combo_select_result.currentText().lower()
             self.enscomp_visopts[current_method]['color'] = color_hex
@@ -3304,7 +3304,7 @@ class MainWindow(QMainWindow):
             self.enscomp_visopts["sim_time"]['method'] = method
             self.enscomp_visopts["sim_time"]['colormap'] = color
         
-        plot_widget.enscomp_plot_similarity(similarity_matrix, labels, color)
+        encore_plots.enscomp_plot_similarity(plot_widget, similarity_matrix, labels, color)
     
     def ensembles_compare_similarity_update_combbox(self, text):
         """
@@ -3503,7 +3503,7 @@ class MainWindow(QMainWindow):
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
             if np.isscalar(correlation):
                     correlation = np.array([[correlation]])
-            plot_widget.plot_perf_correlations_ens_group(correlation, m_idx, title=f"{method}".upper(), xlabel="Stims", group_labels=stim_labels)            
+            encore_plots.plot_perf_correlations_ens_group(plot_widget, correlation, m_idx, title=f"{method}".upper(), xlabel="Stims", group_labels=stim_labels)            
 
     def update_correlation_cells(self):
         """
@@ -3520,7 +3520,7 @@ class MainWindow(QMainWindow):
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
         worker_corrcells = WorkerRunnable(self.update_correlation_cells_parallel, plot_widget)
         self.threadpool.start(worker_corrcells) 
-    def update_correlation_cells_parallel(self, plot_widget):
+    def update_correlation_cells_parallel(self, plot_widget, logger=None):
         """
         Calculates and updates the correlation between the activation of the cells in the ensemble.
 
@@ -3559,7 +3559,7 @@ class MainWindow(QMainWindow):
                 # Convert scalar to a 1x1 matrix for plotting if the ensamble contained only one neuron
                 if np.isscalar(correlation):
                     correlation = np.array([[correlation]])
-                plot_widget.plot_perf_correlations_cells(correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
+                encore_plots.plot_perf_correlations_cells(plot_widget, correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
 
     def update_cross_ens_stim(self):
         """
@@ -3607,7 +3607,7 @@ class MainWindow(QMainWindow):
                     cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                     cross_corrs.append(cross_corr)
                 cross_corrs = np.array(cross_corrs)
-                plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, group_prefix="Stim", title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper(), group_labels=stim_labels)          
+                encore_plots.plot_perf_cross_ens_stims(plot_widget, cross_corrs, lags, m_idx, ens_idx, group_prefix="Stim", title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper(), group_labels=stim_labels)          
 
     def update_corr_behavior(self):
         """
@@ -3650,7 +3650,7 @@ class MainWindow(QMainWindow):
             correlation = metrics.compute_correlation_with_stimuli(timecourse, stims)
             if np.isscalar(correlation):
                 correlation = np.array([[correlation]])
-            plot_widget.plot_perf_correlations_ens_group(correlation, m_idx, title=f"{method}".upper(), xlabel="Behavior", group_labels=behavior_labels)
+            encore_plots.plot_perf_correlations_ens_group(plot_widget, correlation, m_idx, title=f"{method}".upper(), xlabel="Behavior", group_labels=behavior_labels)
 
     def update_cross_behavior(self):
         """
@@ -3698,7 +3698,7 @@ class MainWindow(QMainWindow):
                     cross_corr, lags = metrics.compute_cross_correlations(enstime, stimtime)
                     cross_corrs.append(cross_corr)
                 cross_corrs = np.array(cross_corrs)
-                plot_widget.plot_perf_cross_ens_stims(cross_corrs, lags, m_idx, ens_idx, group_prefix="Beha", title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper(), group_labels=behavior_labels)
+                encore_plots.plot_perf_cross_ens_stims(plot_widget, cross_corrs, lags, m_idx, ens_idx, group_prefix="Beha", title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper(), group_labels=behavior_labels)
 
     def get_data_to_save(self):
         """
