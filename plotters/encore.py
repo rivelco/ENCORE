@@ -17,26 +17,26 @@ def plot_svd(figures, answer):
     """
     # Similarity map
     simmap = np.array(answer['S_index_ti'])
-    plot_widget = figures.get('svd2_plot_similaritymap')
+    plot_widget = figures.get('svd_plot_similaritymap')
     if plot_widget:
         encore_plots.preview_dataset(plot_widget, simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='jet', aspect='equal')
     
     # Binary similarity map
     bin_simmap = np.array(answer['S_indexp'])
-    plot_widget = figures.get('svd2_plot_binarysimmap')
+    plot_widget = figures.get('svd_plot_binarysimmap')
     if plot_widget:
         encore_plots.preview_dataset(plot_widget, bin_simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='gray', aspect='equal')
     
     # Singular values plot
     singular_vals = np.diagonal(np.array(answer['S_svd']))
     num_state = int(answer['num_state'])
-    plot_widget = figures.get('svd2_plot_singularvalues')
+    plot_widget = figures.get('svd_plot_singularvalues')
     if plot_widget:
         encore_plots.plot_singular_values(plot_widget, singular_vals, num_state)
 
     # Components from the descomposition
     singular_vals = np.array(answer['svd_sig'])
-    plot_widget = figures.get('svd2_plot_components')
+    plot_widget = figures.get('svd_plot_components')
     if plot_widget:
         rows = math.ceil(math.sqrt(num_state))
         cols = math.ceil(num_state / rows)
@@ -52,13 +52,13 @@ def plot_svd(figures, answer):
         
     # Plot the ensembles timecourse
     ensembles_timecourse = answer['timecourse']
-    plot_widget = figures.get('svd2_plot_timecourse')
+    plot_widget = figures.get('svd_plot_timecourse')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, ensembles_timecourse)
 
     # Plot neurons in ensembles
     neurons_in_ensembles = answer['neus_in_ens']
-    plot_widget = figures.get('svd2_plot_cellsinens')
+    plot_widget = figures.get('svd_plot_cellsinens')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, neurons_in_ensembles, xlabel="Cell")
         
@@ -76,7 +76,7 @@ def plot_pca(figures, answer):
     """
     ## Plot the eigs
     eigs = np.array(answer['exp_var'])
-    plot_widget = figures.get('pca2_plot_eigs')
+    plot_widget = figures.get('pca_plot_eigs')
     if plot_widget:
         encore_plots.plot_eigs(plot_widget, eigs, answer['seleig'])
 
@@ -86,19 +86,19 @@ def plot_pca(figures, answer):
     labels = labels[0] if len(labels) else None
     Nens = int(answer['Nens'])
     ens_cols = plt.cm.tab10(range(Nens * 2))
-    plot_widget = figures.get('pca2_plot_pca')
+    plot_widget = figures.get('pca_plot_pca')
     try:
         if plot_widget:
             encore_plots.plot_pca(plot_widget, pcs, ens_labs=labels, ens_cols = ens_cols)
     except:
-        pass
+        raise RuntimeError("Error plotting the PCA. Check the other plots and console for more info.")
 
     # Plot the rhos vs deltas
     rho = np.array(answer['rho'])
     delta = np.array(answer['delta'])
     cents = np.array(answer['cents'])
     predbounds = np.array(answer['predbounds'])
-    plot_widget = figures.get('pca2_plot_rhodelta')
+    plot_widget = figures.get('pca_plot_rhodelta')
     if plot_widget:
         encore_plots.plot_delta_rho(plot_widget, rho, delta, cents, predbounds, ens_cols)
     
@@ -107,15 +107,15 @@ def plot_pca(figures, answer):
         ens_cel_corr = np.array(answer['ens_cel_corr'])
         ens_cel_corr_min = np.min(ens_cel_corr)
         ens_cel_corr_max = np.max(ens_cel_corr)
-        plot_widget = figures.get('pca2_plot_corrne')
+        plot_widget = figures.get('pca_plot_corrne')
         if plot_widget:
             encore_plots.plot_core_cells(plot_widget, ens_cel_corr, [ens_cel_corr_min, ens_cel_corr_max])
     except:
-        print("Error plotting the correlation of cells vs ensembles. Check the other plots and console for more info.")
+        raise RuntimeError("Error plotting the correlation of cells vs ensembles. Check the other plots and console for more info.")
 
     # Plot core cells
     core_cells = np.array(answer['core_cells'])
-    plot_widget = figures.get('pca2_plot_corecells')
+    plot_widget = figures.get('pca_plot_corecells')
     if plot_widget:
         encore_plots.plot_core_cells(plot_widget, core_cells, [-1, 1])
 
@@ -123,18 +123,18 @@ def plot_pca(figures, answer):
     try:
         ens_corr = np.array(answer["ens_corr"])[0]
         corr_thr = np.array(answer["corr_thr"])
-        plot_widget = figures.get('pca2_plot_innerens')
+        plot_widget = figures.get('pca_plot_innerens')
         if plot_widget:
             encore_plots.plot_ens_corr(plot_widget, ens_corr, corr_thr, ens_cols)
     except:
-        print("Error plotting the core cells. Check the other plots and console for more info.")
+        raise RuntimeError("Error plotting the core cells. Check the other plots and console for more info.")
 
     # Plot ensembles timecourse
-    plot_widget = figures.get('pca2_plot_timecourse')
+    plot_widget = figures.get('pca_plot_timecourse')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, np.array(answer["sel_ensmat_out"]))
 
-    plot_widget = figures.get('pca2_plot_cellsinens')
+    plot_widget = figures.get('pca_plot_cellsinens')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, np.array(answer["sel_core_cells"]).T)
         
@@ -151,7 +151,7 @@ def plot_ica(figures, answer):
     :rtype: None
     """
     # Plot the assembly templates
-    plot_widget = figures.get('ica2_plot_assemblys')
+    plot_widget = figures.get('ica_plot_assemblys')
     if plot_widget:
         plot_widget.set_subplots(answer['assembly_templates'].shape[0], 1)
         total_assemblies = answer['assembly_templates'].shape[0]
@@ -160,16 +160,16 @@ def plot_ica(figures, answer):
             encore_plots.plot_assembly_patterns(plot_widget, ens, e_idx, title=f"Ensemble {e_idx+1}", plot_xaxis=plot_xaxis)
 
     # Plot the time projection
-    plot_widget = figures.get('ica2_plot_activity')
+    plot_widget = figures.get('ica_plot_activity')
     if plot_widget:
         encore_plots.plot_cell_assemblies_activity(plot_widget, answer['time_projection'])
 
     # Plot binary assembly templates
-    plot_widget = figures.get('ica2_plot_binary_patterns')
+    plot_widget = figures.get('ica_plot_binary_patterns')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, answer['binary_assembly_templates'], xlabel="Cell")
 
-    plot_widget = figures.get('ica2_plot_binary_assemblies')
+    plot_widget = figures.get('ica_plot_binary_assemblies')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, answer['binary_time_projection'], xlabel="Timepoint")
         
@@ -187,37 +187,37 @@ def plot_x2p(figures, answer):
     """
     # Similarity map
     dataset = answer['similarity']
-    plot_widget = figures.get('x2p2_plot_similarity')
+    plot_widget = figures.get('x2p_plot_similarity')
     if plot_widget:
         encore_plots.preview_dataset(plot_widget, dataset, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
     # EPI
     dataset = answer['EPI']
-    plot_widget = figures.get('x2p2_plot_epi')
+    plot_widget = figures.get('x2p_plot_epi')
     if plot_widget:
         encore_plots.preview_dataset(plot_widget, dataset, xlabel="Neuron", ylabel="Ensemble", cmap='jet')
     # Onsemble activity
     dataset = answer['OnsembleActivity']
-    plot_widget = figures.get('x2p2_plot_onsemact')
+    plot_widget = figures.get('x2p_plot_onsemact')
     if plot_widget:
         encore_plots.preview_dataset(plot_widget, dataset, xlabel="Timepoint", ylabel="Ensemble", cmap='jet')
     # Offsemble activity
     dataset = answer['OffsembleActivity']
-    plot_widget = figures.get('x2p2_plot_offsemact')
+    plot_widget = figures.get('x2p_plot_offsemact')
     if plot_widget:
         encore_plots.preview_dataset(plot_widget, dataset, xlabel="Timepoint", ylabel="Ensemble", cmap='jet')
     # Activity
     dataset = answer['Activity']
-    plot_widget = figures.get('x2p2_plot_activity')
+    plot_widget = figures.get('x2p_plot_activity')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, dataset)
     # Onsemble neurons
     dataset = answer['OnsembleNeurons']
-    plot_widget = figures.get('x2p2_plot_onsemneu')
+    plot_widget = figures.get('x2p_plot_onsemneu')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, dataset, xlabel="Cell")
     # Offsemble neurons
     dataset = answer['OffsembleNeurons']
-    plot_widget = figures.get('x2p2_plot_offsemneu')
+    plot_widget = figures.get('x2p_plot_offsemneu')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, dataset, xlabel="Cell")
 
@@ -226,10 +226,10 @@ def plot_sgc(figures, answer):
     neurons_in_ensembles = answer['neus_in_ens']
 
     # Plot the cells in ensembles
-    plot_widget = figures.get('sgc2_plot_timecourse')
+    plot_widget = figures.get('sgc_plot_timecourse')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, neurons_in_ensembles, xlabel="Cell")
     # Plot the ensmbles activations
-    plot_widget = figures.get('sgc2_plot_cellsinens')
+    plot_widget = figures.get('sgc_plot_cellsinens')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, ensembles_timecourse, xlabel="Timepoint")
