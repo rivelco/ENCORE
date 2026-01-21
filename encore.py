@@ -9,9 +9,9 @@ from scipy.spatial.distance import pdist, squareform
 import time
 from datetime import datetime
 import pickle
-import json
-
+import yaml
 import qdarktheme
+import importlib
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
@@ -23,22 +23,12 @@ from PyQt6.QtGui import QTextCursor, QDoubleValidator, QFont, QIcon
 from data.load_data import FileTreeModel
 from data.assign_data import assign_data_from_file
 
-import runners.encore
-
 import utils.metrics as metrics
-import utils.parameters_validators as parameters_validators
-import utils.data_converters as converters
 from utils.text_formatting import format_nums_to_string
-import utils.analysis_fields_formatters as analysis_limits
 
 from gui.MatplotlibWidget import MatplotlibWidget
 
-import matplotlib.pyplot as plt
 import plotters.encore_plots as encore_plots
-
-from pprint import pprint
-
-import yaml
 
 from PyQt6.QtWidgets import (
     QWidget,
@@ -53,19 +43,15 @@ from PyQt6.QtWidgets import (
     QCheckBox,
     QLineEdit,
     QPushButton,
-    QTextEdit,
     QPlainTextEdit,
     QRadioButton,
     QButtonGroup,
     QSizePolicy
 )
 
-import importlib
-
 class QtLoggerAdapter:
     def __init__(self, log_signal):
         self.log_signal = log_signal
-
     def __call__(self, message, level="log"):
         self.log_signal.emit(message, level)
 
@@ -192,40 +178,8 @@ class MainWindow(QMainWindow):
         self.btn_set_labels.clicked.connect(self.varlabels_save)
         self.btn_clear_labels.clicked.connect(self.varlabels_clear)
 
-        ## Set default values for analysis
-        self.svd_defaults = self.load_defaults("svd_defaults")
-        self.pca_defaults = self.load_defaults("pca_defaults") 
-        self.ica_defaults = self.load_defaults("ica_defaults") 
-        self.x2p_defaults = self.load_defaults("x2p_defaults") 
-        self.sgc_defaults = self.load_defaults("sgc_defaults") 
-        
-        # Initialize input fields validator for analysis
-        analysis_defaults = self.load_defaults("all")
-        analysis_limits.initialize_encore_analysis_fields(self, analysis_defaults)
-        
-        ## SVD analysis
-        self.svd_btn_defaults.clicked.connect(self.load_defaults_svd)
-        self.btn_run_svd.clicked.connect(self.collect_parameters_svd)
-        ## PCA analysis
-        self.pca_btn_defaults.clicked.connect(self.load_defaults_pca)
-        self.btn_run_pca.clicked.connect(self.collect_parameters_pca)
-        ## ICA analysis
-        self.ica_btn_defaults.clicked.connect(self.load_defaults_ica)
-        self.btn_run_ica.clicked.connect(self.collect_parameters_ica)
-        ## X2P analysis
-        self.x2p_btn_defaults.clicked.connect(self.load_defaults_x2p)
-        self.btn_run_x2p.clicked.connect(self.collect_parameters_x2p)
-        ## SGC analysis
-        self.sgc_btn_defaults.clicked.connect(self.load_defaults_sgc)
-        self.btn_run_sgc.clicked.connect(self.collect_parameters_scg)
-
         ## Ensembles visualizer
         self.ensvis_tabs.currentChanged.connect(self.ensvis_tabchange)
-        self.ensvis_btn_svd.clicked.connect(self.vis_ensembles_svd)
-        self.ensvis_btn_pca.clicked.connect(self.vis_ensembles_pca)
-        self.ensvis_btn_ica.clicked.connect(self.vis_ensembles_ica)
-        self.ensvis_btn_x2p.clicked.connect(self.vis_ensembles_x2p)
-        self.ensvis_btn_sgc.clicked.connect(self.vis_ensembles_sgc)
         self.envis_slide_selectedens.editingFinished.connect(self.update_ensemble_visualization)
         self.envis_slide_selectedens.valueChanged.connect(self.update_ensemble_visualization)
         self.ensvis_check_onlyens.stateChanged.connect(self.update_ens_vis_coords)
@@ -233,11 +187,6 @@ class MainWindow(QMainWindow):
         self.ensvis_check_cellnum.stateChanged.connect(self.update_ens_vis_coords)
 
         # Ensemble compare
-        self.enscomp_spinbox_svd.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_spinbox_pca.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_spinbox_ica.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_spinbox_x2p.valueChanged.connect(self.ensembles_compare_update_ensembles)
-        self.enscomp_spinbox_sgc.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_spinbox_stim.valueChanged.connect(self.ensembles_compare_update_ensembles)
         self.enscomp_spinbox_behavior.valueChanged.connect(self.ensembles_compare_update_ensembles)
 
@@ -290,12 +239,6 @@ class MainWindow(QMainWindow):
 
         ## Performance
         self.performance_tabs.currentChanged.connect(self.performance_tabchange)
-        self.performance_check_svd.stateChanged.connect(self.performance_check_change)
-        self.performance_check_pca.stateChanged.connect(self.performance_check_change)
-        self.performance_check_ica.stateChanged.connect(self.performance_check_change)
-        self.performance_check_x2p.stateChanged.connect(self.performance_check_change)
-        self.performance_check_sgc.stateChanged.connect(self.performance_check_change)
-        self.performance_btn_compare.clicked.connect(self.performance_compare)
 
         # Saving
         self.save_btn_hdf5.clicked.connect(self.save_results_hdf5)
@@ -356,29 +299,23 @@ class MainWindow(QMainWindow):
         if hasattr(self, "data_coordinates_generated"):
             delattr(self, "data_coordinates")
             self.data_coordinates_generated = False
-        
-        # Initialize buttons
-        self.btn_run_svd.setEnabled(False)
-        self.btn_run_pca.setEnabled(False)
-        self.btn_run_ica.setEnabled(False)
-        self.btn_run_x2p.setEnabled(False)
-
-        self.ensvis_btn_svd.setEnabled(False)
-        self.ensvis_btn_pca.setEnabled(False)
-        self.ensvis_btn_ica.setEnabled(False)
-        self.ensvis_btn_x2p.setEnabled(False)
-        self.ensvis_btn_sgc.setEnabled(False)
-
-        # Ensemble performance selectors
-        check_boxes = [self.performance_check_svd,
-                       self.performance_check_pca,
-                       self.performance_check_ica,
-                       self.performance_check_x2p,
-                       self.performance_check_sgc]
-        for obj in check_boxes:
-            obj.setEnabled(False)
-            obj.setChecked(False)
-        self.performance_btn_compare.setEnabled(False)
+            
+        # Update buttons for ensemble visualization, performance and comparison
+        for algorithm_key, algorithm_cfg in self.algorithms_config.items():
+            button = self.findChild(QWidget, f'ensvis_btn_{algorithm_key}')
+            if button:
+                button.setEnabled(False)
+            check = self.findChild(QWidget, f'performance_check_{algorithm_key}')
+            if check:
+                check.setEnabled(False)
+            spinbox = self.findChild(QWidget, f"enscomp_spinbox_{algorithm_key}")
+            if spinbox:
+                spinbox.setValue(0)
+                spinbox.setEnabled(False)
+            label_with_max = self.findChild(QWidget, f"enscomp_spinbox_lbl_max_{algorithm_key}")
+            if label_with_max:
+                label_with_max.setText("0")
+                label_with_max.setEnabled(False)
 
         # Save tab
         save_itms = [self.save_check_input,
@@ -397,44 +334,6 @@ class MainWindow(QMainWindow):
         # Clear the preview plots
         default_txt = "Load or select a variable to see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-
-        # Clear the figures
-        default_txt = "Perform the SVD analysis to see results"
-        self.findChild(MatplotlibWidget, 'svd_plot_similaritymap').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'svd_plot_singularvalues').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'svd_plot_components').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'svd_plot_timecourse').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'svd_plot_cellsinens').reset(default_txt)
-
-        default_txt = "Perform the PCA analysis to see results"
-        self.findChild(MatplotlibWidget, 'pca_plot_eigs').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_pca').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_rhodelta').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_corrne').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_corecells').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_innerens').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_timecourse').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'pca_plot_cellsinens').reset(default_txt)
-
-        default_txt = "Perform the ICA analysis to see results"
-        self.findChild(MatplotlibWidget, 'ica_plot_assemblys').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'ica_plot_activity').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies').reset(default_txt)
-
-        default_txt = "Perform the Xsembles2P analysis to see results"
-        self.findChild(MatplotlibWidget, 'x2p_plot_similarity').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'x2p_plot_epi').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'x2p_plot_onsemact').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'x2p_plot_offsemact').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'x2p_plot_activity').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'x2p_plot_onsemneu').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu').reset(default_txt)
-
-        default_txt = "Perform the SGC analysis to see results"
-        self.findChild(MatplotlibWidget, 'sgc_plot_timecourse').reset(default_txt)
-        self.findChild(MatplotlibWidget, 'sgc_plot_cellsinens').reset(default_txt)
 
         self.ensvis_edit_numens.setText("0")
         self.envis_slide_selectedens.setEnabled(False)
@@ -512,12 +411,7 @@ class MainWindow(QMainWindow):
             obj.blockSignals(False)
         
         # Sliders
-        sliders = [self.enscomp_spinbox_svd, 
-                   self.enscomp_spinbox_pca, 
-                   self.enscomp_spinbox_ica,
-                   self.enscomp_spinbox_x2p,
-                   self.enscomp_spinbox_sgc,
-                   self.enscomp_spinbox_stim,
+        sliders = [self.enscomp_spinbox_stim,
                    self.enscomp_spinbox_behavior]
         for obj in sliders:
             obj.blockSignals(True)
@@ -525,15 +419,6 @@ class MainWindow(QMainWindow):
             obj.setRange(0, 0)
             obj.setValue(0)
             obj.blockSignals(False)
-
-        slider_labels = [self.enscomp_spinbox_lbl_max_svd,
-                         self.enscomp_spinbox_lbl_max_pca,
-                         self.enscomp_spinbox_lbl_max_ica,
-                         self.enscomp_spinbox_lbl_max_x2p,
-                         self.enscomp_spinbox_lbl_max_sgc]
-        for obj in slider_labels:
-            obj.setEnabled(False)
-            obj.setText("0")
             
         if not hasattr(self, "data_stims"):
             self.enscomp_spinbox_lbl_max_stim.setEnabled(False)
@@ -574,16 +459,12 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'performance_plot_corrstims').reset(default_txt)
         default_txt = "Perform and select at least one analysis\nto see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_corrcells').reset(default_txt)
-        #self.findChild(MatplotlibWidget, 'performance_plot_corrcells').canvas.setFixedHeight(400)
         default_txt = "Perform and select at least one analysis and load\n behavior data to see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior').reset(default_txt)
-        #self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior').canvas.setFixedHeight(400)
         default_txt = "Perform and select at least one analysis and load\n stimulation data to see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').reset(default_txt)
-        #self.findChild(MatplotlibWidget, 'performance_plot_crossensstim').canvas.setFixedHeight(400)
         default_txt = "Perform and select at least one analysis and load\n behavior data to see the metrics"
         self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').reset(default_txt)
-        #self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior').canvas.setFixedHeight(400)
 
         default_txt = "Perform and select at least one analysis\n to see the metrics"
         self.findChild(MatplotlibWidget, 'enscomp_plot_map').reset(default_txt)
@@ -591,30 +472,6 @@ class MainWindow(QMainWindow):
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements').reset(default_txt)
         self.findChild(MatplotlibWidget, 'enscomp_plot_sim_times').reset(default_txt)
 
-    def load_defaults(self, method):
-        """
-        Load the default parameters for a given method from a configuration file.
-
-        :param str method: The name of the method for which default parameters are requested.
-        :return: A dictionary containing the default parameters for the specified method.
-        :rtype: dict
-        :raises KeyError: If the specified method is not found in the configuration file.
-        :raises FileNotFoundError: If the configuration file is missing.
-        :raises json.JSONDecodeError: If the configuration file is not a valid JSON.
-        """
-        config_path = "config/default_parameters.json"
-        if not os.path.exists(config_path):
-            raise FileNotFoundError(f"Configuration file not found: {config_path}")
-        with open(config_path, "r") as f:
-            try:
-                defaults = json.load(f)
-            except json.JSONDecodeError as e:
-                raise json.JSONDecodeError(f"Error decoding JSON in {config_path}: {e}", e.doc, e.pos)
-        if method == "all":
-            return defaults
-        if method not in defaults:
-            raise KeyError(f"Method '{method}' not found in default parameters.")
-        return defaults[method]
     def browse_files(self):
         """
         Opens a file browing dialog to open a new file.
@@ -631,7 +488,6 @@ class MainWindow(QMainWindow):
             if file_extension == '.h5' or file_extension == '.hdf5' or file_extension == ".nwb":
                 self.update_console_log("Generating file structure...")
                 with h5py.File(fname, 'r') as hdf_file:
-                    #hdf5_file = h5py.File(fname, 'r')
                     self.file_model_type = "hdf5"
                     self.file_model = FileTreeModel(hdf_file, model_type="hdf5")
                 self.tree_view.setModel(self.file_model)
@@ -718,26 +574,6 @@ class MainWindow(QMainWindow):
         self.file_selected_var_type = item_type
         self.file_selected_var_size = item_size
         self.file_selected_var_name = item_name
-    
-    def validate_needed_data(self, needed_data):
-        """
-        Validates that all required data for a given analysis are present in the current session.
-
-        :param needed_data: A list of strings representing the names of the required attributes.
-        :type needed_data: list of str
-
-        :return: True if all required attributes are present, False otherwise.
-        :rtype: bool
-
-        This method checks whether the object has the necessary attributes as specified in the 
-        `needed_data` list. If any required attribute is missing, it returns False, indicating 
-        that the data is not valid. Otherwise, it returns True.
-        """
-        valid_data = True
-        for req in needed_data:
-            if not hasattr(self, req):
-                valid_data = False
-        return valid_data
 
     ## Identify the tab changes
     def main_tabs_change(self, index):
@@ -752,47 +588,11 @@ class MainWindow(QMainWindow):
         :type index: int
         """
         current_tab_name = self.main_tabs.tabText(index)
-        if index > 0 and index < 6: # Analysis tabs
-            if hasattr(self, "data_neuronal_activity"):
-                self.lbl_sdv_spikes_selected.setText(f"Loaded")
-                self.lbl_pca_spikes_selected.setText(f"Loaded")
-                self.lbl_ica_spikes_selected.setText(f"Loaded")
-                self.lbl_x2p_spikes_selected.setText(f"Loaded")
-            else:
-                self.lbl_sdv_spikes_selected.setText(f"Nothing selected")
-                self.lbl_pca_spikes_selected.setText(f"Nothing selected")
-                self.lbl_ica_spikes_selected.setText(f"Nothing selected")
-                self.lbl_x2p_spikes_selected.setText(f"Nothing selected")
-            if hasattr(self, "data_dFFo"):
-                self.lbl_sgc_spikes_selected.setText(f"Loaded")
-            else:
-                self.lbl_sgc_spikes_selected.setText(f"Nothing selected")
 
-            # Validate data for SVD
-            needed_data = ["data_neuronal_activity"]
-            self.btn_run_svd.setEnabled(self.validate_needed_data(needed_data))
-
-            # Validate needed data for PCA
-            needed_data = ["data_neuronal_activity"]
-            self.btn_run_pca.setEnabled(self.validate_needed_data(needed_data))
-
-            # Validate needed data for ICA
-            needed_data = ["data_neuronal_activity"]
-            self.btn_run_ica.setEnabled(self.validate_needed_data(needed_data))
-
-            # Validate needed data for x2p
-            needed_data = ["data_neuronal_activity"]
-            self.btn_run_x2p.setEnabled(self.validate_needed_data(needed_data))
-
-            # Validate needed data for sgc
-            needed_data = ["data_dFFo"]
-            self.btn_run_sgc.setEnabled(self.validate_needed_data(needed_data))
-
-        if current_tab_name == "Ensembles compare": #Ensembles compare tab
+        if current_tab_name == "Ensembles compare":
             if len(self.results) > 0:
                 self.ensembles_compare_update_ensembles()
-        
-        if current_tab_name == "ENCORE algorithms":
+        elif current_tab_name == "ENCORE algorithms":
             self.update_user_analysis_requirements()
 
     ## Set variables from input file
@@ -1222,14 +1022,6 @@ class MainWindow(QMainWindow):
         self.edit_edit_xend.setRange(1, lim_sup_x)
         self.edit_edit_ystart.setRange(0, lim_sup_y)
         self.edit_edit_yend.setRange(1, lim_sup_y)
-        
-        #int_validator = QIntValidator(0, lim_sup_x)
-        #self.edit_edit_binsize.setValidator(int_validator)
-        #self.edit_edit_xstart.setValidator(int_validator)
-        #self.edit_edit_xend.setValidator(int_validator)
-        #int_validator = QIntValidator(0, lim_sup_y)
-        #self.edit_edit_ystart.setValidator(int_validator)
-        #self.edit_edit_yend.setValidator(int_validator)
 
     def bin_matrix(self, mat, bin_size, bin_method):
         """
@@ -1260,7 +1052,7 @@ class MainWindow(QMainWindow):
         elements, timepoints = mat.shape
 
         if bin_size >= timepoints:
-            print("Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.")
+            self.update_console_log("Enter a bin size smaller than the current amount of timepoints. Nothing has been changed.", "warning")
             return mat
 
         num_bins = timepoints // bin_size
@@ -1273,7 +1065,7 @@ class MainWindow(QMainWindow):
             elif bin_method == "sum":
                 bin_mat[:, i] = np.sum(window, axis=1)
             else:
-                raise ValueError("Invalid bin_method. Use 'mean' or 'sum'.")
+                self.update_console_log("Invalid bin_method. Use 'mean' or 'sum'.", "error")
 
         # If input was 1D, return 1D output
         if mat.shape[0] == 1:
@@ -1306,7 +1098,6 @@ class MainWindow(QMainWindow):
             self.view_dFFo()
         elif to_edit == "neuronal_activity":
             self.data_neuronal_activity = self.bin_matrix(self.data_neuronal_activity, bin_size, bin_method)
-            print(self.data_neuronal_activity.shape)
             self.cant_neurons = self.data_neuronal_activity.shape[0]
             self.cant_timepoints = self.data_neuronal_activity.shape[1]
             self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", "warning")
@@ -1371,7 +1162,6 @@ class MainWindow(QMainWindow):
                 self.data_neuronal_activity = self.data_neuronal_activity[:, xstart:xend]
             if valid_y:
                 self.data_neuronal_activity = self.data_neuronal_activity[ystart:yend, :]
-            print(self.data_neuronal_activity.shape)
             self.cant_neurons = self.data_neuronal_activity.shape[0]
             self.cant_timepoints = self.data_neuronal_activity.shape[1]
             self.update_console_log(f"Updated Binary Neuronal Activity dataset. Please, verify the data preview.", "warning")
@@ -1531,963 +1321,6 @@ class MainWindow(QMainWindow):
         elif curr_view == "behavior":
             self.view_behavior()
         self.varlabels_setup_tab(self.table_setlabels.rowCount())
-        
-    def load_defaults_svd(self):
-        """
-        Loads default SVD parameter values into the UI fields.
-
-        This method retrieves the default parameter values for SVD analysis from `MainWindow.svd_defaults` 
-        and sets the corresponding values in the UI fields. It also updates the console log to 
-        indicate that the default values have been successfully loaded.
-
-        :return: None
-        """
-        defaults = self.svd_defaults
-        self.svd_edit_pks.setValue(defaults['pks'])
-        self.svd_edit_scut.setValue(defaults['scut'])
-        self.svd_edit_hcut.setValue(defaults['hcut'])
-        self.svd_edit_statecut.setValue(defaults['state_cut'])
-        self.svd_edit_csistart.setValue(defaults['csi_start'])
-        self.svd_edit_csistep.setValue(defaults['csi_step'])
-        self.svd_edit_csiend.setValue(defaults['csi_end'])
-        self.svd_check_tfidf.setChecked(defaults['tf_idf_norm'])
-        self.svd_check_parallel.setChecked(defaults['parallel_processing'])
-        self.update_console_log("Loaded default SVD parameter values", "complete")
-    def collect_parameters_svd(self):
-        """
-        Retrieves user-defined parameters for Singular Value Decomposition (SVD) from the GUI, applies default values 
-        if fields are empty, and initiates the SVD analysis in parallel. The function also updates the console log 
-        with messages about the current status and resets any previously displayed SVD figures.
-
-        :return: None
-        :rtype: None
-        """
-        # Temporarly disable the button
-        self.btn_run_svd.setEnabled(False)
-        # Prepare data
-        spikes = self.data_neuronal_activity
-
-        # Get the parameters
-        val_pks = self.svd_edit_pks.value()
-        val_scut = self.svd_edit_scut.value()
-        val_hcut = self.svd_edit_hcut.value()
-        val_statecut = self.svd_edit_statecut.value()
-        val_csistart = self.svd_edit_csistart.value()
-        val_csistep = self.svd_edit_csistep.value()
-        val_csiend = self.svd_edit_csiend.value()
-        val_idtfd = self.svd_check_tfidf.isChecked()
-        parallel_computing = self.svd_check_parallel.isChecked()
-
-        # Pack parameters
-        pars = {
-            'pks': val_pks,
-            'scut': val_scut,
-            'hcut': val_hcut,
-            'statecut': val_statecut,
-            'tf_idf_norm': val_idtfd,
-            'csi_start': val_csistart,
-            'csi_step': val_csistep,
-            'csi_end': val_csiend,
-            'parallel_processing': parallel_computing
-        }
-
-        # Validate the parameters
-        pars_validated = parameters_validators.validate_params(pars, self.svd_defaults)
-
-        # Fill the GUI spaces using the validated data, in case there are changes
-        self.svd_edit_hcut.setValue(pars_validated['hcut'])
-        self.svd_edit_statecut.setValue(pars_validated['state_cut'])
-        self.svd_edit_csistart.setValue(pars_validated['csi_start'])
-        self.svd_edit_csistep.setValue(pars_validated['csi_step'])
-        self.svd_edit_csiend.setValue(pars_validated['csi_end'])
-
-        self.params['svd'] = pars_validated
-
-        # Clean all the figures in case there was something previously
-        if 'svd' in self.results:
-            del self.results['svd']
-        algorithm_figs = ["svd_plot_similaritymap", "svd_plot_binarysimmap", "svd_plot_singularvalues", "svd_plot_components", "svd_plot_timecourse", "svd_plot_cellsinens"] 
-        for fig_name in algorithm_figs:
-            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
-
-        # Run the SVD in parallel
-        self.update_console_log("Performing SVD...")
-        self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_svd = WorkerRunnable(self.run_svd_handler, spikes, pars_validated)
-        worker_svd.signals.result_ready.connect(self.run_svd_handler_end)
-        worker_svd.signals.log.connect(self.update_console_log)
-        self.threadpool.start(worker_svd)
-    def run_svd_handler(self, spikes, pars_validated, log_signal = None):
-        """
-        Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data in parallel. 
-        This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
-
-        :param spikes: Matrix of neural activity data to be processed.
-        :type spikes: matlab.double
-        :param coords_foo: Matrix of dummy coordinates used as input for the SVD function.
-        :type coords_foo: matlab.double
-        :param pars_matlab: MATLAB structure of parameters for the SVD algorithm.
-        :type pars_matlab: dict
-        :return: List of times taken for MATLAB engine setup, SVD execution, and plotting.
-        :rtype: list[float]
-        """
-        log_flag = "SVD:"
-        relative_folder_path = 'analysis/SVD'
-        
-        result = runners.encore.run_svd(spikes, pars_validated, relative_folder_path, log_function=log_signal)
-        plot_times = 0
-        num_ensembles = 0
-        if result["success"]:
-            # Check if the analysis found any ensemble
-            if result['results']['ensembles_cant'] > 0:
-                num_ensembles = result['results']['ensembles_cant']
-
-                # Update pks and scut in the GUI in case of automatic calculation
-                self.svd_edit_pks.setValue(int(result['answer']['pks']))
-                self.svd_edit_scut.setValue(result['answer']['scut'])
-
-                # Plotting results
-                log_signal.emit(f"{log_flag} Plotting and saving results...", "log")
-                start_time = time.time()
-                # Save results
-                self.algorithm_results['svd'] = result["answer"]
-                self.results['svd'] = result["results"]
-                # Plot the results
-                self.plot_SVD_results(result["answer"])
-                # Update the GUI
-                self.we_have_results()
-                end_time = time.time()
-                plot_times = end_time - start_time
-            
-                log_signal.emit(f"{log_flag} Done plotting and saving...", "complete")
-            else:
-                log_signal.emit(f"{log_flag} Plotting results...", "log")
-                start_time = time.time()
-                self.plot_SVD_results(result["answer"])
-                end_time = time.time()
-                plot_times = end_time - start_time
-                log_signal.emit(f"{log_flag} Done plotting...", "complete")
-            
-        return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
-    def run_svd_handler_end(self, times):
-        """
-        Finalizes the SVD execution process, logging timing information for each stage of the computation, 
-        and re-enables the SVD run button.
-
-        :param times: List containing the time taken for MATLAB engine loading, algorithm execution, 
-                    and plotting in seconds.
-        :type times: list[float]
-        :return: None
-        :rtype: None
-        """
-        self.update_console_log("Done executing the SVD algorithm", "complete") 
-        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
-        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
-        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
-        if times[3] > 0:
-            self.update_console_log(f"The SVD analysis found {times[3]} ensembles", "complete")
-        else:
-            self.update_console_log(f"The SVD analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
-        self.btn_run_svd.setEnabled(True)
-    def plot_SVD_results(self, answer):
-        """
-        Plots and saves the results of the SVD algorithm, including similarity maps, singular values, 
-        components, and ensemble timecourses.
-
-        :param answer: Dictionary containing the SVD output data from MATLAB, including matrices for 
-                    similarity maps, singular values, component vectors, ensemble timecourses, 
-                    and neuron groupings.
-        :type answer: dict
-        :return: None
-        :rtype: None
-        """
-        # Similarity map
-        simmap = np.array(answer['S_index_ti'])
-        plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_similaritymap')
-        plot_widget.preview_dataset(simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='jet', aspect='equal')
-        # Binary similarity map
-        bin_simmap = np.array(answer['S_indexp'])
-        plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_binarysimmap')
-        plot_widget.preview_dataset(bin_simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='gray', aspect='equal')
-        # Singular values plot
-        singular_vals = np.diagonal(np.array(answer['S_svd']))
-        num_state = int(answer['num_state'])
-        plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_singularvalues')
-        plot_widget.plot_singular_values(singular_vals, num_state)
-
-        # Components from the descomposition
-        singular_vals = np.array(answer['svd_sig'])
-        plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_components')
-        rows = math.ceil(math.sqrt(num_state))
-        cols = math.ceil(num_state / rows)
-        rows = rows+1 if rows == 1 else rows
-        cols = cols+1 if cols == 1 else cols
-        plot_widget.set_subplots(rows, cols)
-        plot_widget.canvas.setFixedHeight(400*rows)
-        for state_idx in range(num_state):
-            curent_comp = singular_vals[:, :, state_idx]
-            row = state_idx // cols
-            col = state_idx % cols
-            plot_widget.plot_states_from_svd(curent_comp, state_idx, row, col)
-            
-        # Plot the ensembles timecourse
-        ensembles_timecourse = self.results['svd']['timecourse']
-        plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_timecourse')
-        plot_widget.plot_ensembles_timecourse(ensembles_timecourse)
-
-        # Plot neurons in ensembles
-        neurons_in_ensembles = self.results['svd']['neus_in_ens']
-        plot_widget = self.findChild(MatplotlibWidget, 'svd_plot_cellsinens')
-        plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Cell")
-
-    def load_defaults_pca(self):
-        """
-        Loads default PCA parameter values into the UI fields.
-
-        This method retrieves the default parameter values for PCA analysis from `MainWindow.pca_defaults` 
-        and sets the corresponding values in the UI fields. It also updates the console log to 
-        indicate that the default values have been successfully loaded.
-
-        :return: None
-        """
-        defaults = self.pca_defaults
-        self.pca_edit_dc.setValue(defaults['dc'])
-        self.pca_edit_npcs.setValue(defaults['npcs'])
-        self.pca_edit_minspk.setValue(defaults['minspk'])
-        self.pca_edit_nsur.setValue(defaults['nsur'])
-        self.pca_edit_prct.setValue(defaults['prct'])
-        self.pca_edit_centthr.setValue(defaults['cent_thr'])
-        self.pca_edit_innercorr.setValue(defaults['inner_corr'])
-        self.pca_edit_minsize.setValue(defaults['minsize'])
-        self.update_console_log("Loaded default PCA parameter values", "complete")
-    def collect_parameters_pca(self):
-        """
-        Retrieves user-defined parameters for PCA from the GUI, applies default values 
-        if fields are empty, and initiates the PCA analysis in parallel. The function also updates the console log 
-        with messages about the current status and resets any previously displayed PCA figures.
-
-        :return: None
-        :rtype: None
-        """
-        # Temporarly disable the button
-        self.btn_run_pca.setEnabled(False)
-        # Prepare data
-        raster = self.data_neuronal_activity
-
-        # Collect parameters
-        dc = self.pca_edit_dc.value()
-        npcs = self.pca_edit_npcs.value()
-        minspk = self.pca_edit_minspk.value()
-        nsur = self.pca_edit_nsur.value()
-        prct = self.pca_edit_prct.value()
-        cent_thr = self.pca_edit_centthr.value()
-        inner_corr = self.pca_edit_innercorr.value()
-        minsize = self.pca_edit_minsize.value()
-
-        # Pack data
-        pars = {
-            'dc': dc,
-            'npcs': npcs,
-            'minspk': minspk,
-            'nsur': nsur,
-            'prct': prct,
-            'cent_thr': cent_thr,
-            'inner_corr': inner_corr,
-            'minsize': minsize
-        }
-        
-        # Valiate the parameters
-        pars_validated = parameters_validators.validate_params(pars, self.pca_defaults)
-        
-        # Fill the GUI spaces using the validated data, in case there are changes
-        self.pca_edit_dc.setValue(pars_validated['dc'])
-        self.pca_edit_npcs.setValue(pars_validated['npcs'])
-        self.pca_edit_minspk.setValue(pars_validated['minspk'])
-        self.pca_edit_nsur.setValue(pars_validated['nsur'])
-        self.pca_edit_prct.setValue(pars_validated['prct'])
-        self.pca_edit_centthr.setValue(pars_validated['cent_thr'])
-        self.pca_edit_innercorr.setValue(pars_validated['inner_corr'])
-        self.pca_edit_minsize.setValue(pars_validated['minsize'])
-        
-        self.params['pca'] = pars_validated
-
-        # Clean all the figures in case there was something previously
-        if 'pca' in self.results:
-            del self.results['pca']
-        algorithm_figs = ["pca_plot_eigs", "pca_plot_pca", "pca_plot_rhodelta", "pca_plot_corrne", "pca_plot_corecells", "pca_plot_innerens", "pca_plot_timecourse", "pca_plot_cellsinens"] 
-        for fig_name in algorithm_figs:
-            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
-
-        self.update_console_log("Performing PCA...")
-        self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_pca = WorkerRunnable(self.run_pca_handler, raster, pars_validated)
-        worker_pca.signals.result_ready.connect(self.run_pca_handler_end)
-        worker_pca.signals.log.connect(self.update_console_log)
-        self.threadpool.start(worker_pca) 
-    def run_pca_handler(self, raster, pars_validated, log_signal = None):
-        """
-        Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data in parallel. 
-        This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
-
-        :param raster: Matrix of neural activity data to be processed.
-        :type raster: matlab.double
-        :param pars_matlab: MATLAB structure of parameters for the PCA algorithm.
-        :type pars_matlab: dict
-        :param pars: Python dictionary of parameters for the PCA algorithm, used for plotting.
-        :type pars: dict
-        :return: List of times taken for MATLAB engine setup, PCA execution, and plotting.
-        :rtype: list[float]
-        """
-        log_flag = "PCA:"
-        relative_folder_path = 'analysis/NeuralEnsembles'
-        result = runners.encore.run_pca(raster, pars_validated, relative_folder_path, log_function=log_signal)
-        plot_times = 0
-        num_ensembles = 0
-        if result["success"]:
-            # Check if the analysis found any ensemble
-            if result['results']['ensembles_cant'] > 0:
-                num_ensembles = result['results']['ensembles_cant']
-
-                log_signal.emit(f"{log_flag} Plotting and saving results...", "log")
-                start_time = time.time()
-                # Save results
-                self.algorithm_results['pca'] = result["answer"]
-                self.results['pca'] = result["results"]
-                # Plotting results
-                self.plot_PCA_results(result["answer"])
-                # Update the GUI
-                self.we_have_results()
-                end_time = time.time()
-                plot_times = end_time - start_time
-            
-                log_signal.emit(f"{log_flag} Done plotting and saving...", "complete")
-            else:
-                log_signal.emit(f"{log_flag} Plotting results...", "log")
-                start_time = time.time()
-                self.plot_PCA_results(result["answer"])
-                end_time = time.time()
-                plot_times = end_time - start_time
-                log_signal.emit(f"{log_flag} Done plotting...", "complete")
-            
-        return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
-    def run_pca_handler_end(self, times):
-        """
-        Runs when the PCA execution process finishes, logging timing information for each stage of the computation, 
-        and re-enables the PCA run button.
-
-        :param times: List containing the time taken for MATLAB engine loading, algorithm execution, 
-                    and plotting in seconds.
-        :type times: list[float]
-        :return: None
-        :rtype: None
-        """
-        self.update_console_log("Done executing the PCA algorithm", "complete") 
-        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
-        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
-        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
-        if times[3] > 0:
-            self.update_console_log(f"The PCA analysis found {times[3]} ensembles", "complete")
-        else:
-            self.update_console_log(f"The PCA analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
-        self.btn_run_pca.setEnabled(True)
-    def plot_PCA_results(self, answer):
-        """
-        Plots the results of the PCA algorithm, including eigen values, principal components, 
-        rho and delta values, correlation of cells, core cells and ensembles time course.
-
-        :param answer: Dictionary containing the PCA output data from MATLAB, including
-                        eigen values, principal components, rho and delta values, correlation of cells, 
-                        core cells and ensembles time course.
-        :type answer: dict
-        :return: None
-        :rtype: None
-        """
-        ## Plot the eigs
-        eigs = np.array(answer['exp_var'])
-        plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_eigs')
-        plot_widget.plot_eigs(eigs, answer['seleig'])
-
-        # Plot the PCA
-        pcs = np.array(answer['pcs'])
-        labels = np.array(answer['labels'])
-        labels = labels[0] if len(labels) else None
-        Nens = int(answer['Nens'])
-        ens_cols = plt.cm.tab10(range(Nens * 2))
-        plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_pca')
-        try:
-            plot_widget.plot_pca(pcs, ens_labs=labels, ens_cols = ens_cols)
-        except:
-            pass
-
-        # Plot the rhos vs deltas
-        rho = np.array(answer['rho'])
-        delta = np.array(answer['delta'])
-        cents = np.array(answer['cents'])
-        predbounds = np.array(answer['predbounds'])
-        plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_rhodelta')
-        plot_widget.plot_delta_rho(rho, delta, cents, predbounds, ens_cols)
-        
-        # Plot corr(n,e)
-        try:
-            ens_cel_corr = np.array(answer['ens_cel_corr'])
-            ens_cel_corr_min = np.min(ens_cel_corr)
-            ens_cel_corr_max = np.max(ens_cel_corr)
-            plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_corrne')
-            plot_widget.plot_core_cells(ens_cel_corr, [ens_cel_corr_min, ens_cel_corr_max])
-        except:
-            print("Error plotting the correlation of cells vs ensembles. Check the other plots and console for more info.")
-
-        # Plot core cells
-        core_cells = np.array(answer['core_cells'])
-        plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_corecells')
-        plot_widget.plot_core_cells(core_cells, [-1, 1])
-
-        # Plot core cells
-        try:
-            ens_corr = np.array(answer["ens_corr"])[0]
-            corr_thr = np.array(answer["corr_thr"])
-            plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_innerens')
-            plot_widget.plot_ens_corr(ens_corr, corr_thr, ens_cols)
-        except:
-            print("Error plotting the core cells. Check the other plots and console for more info.")
-
-        # Plot ensembles timecourse
-        plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_timecourse')
-        plot_widget.plot_ensembles_timecourse(np.array(answer["sel_ensmat_out"]))
-
-        plot_widget = self.findChild(MatplotlibWidget, 'pca_plot_cellsinens')
-        plot_widget.plot_ensembles_timecourse(np.array(answer["sel_core_cells"]).T)
-
-    def load_defaults_ica(self):
-        """
-        Loads default ICA parameter values into the UI fields.
-
-        This method retrieves the default parameter values for ICA analysis from `MainWindow.ica_defaults` 
-        and sets the corresponding values in the UI fields. It also updates the console log to 
-        indicate that the default values have been successfully loaded.
-
-        :return: None
-        """
-        defaults = self.ica_defaults
-        self.ica_radio_method_marcenko.setChecked(True)
-        self.ica_edit_perpercentile.setValue(defaults['threshold']['permutations_percentile'])
-        self.ica_edit_percant.setValue(defaults['threshold']['number_of_permutations'])
-        self.ica_radio_method_ica.setChecked(True)
-        self.ica_edit_iterations.setValue(defaults['Patterns']['number_of_iterations'])
-        self.update_console_log("Loaded default ICA parameter values", "complete")
-    def collect_parameters_ica(self):
-        """
-        Retrieves user-defined parameters for ICA from the GUI, applies default values 
-        if fields are empty, and initiates the ICA analysis in parallel. The function also updates the console log 
-        with messages about the current status and resets any previously displayed ICA figures.
-
-        :return: None
-        :rtype: None
-        """
-        # Temporarly disable the button
-        self.btn_run_ica.setEnabled(False)
-        # Prepare data
-        spikes = self.data_neuronal_activity
-
-        # Prepare parameters
-        if self.ica_radio_method_marcenko.isChecked():
-            threshold_method = "MarcenkoPastur"
-        elif self.ica_radio_method_shuffling.isChecked():
-            threshold_method = "binshuffling"
-        elif self.ica_radio_method_shift.isChecked():
-            threshold_method = "circularshift"
-
-        val_per_percentile = self.ica_edit_perpercentile.value()
-        val_per_cant = self.ica_edit_percant.value()
-
-        if self.ica_radio_method_ica.isChecked():
-            patterns_method = "ICA"
-        elif self.ica_radio_method_pca.isChecked():
-            patterns_method = "PCA"
-        val_iteartions = self.ica_edit_iterations.value()
-
-        # Pack parameters
-        pars = {
-            'threshold': {
-                'method': threshold_method,
-                'permutations_percentile': val_per_percentile,
-                'number_of_permutations': val_per_cant
-            },
-            'Patterns': {
-                'method': patterns_method,
-                'number_of_iterations': val_iteartions
-            }
-        }
-        
-        # Validate the parameters
-        pars_validated = parameters_validators.validate_params(pars, self.ica_defaults)
-
-        # Fill the GUI fields with the validated data
-        self.ica_edit_perpercentile.setValue(pars_validated['threshold']['permutations_percentile'])
-        self.ica_edit_percant.setValue(pars_validated['threshold']['number_of_permutations'])
-        self.ica_edit_iterations.setValue(pars_validated['Patterns']['number_of_iterations'])
-        
-        self.params['ica'] = pars_validated
-
-        # Clean all the figures in case there was something previously
-        if 'ica' in self.results:
-            del self.results['ica']
-        algorithm_figs = ["ica_plot_assemblys", "ica_plot_activity", "ica_plot_binary_patterns", "ica_plot_binary_assemblies"] 
-        for fig_name in algorithm_figs:
-            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
-
-        self.update_console_log("Performing ICA...")
-        self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_ica = WorkerRunnable(self.run_ica_handler, spikes, pars_validated)
-        worker_ica.signals.result_ready.connect(self.run_ica_handler_end)
-        worker_ica.signals.log.connect(self.update_console_log)
-        self.threadpool.start(worker_ica)
-    def run_ica_handler(self, spikes, pars_validated, log_signal = None):
-        """
-        Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data in parallel. 
-        This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
-
-        :param spikes: Matrix of neural activity data to be processed.
-        :type spikes: matlab.double
-        :param pars_matlab: MATLAB structure of parameters for the ICA algorithm.
-        :type pars_matlab: dict
-        :return: List of times taken for MATLAB engine setup, ICA execution, and plotting.
-        :rtype: list[float]
-        """
-        log_flag = "ICA:"
-        relative_folder_path = 'analysis/Cell-Assembly-Detection'
-        result = runners.encore.run_ica(spikes, pars_validated, relative_folder_path, log_function=log_signal)
-        plot_times = 0
-        num_ensembles = 0
-        if result["success"]:
-            # Check if the analysis found any ensemble
-            if result['results']['ensembles_cant'] > 0:
-                num_ensembles = result['results']['ensembles_cant']
-                
-                log_signal.emit(f"{log_flag} Plotting and saving results...", "log")
-                start_time = time.time()
-                # Save results
-                self.algorithm_results['ica'] = result["original_answer"]
-                self.results['ica'] = result["results"]
-                # Plotting results
-                self.plot_ICA_results(result["answer"])
-                # Update the GUI
-                self.we_have_results()
-                end_time = time.time()
-                plot_times = end_time - start_time
-                
-                log_signal.emit(f"{log_flag} Done plotting and saving.", "complete")
-            else:
-                log_signal.emit(f"{log_flag} Plotting results...", "log")
-                start_time = time.time()
-                self.plot_ICA_results(result["answer"])
-                end_time = time.time()
-                plot_times = end_time - start_time
-                log_signal.emit(f"{log_flag} Done plotting.", "complete")
-            
-        return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
-    def run_ica_handler_end(self, times):
-        """
-        Runs when the ICA execution process finishes, logging timing information for each stage of the computation, 
-        and re-enables the ICA run button.
-
-        :param times: List containing the time taken for MATLAB engine loading, algorithm execution, 
-                    and plotting in seconds.
-        :type times: list[float]
-        :return: None
-        :rtype: None
-        """
-        self.update_console_log("Done executing the ICA algorithm", "complete") 
-        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
-        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
-        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
-        if times[3] > 0:
-            self.update_console_log(f"The ICA analysis found {times[3]} ensembles", "complete")
-        else:
-            self.update_console_log(f"The ICA analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
-        self.btn_run_ica.setEnabled(True)
-    def plot_ICA_results(self, answer):
-        """
-        Plots the results of the ICA algorithm, including assembly templates, time projections, 
-        binary assembly templates, core cells and binary assemblies.
-
-        :param answer: Dictionary containing the ICA output data from MATLAB, including
-                        assembly templates, time projections, binary assembly templates, 
-                        and binary assemblies.
-        :type answer: dict
-        :return: None
-        :rtype: None
-        """
-        # Plot the assembly templates
-        plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_assemblys')
-        plot_widget.set_subplots(answer['assembly_templates'].shape[0], 1)
-        total_assemblies = answer['assembly_templates'].shape[0]
-        for e_idx, ens in enumerate(answer['assembly_templates']):
-            plot_xaxis = e_idx == total_assemblies-1
-            plot_widget.plot_assembly_patterns(ens, e_idx, title=f"Ensemble {e_idx+1}", plot_xaxis=plot_xaxis)
-
-        # Plot the time projection
-        plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_activity')
-        plot_widget.plot_cell_assemblies_activity(answer['time_projection'])
-
-        # Plot binary assembly templates
-        plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_patterns')
-        plot_widget.plot_ensembles_timecourse(answer['binary_assembly_templates'], xlabel="Cell")
-
-        plot_widget = self.findChild(MatplotlibWidget, 'ica_plot_binary_assemblies')
-        plot_widget.plot_ensembles_timecourse(answer['binary_time_projection'], xlabel="Timepoint")
-
-    def load_defaults_x2p(self):
-        """
-        Loads default Xsembles2P parameter values into the UI fields.
-
-        This method retrieves the default parameter values for Xsembles2P analysis from `MainWindow.x2p_defaults` 
-        and sets the corresponding values in the UI fields. It also updates the console log to 
-        indicate that the default values have been successfully loaded.
-
-        :return: None
-        """
-        defaults = self.x2p_defaults
-        self.x2p_edit_bin.setValue(defaults['NetworkBin'])
-        self.x2p_edit_iterations.setValue(defaults['NetworkIterations'])
-        self.x2p_edit_significance.setValue(defaults['NetworkSignificance'])
-        self.x2p_edit_threshold.setValue(defaults['CoactiveNeuronsThreshold'])
-        self.x2p_edit_rangestart.setValue(defaults['ClusteringRangeStart'])
-        self.x2p_edit_rangeend.setValue(defaults['ClusteringRangeEnd'])
-        self.x2p_edit_fixed.setValue(defaults['ClusteringFixed'])
-        self.x2p_edit_itensemble.setValue(defaults['EnsembleIterations'])
-        self.x2p_check_parallel.setChecked(defaults['ParallelProcessing'])
-        self.update_console_log("Loaded default Xsembles2P parameter values", "complete")
-    def collect_parameters_x2p(self):
-        """
-        Retrieves user-defined parameters for Xsembles2P from the GUI, applies default values 
-        if fields are empty, and initiates the X2P analysis in parallel. The function also updates the console log 
-        with messages about the current status and resets any previously displayed X2P figures.
-
-        :return: None
-        :rtype: None
-        """
-        # Temporarly disable the button
-        self.btn_run_x2p.setEnabled(False)
-        # Prepare data
-        raster = self.data_neuronal_activity
-        
-        # Prepare parameters
-        val_network_bin = self.x2p_edit_bin.value()
-        val_network_iterations = self.x2p_edit_iterations.value()
-        val_network_significance = self.x2p_edit_significance.value()
-        val_coactive_neurons_threshold = self.x2p_edit_threshold.value()
-        val_clustering_range_start = self.x2p_edit_rangestart.value()
-        val_clustering_range_end = self.x2p_edit_rangeend.value()
-        val_clustering_fixed = self.x2p_edit_fixed.value()
-        val_iterations_ensemble = self.x2p_edit_itensemble.value()
-        parallel = self.x2p_check_parallel.isChecked()
-
-        # Pack parameters
-        pars = {
-            'NetworkBin': val_network_bin,
-            'NetworkIterations': val_network_iterations,
-            'NetworkSignificance': val_network_significance,
-            'CoactiveNeuronsThreshold': val_coactive_neurons_threshold,
-            'ClusteringRangeStart': val_clustering_range_start,
-            'ClusteringRangeEnd': val_clustering_range_end,
-            'ClusteringFixed': val_clustering_fixed,
-            'EnsembleIterations': val_iterations_ensemble,
-            'ParallelProcessing': parallel,
-            'FileLog': ''
-        }
-        
-        # Validate the parameters
-        pars_validated = parameters_validators.validate_params(pars, self.x2p_defaults)
-        
-        # Fill the GUI spaces using the validated data, in case there are changes
-        self.x2p_edit_bin.setValue(pars_validated['NetworkBin'])
-        self.x2p_edit_iterations.setValue(pars_validated['NetworkIterations'])
-        self.x2p_edit_significance.setValue(pars_validated['NetworkSignificance'])
-        self.x2p_edit_threshold.setValue(pars_validated['CoactiveNeuronsThreshold'])
-        self.x2p_edit_rangestart.setValue(pars_validated['ClusteringRangeStart'])
-        self.x2p_edit_rangeend.setValue(pars_validated['ClusteringRangeEnd'])
-        self.x2p_edit_fixed.setValue(pars_validated['ClusteringFixed'])
-        self.x2p_edit_itensemble.setValue(pars_validated['EnsembleIterations'])
-        
-        self.params['x2p'] = pars_validated
-        
-        # Clean all the figures in case there was something previously
-        if 'x2p' in self.results:
-            del self.results['x2p']
-        algorithm_figs = ["x2p_plot_similarity", "x2p_plot_epi", "x2p_plot_onsemact", "x2p_plot_offsemact", "x2p_plot_activity", "x2p_plot_onsemneu", "x2p_plot_offsemneu"] 
-        for fig_name in algorithm_figs:
-            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
-
-        self.update_console_log("Performing Xsembles2P...")
-        self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_x2p = WorkerRunnable(self.run_x2p_handler, raster, pars_validated)
-        worker_x2p.signals.result_ready.connect(self.run_x2p_handler_end)
-        worker_x2p.signals.log.connect(self.update_console_log)
-        self.threadpool.start(worker_x2p)
-    def run_x2p_handler(self, raster, pars_validated, log_signal = None):
-        """
-        Initializes and runs the MATLAB engine to execute the X2P algorithm on neural activity data in parallel. 
-        This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
-
-        :param raster: Matrix of neural activity data to be processed.
-        :type raster: matlab.double
-        :param pars_matlab: MATLAB structure of parameters for the X2P algorithm.
-        :type pars_matlab: dict
-        :return: List of times taken for MATLAB engine setup, X2P execution, and plotting.
-        :rtype: list[float]
-        """
-        log_flag = "X2P:"
-        relative_folder_path = 'analysis/Xsembles2P'
-        result = runners.encore.run_x2p(raster, pars_validated, relative_folder_path, log_function=log_signal)
-        plot_times = 0
-        num_ensembles = 0
-        if result["success"]:
-            # Check if the analysis found any ensemble
-            if result['results']['ensembles_cant'] > 0:
-                num_ensembles = result['results']['ensembles_cant']
-                
-                log_signal.emit(f"{log_flag} Plotting and saving results...", "log")
-                start_time = time.time()
-                # Save results
-                self.algorithm_results['x2p'] = result["answer"]
-                self.results['x2p'] = result["results"]
-                # Plotting results
-                self.plot_x2p_results(result["answer"])
-                # Update the GUI
-                self.we_have_results()
-                end_time = time.time()
-                plot_times = end_time - start_time
-            
-                log_signal.emit(f"{log_flag} Done plotting and saving...", "complete")
-            else:
-                log_signal.emit(f"{log_flag} Plotting results...", "log")
-                start_time = time.time()
-                self.plot_x2p_results(result["answer"])
-                end_time = time.time()
-                plot_times = end_time - start_time
-                log_signal.emit(f"{log_flag} Done plotting...", "complete")
-            
-        return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
-    def run_x2p_handler_end(self, times):
-        """
-        Runs when the X2P execution process finishes, logging timing information for each stage of the computation, 
-        and re-enables the X2P run button.
-
-        :param times: List containing the time taken for MATLAB engine loading, algorithm execution, 
-                    and plotting in seconds.
-        :type times: list[float]
-        :return: None
-        :rtype: None
-        """
-        self.update_console_log("Done executing the Xsembles2P algorithm", "complete") 
-        self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
-        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
-        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
-        if times[3] > 0:
-            self.update_console_log(f"The X2P analysis found {times[3]} ensembles", "complete")
-        else:
-            self.update_console_log(f"The X2P analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
-        self.btn_run_x2p.setEnabled(True)
-    def plot_x2p_results(self, answer):
-        """
-        Plots the results of the X2P algorithm, including similarity map, EPI, 
-        onsemble activity, offsemble activity, activity, onsembles neurons and offsemble neurons.
-
-        :param answer: Dictionary containing the X2P output data from MATLAB, including similaty map,
-                        EPI, onsemble activity, offsemble activity, activity, onnsembles neurons
-                        and offsemble neurons.
-        :type answer: dict
-        :return: None
-        :rtype: None
-        """
-        # Similarity map
-        dataset = answer['similarity']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_similarity')
-        plot_widget.preview_dataset(dataset, xlabel="Vector #", ylabel="Vector #", cmap='jet', aspect='equal')
-        # EPI
-        dataset = answer['EPI']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_epi')
-        plot_widget.preview_dataset(dataset, xlabel="Neuron", ylabel="Ensemble", cmap='jet')
-        # Onsemble activity
-        dataset = answer['OnsembleActivity']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_onsemact')
-        plot_widget.preview_dataset(dataset, xlabel="Timepoint", ylabel="Ensemble", cmap='jet')
-        # Offsemble activity
-        dataset = answer['OffsembleActivity']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_offsemact')
-        plot_widget.preview_dataset(dataset, xlabel="Timepoint", ylabel="Ensemble", cmap='jet')
-        # Activity
-        dataset = answer['Activity']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_activity')
-        plot_widget.plot_ensembles_timecourse(dataset)
-        # Onsemble neurons
-        dataset = answer['OnsembleNeurons']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_onsemneu')
-        plot_widget.plot_ensembles_timecourse(dataset, xlabel="Cell")
-        # Offsemble neurons
-        dataset = answer['OffsembleNeurons']
-        plot_widget = self.findChild(MatplotlibWidget, 'x2p_plot_offsemneu')
-        plot_widget.plot_ensembles_timecourse(dataset, xlabel="Cell")
-
-    def load_defaults_sgc(self):
-        """
-        Loads default SGC parameter values into the UI fields.
-
-        This method retrieves the default parameter values for SGC analysis from `MainWindow.sgc_defaults` 
-        and sets the corresponding values in the UI fields. It also updates the console log to 
-        indicate that the default values have been successfully loaded.
-
-        :return: None
-        """
-        defaults = self.sgc_defaults
-        self.sgc_check_firstderiv.setChecked(defaults['use_first_derivative'])
-        self.sgc_edit_stdthreshold.setValue(defaults['standard_deviations_threshold'])
-        self.sgc_edit_shuff.setValue(defaults['shuffling_rounds'])
-        self.sgc_edit_sig.setValue(defaults['coactivity_significance_level'])
-        self.sgc_edit_monterounds.setValue(defaults['montecarlo_rounds'])
-        self.sgc_edit_montesteps.setValue(defaults['montecarlo_steps'])
-        self.sgc_edit_affthres.setValue(defaults['affinity_threshold'])
-        self.update_console_log("Loaded default SGC parameter values", "complete")
-    def collect_parameters_scg(self):
-        """
-        Retrieves user-defined parameters for SGC from the GUI, applies default values 
-        if fields are empty, and initiates the SGC analysis in parallel. The function also updates the console log 
-        with messages about the current status and resets any previously displayed SGC figures.
-
-        :return: None
-        :rtype: None
-        """
-        # Temporarly disable the button
-        self.btn_run_sgc.setEnabled(False)
-        # Prepare data
-        self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
-        dFFo = self.data_dFFo
-        
-        # Prepare parameters
-        use_first_derivative = self.sgc_check_firstderiv.isChecked()
-        val_std_threshold = self.sgc_edit_stdthreshold.value()
-        val_shuffling_rounds = self.sgc_edit_shuff.value()
-        val_coactivity_significance_level = self.sgc_edit_sig.value()
-        val_montecarlo_rounds = self.sgc_edit_monterounds.value()
-        val_montecarlo_steps = self.sgc_edit_montesteps.value()
-        val_affinity_threshold = self.sgc_edit_affthres.value()
-        
-        # Pack parameters
-        pars = {
-            'use_first_derivative': use_first_derivative, 
-            'standard_deviations_threshold': val_std_threshold,
-            'shuffling_rounds': val_shuffling_rounds,
-            'coactivity_significance_level': val_coactivity_significance_level,
-            'montecarlo_rounds': val_montecarlo_rounds,
-            'montecarlo_steps': val_montecarlo_steps,
-            'affinity_threshold': val_affinity_threshold
-        }
-        
-        # Validate the parameters
-        pars_validated = parameters_validators.validate_params(pars, self.sgc_defaults)
-        
-        # Fill the GUI spaces using the validated data, in case there are changes
-        self.sgc_edit_stdthreshold.setValue(pars_validated['standard_deviations_threshold'])
-        self.sgc_edit_shuff.setValue(pars_validated['shuffling_rounds'])
-        self.sgc_edit_sig.setValue(pars_validated['coactivity_significance_level'])
-        self.sgc_edit_monterounds.setValue(pars_validated['montecarlo_rounds'])
-        self.sgc_edit_montesteps.setValue(pars_validated['montecarlo_steps'])
-        self.sgc_edit_affthres.setValue(pars_validated['affinity_threshold'])
-        
-        self.params['sgc'] = pars
-
-        # Clean all the figures in case there was something previously
-        if 'sgc' in self.results:
-            del self.results['sgc']
-        algorithm_figs = ["sgc_plot_timecourse", "sgc_plot_cellsinens"] 
-        for fig_name in algorithm_figs:
-            self.findChild(MatplotlibWidget, fig_name).reset("Loading new plots...")
-
-        self.update_console_log("Performing SGC...")
-        self.update_console_log("Look in the Python console for additional logs.", "warning")
-        worker_sgc = WorkerRunnable(self.run_sgc_handler, dFFo, pars_validated)
-        worker_sgc.signals.result_ready.connect(self.run_sgc_handler_end)
-        worker_sgc.signals.log.connect(self.update_console_log)
-        self.threadpool.start(worker_sgc)
-    def run_sgc_handler(self, dFFo, pars_validated, log_signal=None):
-        """
-        Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data in parallel. 
-        This function also handles MATLAB path setup, updates parameter values in the GUI, and plots the results.
-
-        :param spikes: Matrix of neural activity data to be processed.
-        :type spikes: matlab.double
-        :param dFFo: Matrix of neural flourescence data to be processed
-        :type dFFo: matlab.double
-        :param pars_matlab: MATLAB structure of parameters for the SGC algorithm.
-        :type pars_matlab: dict
-        :return: List of times taken for MATLAB engine setup, SGC execution, and plotting.
-        :rtype: list[float]
-        """
-        log_flag = "SGC:"
-        relative_folder_path = 'analysis/SGC_neural_assembly_detection'
-        
-        result = runners.encore.run_sgc(dFFo, pars_validated, relative_folder_path, log_function=log_signal)
-        plot_times = 0
-        num_ensembles = 0
-        if result["success"]:
-            # Check if the analysis found any ensemble
-            if result['results']['ensembles_cant'] > 0:
-                num_ensembles = result['results']['ensembles_cant']
-                
-                log_signal.emit(f"{log_flag} Plotting and saving results...", "log")
-                start_time = time.time()
-                # Save results
-                self.algorithm_results['sgc'] = result["answer"]
-                self.results['sgc'] = result["results"]
-                # Plotting results
-                self.plot_sgc_results(result["results"])
-                # Update the GUI
-                self.we_have_results()
-                end_time = time.time()
-                plot_times = end_time - start_time
-            
-                log_signal.emit(f"{log_flag} Done plotting and saving...", "complete")
-            else:
-                log_signal.emit(f"{log_flag} Plotting results...", "log")
-                start_time = time.time()
-                self.plot_sgc_results(result["results"])
-                end_time = time.time()
-                plot_times = end_time - start_time
-                log_signal.emit(f"{log_flag} Done plotting...", "complete")
-            
-        return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
-    def run_sgc_handler_end(self, times):
-        """
-        Runs when the SGC execution process finishes, logging timing information for each stage of the computation, 
-        and re-enables the SGC run button.
-
-        :param times: List containing the time taken for MATLAB engine loading, algorithm execution, 
-                    and plotting in seconds.
-        :type times: list[float]
-        :return: None
-        :rtype: None
-        """
-        self.update_console_log("Done executing the SGC algorithm", "complete") 
-        self.update_console_log(f"- Importing the functions took {times[0]:.2f} seconds") 
-        self.update_console_log(f"- Running the algorithm took {times[1]:.2f} seconds") 
-        self.update_console_log(f"- Plotting and saving results took {times[2]:.2f} seconds")
-        if times[3] > 0:
-            self.update_console_log(f"The SGC analysis found {times[3]} ensembles", "complete")
-        else:
-            self.update_console_log(f"The SGC analysis didn't found any ensembles. Try changing the selected parameters.", "warning")
-        self.btn_run_sgc.setEnabled(True)
-    def plot_sgc_results(self, answer):
-        ensembles_timecourse = answer['timecourse']
-        neurons_in_ensembles = answer['neus_in_ens']
-
-        # Plot the cells in ensembles
-        plot_widget = self.findChild(MatplotlibWidget, 'sgc_plot_cellsinens')
-        plot_widget.plot_ensembles_timecourse(neurons_in_ensembles, xlabel="Cell")
-        # Plot the ensmbles activations
-        plot_widget = self.findChild(MatplotlibWidget, 'sgc_plot_timecourse')
-        plot_widget.plot_ensembles_timecourse(ensembles_timecourse, xlabel="Timepoint")
-
 
     def we_have_results(self):
         """
@@ -2497,12 +1330,12 @@ class MainWindow(QMainWindow):
         :rtype: None
         """
         for analysis_name in self.results.keys():
-            ensvis_button_name = f'ensvis_btn_{analysis_name}_2'
+            ensvis_button_name = f'ensvis_btn_{analysis_name}'
             ensvis_button = self.findChild(QWidget, ensvis_button_name)
             if ensvis_button:
                 ensvis_button.setEnabled(True)
             
-            performance_check_name = f'performance_check_{analysis_name}_2'
+            performance_check_name = f'performance_check_{analysis_name}'
             performance_check = self.findChild(QWidget, performance_check_name)
             if performance_check:
                 performance_check.setEnabled(True)
@@ -2528,24 +1361,25 @@ class MainWindow(QMainWindow):
         :param index: Index of the tab opened by the user.
         :type index: int
         """
+        current_tab_name = self.ensvis_tabs.tabText(index)
         if self.tempvars['ensvis_shown_results']:
-            if index == 0:  # General
+            if current_tab_name == 'General':
                 pass
-            elif index == 1:    # Spatial distributions
+            elif current_tab_name == 'All the spatial distributions':
                 if hasattr(self, "data_coordinates"):
                     if not self.tempvars['ensvis_shown_tab1']:
                         self.tempvars['ensvis_shown_tab1'] = True
                         self.update_ensvis_allcoords()
-            elif index == 2:    # Binary activations
+            elif current_tab_name == 'All the binary activations':
                 if not self.tempvars['ensvis_shown_tab2']:
                     self.tempvars['ensvis_shown_tab2'] = True
                     self.update_ensvis_allbinary()
-            elif index == 3:    # dFFo
+            elif current_tab_name == 'All the dFFo':
                 if hasattr(self, "data_dFFo"):
                     if not self.tempvars['ensvis_shown_tab3']:
                         self.tempvars['ensvis_shown_tab3'] = True
                         self.update_ensvis_alldFFo()
-            elif index == 4:    # Ensemble activations
+            elif current_tab_name == 'All the ensembles activations':
                 if not self.tempvars['ensvis_shown_tab4']:
                     self.tempvars['ensvis_shown_tab4'] = True
                     self.update_ensvis_allens()
@@ -2559,57 +1393,6 @@ class MainWindow(QMainWindow):
         Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
         """
         self.ensemble_currently_shown = algorithm_cfg['short_name']
-        self.update_analysis_results()
-
-    def vis_ensembles_svd(self, algorithm_cfg:dict):
-        """
-        Loads the results of the SVD into the ensembles visualizer.
-
-        This is done this way to use only one function to update the ensembles visualizer.
-        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
-        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
-        """
-        self.ensemble_currently_shown = "svd"
-        self.update_analysis_results()
-    def vis_ensembles_pca(self):
-        """
-        Loads the results of the PCA into the ensembles visualizer.
-
-        This is done this way to use only one function to update the ensembles visualizer.
-        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
-        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
-        """
-        self.ensemble_currently_shown = "pca"
-        self.update_analysis_results()
-    def vis_ensembles_ica(self):
-        """
-        Loads the results of the ICA into the ensembles visualizer.
-
-        This is done this way to use only one function to update the ensembles visualizer.
-        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
-        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
-        """
-        self.ensemble_currently_shown = "ica"
-        self.update_analysis_results()
-    def vis_ensembles_x2p(self):
-        """
-        Loads the results of the X2P into the ensembles visualizer.
-
-        This is done this way to use only one function to update the ensembles visualizer.
-        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
-        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
-        """
-        self.ensemble_currently_shown = "x2p"
-        self.update_analysis_results()
-    def vis_ensembles_sgc(self):
-        """
-        Loads the results of the SGC into the ensembles visualizer.
-
-        This is done this way to use only one function to update the ensembles visualizer.
-        The variable :attr:`MainWindow.ensemble_currently_shown` is used to set the algorithm to show.
-        Then the global funtion :meth:`MainWindow.update_analysis_results` is executed.
-        """
-        self.ensemble_currently_shown = "sgc"
         self.update_analysis_results()
 
     def update_analysis_results(self):
@@ -2833,12 +1616,12 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
-        ens_selector_name = f"enscomp_spinbox_{algorithm}_2"
+        ens_selector_name = f"enscomp_spinbox_{algorithm}"
         ens_selector = self.findChild(QWidget, ens_selector_name)
         if not ens_selector:
             raise RuntimeError(f"The ensemble selector for {algorithm} is missing")
         
-        selector_label_max_name = f"enscomp_spinbox_lbl_max_{algorithm}_2"
+        selector_label_max_name = f"enscomp_spinbox_lbl_max_{algorithm}"
         selector_label_max = self.findChild(QWidget, selector_label_max_name)
         if not selector_label_max:
             raise RuntimeError(f"The ensemble selector label for {algorithm} is missing")
@@ -2955,13 +1738,13 @@ class MainWindow(QMainWindow):
             "behavior": self.enscomp_spinbox_behavior
         }
         for algorithm_key in self.algorithms_config.keys():
-            enscomp_spinbox_name = f"enscomp_spinbox_{algorithm_key}_2"
+            enscomp_spinbox_name = f"enscomp_spinbox_{algorithm_key}"
             enscomp_spinbox = self.findChild(QWidget, enscomp_spinbox_name)
             if enscomp_spinbox:
                 ens_selector[algorithm_key] = enscomp_spinbox
                 
                 # Update the color of the ensemble
-                color_flag_name = f"enscomp_colorflag_{algorithm_key}_2"
+                color_flag_name = f"enscomp_colorflag_{algorithm_key}"
                 color_flag = self.findChild(QWidget, color_flag_name)
                 if color_flag:
                     color_flag.setStyleSheet(f"background-color: {self.enscomp_visopts[algorithm_key]['color']};")
@@ -2970,18 +1753,21 @@ class MainWindow(QMainWindow):
             if spinbox.isEnabled():
                 ens_idx = spinbox.value()
                 if key == 'stims':
-                    ensembles_to_compare[key] = {}
-                    ensembles_to_compare[key]["ens_idx"] = ens_idx-1
-                    ensembles_to_compare[key]["timecourse"] = self.data_stims[ens_idx-1,:].copy()
+                    if hasattr(self, "data_stims"):
+                        ensembles_to_compare[key] = {}
+                        ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                        ensembles_to_compare[key]["timecourse"] = self.data_stims[ens_idx-1,:].copy()
                 elif key == "behavior":
-                    ensembles_to_compare[key] = {}
-                    ensembles_to_compare[key]["ens_idx"] = ens_idx-1
-                    ensembles_to_compare[key]["timecourse"] = self.data_behavior[ens_idx-1,:].copy()
+                    if hasattr(self, "data_behavior"):
+                        ensembles_to_compare[key] = {}
+                        ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                        ensembles_to_compare[key]["timecourse"] = self.data_behavior[ens_idx-1,:].copy()
                 else:
-                    ensembles_to_compare[key] = {}
-                    ensembles_to_compare[key]["ens_idx"] = ens_idx-1
-                    ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
-                    ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
+                    if key in self.results:
+                        ensembles_to_compare[key] = {}
+                        ensembles_to_compare[key]["ens_idx"] = ens_idx-1
+                        ensembles_to_compare[key]["neus_in_ens"] = self.results[key]['neus_in_ens'][ens_idx-1,:].copy()
+                        ensembles_to_compare[key]["timecourse"] = self.results[key]['timecourse'][ens_idx-1,:].copy()
         
         # Update the labels indicator
         if ens_selector['stims'].isEnabled():
@@ -3433,7 +2219,7 @@ class MainWindow(QMainWindow):
         """
         methods_to_compare = []
         for algorithm_key in self.algorithms_config.keys():
-            check_name = f"performance_check_{algorithm_key}_2"
+            check_name = f"performance_check_{algorithm_key}"
             check = self.findChild(QWidget, check_name)
             if check:
                 if check.isChecked():
@@ -3441,7 +2227,7 @@ class MainWindow(QMainWindow):
 
         self.tempvars['methods_to_compare'] = methods_to_compare
         self.tempvars['cant_methods_compare'] = len(methods_to_compare)
-        compare_button = self.findChild(QWidget, 'performance_btn_compare_2')
+        compare_button = self.findChild(QWidget, 'performance_btn_compare')
         if compare_button:
             if self.tempvars['cant_methods_compare'] > 0:
                 compare_button.setEnabled(True)
@@ -3484,6 +2270,7 @@ class MainWindow(QMainWindow):
         """
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrstims')
         worker_corrstim = WorkerRunnable(self.update_corr_stim_parallel, plot_widget)
+        worker_corrstim.signals.log.connect(self.update_console_log)
         self.threadpool.start(worker_corrstim) 
     def update_corr_stim_parallel(self, plot_widget, logger=None):
         """
@@ -3499,7 +2286,7 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
-
+        logger("Plotting correlations with stimuli...", "log")
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         # Calculate correlation with stimuli
@@ -3513,7 +2300,8 @@ class MainWindow(QMainWindow):
             if np.isscalar(correlation):
                     correlation = np.array([[correlation]])
             encore_plots.plot_perf_correlations_ens_group(plot_widget, correlation, m_idx, title=f"{method}".upper(), xlabel="Stims", group_labels=stim_labels)            
-
+        logger("Done plotting correlations with stimuli.", "complete")
+        
     def update_correlation_cells(self):
         """
         Updates the plot of correlation between the activations of the neurons 
@@ -3528,6 +2316,7 @@ class MainWindow(QMainWindow):
         """
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrcells')
         worker_corrcells = WorkerRunnable(self.update_correlation_cells_parallel, plot_widget)
+        worker_corrcells.signals.log.connect(self.update_console_log)
         self.threadpool.start(worker_corrcells) 
     def update_correlation_cells_parallel(self, plot_widget, logger=None):
         """
@@ -3543,6 +2332,7 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
+        logger("Plotting correlations between cells...", "log")
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         # Plot the correlation of cells between themselves
@@ -3569,6 +2359,7 @@ class MainWindow(QMainWindow):
                 if np.isscalar(correlation):
                     correlation = np.array([[correlation]])
                 encore_plots.plot_perf_correlations_cells(plot_widget, correlation, cells_names, col_idx, row_idx, title=f"Cells in ensemble {row_idx+1} - Method " + f"{method}".upper())
+        logger("Done plotting correlations between cells.", "complete")
 
     def update_cross_ens_stim(self):
         """
@@ -3583,7 +2374,7 @@ class MainWindow(QMainWindow):
         """
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensstim')
         worker_crosstim = WorkerRunnable(self.update_cross_ens_stim_parallel, plot_widget)
-        #worker_crosstim.signals.result_ready.connect(self.update_cross_ens_stim_end)
+        worker_crosstim.signals.log.connect(self.update_console_log)
         self.threadpool.start(worker_crosstim) 
     def update_cross_ens_stim_parallel(self, plot_widget, logger=None):
         """
@@ -3598,7 +2389,8 @@ class MainWindow(QMainWindow):
         :type plot_widget: MatplotlibWidget
         :return: None
         :rtype: None
-        """ 
+        """
+        logger("Plotting cross correlation with stimuli...", "log")
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
@@ -3617,6 +2409,7 @@ class MainWindow(QMainWindow):
                     cross_corrs.append(cross_corr)
                 cross_corrs = np.array(cross_corrs)
                 encore_plots.plot_perf_cross_ens_stims(plot_widget, cross_corrs, lags, m_idx, ens_idx, group_prefix="Stim", title=f"Cross correlation Ensemble {ens_idx+1} and stimuli - Method " + f"{method}".upper(), group_labels=stim_labels)          
+        logger("Done plotting cross correlation with stimuli.", "complete")
 
     def update_corr_behavior(self):
         """
@@ -3631,7 +2424,7 @@ class MainWindow(QMainWindow):
         """
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_corrbehavior')
         worker_corrbeha = WorkerRunnable(self.update_corr_behavior_parallel, plot_widget)
-        #worker_corrbeha.signals.result_ready.connect(self.update_cross_ens_stim_end)
+        worker_corrbeha.signals.log.connect(self.update_console_log)
         self.threadpool.start(worker_corrbeha) 
     def update_corr_behavior_parallel(self, plot_widget, logger=None):
         """
@@ -3647,6 +2440,7 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
+        logger("Plotting correlation with behavior...", "log")
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         # Calculate correlation with stimuli 
@@ -3660,6 +2454,7 @@ class MainWindow(QMainWindow):
             if np.isscalar(correlation):
                 correlation = np.array([[correlation]])
             encore_plots.plot_perf_correlations_ens_group(plot_widget, correlation, m_idx, title=f"{method}".upper(), xlabel="Behavior", group_labels=behavior_labels)
+        logger("Done plotting correlation with behavior.", "complete")
 
     def update_cross_behavior(self):
         """
@@ -3674,7 +2469,7 @@ class MainWindow(QMainWindow):
         """
         plot_widget = self.findChild(MatplotlibWidget, 'performance_plot_crossensbehavior')
         worker_crossbeha = WorkerRunnable(self.update_cross_behavior_parallel, plot_widget)
-        #worker_crossbeha.signals.result_ready.connect(self.update_cross_ens_stim_end)
+        worker_crossbeha.signals.log.connect(self.update_console_log)
         self.threadpool.start(worker_crossbeha)
     def update_cross_behavior_parallel(self, plot_widget, logger=None):
         """
@@ -3690,6 +2485,7 @@ class MainWindow(QMainWindow):
         :return: None
         :rtype: None
         """
+        logger("Plotting cross correlation with behavior...", "log")
         methods_to_compare = self.tempvars['methods_to_compare']
         cant_methods_compare = self.tempvars['cant_methods_compare']
         plot_colums = 2 if cant_methods_compare == 1 else cant_methods_compare
@@ -3708,6 +2504,7 @@ class MainWindow(QMainWindow):
                     cross_corrs.append(cross_corr)
                 cross_corrs = np.array(cross_corrs)
                 encore_plots.plot_perf_cross_ens_stims(plot_widget, cross_corrs, lags, m_idx, ens_idx, group_prefix="Beha", title=f"Cross correlation Ensemble {ens_idx+1} and behavior - Method " + f"{method}".upper(), group_labels=behavior_labels)
+        logger("Done plotting cross correlation with behavior.", "complete")
 
     def get_data_to_save(self):
         """
@@ -3738,7 +2535,7 @@ class MainWindow(QMainWindow):
         data["ENCORE"] = {}
         data["ENCORE"]["info"] = self.ensgui_desc
         if self.save_check_input.isChecked() and self.save_check_input.isEnabled():
-            print("GUI Save: Getting input data...")
+            self.update_console_log(" - Saving: Getting input data...")
             data["ENCORE"]['input_data'] = {}
             if hasattr(self, "data_dFFo"):
                 data["ENCORE"]['input_data']["dFFo"] = self.data_dFFo
@@ -3753,16 +2550,16 @@ class MainWindow(QMainWindow):
             if hasattr(self, "data_behavior"):
                 data["ENCORE"]['input_data']["behavior"] = self.data_behavior
         if self.save_check_minimal.isChecked() and self.save_check_minimal.isEnabled():
-            print("GUI Save: Getting minimal results...")
+            self.update_console_log(" - Saving: Getting minimal results...")
             data["ENCORE"]['results'] = self.results
         if self.save_check_params.isChecked() and self.save_check_params.isEnabled():
-            print("GUI Save: Getting analysis parameters...")
+            self.update_console_log(" - Saving: Getting analysis parameters...")
             data["ENCORE"]["parameters"] = self.params
         if self.save_check_full.isChecked() and self.save_check_full.isEnabled():
-            print("GUI Save: Getting algorithms full results...")
+            self.update_console_log(" - Saving: Getting algorithms full results...")
             data["ENCORE"]['algorithms_results'] = self.algorithm_results
         if self.save_check_enscomp.isChecked() and self.save_check_enscomp.isEnabled():
-            print("GUI Save: Getting ensembles compare...")
+            self.update_console_log(" - Saving: Getting ensembles compare...")
             data["ENCORE"]["ensembles_compare"] = {}
             for criteria in ["neus_in_ens", "timecourse"]:
                 data["ENCORE"]["ensembles_compare"][criteria] = {}
@@ -3772,7 +2569,7 @@ class MainWindow(QMainWindow):
                     data["ENCORE"]["ensembles_compare"][criteria][method] = similarity_matrix
             data["ENCORE"]["ensembles_compare"]["labels"] = labels
         if self.save_check_perf.isChecked() and self.save_check_perf.isEnabled():
-            print("GUI Save: Getting ensembles performance...")
+            self.update_console_log(" - Saving: Getting ensembles performance...")
             data["ENCORE"]["ensembles_performance"] = {}
 
             data["ENCORE"]["ensembles_performance"]["correlation_cells"] = {}
@@ -3912,7 +2709,7 @@ class MainWindow(QMainWindow):
             or the file cannot be written to.
         """
         data_to_save = self.get_data_to_save()
-        proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
+        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save PKL Results File", proposed_name, "Pickle Files (*.pkl);;All files(*)")
         if file_path:
             try:
@@ -3943,7 +2740,7 @@ class MainWindow(QMainWindow):
         """
         
         data_to_save = self.get_data_to_save()
-        proposed_name = f"EnsGUI_{data_to_save['EnsemblesGUI']['date']}_"
+        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save MATLAB Results File", proposed_name, "MATLAB Files (*.mat);;All files(*)")
         if file_path:
             try:
@@ -3988,7 +2785,7 @@ class MainWindow(QMainWindow):
             buttons_layout = QHBoxLayout(buttons_container)
             buttons_layout.setObjectName('ensvis_algorithm_buttons_box_layout')
             for algorithm_key, algorithm_cfg in runners.items():
-                button_name = f'ensvis_btn_{algorithm_key}_2'
+                button_name = f'ensvis_btn_{algorithm_key}'
                 button = QPushButton(algorithm_key.upper())
                 button.setObjectName(button_name)
                 button.clicked.connect(
@@ -4003,7 +2800,7 @@ class MainWindow(QMainWindow):
             checks_layout = QHBoxLayout(checks_container)
             checks_layout.setObjectName('performance_checks_box_layout')
             for algorithm_key, algorithm_cfg in runners.items():
-                check_name = f'performance_check_{algorithm_key}_2'
+                check_name = f'performance_check_{algorithm_key}'
                 check = QCheckBox(algorithm_key.upper())
                 check.setObjectName(check_name)
                 check.setEnabled(False)
@@ -4011,7 +2808,7 @@ class MainWindow(QMainWindow):
                 checks_layout.addWidget(check)
         
             button = QPushButton("Compare")
-            button.setObjectName('performance_btn_compare_2')
+            button.setObjectName('performance_btn_compare')
             button.clicked.connect(self.performance_compare)
             button.setEnabled(False)
             checks_layout.addWidget(button)
@@ -4048,7 +2845,7 @@ class MainWindow(QMainWindow):
                 
                 # Spinbox to select the ensemble
                 spinbox = QSpinBox()
-                spinbox.setObjectName(f"enscomp_spinbox_{algorithm_key}_2")
+                spinbox.setObjectName(f"enscomp_spinbox_{algorithm_key}")
                 spinbox.setEnabled(False)
                 spinbox.valueChanged.connect(self.ensembles_compare_update_ensembles)
                 container_widget_layout.addWidget(spinbox)
@@ -4061,13 +2858,13 @@ class MainWindow(QMainWindow):
                 
                 # Label for the maximum amount of ensembles to select from
                 label_with_max = QLabel("0")
-                label_with_max.setObjectName(f"enscomp_spinbox_lbl_max_{algorithm_key}_2")
+                label_with_max.setObjectName(f"enscomp_spinbox_lbl_max_{algorithm_key}")
                 label_with_max.setEnabled(False)
                 container_widget_layout.addWidget(label_with_max)
                 
                 # Empty widget to show the color of the current ensemble
                 color_flag = QWidget()
-                color_flag.setObjectName(f"enscomp_colorflag_{algorithm_key}_2")
+                color_flag.setObjectName(f"enscomp_colorflag_{algorithm_key}")
                 color_flag.setMinimumSize(QSize(10, 0))
                 color_flag.setMaximumSize(QSize(10, 16777215))
                 color_flag.setAutoFillBackground(False)
@@ -4075,7 +2872,6 @@ class MainWindow(QMainWindow):
                 
                 enscomp_layout.addWidget(container_widget)
             
-    
     def _create_algorithm_tab(self, algorithm_cfg: dict):
         tab = QWidget()
         main_layout = QHBoxLayout(tab)
@@ -4130,6 +2926,7 @@ class MainWindow(QMainWindow):
                 right_label = QLabel("Loaded")
             else:
                 right_label = QLabel("Nothing selected")
+            right_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             right_label.setObjectName(f"{short_name}_{data_key}_status_label")
 
             input_form.addRow(left_label, right_label)
@@ -4259,9 +3056,8 @@ class MainWindow(QMainWindow):
         """
         Load default values from config into parameter widgets.
         """
-        self.update_console_log("Loaded default values.")
         parameters = algorithm_cfg.get("parameters", {})
-
+        short_name = algorithm_cfg.get("short_name", "Algo").upper()
         for param_cfg in parameters.values():
             obj_name = param_cfg.get("object_name")
             default = param_cfg.get("default_value")
@@ -4272,15 +3068,14 @@ class MainWindow(QMainWindow):
                 default = True
 
             widget = self.findChild(QWidget, obj_name)
-            if widget is None:
-                continue
-
-            if hasattr(widget, "setValue"):
-                widget.setValue(default)
-            elif hasattr(widget, "setChecked"):
-                widget.setChecked(default)
-            elif hasattr(widget, "setText"):
-                widget.setText(str(default))
+            if widget:
+                if hasattr(widget, "setValue"):
+                    widget.setValue(default)
+                elif hasattr(widget, "setChecked"):
+                    widget.setChecked(default)
+                elif hasattr(widget, "setText"):
+                    widget.setText(str(default))
+        self.update_console_log(f"Loaded default values for {short_name}.")
 
     def run_algorithm(self, algorithm_cfg: dict):
         # Deactivate the running button while running 
@@ -4339,7 +3134,6 @@ class MainWindow(QMainWindow):
         
     def plot_algorithm_plots(self, algorithm_cfg: dict, answer: dict):
         function_name = algorithm_cfg.get("plot_function")
-        short_name = algorithm_cfg.get("short_name")
 
         if not function_name:
             raise RuntimeError("No plot_function defined in algorithm config")
@@ -4417,7 +3211,7 @@ class MainWindow(QMainWindow):
                 collected_params[param_name] = default
                 continue
 
-            # Type-aware extraction
+            # Type aware extraction
             try:
                 if param_cfg.get("type", "") == "enum":
                     for btn in widget.button_group.buttons():
@@ -4460,7 +3254,7 @@ class MainWindow(QMainWindow):
                     self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
             else:
                 self.update_console_log(f"The requested data key '{data_key}' has not been loaded", "error")
-                raise RuntimeError("Internal variable assignation error")
+            
         return requested_data
     
     def run_analysis_function(self, algorithm_cfg: dict, params: dict, data: np.ndarray, logger=None):
@@ -4477,7 +3271,8 @@ class MainWindow(QMainWindow):
         short_name = algorithm_cfg.get("short_name")
 
         if not function_name:
-            raise RuntimeError("No analysis_function defined in algorithm config")
+            logger("No analysis_function defined in algorithm config", "error")
+            return [0,0,0,0]
 
         module_path = "runners.encore"
 
@@ -4485,13 +3280,16 @@ class MainWindow(QMainWindow):
         try:
             module = importlib.import_module(module_path)
         except ImportError as exc:
-            raise RuntimeError(f"Analysis module '{module_path}' could not be imported") from exc
+            logger(f"Analysis module '{module_path}' could not be imported", "error")
+            logger(str(exc), "error")
+            return [0,0,0,0]
 
         # Retrieve function
         func = getattr(module, function_name, None)
         if func is None or not callable(func):
-            raise RuntimeError(f"Function '{function_name}' not found or not callable in '{module_path}'")
-
+            logger(f"Function '{function_name}' not found or not callable in '{module_path}'", "error")
+            return [0,0,0,0]
+        
         # Execute
         try:
             result = func(
@@ -4503,9 +3301,8 @@ class MainWindow(QMainWindow):
             )
             if result["success"]:
                 # Check if the analysis found any ensemble
-                if result['results']['ensembles_cant'] > 0:
-                    num_ensembles = result['results']['ensembles_cant']
-
+                num_ensembles = result['results']['ensembles_cant']
+                if num_ensembles > 0:
                     # Update parameters that where calculated
                     parameters_info = algorithm_cfg.get("parameters", {})
                     params_to_update = result.get('update_params', {})
@@ -4521,7 +3318,7 @@ class MainWindow(QMainWindow):
                             gui_object.setText(str(param_value))
 
                     # Plotting results
-                    logger(f"{short_name} Plotting and saving results...", "log")
+                    logger(f"{short_name.upper()} Plotting and saving results...", "log")
                     start_time = time.time()
                     # Save results
                     self.algorithm_results[short_name] = result["answer"]
@@ -4530,29 +3327,41 @@ class MainWindow(QMainWindow):
                     try:
                         self.plot_algorithm_plots(algorithm_cfg, result["answer"])
                     except Exception as exc:
-                        raise RuntimeError(
-                            f"Error while plotting the results of the algorithm for '{function_name}'"
-                        ) from exc
+                        logger(
+                            f"Error while plotting the results of the algorithm for '{function_name}'",
+                            "error"
+                        )
+                        logger(str(exc), "error")
+                        
                     # Update the GUI
                     self.we_have_results()
                     end_time = time.time()
                     plot_times = end_time - start_time
                 
-                    logger(f"{short_name} Done plotting and saving...", "complete")
+                    logger(f"{short_name.upper()} Done plotting and saving...", "complete")
                 else:
-                    logger(f"{short_name} Plotting results...", "log")
+                    logger(f"{short_name.upper()} Plotting results...", "log")
                     start_time = time.time()
-                    self.plot_algorithm_plots(algorithm_cfg, result["answer"])
+                    try:
+                        self.plot_algorithm_plots(algorithm_cfg, result["answer"])
+                    except Exception as exc:
+                        logger(
+                            f"Error while plotting the results of the algorithm for '{function_name}'",
+                            "error"
+                        )
+                        logger(str(exc), "error")
                     end_time = time.time()
                     plot_times = end_time - start_time
-                    logger(f"{short_name} Done plotting...", "complete")
+                    logger(f"{short_name.upper()} Done plotting...", "complete")
                 
             return [result["engine_time"], result["algorithm_time"], plot_times, num_ensembles]
         except Exception as exc:
-            raise RuntimeError(
-                f"Error while executing analysis function '{function_name}'"
-            ) from exc
-
+            logger(
+                f"Error while executing analysis function '{function_name}'",
+                "error"
+            )
+            logger(str(exc), "error")
+            
     def update_user_analysis_requirements(self):
         algorithms_config = self.algorithms_config
         
@@ -4595,5 +3404,4 @@ if __name__ == "__main__":
     app.setWindowIcon(QIcon("gui/ENCORE_logo.png")) 
     window = MainWindow(gui_colors=custom_colors)
     window.show()
-    app.exec()  
-    #sys.exit(app.exec())
+    app.exec()
