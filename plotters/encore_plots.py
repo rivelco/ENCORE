@@ -239,6 +239,8 @@ def plot_delta_rho(plot_widget, rho, delta, cents, predbounds, ens_cols):
     plot_widget.canvas.flush_events()
 
 def plot_core_cells(plot_widget, core_cells, clims):
+    if clims[0] == clims[1]:
+        return
     # Clear the axes
     plot_widget.axes.clear()
     # Determine the size of core_cells
