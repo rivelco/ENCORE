@@ -438,15 +438,31 @@ class MainWindow(QMainWindow):
         """
         Build algorithm tabs dynamically from YAML configuration.
         """
-        # Read the config file             
+        # Read the config file
         config = {}
-        with open("config\encore_runners_config.yaml", 'r') as file:
-            config = yaml.safe_load(file)
+        config_yaml_path = "config\encore_runners_config.yaml"
         
-        # Extract the runners from config
+        if os.path.exists(config_yaml_path):
+            with open(config_yaml_path, 'r') as file:
+                config = yaml.safe_load(file)
+        else:
+            self.update_console_log(f"YAML config file not found in {config_yaml_path}", "error")
+            self.update_console_log(f"No algorithm will be loaded", "error")
+        
+        # Extract the runners from config and keep only the enabled ones
         runners = config.get("encore_runners", {})
+        to_delete = []
+        for runner_key, runner_cfg in runners.items():
+            enabled = runner_cfg.get("enabled", False)
+            if not enabled:
+                to_delete.append(runner_key)
+        for key in to_delete:
+            del runners[key]
+            
+        self.update_console_log(f"{len(runners)} algorithms will be loaded.", "log")
         self.algorithms_config = dict(runners)
         
+        self.update_console_log("Loading algorithms defined in config file...", "log")
         # Create one tab per algorithm
         encore_algorithms_tab = self.findChild(QWidget, 'main_encore_algorithms_tab')
         if encore_algorithms_tab:
@@ -468,6 +484,8 @@ class MainWindow(QMainWindow):
         self._initialize_performance_checks(runners)
         # Initialize selectors in ensembles comparisons
         self._initialize_comparisons_selectors(runners)
+        
+        self.update_console_log("Done loading algorithms.", "complete")
     def _create_algorithm_tab(self, algorithm_cfg: dict):
         tab = QWidget()
         main_layout = QHBoxLayout(tab)

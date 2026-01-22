@@ -1,5 +1,6 @@
 encore_runners:
   svd:
+    enabled: True
     full_name: Singular Value Decomposition
     language: MATLAB
     folder_path: 'analysis/SVD'
@@ -83,6 +84,7 @@ encore_runners:
         display_name: Cells in ensembles
     source: 'For details about this method, see the following chapter: Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal Ensembles from Similarity Maps Using Singular Value Decomposition. In: Carrillo-Reid, L. (eds) Identification, Characterization, and Manipulation of Neuronal Ensembles. Neuromethods, vol 215. Humana, New York, NY. https://doi.org/10.1007/978-1-0716-4208-5_5'
   pca:
+    enabled: True
     full_name: Principal Component Analysis
     language: MATLAB
     folder_path: 'analysis/NeuralEnsembles'
@@ -168,6 +170,7 @@ encore_runners:
       
     source: 'For details about this method, see the following paper: Herzog et al. 2021 "Scalable and accurate automated method for neuronal ensemble detection in spiking neural networks. https://pubmed.ncbi.nlm.nih.gov/34329314/ Rubén Herzog Dec 2021'
   ica:
+    enabled: True
     full_name: Independent Component Analysis
     language: MATLAB
     folder_path: 'analysis/Cell-Assembly-Detection'
@@ -240,6 +243,7 @@ encore_runners:
       
     source: "For details about this method, see the following paper: Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large neuronal populations. J Neurosci Methods 220(2):149-66. 10.1016/j.jneumeth.2013.04.010"
   x2p:
+    enabled: True
     full_name: Xsembles2P
     language: MATLAB
     folder_path: 'analysis/Xsembles2P'
@@ -329,6 +333,7 @@ encore_runners:
       
     source: "For details about this method, see the following paper: Perez-Ortega, J., Akrouh, A. & Yuste, R. 2024. Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x"
   sgc:
+    enabled: True
     full_name: Similarity Graph Clustering
     language: MATLAB
     folder_path: 'analysis/SGC_neural_assembly_detection'
