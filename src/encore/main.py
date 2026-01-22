@@ -3205,6 +3205,10 @@ class MainWindow(QMainWindow):
         logger("Done plotting cross correlation with behavior.", "complete")
 
     ## Saving
+    def update_datetime(self):
+        now = datetime.now()
+        formatted_time = now.strftime("%d%m%y_%H%M%S")
+        self.ensgui_desc["date"] = formatted_time
     def get_data_to_save(self):
         """
         Prepares data for saving based on the selected checkboxes in the GUI.
@@ -3228,9 +3232,6 @@ class MainWindow(QMainWindow):
         """
 
         data = {}
-        now = datetime.now()
-        formatted_time = now.strftime("%d%m%y_%H%M%S")
-        self.ensgui_desc["date"] = formatted_time
         data["ENCORE"] = {}
         data["ENCORE"]["info"] = self.ensgui_desc
         if self.save_check_input.isChecked() and self.save_check_input.isEnabled():
@@ -3344,7 +3345,7 @@ class MainWindow(QMainWindow):
                 try:
                     group.create_dataset(key, data=value)
                 except:
-                    print(f" GUI Saving: Could not save a variable called {key}, maybe it is not a matrix nor scalar.")
+                    print(f" ENCORE Saving: Could not save a variable called {key}, maybe it is not a matrix nor scalar.")
             else:
                 group[key] = value
     def save_results_hdf5(self):
@@ -3361,12 +3362,11 @@ class MainWindow(QMainWindow):
 
         :raises IOError: If the file could not be saved.
         """
-
-        data_to_save = self.get_data_to_save()
-        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
+        self.update_datetime()
+        proposed_name = f"ENCORE_{self.ensgui_desc['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save HDF5 Results File", proposed_name, "HDF5 Files (*.h5);;All files(*)")
         if file_path:
-            from pathlib import Path
+            data_to_save = self.get_data_to_save()
             file_path = Path(file_path)
             if file_path.exists:
                 # Save on place
@@ -3414,10 +3414,12 @@ class MainWindow(QMainWindow):
         :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
             or the file cannot be written to.
         """
-        data_to_save = self.get_data_to_save()
-        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
+        
+        self.update_datetime()
+        proposed_name = f"ENCORE_{self.ensgui_desc['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save NPZ Results File", proposed_name, "Numpy Files (*.npz);;All files(*)")
         if file_path:
+            data_to_save = self.get_data_to_save()
             try:
                 self.update_console_log("Saving results in Numpy NPZ file...")
                 flat = self.flatten_dict(data_to_save)
@@ -3444,10 +3446,12 @@ class MainWindow(QMainWindow):
         :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
             or the file cannot be written to.
         """
-        data_to_save = self.get_data_to_save()
-        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
+        
+        self.update_datetime()
+        proposed_name = f"ENCORE_{self.ensgui_desc['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save PKL Results File", proposed_name, "Pickle Files (*.pkl);;All files(*)")
         if file_path:
+            data_to_save = self.get_data_to_save()
             try:
                 self.update_console_log("Saving results in Python Pickle file...")
                 with open(file_path, 'wb') as pkl_file:
@@ -3473,11 +3477,11 @@ class MainWindow(QMainWindow):
         :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
             or the file cannot be written to.
         """
-        
-        data_to_save = self.get_data_to_save()
-        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
+        self.update_datetime()
+        proposed_name = f"ENCORE_{self.ensgui_desc['date']}_"
         file_path, _ = QFileDialog.getSaveFileName(self, "Save MATLAB Results File", proposed_name, "MATLAB Files (*.mat);;All files(*)")
         if file_path:
+            data_to_save = self.get_data_to_save()
             try:
                 self.update_console_log("Saving results in MATLAB file...")
                 scipy.io.savemat(file_path, data_to_save)
