@@ -607,6 +607,7 @@ class MainWindow(QMainWindow):
         load_defaults_btn.clicked.connect(
             lambda _, cfg=algorithm_cfg: self.load_algorithm_defaults(cfg)
         )
+        load_defaults_btn.setToolTip(f"Click to load the default values for the {short_name.upper()} algorithm.")
         params_layout.addWidget(load_defaults_btn, alignment=Qt.AlignmentFlag.AlignRight)
         analysis_layout.addWidget(params_box)
         analysis_layout.addStretch()
@@ -615,6 +616,7 @@ class MainWindow(QMainWindow):
         run_button = QPushButton("Run analysis")
         run_button.setObjectName(f"{short_name}_run_analysis_button")
         run_button.setEnabled(False)
+        run_button.setToolTip(f"Click to run the {short_name.upper()} algorithm.")
         run_button.clicked.connect(
             lambda _, cfg=algorithm_cfg: self.run_algorithm(cfg)
         )
@@ -750,6 +752,7 @@ class MainWindow(QMainWindow):
                     lambda _, cfg=algorithm_cfg: self.visualize_ensembles(cfg)
                 )
                 button.setEnabled(False)
+                button.setToolTip(f"Click to visualize the ensembles from {algorithm_key.upper()}.")
                 buttons_layout.addWidget(button)
     def _initialize_performance_checks(self, runners: dict):
         # Update check boxes for performance comparison
@@ -762,6 +765,7 @@ class MainWindow(QMainWindow):
                 check = QCheckBox(algorithm_key.upper())
                 check.setObjectName(check_name)
                 check.setEnabled(False)
+                check.setToolTip(f"Check to include the {algorithm_key.upper()} algorithm in the comparison.")
                 check.stateChanged.connect(self.performance_check_change)
                 checks_layout.addWidget(check)
         
@@ -769,6 +773,7 @@ class MainWindow(QMainWindow):
             button.setObjectName('performance_btn_compare')
             button.clicked.connect(self.performance_compare)
             button.setEnabled(False)
+            button.setToolTip("Click to run the comparison between the selected algorithms")
             checks_layout.addWidget(button)
     def _initialize_comparisons_selectors(self, runners: dict):
         # Update the ensembles selectors in ensembles comparison
@@ -805,6 +810,7 @@ class MainWindow(QMainWindow):
                 spinbox = QSpinBox()
                 spinbox.setObjectName(f"enscomp_spinbox_{algorithm_key}")
                 spinbox.setEnabled(False)
+                spinbox.setToolTip(f"Select the ensemble index to visualize from {algorithm_key.upper()}.")
                 spinbox.valueChanged.connect(self.ensembles_compare_update_ensembles)
                 container_widget_layout.addWidget(spinbox)
                 
@@ -818,6 +824,7 @@ class MainWindow(QMainWindow):
                 label_with_max = QLabel("0")
                 label_with_max.setObjectName(f"enscomp_spinbox_lbl_max_{algorithm_key}")
                 label_with_max.setEnabled(False)
+                label_with_max.setToolTip(f"Total amount of ensembles identified by {algorithm_key.upper()}.")
                 container_widget_layout.addWidget(label_with_max)
                 
                 # Empty widget to show the color of the current ensemble
@@ -826,6 +833,7 @@ class MainWindow(QMainWindow):
                 color_flag.setMinimumSize(QSize(10, 0))
                 color_flag.setMaximumSize(QSize(10, 16777215))
                 color_flag.setAutoFillBackground(False)
+                color_flag.setToolTip(f"Color for the elements of the {algorithm_key.upper()} algorithm.")
                 container_widget_layout.addWidget(color_flag)
                 
                 enscomp_layout.addWidget(container_widget)

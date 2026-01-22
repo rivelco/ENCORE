@@ -100,9 +100,6 @@
                 <property name="toolTip">
                  <string>Visualize the current dFFo variable.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>dFFo/FFo</string>
                 </property>
@@ -115,9 +112,6 @@
                 </property>
                 <property name="toolTip">
                  <string>Visualize the current Binary Cell Activity variable.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Binary cell activity</string>
@@ -132,9 +126,6 @@
                 <property name="toolTip">
                  <string>Visualize the current Coordinates variable.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Coordinates</string>
                 </property>
@@ -147,9 +138,6 @@
                 </property>
                 <property name="toolTip">
                  <string>Visualize the current Stimulation variable.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Stimulation</string>
@@ -164,9 +152,6 @@
                 <property name="toolTip">
                  <string>Visualize the current Cells variable.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Cells</string>
                 </property>
@@ -179,9 +164,6 @@
                 </property>
                 <property name="toolTip">
                  <string>Visualize the current Behavior variable.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Behavior</string>
@@ -240,9 +222,6 @@
                  <property name="toolTip">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Bin matrix on the x axis. &lt;/p&gt;&lt;p&gt;Useful for electrical recordings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                  </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
-                 </property>
                  <property name="text">
                   <string>Bin</string>
                  </property>
@@ -266,9 +245,6 @@
                  <property name="toolTip">
                   <string>Trim dataset to use only certain range of your data.
 Use it to remove part of your dataset.</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
                  </property>
                  <property name="text">
                   <string>Trim matrix</string>
@@ -298,9 +274,6 @@ Use it to remove part of your dataset.</string>
                  </property>
                  <property name="toolTip">
                   <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Transpose the dataset currently in the preview. &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:700;&quot;&gt;It actually modifies the stored data.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Use it to match the interpretation of your data.&lt;/p&gt;&lt;p&gt;Use the axes labels as a guide.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                 <property name="toolTipDuration">
-                  <number>5000</number>
                  </property>
                  <property name="text">
                   <string>Transpose dataset</string>
@@ -353,9 +326,6 @@ Use it to remove part of your dataset.</string>
                     <property name="toolTip">
                      <string>This option sums the values of every bin.</string>
                     </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
                     <property name="text">
                      <string>Sum</string>
                     </property>
@@ -371,9 +341,6 @@ Use it to remove part of your dataset.</string>
                     </property>
                     <property name="toolTip">
                      <string>This option uses the mean of each bin.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
                     </property>
                     <property name="text">
                      <string>Mean</string>
@@ -560,9 +527,6 @@ Use it to remove part of your dataset.</string>
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the custom labels.&lt;/p&gt;&lt;p&gt;Verify the index of every element in the table and the name you have provided.&lt;/p&gt;&lt;p&gt;If you don't specify a label then the item index will be used as label.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                     </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
                     <property name="text">
                      <string>Save labels</string>
                     </property>
@@ -572,9 +536,6 @@ Use it to remove part of your dataset.</string>
                    <widget class="QPushButton" name="btn_clear_labels">
                     <property name="toolTip">
                      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all the labels for the current dataset.&lt;/p&gt;&lt;p&gt;After this, every item will be recognized only by its index.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
                     </property>
                     <property name="text">
                      <string>Delete all the labels</string>
@@ -622,10 +583,7 @@ Use it to remove part of your dataset.</string>
               <bool>false</bool>
              </property>
              <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a file to open.&lt;/p&gt;&lt;p&gt;Consider that opening a new file &lt;span style=&quot; font-weight:700;&quot;&gt;do not delete&lt;/span&gt; the current assigned variables.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a file to open.&lt;/p&gt;&lt;p&gt;Consider that opening a new file &lt;span style=&quot; font-weight:700;&quot;&gt;do not delete&lt;/span&gt; the current assigned variables.&lt;/p&gt;&lt;p&gt;However, opening a new file deletes the current results of every algorithm.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="autoFillBackground">
               <bool>true</bool>
@@ -651,9 +609,6 @@ Use it to remove part of your dataset.</string>
             <widget class="QLineEdit" name="browser_var_info">
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Description of the selected variable.&lt;/p&gt;&lt;p&gt;Here you can see if a variable is a scalar or a dataset (matrix).&lt;/p&gt;&lt;p&gt;Depending on the variable description it can be assigned to an environment variable.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
              </property>
              <property name="inputMask">
               <string/>
@@ -710,9 +665,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the behavior matrix.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain a &lt;span style=&quot; font-weight:700;&quot;&gt;collection of behaviors in time.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Every row will be interpreted as a different behavior. &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Behavior</string>
                 </property>
@@ -726,9 +678,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Reoves the coordinates variable</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -741,9 +690,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the coordinates.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;coordinates of the center of every cell&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;Consider that only the first two dimentions would be used.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Coordinates</string>
@@ -773,9 +719,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>Removes the dFFo variable.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -811,9 +754,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the binary activity of every cell.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;binary activation of every cell in time&lt;/span&gt;, like a rasterplot.&lt;/p&gt;&lt;p&gt;This matrix should be binary, only 1's and 0's or True and False values.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Binary cell activity</string>
                 </property>
@@ -842,9 +782,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as a stimulation matrix.&lt;/p&gt;&lt;p&gt;This should be a binary matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;a collection of stimuli in time&lt;/span&gt;.&lt;/p&gt;&lt;p&gt;Every row can be a different stimuli and the presence of this stimulation should be noted with a 1 value.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Stimulation</string>
@@ -895,9 +832,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the dFFo.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain the &lt;span style=&quot; font-weight:700;&quot;&gt;fluorescence of every cell in time&lt;/span&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>dFFo/FFo</string>
@@ -954,9 +888,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Removes the behavior variable.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -985,9 +916,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>Removes the Binary cell activity variable.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -1018,9 +946,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Removes the Stimulation variable.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Clear</string>
                 </property>
@@ -1034,9 +959,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Set the selected variable as the cells matrix.&lt;/p&gt;&lt;p&gt;This should be a matrix that must contain a &lt;span style=&quot; font-weight:700;&quot;&gt;collection of groups of cells&lt;/span&gt;, gouped by any mean.&lt;/p&gt;&lt;p&gt;Every row would be interpreted as a individual group. Every column will represent a different cell. If you want to include the cell &lt;span style=&quot; font-style:italic;&quot;&gt;i&lt;/span&gt; in the group&lt;span style=&quot; font-style:italic;&quot;&gt; j&lt;/span&gt;, then the row &lt;span style=&quot; font-style:italic;&quot;&gt;j &lt;/span&gt;column&lt;span style=&quot; font-style:italic;&quot;&gt; i&lt;/span&gt; should have a value of 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Cells</string>
                 </property>
@@ -1049,9 +971,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>Removes the Cells variable.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -1216,6 +1135,9 @@ Use it to remove part of your dataset.</string>
                   </item>
                   <item>
                    <widget class="QSpinBox" name="envis_slide_selectedens">
+                    <property name="toolTip">
+                     <string>Select the index of the ensemble to visualize.</string>
+                    </property>
                     <property name="keyboardTracking">
                      <bool>false</bool>
                     </property>
@@ -1288,9 +1210,6 @@ Use it to remove part of your dataset.</string>
                     <property name="toolTip">
                      <string>When checked, the map only shows the cells in the current ensemble. When not selected the map show all the recorded cells.</string>
                     </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
                     <property name="text">
                      <string>Show only ensemble cells</string>
                     </property>
@@ -1301,9 +1220,6 @@ Use it to remove part of your dataset.</string>
                     <property name="toolTip">
                      <string>Change to show/hide the index number of every cell (base 0)</string>
                     </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
-                    </property>
                     <property name="text">
                      <string>Show cell number</string>
                     </property>
@@ -1313,9 +1229,6 @@ Use it to remove part of your dataset.</string>
                    <widget class="QCheckBox" name="ensvis_check_onlycont">
                     <property name="toolTip">
                      <string>When selected the neurons are shown as empty circles. When not selected the cells are shown as filled circles.</string>
-                    </property>
-                    <property name="toolTipDuration">
-                     <number>5000</number>
                     </property>
                     <property name="text">
                      <string>Show only contours</string>
@@ -1500,7 +1413,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -1680,10 +1593,7 @@ Use it to remove part of your dataset.</string>
                           </font>
                          </property>
                          <property name="toolTip">
-                          <string>Label of the current stimulus.</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
+                          <string>Label of the current stimulus as defined in the 'Load data' tab.</string>
                          </property>
                          <property name="text">
                           <string>Label</string>
@@ -1836,10 +1746,7 @@ Use it to remove part of your dataset.</string>
                           </font>
                          </property>
                          <property name="toolTip">
-                          <string>Label of the current behavior.</string>
-                         </property>
-                         <property name="toolTipDuration">
-                          <number>5000</number>
+                          <string>Label of the current behavior as defined in the 'Load data' tab.</string>
                          </property>
                          <property name="text">
                           <string>Label</string>
@@ -2022,9 +1929,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Change to show/hide the cell index number (base 0).</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Show cell numbers</string>
                 </property>
@@ -2057,9 +1961,6 @@ Use it to remove part of your dataset.</string>
                    <property name="toolTip">
                     <string>Number in pixels of the diameter of every neuron.</string>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
                    <property name="text">
                     <string>6</string>
                    </property>
@@ -2075,9 +1976,6 @@ Use it to remove part of your dataset.</string>
                    </property>
                    <property name="toolTip">
                     <string>Set the size of the neurons.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
                    </property>
                    <property name="text">
                     <string>Set</string>
@@ -2107,18 +2005,12 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Select the analysis to change its visualization properties.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                </widget>
               </item>
               <item>
                <widget class="QCheckBox" name="enscomp_check_coords">
                 <property name="toolTip">
                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Change to show/hide from the map the cells of the selected ensemble as identified by the selected analysis.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Show coords</string>
@@ -2133,9 +2025,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Change to show/hide the timecourse of the selected ensemble as identified by the selected analysis.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Show ensemble timecourse</string>
                 </property>
@@ -2149,9 +2038,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Change to show/hide the sum of activity of the neurons in the selected ensemble as identified by the selected analysis.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Show neurons activity</string>
                 </property>
@@ -2161,9 +2047,6 @@ Use it to remove part of your dataset.</string>
                <widget class="QPushButton" name="enscomp_btn_color">
                 <property name="toolTip">
                  <string>Pick the color of the ensembles of the selected analysis.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Color pick</string>
@@ -2183,9 +2066,6 @@ Use it to remove part of your dataset.</string>
                <widget class="QComboBox" name="enscomp_combo_select_simil">
                 <property name="toolTip">
                  <string>Select the map to modify its visualization properties.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                </widget>
               </item>
@@ -2225,9 +2105,6 @@ Use it to remove part of your dataset.</string>
                    <property name="toolTip">
                     <string>Select the method to use to compute the similarity of the items in the selected map.</string>
                    </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
-                   </property>
                   </widget>
                  </item>
                  <item row="1" column="0">
@@ -2241,9 +2118,6 @@ Use it to remove part of your dataset.</string>
                   <widget class="QComboBox" name="enscomp_combo_select_simil_colormap">
                    <property name="toolTip">
                     <string>Select the color map for the selected map.</string>
-                   </property>
-                   <property name="toolTipDuration">
-                    <number>5000</number>
                    </property>
                   </widget>
                  </item>
@@ -2270,9 +2144,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Change to show/hide the selected stimulus.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Show in time</string>
                 </property>
@@ -2282,9 +2153,6 @@ Use it to remove part of your dataset.</string>
                <widget class="QPushButton" name="enscomp_btn_color_stim">
                 <property name="toolTip">
                  <string>Pick the color for the simuli.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Color pick</string>
@@ -2305,9 +2173,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Change to show/hide the selected behavior.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Show in time</string>
                 </property>
@@ -2317,9 +2182,6 @@ Use it to remove part of your dataset.</string>
                <widget class="QPushButton" name="enscomp_btn_color_behavior">
                 <property name="toolTip">
                  <string>Pick the color of the behavior.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Color pick</string>
@@ -2401,7 +2263,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -2437,7 +2299,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2473,7 +2335,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2509,7 +2371,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>98</width>
+                 <width>89</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2579,9 +2441,6 @@ Use it to remove part of your dataset.</string>
              <property name="toolTip">
               <string>Select to add the user input data to the file.</string>
              </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
-             </property>
              <property name="text">
               <string>Input user data</string>
              </property>
@@ -2594,9 +2453,6 @@ Use it to remove part of your dataset.</string>
             <widget class="QCheckBox" name="save_check_minimal">
              <property name="toolTip">
               <string>Select to add the minimal analysis results used by this GUI to the file.</string>
-             </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
              </property>
              <property name="text">
               <string>Minimal results used by Ensembles GUI</string>
@@ -2611,9 +2467,6 @@ Use it to remove part of your dataset.</string>
              <property name="toolTip">
               <string>Select to add the analysis parameters to the file.</string>
              </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
-             </property>
              <property name="text">
               <string>Analysis parameters</string>
              </property>
@@ -2626,9 +2479,6 @@ Use it to remove part of your dataset.</string>
             <widget class="QCheckBox" name="save_check_full">
              <property name="toolTip">
               <string>Select to add all the results of every analysis to the file, even those that are not used by the GUI.</string>
-             </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
              </property>
              <property name="text">
               <string>Full results of every analysis</string>
@@ -2643,9 +2493,6 @@ Use it to remove part of your dataset.</string>
              <property name="toolTip">
               <string>Select to add the similarity matrix of the analysis results to the file.</string>
              </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
-             </property>
              <property name="text">
               <string>Ensembles Compare analysis</string>
              </property>
@@ -2658,9 +2505,6 @@ Use it to remove part of your dataset.</string>
             <widget class="QCheckBox" name="save_check_perf">
              <property name="toolTip">
               <string>Select to add the performance comparission matrix to the file.</string>
-             </property>
-             <property name="toolTipDuration">
-              <number>5000</number>
              </property>
              <property name="text">
               <string>Performance Comparison</string>
@@ -2681,9 +2525,6 @@ Use it to remove part of your dataset.</string>
                 <property name="toolTip">
                  <string>Save the selected data to an HDF5 file, useful for quick visualization of the results and to use across different platforms.</string>
                 </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
                 <property name="text">
                  <string>Save as HDF5 file (.h5)</string>
                 </property>
@@ -2694,24 +2535,12 @@ Use it to remove part of your dataset.</string>
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="toolTip">
+                 <string>Numpy NPZ format useful for later analysis in Python.
+NPZ is a lightweight numerical format</string>
+                </property>
                 <property name="text">
                  <string>Save as NPZ file (.npz)</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QPushButton" name="save_btn_pkl">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="toolTip">
-                 <string>Save the selected data as a Python Pickle file, useful for future use in Python.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
-                </property>
-                <property name="text">
-                 <string>Save session cache (.pkl)</string>
                 </property>
                </widget>
               </item>
@@ -2722,9 +2551,6 @@ Use it to remove part of your dataset.</string>
                 </property>
                 <property name="toolTip">
                  <string>Save the selected data as a MATLAB file, useful for later use in MATLAB.</string>
-                </property>
-                <property name="toolTipDuration">
-                 <number>5000</number>
                 </property>
                 <property name="text">
                  <string>Save as MATLAB file (.mat)</string>
@@ -2746,6 +2572,21 @@ Use it to remove part of your dataset.</string>
               </size>
              </property>
             </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="save_btn_pkl">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="toolTip">
+              <string>Save selected data as Pickle file.
+Pickle files are not guaranteed to be stable across Python versions
+and should not be used for long term storage or sharing.</string>
+             </property>
+             <property name="text">
+              <string>Save session cache (.pkl)</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -2799,6 +2640,9 @@ Use it to remove part of your dataset.</string>
        </item>
        <item>
         <widget class="QCheckBox" name="dark_mode">
+         <property name="toolTip">
+          <string>Select to change the theme to Dark Mode</string>
+         </property>
          <property name="text">
           <string>Dark mode</string>
          </property>
