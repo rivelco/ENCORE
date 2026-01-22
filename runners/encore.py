@@ -611,3 +611,68 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
         results["answer"]['neus_in_ens'] = neurons_in_ensembles
 
     return results
+
+def run_example(input_data: list, params: dict, relative_folder_path='', include_answer=True, logger=None):
+    logger(f"Input data len: {len(input_data)}", "log")
+    for idx, element in enumerate(input_data):
+        logger(f" - Element at idx {idx} has shape {element.shape}", "log")
+    
+    logger("Parameters passed:", "log")
+    logger(f"{params}")
+    
+    # This is to measure the algorithm running time
+    start_time = time.time()
+    
+    num_neurons, time_points = input_data[1].shape
+    
+    ## Calculate the data used to update fields in the GUI
+    value_A = params['int_parameter_A']
+    value_B = params['int_parameter_B']
+    variable_to_update_name = 'float_parameter'
+    if params['selection_parameter'] == "SUM":  
+        new_value = value_A + value_B
+    elif params['selection_parameter'] == "MEAN":
+        new_value = (value_A + value_B)/2
+
+    ## Generate the dummy results data
+    number_of_ensembles = int(params['int_parameter_ensembles'])
+    threshold = params['threshold_parameter'] # To binarize the data
+    # Generate dummy ensembles activation data
+    timecourse = np.random.rand(number_of_ensembles, time_points)
+    timecourse_thresholded = (timecourse > threshold).astype(np.int_)
+    # Generate dummy neurons in each ensemble
+    neurons_in_ensembles = np.random.rand(number_of_ensembles, num_neurons)
+    neurons_in_ensembles_thresholded = (neurons_in_ensembles > threshold).astype(np.int_)
+    
+    ## Create data for the 'answer' field
+    data_for_raster = timecourse * 2
+    dFFo_data = input_data[0]
+    data_for_neuron_dFFo = dFFo_data[0,:]   # dFFo signal for neuron 0
+    secondary_dFFo = dFFo_data[1,:]
+    many_dFFo = dFFo_data[0:4,:]
+    
+    ## Finish taking the time for the algorithm
+    end_time = time.time()
+    algorithm_time = end_time - start_time
+    
+    # Pack the results
+    results = {
+        "results": {
+            'timecourse': timecourse_thresholded,
+            'ensembles_cant': number_of_ensembles,
+            'neus_in_ens': neurons_in_ensembles_thresholded
+        },
+        "answer": {
+            "raster": data_for_raster,
+            "neuron_dFFo": data_for_neuron_dFFo,
+            "other_dFFo": secondary_dFFo,
+            "many_neurons_dFFo": many_dFFo
+        },
+        "update_params":{
+            variable_to_update_name: new_value
+        },
+        "algorithm_time": algorithm_time,
+        "success": True
+    }
+    
+    return results

@@ -705,3 +705,19 @@ def plot_perf_cross_ens_stims(plot_widget, cross_corrs, lags, col_idx, row_idx, 
     plot_widget.canvas.figure.tight_layout()
     plot_widget.canvas.draw()
     plot_widget.canvas.flush_events()
+
+# Plot function for the example algorithm
+
+def plot_for_example_simple_line(plot_widget, line):
+    # Clean the figure
+    plot_widget.axes.clear()
+    
+    # The plot_widget.axes is a waraper for Matplolib axes, use it the same
+    plot_widget.axes.plot(line)
+    plot_widget.axes.set_xlabel('Time (timepoint)')
+    plot_widget.axes.set_ylabel('dFFo')
+    
+    # Finish the figure
+    plot_widget.canvas.figure.tight_layout()
+    plot_widget.canvas.draw()
+    plot_widget.canvas.flush_events()

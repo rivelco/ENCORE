@@ -34,7 +34,7 @@ def plot_svd(figures, answer):
     if plot_widget:
         encore_plots.plot_singular_values(plot_widget, singular_vals, num_state)
 
-    # Components from the descomposition
+    # Components from the decomposition
     singular_vals = np.array(answer['svd_sig'])
     plot_widget = figures.get('svd_plot_components')
     if plot_widget:
@@ -233,3 +233,53 @@ def plot_sgc(figures, answer):
     plot_widget = figures.get('sgc_plot_cellsinens')
     if plot_widget:
         encore_plots.plot_ensembles_timecourse(plot_widget, ensembles_timecourse, xlabel="Timepoint")
+        
+def plot_example(figures, answer):
+    raster = answer['raster']
+    dFFo_single_neuron = answer['neuron_dFFo']
+    secondary_line = answer['other_dFFo']
+    many_dFFo = answer['many_neurons_dFFo']
+    
+    # Figure 1
+    # Plot the raster using an already defined plotting function
+    plot_widget = figures.get('example_plot_raster')
+    if plot_widget:
+        encore_plots.preview_dataset(plot_widget, raster, xlabel="Timepoint", ylabel="Ensembles")
+    
+    # Figure 2
+    # Plot a line using a function in 'encore_plots'
+    plot_widget = figures.get('example_plot_dFFo')
+    if plot_widget:
+        encore_plots.plot_for_example_simple_line(plot_widget, dFFo_single_neuron)
+    
+    # Figure 3
+    # Create the same plot but using the functions here
+    plot_widget = figures.get('example_plot_secondary_dFFo')
+    if plot_widget:
+        plot_widget.axes.clear() # Clear the figure
+        # The plot_widget.axes is a waraper for Matplolib axes, use it the same
+        plot_widget.axes.plot(dFFo_single_neuron)
+        plot_widget.axes.set_xlabel('Time (timepoint)')
+        plot_widget.axes.set_ylabel('dFFo')
+        # Finish the figure
+        plot_widget.canvas.figure.tight_layout()
+        plot_widget.canvas.draw()
+        plot_widget.canvas.flush_events()
+    
+    # Figure 4
+    # Create subplots and plot one line on each subplot
+    plot_widget = figures.get('example_plot_many_dFFo')
+    if plot_widget:
+        plot_widget.set_subplots(4, 1)  # Figure with 4 rows and 1 column
+        plot_widget.canvas.setFixedHeight(1200) # Set the figure size to 1200px
+        
+        colors = ['red', 'blue', 'orange', 'pink']
+        widths = [0.5, 2, 1.5, 1]
+        for idx in range(many_dFFo.shape[0]):
+            plot_widget.axes[idx].clear()
+            plot_widget.axes[idx].plot(many_dFFo[idx,:], color=colors[idx], linewidth=widths[idx])
+            
+        plot_widget.canvas.figure.tight_layout()
+        plot_widget.canvas.draw()
+        plot_widget.canvas.flush_events()
+    

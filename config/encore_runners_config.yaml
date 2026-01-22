@@ -393,3 +393,78 @@ encore_runners:
         display_name: Cells in ensembles
       
     source: "For details about this method, see the following paper: L. Avitan et al. 'Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience'. Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056"
+  example:
+    enabled: True
+    full_name: Example Algorithm
+    language: Python
+    folder_path: ''
+    analysis_function: run_example
+    plot_function: plot_example
+    ensemble_color: pink
+    needed_data:
+      - data_dFFo
+      - data_neuronal_activity
+    parameters:
+      int_parameter_ensembles:
+          object_name: example_int_ensembles
+          display_name: Number of ensembles
+          description: Integer values from 0 to 8.
+          default_value: 5
+          min_value: 1
+          max_value: 8
+      int_parameter_A:
+        object_name: example_int_parameter_A
+        display_name: Integer parameter A
+        description: Integer values from -10 to 50.
+        default_value: 5
+        min_value: -10
+        max_value: 50
+      int_parameter_B:
+        object_name: example_int_parameter_B
+        display_name: Integer parameter B
+        description: Integer values from 0 to 100.
+        default_value: 8
+        min_value: 0
+        max_value: 100
+      float_parameter:
+        object_name: example_float_parameter
+        display_name: Result A with B
+        description: Integer values from -1000 to "infinity".
+        default_value: 0.0
+        min_value: -1000
+        max_value: MAX_INT
+      threshold_parameter:
+        object_name: example_threshold_parameter
+        display_name: Threshold parameter
+        description: Decimal values from 0 to 1, used as threshold for the dummy procedure.
+        default_value: 0.5
+        min_value: 0
+        max_value: 1
+      bool_parameter:
+        object_name: example_bool_parameter
+        display_name: Boolean parameter
+        description: This box checked means True, unchecked means False
+        default_value: False
+      selection_parameter:
+        object_name: example_selection
+        display_name: Multiple selection parameter
+        description: This parameters selects only one of many
+        type: enum
+        default_value: SUM
+        options:
+          - value: SUM
+            label: Sum the parameters A and B
+            description: The values will be summed
+          - value: MEAN
+            label: Mean of the parameters A and B
+            description: The mean of the values will be used
+    figures:
+      - name: example_plot_raster
+        display_name: Raster of the activity
+      - name: example_plot_dFFo
+        display_name: dFFo of a neuron
+      - name: example_plot_secondary_dFFo
+        display_name: Secondary dFFo plot
+      - name: example_plot_many_dFFo
+        display_name: dFFo of many cells
+    source: ENCORE example algorithm
