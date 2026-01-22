@@ -1,57 +1,67 @@
-import sys
-import h5py
-import os
-import scipy.io 
+# Standard library
+import importlib
 import math
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
-from scipy.spatial.distance import pdist, squareform
+import os
+import pickle
+import sys
 import time
 from datetime import datetime
-import pickle
-import yaml
+from pathlib import Path
+# Third-party libraries
+import h5py
+import numpy as np
 import qdarktheme
-import importlib
+import scipy.io
+import yaml
 from importlib.resources import files
-
-from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
-from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
-
-from PyQt6.uic import loadUi
-from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal, QSize
-from PyQt6.QtGui import QTextCursor, QDoubleValidator, QFont, QIcon
-
-from encore.data.load_data import FileTreeModel
-from encore.data.assign_data import assign_data_from_file
-
-import encore.utils.metrics as metrics
-from encore.utils.text_formatting import format_nums_to_string
-
-from encore.gui.MatplotlibWidget import MatplotlibWidget
-
-import encore.plotters.encore_plots as encore_plots
-
-import encore.validators.algorithm_results as validate_results
-
+from scipy.spatial.distance import pdist, squareform
+from sklearn.metrics.pairwise import cosine_similarity
+# PyQt6
+from PyQt6.QtCore import (
+    QDateTime,
+    QObject,
+    QRunnable,
+    QSize,
+    Qt,
+    QThreadPool,
+    pyqtSignal,
+    pyqtSlot,
+)
+from PyQt6.QtGui import QDoubleValidator, QFont, QIcon, QTextCursor
 from PyQt6.QtWidgets import (
-    QWidget,
-    QTabWidget,
-    QHBoxLayout,
-    QVBoxLayout,
+    QApplication,
+    QButtonGroup,
+    QCheckBox,
+    QColorDialog,
+    QFileDialog,
     QFormLayout,
     QGroupBox,
+    QHBoxLayout,
     QLabel,
+    QLineEdit,
+    QMainWindow,
+    QPlainTextEdit,
+    QPushButton,
+    QRadioButton,
+    QScrollArea,
+    QSizePolicy,
     QSpinBox,
     QDoubleSpinBox,
-    QCheckBox,
-    QLineEdit,
-    QPushButton,
-    QPlainTextEdit,
-    QRadioButton,
-    QButtonGroup,
-    QSizePolicy,
-    QScrollArea
+    QTabWidget,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
 )
+from PyQt6.uic import loadUi
+
+# ENCORE
+from encore.data.load_data import FileTreeModel
+from encore.data.assign_data import assign_data_from_file
+import encore.utils.metrics as metrics
+from encore.utils.text_formatting import format_nums_to_string
+from encore.gui.MatplotlibWidget import MatplotlibWidget
+import encore.plotters.encore_plots as encore_plots
+import encore.validators.algorithm_results as validate_results
 
 class QtLoggerAdapter:
     def __init__(self, log_signal):
