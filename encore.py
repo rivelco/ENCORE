@@ -1002,12 +1002,12 @@ class MainWindow(QMainWindow):
                 else:
                     status_label = "Not loaded"
                     needed_loaded = False
-            label_name = f"{short_name}_{data}_status_label"
-            status_label_widget = self.findChild(QLabel, label_name)
-            
-            if status_label_widget:
-                status_label_widget.setText(status_label)
-        
+                    
+                label_name = f"{short_name}_{data}_status_label"
+                status_label_widget = self.findChild(QLabel, label_name)
+                if status_label_widget:
+                    status_label_widget.setText(status_label)
+
             run_button = self.findChild(QWidget, f"{short_name}_run_analysis_button")
             if run_button:
                 run_button.setEnabled(needed_loaded)
