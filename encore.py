@@ -670,15 +670,29 @@ class MainWindow(QMainWindow):
         tabs = QTabWidget()
 
         for fig in figures:
-            tab = QWidget()
-            layout = QVBoxLayout(tab)
+            # Container widget (goes inside scroll area)
+            content_widget = QWidget()
+            content_layout = QVBoxLayout(content_widget)
+            content_layout.setContentsMargins(0, 0, 0, 0)
 
             plot = MatplotlibWidget()
-            plot.reset(f"Run this analysis to see results here")
+            plot.reset("Run this analysis to see results here")
             plot.setObjectName(fig["name"])
 
-            layout.addWidget(plot)
-            tabs.addTab(tab, fig["display_name"])
+            # Important for resizing behavior
+            plot.setSizePolicy(
+                QSizePolicy.Policy.Expanding,
+                QSizePolicy.Policy.Expanding,
+            )
+
+            content_layout.addWidget(plot)
+
+            # Scroll area
+            scroll = QScrollArea()
+            scroll.setWidgetResizable(True)
+            scroll.setWidget(content_widget)
+
+            tabs.addTab(scroll, fig["display_name"])
 
         figures_layout.addWidget(tabs)
         return figures_box
