@@ -1902,6 +1902,11 @@ class MainWindow(QMainWindow):
                 include_answer=True,
                 logger=logger
             )
+            
+            # Validate the result dictionary
+            validated_result = validate_results.validate_analysis_output(result, neurons=self.cant_neurons, timepoints=self.cant_timepoints)
+            result = validated_result.model_dump()
+            
             if result["success"]:
                 # Check if the analysis found any ensemble
                 num_ensembles = result['results']['ensembles_cant']
