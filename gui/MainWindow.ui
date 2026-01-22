@@ -2690,6 +2690,16 @@ Use it to remove part of your dataset.</string>
                </widget>
               </item>
               <item>
+               <widget class="QPushButton" name="save_btn_npz">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="text">
+                 <string>Save as NPZ file (.npz)</string>
+                </property>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="save_btn_pkl">
                 <property name="enabled">
                  <bool>false</bool>
@@ -2701,7 +2711,7 @@ Use it to remove part of your dataset.</string>
                  <number>5000</number>
                 </property>
                 <property name="text">
-                 <string>Save as Python file (.pkl)</string>
+                 <string>Save session cache (.pkl)</string>
                 </property>
                </widget>
               </item>
