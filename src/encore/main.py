@@ -1900,7 +1900,7 @@ class MainWindow(QMainWindow):
             result = func(
                 data,
                 params,
-                relative_folder_path=code_folder_path,
+                code_folder_name=code_folder_path,
                 include_answer=True,
                 logger=logger
             )

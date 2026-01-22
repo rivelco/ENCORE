@@ -38,3 +38,8 @@ Issues = "https://github.com/rivelco/ENCORE/issues"
 
 [tool.setuptools]
 include-package-data = true
+
+[tool.setuptools.package-data]
+encore = [
+    "analysis/**/*.m"
+]

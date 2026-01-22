@@ -2,8 +2,9 @@ import time
 import os
 import numpy as np
 import scipy.stats as stats
+from importlib.resources import files
 
-def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', include_answer = True, logger = None):
+def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -12,8 +13,8 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     :type raster: numpy.ndarray
     :param pars_validated: Dictionary with parameters for the SVD algorithm.
     :type pars_validated: dict
-    :param relative_folder_path: String with the path to the analysis code. Defaults to 'analysis/SVD'
-    :type relative_folder_path: str, optional
+    :param code_folder_name: String with the path to the analysis code. Defaults to 'SVD'
+    :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
@@ -23,6 +24,8 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
+    svd_path = files("encore.analysis").joinpath(code_folder_name)
+    
     log_flag = "SVD:"
     success = True
     
@@ -30,7 +33,7 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
     import matlab.engine
-    import utils.data_converters as converters
+    import encore.utils.data_converters as converters
     # The raster is at the first position
     raster = input_data[0]
     # Convert the raster to a MATLAB matrix
@@ -48,7 +51,7 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     start_time = time.time()
     eng_svd = matlab.engine.start_matlab()
     # Adding to path
-    folder_path = os.path.abspath(relative_folder_path)
+    folder_path = os.path.abspath(svd_path)
     folder_path_with_subfolders = eng_svd.genpath(folder_path)
     eng_svd.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
@@ -129,7 +132,7 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
 
     return results
 
-def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralEnsembles', include_answer = True, logger = None):
+def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -138,8 +141,8 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
     :type spikes: numpy.ndarray
     :param pars_validated: Dictionary with parameters for the SVD algorithm.
     :type pars_validated: dict
-    :param relative_folder_path: String with the path to the analysis code. Defaults to 'analysis/NeuralEnsembles'
-    :type relative_folder_path: str, optional
+    :param code_folder_name: String with the path to the analysis code. Defaults to 'NeuralEnsembles'
+    :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
@@ -149,6 +152,7 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
+    pca_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "PCA:"
     success = True
     
@@ -156,7 +160,7 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
     import matlab.engine
-    import utils.data_converters as converters
+    import encore.utils.data_converters as converters
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     # Prepare the raster
@@ -170,7 +174,7 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
     start_time = time.time()
     eng_pca = matlab.engine.start_matlab()
     # Adding to path
-    folder_path = os.path.abspath(relative_folder_path)
+    folder_path = os.path.abspath(pca_path)
     folder_path_with_subfolders = eng_pca.genpath(folder_path)
     eng_pca.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
@@ -222,7 +226,7 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
 
     return results
 
-def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-Assembly-Detection', include_answer = True, logger = None):
+def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detection', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -231,8 +235,8 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
     :type raster: numpy.ndarray
     :param pars_validated: Dictionary with parameters for the SVD algorithm.
     :type pars_validated: dict
-    :param relative_folder_path: String with the path to the analysis code. Defaults to 'analysis/Cell-Assembly-Detection'
-    :type relative_folder_path: str, optional
+    :param code_folder_name: String with the path to the analysis code. Defaults to 'Cell-Assembly-Detection'
+    :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
@@ -242,13 +246,14 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
+    ica_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "ICA:"
     success = True
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     import matlab.engine
-    import utils.data_converters as converters
+    import encore.utils.data_converters as converters
     # Convert the raster
     raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
@@ -274,7 +279,7 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
     start_time = time.time()
     eng_ica = matlab.engine.start_matlab()
     # Adding to path
-    folder_path = os.path.abspath(relative_folder_path)
+    folder_path = os.path.abspath(ica_path)
     folder_path_with_subfolders = eng_ica.genpath(folder_path)
     eng_ica.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
@@ -369,7 +374,7 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
 
     return results
 
-def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsembles2P', include_answer = True, logger = None):
+def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -378,8 +383,8 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
     :type raster: numpy.ndarray
     :param pars_validated: Dictionary with parameters for the SVD algorithm.
     :type pars_validated: dict
-    :param relative_folder_path: String with the path to the analysis code. Defaults to 'analysis/Xsembles2P'
-    :type relative_folder_path: str, optional
+    :param code_folder_name: String with the path to the analysis code. Defaults to 'Xsembles2P'
+    :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
@@ -389,13 +394,14 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
+    x2p_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "X2P:"
     success = True
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     import matlab.engine
-    import utils.data_converters as converters
+    import encore.utils.data_converters as converters
     # Convert the raster to logical MATLAB
     raster = input_data[0]
     raster_mat = matlab.logical(raster.tolist())
@@ -410,7 +416,7 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
     start_time = time.time()
     eng_x2p = matlab.engine.start_matlab()
     # Adding to path
-    folder_path = os.path.abspath(relative_folder_path)
+    folder_path = os.path.abspath(x2p_path)
     folder_path_with_subfolders = eng_x2p.genpath(folder_path)
     eng_x2p.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
@@ -495,7 +501,7 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
 
     return results
 
-def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neural_assembly_detection', include_answer = True, logger = None):
+def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_detection', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB.
@@ -504,8 +510,8 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
     :type raster: numpy.ndarray
     :param pars_validated: Dictionary with parameters for the SVD algorithm.
     :type pars_validated: dict
-    :param relative_folder_path: String with the path to the analysis code. Defaults to 'analysis/SGC_neural_assembly_detection'
-    :type relative_folder_path: str, optional
+    :param code_folder_name: String with the path to the analysis code. Defaults to 'SGC_neural_assembly_detection'
+    :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
@@ -515,13 +521,14 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
     :return: Dictionary with the result of the algorithm. 
     :rtype: dict
     """
+    sgc_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "SGC:"
     success = True
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     import matlab.engine
-    import utils.data_converters as converters
+    import encore.utils.data_converters as converters
     # Check for the first derivative flag
     dFFo = input_data[0]
     if pars_validated['use_first_derivative']:
@@ -540,7 +547,7 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
     start_time = time.time()
     eng_sgc = matlab.engine.start_matlab()
     # Adding to path
-    folder_path = os.path.abspath(relative_folder_path)
+    folder_path = os.path.abspath(sgc_path)
     folder_path_with_subfolders = eng_sgc.genpath(folder_path)
     eng_sgc.addpath(folder_path_with_subfolders, nargout=0)
     end_time = time.time()
@@ -620,7 +627,7 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
 
     return results
 
-def run_example(input_data: list, params: dict, relative_folder_path='', include_answer=True, logger=None):
+def run_example(input_data: list, params: dict, code_folder_name='', include_answer=True, logger=None):
     logger(f"Input data len: {len(input_data)}", "log")
     for idx, element in enumerate(input_data):
         logger(f" - Element at idx {idx} has shape {element.shape}", "log")

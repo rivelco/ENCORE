@@ -3,7 +3,7 @@ encore_runners:
     enabled: True
     full_name: Singular Value Decomposition
     language: MATLAB
-    folder_path: 'analysis/SVD'
+    folder_path: 'SVD'
     analysis_function: run_svd
     plot_function: plot_svd
     ensemble_color: red
@@ -87,7 +87,7 @@ encore_runners:
     enabled: True
     full_name: Principal Component Analysis
     language: MATLAB
-    folder_path: 'analysis/NeuralEnsembles'
+    folder_path: 'NeuralEnsembles'
     analysis_function: run_pca
     plot_function: plot_pca
     ensemble_color: blue
@@ -173,7 +173,7 @@ encore_runners:
     enabled: True
     full_name: Independent Component Analysis
     language: MATLAB
-    folder_path: 'analysis/Cell-Assembly-Detection'
+    folder_path: 'Cell-Assembly-Detection'
     analysis_function: run_ica
     plot_function: plot_ica
     ensemble_color: green
@@ -246,7 +246,7 @@ encore_runners:
     enabled: True
     full_name: Xsembles2P
     language: MATLAB
-    folder_path: 'analysis/Xsembles2P'
+    folder_path: 'Xsembles2P'
     analysis_function: run_x2p
     plot_function: plot_x2p
     ensemble_color: orange
@@ -336,7 +336,7 @@ encore_runners:
     enabled: True
     full_name: Similarity Graph Clustering
     language: MATLAB
-    folder_path: 'analysis/SGC_neural_assembly_detection'
+    folder_path: 'SGC_neural_assembly_detection'
     analysis_function: run_sgc
     plot_function: plot_sgc
     ensemble_color: pink
