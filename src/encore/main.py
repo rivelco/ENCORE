@@ -1,5 +1,6 @@
 # Standard library
 import importlib
+import importlib.metadata
 import math
 import os
 import pickle
@@ -7,7 +8,8 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-# Third-party libraries
+import argparse
+# Third party libraries
 import h5py
 import numpy as np
 import qdarktheme
@@ -129,19 +131,22 @@ class WorkerRunnable(QRunnable):
         self.signals.result_ready.emit(result)
 
 class MainWindow(QMainWindow):
-    def __init__(self, gui_colors={}, *args, **kwargs):
-        #super().__init__(*args, **kwargs)
+    def __init__(self, gui_colors=None, *args, **kwargs):
         super(MainWindow, self).__init__()
         ui_path = str(files("encore.gui").joinpath("MainWindow.ui"))
         loadUi(ui_path, self)
-        self.setWindowTitle('ENCORE - Ensembles Comparison and Recognition')
+        
+        encore_version = str(importlib.metadata.version("encore"))
+        self.setWindowTitle(f'ENCORE v{encore_version} - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
             "analyzer": "ENCORE",
             "date": "",
-            "gui_version": "2.0.0"
+            "ENCORE_version": encore_version
         }
+        self.update_console_log(f"ENCORE v{encore_version}")
         
+        gui_colors = gui_colors or {}
         self.gui_colors = gui_colors
 
         self.threadpool = QThreadPool()
@@ -3491,6 +3496,13 @@ class MainWindow(QMainWindow):
                 #raise IOError(f"Could not save the file to {file_path}.")
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--version", action="store_true")
+    args = parser.parse_args()
+    if args.version:
+        print(importlib.metadata.version("encore"))
+        return
+    
     qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
     custom_colors = {
