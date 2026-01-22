@@ -16,3 +16,5 @@ src/encore/plotters/__pycache__/
 src/encore/validators/__pycache__/
 
 src/encore/__pycache__/
+
+src/encore/analysis/__pycache__/
