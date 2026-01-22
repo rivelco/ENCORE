@@ -8,7 +8,7 @@ version = "2.0.0"
 description = "GUI for Ensembles Comparison and Recognition"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { file = "LICENSE" }
+license = { text = "GPL-3.0-only" }
 authors = [
     { name = "Ricardo Velazquez Contreras", email = "rivel_co@hotmail.com" }
 ]
