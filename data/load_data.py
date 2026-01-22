@@ -1,13 +1,10 @@
 import h5py
 from PyQt6.QtCore import Qt, QAbstractItemModel, QModelIndex
-from PyQt6.QtGui import QStandardItemModel, QStandardItem
 import numpy as np
-import scipy.io
 import csv
-import matlab
 
 class FileTreeItem:
-    def __init__(self, name, obj, mdl_type, parent=None):
+    def __init__(self, name, obj, mdl_type, MATLAB_available=False, parent=None):
         self.name = name
         self.obj = obj
         self.parent_item = parent
@@ -33,7 +30,7 @@ class FileTreeItem:
                 self.obj_size = len(obj)
                 for var_name, var_value in obj.items():
                     if not var_name.startswith('__'):
-                        self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, self))
+                        self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, MATLAB_available=False, parent=self))
             elif isinstance(obj, int):
                 self.obj_type = "Scalar"
                 self.obj_size = -1
@@ -45,12 +42,6 @@ class FileTreeItem:
                 # This is an array or matrix.
                 self.obj_type = "PythonList"
                 self.obj_size = len(obj)
-            elif isinstance(obj, matlab.double):
-                self.obj_type = "MatlabDouble"
-                self.obj_size = -1
-            elif isinstance(obj, matlab.logical):
-                self.obj_type = "MatlabLogical"
-                self.obj_size = -1 
             elif isinstance(obj, str):
                 # This is a struct.
                 self.obj_type = "String"
@@ -59,18 +50,35 @@ class FileTreeItem:
                 # This is a struct.
                 self.obj_type = "Scalar"
                 self.obj_size = -1
+            elif MATLAB_available:
+                try:
+                    print('trying')
+                    import matlab
+                    if isinstance(obj, matlab.double):
+                        self.obj_type = "MatlabDouble"
+                        self.obj_size = -1
+                    elif isinstance(obj, matlab.logical):
+                        self.obj_type = "MatlabLogical"
+                        self.obj_size = -1 
+                    else:
+                        # Unknown type.
+                        self.obj_type = f"Unknown {str(type(obj))}"
+                        self.obj_size = -1
+                except ImportError as exc:
+                    # Unknown type.
+                    self.obj_type = f"Unknown {str(type(obj))}"
+                    self.obj_size = -1
             else:
                 # Unknown type.
                 self.obj_type = f"Unknown {str(type(obj))}"
                 self.obj_size = -1
-
         if mdl_type == "mat":
             if isinstance(obj, dict):
                 self.obj_type = "Group"
                 self.obj_size = len(obj)
                 for var_name, var_value in obj.items():
                     if not var_name.startswith('__'):
-                        self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, self))
+                        self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, MATLAB_available=False, parent=self))
             if isinstance(obj, np.ndarray):
                 #print(obj[0])
                 if obj.dtype == 'O':  # Object array (likely cell array)
@@ -81,7 +89,7 @@ class FileTreeItem:
                         raise ValueError("The input is not a MATLAB cell array represented as a NumPy object array.")
                     for i in range(obj.shape[0]):
                         key = f"element_{i}"
-                        self.child_items.append(FileTreeItem(key, obj[i], mdl_type, self))
+                        self.child_items.append(FileTreeItem(key, obj[i], mdl_type, MATLAB_available=False, parent=self))
                 elif obj.size == 1:  # Scalar
                     # This is a scalar.
                     self.obj_type = "Scalar"
@@ -98,12 +106,11 @@ class FileTreeItem:
                 # Unknown type.
                 self.obj_type = f"Unknown {str(type(obj))}"
                 self.obj_size = -1
-
         if mdl_type == "csv":
             if self.name == "/":
                 self.obj_type = "Group"
                 self.obj_size = 1
-                self.child_items.append(FileTreeItem("CSV_dataset", obj, mdl_type, self))
+                self.child_items.append(FileTreeItem("CSV_dataset", obj, mdl_type, MATLAB_available=False, parent=self))
             else:
                 self.obj_type = "Dataset"
                 csvreader = csv.reader(obj)
@@ -150,9 +157,9 @@ class FileTreeItem:
         return self.parent_item
 
 class FileTreeModel(QAbstractItemModel):
-    def __init__(self, hdf5_file, model_type, parent=None):
+    def __init__(self, hdf5_file, model_type, parent=None, MATLAB_available=False):
         super(FileTreeModel, self).__init__(parent)
-        self.root_item = FileTreeItem("/", hdf5_file, model_type)
+        self.root_item = FileTreeItem("/", hdf5_file, model_type, MATLAB_available)
 
     def rowCount(self, parent=QModelIndex()):
         if not parent.isValid():

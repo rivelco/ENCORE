@@ -140,6 +140,15 @@ class MainWindow(QMainWindow):
         # Initialize the GUI
         self.reset_gui()
         
+        # Check if MATLAB is available
+        try:
+            import matlab
+            self.matlab_available = True
+        except ImportError as exc:
+            self.update_console_log("Could not load MATLAB engine.", "error")
+            self.update_console_log("The algorithms that requires MATLAB are not available.", "warning")
+            self.matlab_available = False
+        
         # Dark mode button
         self.dark_mode.clicked.connect(self.set_theme)
         ## Browse files
@@ -865,21 +874,24 @@ class MainWindow(QMainWindow):
                 with open(fname, 'rb') as file:
                     pkl_file = pickle.load(file)
                 self.file_model_type = "pkl"
-                self.file_model = FileTreeModel(pkl_file, model_type="pkl")
+                self.file_model = FileTreeModel(pkl_file, model_type=self.file_model_type, MATLAB_available=self.matlab_available)
                 self.tree_view.setModel(self.file_model)
                 self.update_console_log("Done loading file.", "complete")
             elif file_extension == '.mat':
-                self.update_console_log("Generating file structure...")
-                mat_file = scipy.io.loadmat(fname)
-                self.file_model_type = "mat"
-                self.file_model = FileTreeModel(mat_file, model_type="mat")
-                self.tree_view.setModel(self.file_model)
-                self.update_console_log("Done loading matlab file.", "complete")
+                if self.matlab_available:
+                    self.update_console_log("Generating file structure...")
+                    mat_file = scipy.io.loadmat(fname)
+                    self.file_model_type = "mat"
+                    self.file_model = FileTreeModel(mat_file, model_type=self.file_model_type, MATLAB_available=self.matlab_available)
+                    self.tree_view.setModel(self.file_model)
+                    self.update_console_log("Done loading matlab file.", "complete")
+                else:
+                    self.update_console_log("Loading of MATLAB files is currently unavailable", "warning")
             elif file_extension == '.csv':
                 self.update_console_log("Generating file structure...")
                 self.file_model_type = "csv"
                 with open(fname, 'r', newline='') as csvfile:
-                    self.file_model = FileTreeModel(csvfile, model_type="csv")
+                    self.file_model = FileTreeModel(csvfile, model_type=self.file_model_type, MATLAB_available=self.matlab_available)
                 self.tree_view.setModel(self.file_model)
                 self.update_console_log("Done loading csv file.", "complete")
             else:
@@ -967,7 +979,11 @@ class MainWindow(QMainWindow):
         algorithms_config = self.algorithms_config
         
         for algorithm in algorithms_config.values():
-            needed_loaded = True
+            if algorithm.get("language", "") == 'MATLAB':
+                needed_loaded = self.matlab_available
+            else:
+                needed_loaded = True
+                    
             short_name = algorithm.get("short_name")
             needed_data = algorithm.get("needed_data", [])
             for data in needed_data:

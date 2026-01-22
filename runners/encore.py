@@ -1,9 +1,7 @@
-import matlab.engine
 import time
 import os
 import numpy as np
 import scipy.stats as stats
-import utils.data_converters as converters
 
 def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', include_answer = True, logger = None):
     """
@@ -31,6 +29,8 @@ def run_svd(input_data, pars_validated, relative_folder_path = 'analysis/SVD', i
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
+    import matlab.engine
+    import utils.data_converters as converters
     # The raster is at the first position
     raster = input_data[0]
     # Convert the raster to a MATLAB matrix
@@ -154,6 +154,9 @@ def run_pca(input_data, pars_validated, relative_folder_path = 'analysis/NeuralE
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    
+    import matlab.engine
+    import utils.data_converters as converters
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     # Prepare the raster
@@ -244,6 +247,8 @@ def run_ica(input_data, pars_validated, relative_folder_path = 'analysis/Cell-As
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    import matlab.engine
+    import utils.data_converters as converters
     # Convert the raster
     raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
@@ -389,6 +394,8 @@ def run_x2p(input_data, pars_validated, relative_folder_path = 'analysis/Xsemble
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    import matlab.engine
+    import utils.data_converters as converters
     # Convert the raster to logical MATLAB
     raster = input_data[0]
     raster_mat = matlab.logical(raster.tolist())
@@ -513,7 +520,8 @@ def run_sgc(input_data, pars_validated, relative_folder_path = 'analysis/SGC_neu
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
-    
+    import matlab.engine
+    import utils.data_converters as converters
     # Check for the first derivative flag
     dFFo = input_data[0]
     if pars_validated['use_first_derivative']:
