@@ -21,17 +21,17 @@ from PyQt6.uic import loadUi
 from PyQt6.QtCore import QDateTime, Qt, QRunnable, QThreadPool, pyqtSlot, QObject, pyqtSignal, QSize
 from PyQt6.QtGui import QTextCursor, QDoubleValidator, QFont, QIcon
 
-from data.load_data import FileTreeModel
-from data.assign_data import assign_data_from_file
+from encore.data.load_data import FileTreeModel
+from encore.data.assign_data import assign_data_from_file
 
-import utils.metrics as metrics
-from utils.text_formatting import format_nums_to_string
+import encore.utils.metrics as metrics
+from encore.utils.text_formatting import format_nums_to_string
 
-from gui.MatplotlibWidget import MatplotlibWidget
+from encore.gui.MatplotlibWidget import MatplotlibWidget
 
-import plotters.encore_plots as encore_plots
+import encore.plotters.encore_plots as encore_plots
 
-import validators.algorithm_results as validate_results
+import encore.validators.algorithm_results as validate_results
 
 from PyQt6.QtWidgets import (
     QWidget,
@@ -122,7 +122,7 @@ class MainWindow(QMainWindow):
     def __init__(self, gui_colors={}, *args, **kwargs):
         #super().__init__(*args, **kwargs)
         super(MainWindow, self).__init__()
-        ui_path = files("ENCORE.gui").joinpath("MainWindow.yaml")
+        ui_path = str(files("encore.gui").joinpath("MainWindow.ui"))
         loadUi(ui_path, self)
         self.setWindowTitle('ENCORE - Ensembles Comparison and Recognition')
 
@@ -458,7 +458,7 @@ class MainWindow(QMainWindow):
         """
         # Read the config file
         config = {}
-        config_yaml_path = "config\encore_runners_config.yaml"
+        config_yaml_path = str(files("encore.config").joinpath("encore_runners_config.yaml"))
         
         if os.path.exists(config_yaml_path):
             with open(config_yaml_path, 'r') as file:
@@ -1881,7 +1881,7 @@ class MainWindow(QMainWindow):
         if not function_name:
             logger("No analysis_function defined in algorithm config", "error")
 
-        module_path = "runners.encore"
+        module_path = "encore.runners.encore"
 
         # Import module
         try:
@@ -1977,7 +1977,7 @@ class MainWindow(QMainWindow):
         if not function_name:
             raise RuntimeError("No plot_function defined in algorithm config")
 
-        module_path = "plotters.encore"
+        module_path = "encore.plotters.encore"
 
         # Import module
         try:
@@ -3486,7 +3486,8 @@ def main():
     qdarktheme.setup_theme("light",
         custom_colors=custom_colors
     )
-    app.setWindowIcon(QIcon("gui/ENCORE_logo.png")) 
+    logo_path = files("encore.gui").joinpath("ENCORE_logo.png")
+    app.setWindowIcon(QIcon(str(logo_path))) 
     window = MainWindow(gui_colors=custom_colors)
     window.show()
     app.exec()

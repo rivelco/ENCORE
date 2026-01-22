@@ -1,5 +1,5 @@
 import numpy as np
-import plotters.encore_plots as encore_plots
+import encore.plotters.encore_plots as encore_plots
 import math
 import matplotlib.pyplot as plt
 
