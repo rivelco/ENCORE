@@ -15,15 +15,40 @@ class FileTreeItem:
                 self.obj_type = "Group"
                 self.obj_size = len(obj)
                 for key, val in obj.items():
-                    self.child_items.append(FileTreeItem(key, val, mdl_type, self))
+                    self.child_items.append(FileTreeItem(key, val, mdl_type, MATLAB_available=False, parent=self))
             elif isinstance(obj, h5py.Dataset):
                 if len(obj.shape) == 0:
-                    self.obj_type = "Scalar"
-                    self.obj_size = np.array(obj)
+                    try:
+                        string_value = str(np.array(obj))
+                        self.obj_type = f"Scalar with value {string_value}"
+                        self.obj_size = np.array(obj)
+                    except Exception:
+                        self.obj_type = "Scalar"
+                        self.obj_size = np.array(obj)
                 else:
                     self.obj_type = "Dataset"
                     self.obj_size = obj.shape
-        
+        if mdl_type == "np_flatten":
+            if isinstance(obj, dict):
+                self.obj_type = "Group"
+                self.obj_size = len(obj)
+                for var_name, var_value in obj.items():
+                    if not var_name.startswith('__'):
+                        self.child_items.append(FileTreeItem(var_name, var_value, mdl_type, MATLAB_available=False, parent=self))
+            elif isinstance(obj, np.ndarray):
+                if len(obj.shape) < 1:
+                    # Unknown type.
+                    try:
+                        string_value = str(obj)
+                        self.obj_type = f"Unknown object with value {string_value}"
+                        self.obj_size = -1
+                    except Exception:
+                        self.obj_type = f"Unknown object"
+                        self.obj_size = -1
+                else:
+                    # This is an array or matrix.
+                    self.obj_type = "Dataset"
+                    self.obj_size = obj.shape
         if mdl_type == "pkl":
             if isinstance(obj, dict):
                 self.obj_type = "Group"

@@ -866,7 +866,17 @@ class MainWindow(QMainWindow):
                 self.update_console_log("Generating file structure...")
                 with h5py.File(fname, 'r') as hdf_file:
                     self.file_model_type = "hdf5"
-                    self.file_model = FileTreeModel(hdf_file, model_type="hdf5")
+                    self.file_model = FileTreeModel(hdf_file, model_type=self.file_model_type, MATLAB_available=self.matlab_available)
+                self.tree_view.setModel(self.file_model)
+                self.update_console_log("Done loading file.", "complete")
+            elif file_extension == ".npz":
+                self.update_console_log("Generating file structure...")
+                numpy_file = np.load(fname)
+                file_structure = {}
+                for key in numpy_file.files:
+                    file_structure[key] = numpy_file[key]
+                self.file_model_type = "np_flatten"
+                self.file_model = FileTreeModel(file_structure, model_type=self.file_model_type, MATLAB_available=self.matlab_available)
                 self.tree_view.setModel(self.file_model)
                 self.update_console_log("Done loading file.", "complete")
             elif file_extension == ".pkl":
@@ -3354,6 +3364,45 @@ class MainWindow(QMainWindow):
                 except Exception as e:
                     self.update_console_log(f"Error saving file: {str(e)}", "error")
                     raise IOError(f"Could not save the file to {file_path}.")
+    def flatten_dict(self, d, parent_key="", sep="/"):
+        items = {}
+        for k, v in d.items():
+            new_key = f"{parent_key}{sep}{k}" if parent_key else k
+            if isinstance(v, dict):
+                items.update(self.flatten_dict(v, new_key, sep=sep))
+            elif isinstance(v, (int, float, str, np.ndarray)):
+                items[new_key] = v
+        return items
+    def save_results_npz(self):
+        """
+        Saves the current results to a Pickle (.pkl) file.
+
+        This method retrieves the data to be saved using the :meth:`MainWindow.get_data_to_save()` method, 
+        prompts the user to choose a location and file name using a file dialog, and then saves 
+        the retrieved data into a Pickle (.pkl) file. 
+        The Pickle format is a binary format used for serializing Python objects.
+
+        The default file name is based on the current date and a prefix "EnsGUI". 
+        If the user cancels or does not provide a file name, the function will not proceed.
+
+        If an error occurs while saving the file, an `IOError` is raised to notify the user that 
+        the file could not be saved.
+
+        :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
+            or the file cannot be written to.
+        """
+        data_to_save = self.get_data_to_save()
+        proposed_name = f"ENCORE_{data_to_save['ENCORE']['info']['date']}_"
+        file_path, _ = QFileDialog.getSaveFileName(self, "Save NPZ Results File", proposed_name, "Numpy Files (*.npz);;All files(*)")
+        if file_path:
+            try:
+                self.update_console_log("Saving results in Numpy NPZ file...")
+                flat = self.flatten_dict(data_to_save)
+                np.savez(file_path, **flat)
+                self.update_console_log("Done saving.", "complete")
+            except Exception as e:
+                self.update_console_log(f"Error saving file: {str(e)}", "error")
+                #raise IOError(f"Could not save the file to {file_path}.")
     def save_results_pkl(self):
         """
         Saves the current results to a Pickle (.pkl) file.

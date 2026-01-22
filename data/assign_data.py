@@ -18,6 +18,10 @@ def assign_data_from_file(var_path: str, filename: str, model_type: str):
             # Read the dataset
             dataset = current_group[()]
             return dataset
+    elif model_type == "np_flatten":
+        numpy_file = np.load(filename)
+        # Remove the trailing '//' at the beginning of the path
+        return numpy_file[var_path[2:]]
     elif model_type == "pkl":
         with open(filename, 'rb') as file:
             pkl_file = pickle.load(file)
