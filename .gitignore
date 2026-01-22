@@ -1,16 +1,16 @@
 
-src/ENCORE/data/__pycache__/
+src/encore/data/__pycache__/
 
 resources/
 
-src/ENCORE/gui/__pycache__/
+src/encore/gui/__pycache__/
 
-src/ENCORE/utils/__pycache__/
+src/encore/utils/__pycache__/
 
 docs/build/
 
-src/ENCORE/runners/__pycache__/
+src/encore/runners/__pycache__/
 
-src/ENCORE/plotters/__pycache__/
+src/encore/plotters/__pycache__/
 
-src/ENCORE/validators/__pycache__/
+src/encore/validators/__pycache__/

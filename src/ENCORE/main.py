@@ -12,6 +12,7 @@ import pickle
 import yaml
 import qdarktheme
 import importlib
+from importlib.resources import files
 
 from PyQt6.QtWidgets import QApplication, QFileDialog, QMainWindow
 from PyQt6.QtWidgets import QTableWidgetItem, QColorDialog
@@ -121,7 +122,8 @@ class MainWindow(QMainWindow):
     def __init__(self, gui_colors={}, *args, **kwargs):
         #super().__init__(*args, **kwargs)
         super(MainWindow, self).__init__()
-        loadUi("gui/MainWindow.ui", self)
+        ui_path = files("ENCORE.gui").joinpath("MainWindow.yaml")
+        loadUi(ui_path, self)
         self.setWindowTitle('ENCORE - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
@@ -3468,7 +3470,7 @@ class MainWindow(QMainWindow):
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
                 #raise IOError(f"Could not save the file to {file_path}.")
 
-if __name__ == "__main__":
+def main():
     qdarktheme.enable_hi_dpi()
     app = QApplication(sys.argv)
     custom_colors = {
