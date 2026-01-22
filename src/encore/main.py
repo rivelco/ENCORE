@@ -156,9 +156,15 @@ class MainWindow(QMainWindow):
         try:
             import matlab
             self.matlab_available = True
+            self.update_console_log("MATLAB engine loaded", "complete")
         except ImportError as exc:
-            self.update_console_log("Could not load MATLAB engine.", "error")
-            self.update_console_log("The algorithms that requires MATLAB are not available.", "warning")
+            self.update_console_log("MATLAB engine not available", "error")
+            self.update_console_log("The algorithms that requires MATLAB are also not available.", "warning")
+            self.matlab_available = False
+        except Exception as exc:
+            self.update_console_log("Unexpected error handling MATLAB engine", "error")
+            self.update_console_log(f"{exc}", "error")
+            self.update_console_log("If you just installed the engine successfully try re-opening ENCORE", "warning")
             self.matlab_available = False
         
         # Dark mode button

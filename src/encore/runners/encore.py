@@ -31,9 +31,18 @@ def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=T
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
-    
-    import matlab.engine
-    import encore.utils.data_converters as converters
+   
+    # Check if MATLAB is available
+    try:
+        import matlab.engine
+        import encore.utils.data_converters as converters
+    except ImportError as exc:
+        logger("MATLAB engine not available, this function is not available.", "error")
+    except Exception as exc:
+        logger("Unexpected error handling MATLAB engine import.", "error")
+        logger(f"{exc}", "error")
+        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
+            
     # The raster is at the first position
     raster = input_data[0]
     # Convert the raster to a MATLAB matrix
@@ -159,8 +168,17 @@ def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', incl
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
-    import matlab.engine
-    import encore.utils.data_converters as converters
+    # Check if MATLAB is available
+    try:
+        import matlab.engine
+        import encore.utils.data_converters as converters
+    except ImportError as exc:
+        logger("MATLAB engine not available, this function is not available.", "error")
+    except Exception as exc:
+        logger("Unexpected error handling MATLAB engine import.", "error")
+        logger(f"{exc}", "error")
+        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
+        
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     # Prepare the raster
@@ -252,8 +270,16 @@ def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detectio
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
-    import matlab.engine
-    import encore.utils.data_converters as converters
+    # Check if MATLAB is available
+    try:
+        import matlab.engine
+        import encore.utils.data_converters as converters
+    except ImportError as exc:
+        logger("MATLAB engine not available, this function is not available.", "error")
+    except Exception as exc:
+        logger("Unexpected error handling MATLAB engine import.", "error")
+        logger(f"{exc}", "error")
+        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
     # Convert the raster
     raster = input_data[0]
     raster_mat = matlab.double(raster.tolist())
@@ -400,8 +426,16 @@ def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_a
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
-    import matlab.engine
-    import encore.utils.data_converters as converters
+    # Check if MATLAB is available
+    try:
+        import matlab.engine
+        import encore.utils.data_converters as converters
+    except ImportError as exc:
+        logger("MATLAB engine not available, this function is not available.", "error")
+    except Exception as exc:
+        logger("Unexpected error handling MATLAB engine import.", "error")
+        logger(f"{exc}", "error")
+        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
     # Convert the raster to logical MATLAB
     raster = input_data[0]
     raster_mat = matlab.logical(raster.tolist())
@@ -527,8 +561,16 @@ def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_de
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
-    import matlab.engine
-    import encore.utils.data_converters as converters
+    # Check if MATLAB is available
+    try:
+        import matlab.engine
+        import encore.utils.data_converters as converters
+    except ImportError as exc:
+        logger("MATLAB engine not available, this function is not available.", "error")
+    except Exception as exc:
+        logger("Unexpected error handling MATLAB engine import.", "error")
+        logger(f"{exc}", "error")
+        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
     # Check for the first derivative flag
     dFFo = input_data[0]
     if pars_validated['use_first_derivative']:
