@@ -3,11 +3,7 @@ import numpy as np
 import scipy.io
 import pickle
 
-def assign_data_from_file(self):
-    var_path = self.file_selected_var_path
-    filename = self.source_filename
-    model_type = self.file_model_type
-    
+def assign_data_from_file(var_path: str, filename: str, model_type: str):  
     if model_type == "hdf5": 
         with h5py.File(filename, 'r') as hdf_file:
             # Split the dataset path into individual components

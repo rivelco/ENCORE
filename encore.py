@@ -30,6 +30,8 @@ from gui.MatplotlibWidget import MatplotlibWidget
 
 import plotters.encore_plots as encore_plots
 
+import validators.algorithm_results as validate_results
+
 from PyQt6.QtWidgets import (
     QWidget,
     QTabWidget,
@@ -46,7 +48,8 @@ from PyQt6.QtWidgets import (
     QPlainTextEdit,
     QRadioButton,
     QButtonGroup,
-    QSizePolicy
+    QSizePolicy,
+    QScrollArea
 )
 
 class QtLoggerAdapter:
@@ -242,6 +245,7 @@ class MainWindow(QMainWindow):
 
         # Saving
         self.save_btn_hdf5.clicked.connect(self.save_results_hdf5)
+        self.save_btn_npz.clicked.connect(self.save_results_npz)
         self.save_btn_pkl.clicked.connect(self.save_results_pkl)
         self.save_btn_mat.clicked.connect(self.save_results_mat)
 
@@ -288,8 +292,11 @@ class MainWindow(QMainWindow):
         for itm in save_itms:
             itm.setChecked(True)
             itm.setEnabled(False)
-        save_btns = [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]
-        for btn in save_btns:
+        self.save_btns = [self.save_btn_hdf5, 
+                     self.save_btn_npz,
+                     self.save_btn_pkl, 
+                     self.save_btn_mat]
+        for btn in self.save_btns:
             btn.setEnabled(False)
 
         # Clear the preview plots
@@ -575,6 +582,7 @@ class MainWindow(QMainWindow):
         # Run analysis button
         run_button = QPushButton("Run analysis")
         run_button.setObjectName(f"{short_name}_run_analysis_button")
+        run_button.setEnabled(False)
         run_button.clicked.connect(
             lambda _, cfg=algorithm_cfg: self.run_algorithm(cfg)
         )
@@ -989,7 +997,7 @@ class MainWindow(QMainWindow):
 
         :return: None
         """
-        self.data_dFFo = assign_data_from_file(self)
+        self.data_dFFo = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         neus, frames = self.data_dFFo.shape
         self.btn_clear_dFFo.setEnabled(True)
         self.btn_view_dFFo.setEnabled(True)
@@ -998,7 +1006,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set dFFo dataset - Identified {neus} cells and {frames} time points. Please, verify the data preview.", msg_type="complete")
         self.view_dFFo()
         self.save_check_input.setEnabled(True)
-        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+        for btn in self.save_btns:
             btn.setEnabled(True)
     def set_neuronal_activity(self):
         """
@@ -1010,7 +1018,7 @@ class MainWindow(QMainWindow):
 
         :return: None
         """
-        self.data_neuronal_activity = assign_data_from_file(self)
+        self.data_neuronal_activity = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
         self.btn_clear_neuronal_activity.setEnabled(True)
         self.btn_view_neuronal_activity.setEnabled(True)
@@ -1019,7 +1027,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set Binary Neuronal Activity dataset - Identified {self.cant_neurons} cells and {self.cant_timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_neuronal_activity()
         self.save_check_input.setEnabled(True)
-        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+        for btn in self.save_btns:
             btn.setEnabled(True)
     def set_coordinates(self):
         """
@@ -1031,7 +1039,7 @@ class MainWindow(QMainWindow):
         and triggers the visualization function.
         At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
         """
-        data_coordinates = assign_data_from_file(self)
+        data_coordinates = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_coordinates = data_coordinates[:, 0:2]
         neus, dims = self.data_coordinates.shape
         self.btn_clear_coordinates.setEnabled(True)
@@ -1041,7 +1049,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set Coordinates dataset - Identified {neus} cells and {dims} dimentions. Please, verify the data preview.", msg_type="complete")
         self.view_coordinates()
         self.save_check_input.setEnabled(True)
-        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+        for btn in self.save_btns:
             btn.setEnabled(True)
     def set_stims(self):
         """
@@ -1052,7 +1060,7 @@ class MainWindow(QMainWindow):
         and triggers the visualization function.
         At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
         """
-        data_stims = assign_data_from_file(self)
+        data_stims = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_stims = data_stims
         stims, timepoints = data_stims.shape
         self.btn_clear_stim.setEnabled(True)
@@ -1062,7 +1070,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_stims()
         self.save_check_input.setEnabled(True)
-        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+        for btn in self.save_btns:
             btn.setEnabled(True)
     def set_cells(self):
         """
@@ -1073,7 +1081,7 @@ class MainWindow(QMainWindow):
         and triggers the visualization function.
         At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
         """
-        data_cells = assign_data_from_file(self)
+        data_cells = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_cells = data_cells
         stims, cells = data_cells.shape
         self.btn_clear_cells.setEnabled(True)
@@ -1083,7 +1091,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set Selected cells dataset - Identified {stims} groups and {cells} cells. Please, verify the data preview.", msg_type="complete")
         self.view_cells()
         self.save_check_input.setEnabled(True)
-        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+        for btn in self.save_btns:
             btn.setEnabled(True)
     def set_behavior(self):
         """
@@ -1094,7 +1102,7 @@ class MainWindow(QMainWindow):
         and triggers the visualization function.
         At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
         """
-        data_behavior = assign_data_from_file(self)
+        data_behavior = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_behavior = data_behavior
         behav_shape = data_behavior.shape
         if len(behav_shape) > 1:
@@ -1109,7 +1117,7 @@ class MainWindow(QMainWindow):
         self.update_console_log(f"Set Behavior dataset - Identified {behaviors} behaviors and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
         self.view_behavior()
         self.save_check_input.setEnabled(True)
-        for btn in [self.save_btn_hdf5, self.save_btn_pkl, self.save_btn_mat]:
+        for btn in self.save_btns:
             btn.setEnabled(True)
     
     ## Clear variables 
@@ -1844,7 +1852,6 @@ class MainWindow(QMainWindow):
 
         if not function_name:
             logger("No analysis_function defined in algorithm config", "error")
-            return [0,0,0,0]
 
         module_path = "runners.encore"
 
@@ -1854,13 +1861,11 @@ class MainWindow(QMainWindow):
         except ImportError as exc:
             logger(f"Analysis module '{module_path}' could not be imported", "error")
             logger(str(exc), "error")
-            return [0,0,0,0]
 
         # Retrieve function
         func = getattr(module, function_name, None)
         if func is None or not callable(func):
             logger(f"Function '{function_name}' not found or not callable in '{module_path}'", "error")
-            return [0,0,0,0]
         
         # Execute
         try:
@@ -1966,10 +1971,10 @@ class MainWindow(QMainWindow):
         try:
             func(figures_dict, answer)
         except Exception as exc:
-            raise RuntimeError(
-                f"Error while executing plot function for '{function_name}'"
-            ) from exc
+            raise RuntimeError(f"{exc}")
     def run_algorithm_end(self, algorithm_cfg, times):
+        if times is None:
+            return
         short_name = algorithm_cfg.get("short_name", "").upper()
         self.update_console_log(f"Done executing the {short_name} algorithm", "complete") 
         self.update_console_log(f"- Loading the engine took {times[0]:.2f} seconds") 
