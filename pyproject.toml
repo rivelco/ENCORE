@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ENCORE"
+version = "2.0.0"
+description = "GUI for Ensembles Comparison and Recognition"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [
+    { name = "Ricardo Velazquez Contreras", email = "rivel_co@hotmail.com" }
+]
+dependencies = [
+    "PyQt6>=6.0",
+    "numpy",
+    "matplotlib",
+    "scipy",
+    "h5py",
+    "scikit-learn",
+    "pyqtdarktheme",
+    "pyyaml",
+    "pydantic"
+]
+
+[project.optional-dependencies]
+dev = ["pyqt6-tools", "pytest"]
+matlab = ["numpy"]
+
+[project.scripts]
+encore = "encore.main:main"
+
+[project.urls]
+Homepage = "https://github.com/rivelco/ENCORE"
+Documentation = "https://rivelco.github.io/ENCORE/"
+Issues = "https://github.com/rivelco/ENCORE/issues"
+
+[tool.setuptools]
+include-package-data = true

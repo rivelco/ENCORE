@@ -1,0 +1,3 @@
+recursive-include src/ENCORE/config *.yaml
+recursive-include src/ENCORE/gui *.ui
+recursive-include src/ENCORE/gui *.png
