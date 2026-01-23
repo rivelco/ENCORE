@@ -2672,7 +2672,7 @@ and should not be used for long term storage or sharing.</string>
   <customwidget>
    <class>MatplotlibWidget</class>
    <extends>QGraphicsView</extends>
-   <header location="global">encore.gui.MatplotlibWidget</header>
+   <header location="global">encore.plotters.MatplotlibWidget</header>
   </customwidget>
  </customwidgets>
  <resources/>
