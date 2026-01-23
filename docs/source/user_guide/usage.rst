@@ -6,7 +6,7 @@ A general workflow using ENCORE would look like this:
 1. Execute ENCORE
 -----------------
 
-    Once you have ENCORE installed in your system, run `python encore.py`
+    Once you have ENCORE installed in your system, run `encore`
 
 2. Load Your Data
 -----------------
