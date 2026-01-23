@@ -1,7 +1,14 @@
+sphinx>=8.0
 furo==2024.8.6
 sphinx-copybutton==0.5.2
+sphinxcontrib-napoleon
+sphinx-autodoc-typehints
+
+numpy
+scipy
 h5py
 matplotlib
-numpy
 scikit-learn
-pyqt6==6.10.0
+pyqt6>=6.5
+yaml
+pydantic

@@ -10,10 +10,12 @@ import pathlib
 import sys
 sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 
+import encore
+
 project = 'ENCORE'
 copyright = '2025, rivelco'
 author = 'rivelco'
-release = '1.0'
+release = encore.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
