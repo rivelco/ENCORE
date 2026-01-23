@@ -40,7 +40,16 @@ classifiers = [
 
 
 [project.optional-dependencies]
-dev = ["pyqt6-tools", "pytest"]
+dev = ["pyqt6-tools", 
+    "pytest"
+]
+docs = [
+    "sphinx>=7.0",
+    "furo",
+    "sphinx-copybutton",
+    "sphinxcontrib-napoleon",
+    "sphinx-autodoc-typehints"
+]
 matlab = ["numpy"]
 
 [project.scripts]
