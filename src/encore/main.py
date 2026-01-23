@@ -61,7 +61,7 @@ from encore.data.load_data import FileTreeModel
 from encore.data.assign_data import assign_data_from_file
 import encore.utils.metrics as metrics
 from encore.utils.text_formatting import format_nums_to_string
-from encore.gui.MatplotlibWidget import MatplotlibWidget
+from encore.plotters.MatplotlibWidget import MatplotlibWidget
 import encore.plotters.encore_plots as encore_plots
 import encore.validators.algorithm_results as validate_results
 
@@ -74,12 +74,16 @@ class QtLoggerAdapter:
 class WorkerSignals(QObject):
     """
     Signals used by the worker thread.
-
-    :ivar result_ready: Signal emitted when the long-running function finishes execution and returns a result.
-    :vartype result_ready: pyqtSignal(object)
     """
+
+    #: Signal emitted when the long running function finishes execution
+    #: and returns a result.
     result_ready = pyqtSignal(object)
+
+    #: Signal emitted when the long running function emits a message.
+    #: Arguments: message (str), message type (str).
     log = pyqtSignal(str, str)
+
 
 class WorkerRunnable(QRunnable):
     """
@@ -132,6 +136,14 @@ class WorkerRunnable(QRunnable):
 
 class MainWindow(QMainWindow):
     def __init__(self, gui_colors=None, *args, **kwargs):
+        """
+        Initializing function for the GUI. Loads and initialize the UI, and 
+        assigns each button in the GUI to a function. Also runs the reset function
+        and triggers the loading of the algorithms.
+        
+        :param gui_colors: Dictionary of colors to be used in the UI.
+        :type gui_colors: dict
+        """
         super(MainWindow, self).__init__()
         ui_path = str(files("encore.gui").joinpath("MainWindow.ui"))
         loadUi(ui_path, self)
@@ -526,6 +538,14 @@ class MainWindow(QMainWindow):
         
         self.update_console_log("Done loading algorithms.", "complete")
     def _create_algorithm_tab(self, algorithm_cfg: dict):
+        """Creates and initializes a tab for the algorithm described
+        in algorithm_cfg. Triggers the creation of the parameters and figures
+        sections and the loading of other options in the UI.
+
+        Args:
+            algorithm_cfg (dict): Dictionary describing the algorithm as defined in
+            ``encore.config.encore_runners_config.yaml
+        """
         tab = QWidget()
         main_layout = QHBoxLayout(tab)
 
@@ -840,6 +860,9 @@ class MainWindow(QMainWindow):
 
     ## Theme for the UI
     def set_theme(self):
+        """
+        Toggles the dark or light mode based on the status of the mode check box.
+        """
         set_dark_mode = self.dark_mode.isChecked()
         if set_dark_mode:
             qdarktheme.setup_theme(
@@ -851,16 +874,16 @@ class MainWindow(QMainWindow):
             )
     
     ## Console log  
-    def update_console_log(self, message, msg_type="log"):
+    def update_console_log(self, message, level="log"):
         """
         Updates the console log with a new message, formatted with a specific color based on the message type.
 
         :param message: The message to be displayed in the console log.
         :type message: str
-        :param msg_type: The type of the message, which determines its color. 
+        :param level: The type of the message, which determines its color. 
                         It can be one of "log", "error", "warning", or "complete". 
                         Defaults to "log".
-        :type msg_type: str, optional
+        :type level: str, optional
         :return: None
 
         This method formats the log entry by including the current timestamp and the provided message. The message 
@@ -870,7 +893,7 @@ class MainWindow(QMainWindow):
         color_map = {"log": "#000000", "error": "#da1e28", "warning": "#ff832b", "complete": "#198038"}
         current_date_time = QDateTime.currentDateTime().toString(Qt.DateFormat.ISODateWithMs)
 
-        log_entry = f"<span style=\"font-family:monospace; font-size:10pt; font-weight:600; color:{color_map[msg_type]};\">"
+        log_entry = f"<span style=\"font-family:monospace; font-size:10pt; font-weight:600; color:{color_map[level]};\">"
         log_entry += f"{current_date_time}: {message}"
         log_entry += "</span>"
 
@@ -1017,6 +1040,10 @@ class MainWindow(QMainWindow):
     
     ## Cehck algorithm requirements  
     def update_user_analysis_requirements(self):
+        """
+        Checks if the necessary data for an algorithm is loaded, changes the labels
+        in the UI and updates the availability of the run button.
+        """
         algorithms_config = self.algorithms_config
         
         for algorithm in algorithms_config.values():
@@ -1046,7 +1073,7 @@ class MainWindow(QMainWindow):
     ## Set variables from input file
     def set_dFFo(self):
         """
-        Sets the :attr:`MainWindow.dFFo` dataset by assigning data from a file and updating the relevant UI components.
+        Sets the :attr:`MainWindow.data_dFFo` dataset by assigning data from a file and updating the relevant UI components.
 
         This method loads the dFFo dataset from the selected file.
         It then updates the UI to reflect that the dataset has been
@@ -1060,7 +1087,7 @@ class MainWindow(QMainWindow):
         self.btn_view_dFFo.setEnabled(True)
         self.lbl_dffo_select.setText("Assigned")
         self.lbl_dffo_select_name.setText(self.file_selected_var_name)
-        self.update_console_log(f"Set dFFo dataset - Identified {neus} cells and {frames} time points. Please, verify the data preview.", msg_type="complete")
+        self.update_console_log(f"Set dFFo dataset - Identified {neus} cells and {frames} time points. Please, verify the data preview.", "complete")
         self.view_dFFo()
         self.save_check_input.setEnabled(True)
         for btn in self.save_btns:
@@ -1081,7 +1108,7 @@ class MainWindow(QMainWindow):
         self.btn_view_neuronal_activity.setEnabled(True)
         self.lbl_neuronal_activity_select.setText("Assigned")
         self.lbl_neuronal_activity_select_name.setText(self.file_selected_var_name)
-        self.update_console_log(f"Set Binary Neuronal Activity dataset - Identified {self.cant_neurons} cells and {self.cant_timepoints} time points. Please, verify the data preview.", msg_type="complete")
+        self.update_console_log(f"Set Binary Neuronal Activity dataset - Identified {self.cant_neurons} cells and {self.cant_timepoints} time points. Please, verify the data preview.", "complete")
         self.view_neuronal_activity()
         self.save_check_input.setEnabled(True)
         for btn in self.save_btns:
@@ -1103,7 +1130,7 @@ class MainWindow(QMainWindow):
         self.btn_view_coordinates.setEnabled(True)
         self.lbl_coordinates_select.setText("Assigned")
         self.lbl_coordinates_select_name.setText(self.file_selected_var_name)
-        self.update_console_log(f"Set Coordinates dataset - Identified {neus} cells and {dims} dimentions. Please, verify the data preview.", msg_type="complete")
+        self.update_console_log(f"Set Coordinates dataset - Identified {neus} cells and {dims} dimentions. Please, verify the data preview.", "complete")
         self.view_coordinates()
         self.save_check_input.setEnabled(True)
         for btn in self.save_btns:
@@ -1124,7 +1151,7 @@ class MainWindow(QMainWindow):
         self.btn_view_stim.setEnabled(True)
         self.lbl_stim_select.setText("Assigned")
         self.lbl_stim_select_name.setText(self.file_selected_var_name)
-        self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
+        self.update_console_log(f"Set Stimuli dataset - Identified {stims} stims and {timepoints} time points. Please, verify the data preview.", "complete")
         self.view_stims()
         self.save_check_input.setEnabled(True)
         for btn in self.save_btns:
@@ -1145,7 +1172,7 @@ class MainWindow(QMainWindow):
         self.btn_view_cells.setEnabled(True)
         self.lbl_cells_select.setText("Assigned")
         self.lbl_cells_select_name.setText(self.file_selected_var_name)
-        self.update_console_log(f"Set Selected cells dataset - Identified {stims} groups and {cells} cells. Please, verify the data preview.", msg_type="complete")
+        self.update_console_log(f"Set Selected cells dataset - Identified {stims} groups and {cells} cells. Please, verify the data preview.", "complete")
         self.view_cells()
         self.save_check_input.setEnabled(True)
         for btn in self.save_btns:
@@ -1171,7 +1198,7 @@ class MainWindow(QMainWindow):
         self.btn_view_behavior.setEnabled(True)
         self.lbl_behavior_select.setText("Assigned")
         self.lbl_behavior_select_name.setText(self.file_selected_var_name)
-        self.update_console_log(f"Set Behavior dataset - Identified {behaviors} behaviors and {timepoints} time points. Please, verify the data preview.", msg_type="complete")
+        self.update_console_log(f"Set Behavior dataset - Identified {behaviors} behaviors and {timepoints} time points. Please, verify the data preview.", "complete")
         self.view_behavior()
         self.save_check_input.setEnabled(True)
         for btn in self.save_btns:
@@ -1193,7 +1220,7 @@ class MainWindow(QMainWindow):
         self.lbl_dffo_select_name.setText("")
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted dFFo dataset", msg_type="complete")       
+        self.update_console_log(f"Deleted dFFo dataset", "complete")       
     def clear_neuronal_activity(self):
         """
         Deletes the value of the :attr:`MainWindow.data_neuronal_activity` variable.
@@ -1209,7 +1236,7 @@ class MainWindow(QMainWindow):
         self.lbl_neuronal_activity_select_name.setText("")
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Binary Neuronal Activity dataset", msg_type="complete")
+        self.update_console_log(f"Deleted Binary Neuronal Activity dataset", "complete")
     def clear_coordinates(self):
         """
         Deletes the value of the :attr:`MainWindow.data_coordinates` variable.
@@ -1225,7 +1252,7 @@ class MainWindow(QMainWindow):
         self.lbl_coordinates_select_name.setText("")
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Coordinates dataset", msg_type="complete")
+        self.update_console_log(f"Deleted Coordinates dataset", "complete")
     def clear_stims(self):
         """
         Deletes the value of the :attr:`MainWindow.data_stims` variable.
@@ -1241,7 +1268,7 @@ class MainWindow(QMainWindow):
         self.lbl_stim_select_name.setText("")
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Stimuli dataset", msg_type="complete")
+        self.update_console_log(f"Deleted Stimuli dataset", "complete")
     def clear_cells(self):
         """
         Deletes the value of the :attr:`MainWindow.data_cells` variable.
@@ -1257,7 +1284,7 @@ class MainWindow(QMainWindow):
         self.lbl_cells_select_name.setText("")
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Selected cells dataset", msg_type="complete")
+        self.update_console_log(f"Deleted Selected cells dataset", "complete")
     def clear_behavior(self):
         """
         Deletes the value of the :attr:`MainWindow.data_behavior` variable.
@@ -1273,12 +1300,12 @@ class MainWindow(QMainWindow):
         self.lbl_behavior_select_name.setText("")
         default_txt = "Load or select a variable\nto see a preview here"
         self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Behavior dataset", msg_type="complete")
+        self.update_console_log(f"Deleted Behavior dataset", "complete")
         
     ## Visualize variables from input file
     def view_dFFo(self):
         """
-        Displays the data saved in the :attr:`MainWindow.dFFo` variable.
+        Displays the data saved in the :attr:`MainWindow.data_dFFo` variable.
 
         This function also runs update the status for editing the variable
         using :meth:`MainWindow.set_able_edit_options` and updates validators
@@ -1295,7 +1322,7 @@ class MainWindow(QMainWindow):
         self.varlabels_setup_tab(self.data_dFFo.shape[0])
     def view_neuronal_activity(self):
         """
-        Displays the data saved in the :attr:`MainWindow.neuronal_activity` variable.
+        Displays the data saved in the :attr:`MainWindow.data_neuronal_activity` variable.
 
         This function also runs update the status for editing the variable
         using :meth:`MainWindow.set_able_edit_options` and updates validators
@@ -1312,7 +1339,7 @@ class MainWindow(QMainWindow):
         self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
     def view_coordinates(self):
         """
-        Displays the data saved in the :attr:`MainWindow.coordinates` variable.
+        Displays the data saved in the :attr:`MainWindow.data_coordinates` variable.
 
         This function also runs update the status for editing the variable
         using :meth:`MainWindow.set_able_edit_options` and updates validators
@@ -1328,7 +1355,7 @@ class MainWindow(QMainWindow):
         self.varlabels_setup_tab(self.data_coordinates.shape[0])
     def view_stims(self):
         """
-        Displays the data saved in the :attr:`MainWindow.stims` variable.
+        Displays the data saved in the :attr:`MainWindow.data_stims` variable.
 
         This function also runs update the status for editing the variable
         using :meth:`MainWindow.set_able_edit_options` and updates validators
@@ -1350,7 +1377,7 @@ class MainWindow(QMainWindow):
         encore_plots.preview_dataset(plot_widget, preview_data==0, ylabel='Stim', cmap='gray', yitems_labels=stim_labels)
     def view_cells(self):
         """
-        Displays the data saved in the :attr:`MainWindow.cells` variable.
+        Displays the data saved in the :attr:`MainWindow.data_cells` variable.
 
         This function also runs update the status for editing the variable
         using :meth:`MainWindow.set_able_edit_options` and updates validators
@@ -1371,7 +1398,7 @@ class MainWindow(QMainWindow):
         encore_plots.preview_dataset(plot_widget, preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
     def view_behavior(self):
         """
-        Displays the data saved in the :attr:`MainWindow.behavior` variable.
+        Displays the data saved in the :attr:`MainWindow.data_behavior` variable.
 
         This function also runs update the status for editing the variable
         using :meth:`MainWindow.set_able_edit_options` and updates validators
@@ -1770,6 +1797,10 @@ class MainWindow(QMainWindow):
     def load_algorithm_defaults(self, algorithm_cfg: dict):
         """
         Load default values from config into parameter widgets.
+        
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
         """
         parameters = algorithm_cfg.get("parameters", {})
         short_name = algorithm_cfg.get("short_name", "Algo").upper()
@@ -1795,8 +1826,11 @@ class MainWindow(QMainWindow):
         """
         Collect parameters for one algorithm from the UI using YAML configuration.
 
-        :param algorithm_cfg: Algorithm configuration dictionary from YAML
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
         :return: Dictionary of parameter_name -> value
+        :rtype: dict
         """
         collected_params = {}
 
@@ -1844,6 +1878,15 @@ class MainWindow(QMainWindow):
 
         return collected_params
     def collect_algorithm_data(self, algorithm_cfg: dict) -> list:
+        """
+        Collect the needed data for one algorithm using YAML configuration.
+
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
+        :return: list of requested data in the same order as defined in the config file.
+        :rtype: list
+        """
         requested_data = []
         needed_data = algorithm_cfg.get("needed_data", [])
         for data_key in needed_data:
@@ -1858,6 +1901,15 @@ class MainWindow(QMainWindow):
             
         return requested_data
     def run_algorithm(self, algorithm_cfg: dict):
+        """
+        Runs once the run algorithm button is pressed. Loads the parameters and the
+        necessary data, clears the figures and start the parallel worker for the
+        requested algorithm
+
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
+        """
         # Deactivate the running button while running 
         short_name = algorithm_cfg.get('short_name', 'Algorithm')
         run_button = self.findChild(QWidget, f"{short_name}_run_analysis_button")
@@ -1898,10 +1950,15 @@ class MainWindow(QMainWindow):
         """
         Dynamically load and execute an analysis function.
 
-        :param algorithm_cfg: Algorithm configuration from YAML
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
         :param params: Validated parameters dictionary
+        :type params: dict
         :param data: NumPy data matrix
-        :raises RuntimeError: If function cannot be loaded or executed
+        :type data: numpy.ndarray
+        :param logger: Function to use to report the progress and error of the function
+            logger(srt, srt). The first string defines the message and the second the log level
         """
         function_name = algorithm_cfg.get("analysis_function")
         code_folder_path = algorithm_cfg.get("folder_path")
@@ -2001,6 +2058,15 @@ class MainWindow(QMainWindow):
             )
             logger(str(exc), "error")
     def plot_algorithm_plots(self, algorithm_cfg: dict, answer: dict):
+        """
+        Runs the plot function for a given algorithm
+
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
+        :param answer: Dictionary with the answer of the algorithm.
+        :type answer: dict
+        """
         function_name = algorithm_cfg.get("plot_function")
 
         if not function_name:
@@ -2034,7 +2100,17 @@ class MainWindow(QMainWindow):
             func(figures_dict, answer)
         except Exception as exc:
             raise RuntimeError(f"{exc}")
-    def run_algorithm_end(self, algorithm_cfg, times):
+    def run_algorithm_end(self, algorithm_cfg: dict, times: list):
+        """
+        Runs after an algorithm has finished running. Reports the running times and number
+        of ensembels identified to the log box.
+
+        :param algorithm_cfg: Dictionary with the algorithm definition as described 
+            in :file:`encore/config/encore_runners_config.yaml`
+        :type algorithm_cfg: dict
+        :param params: list of times in the order [engine_time, running_time, plotting_time, ensembles_found]
+        :type params: list[float, float, float, int]
+        """
         if times is None:
             return
         short_name = algorithm_cfg.get("short_name", "").upper()
@@ -2328,7 +2404,7 @@ class MainWindow(QMainWindow):
         encore_plots.plot_ensembles_timecourse(plot_widget, self.results[curr_analysis]['timecourse'])
 
     ## Ensembles comparison
-    def ensembles_compare_tabchange(self, index):
+    def ensembles_compare_tabchange(self, index: int):
         """
         Handles tab changes in the GUI, updating the interface and displaying similarity maps as needed.
 
@@ -2338,8 +2414,6 @@ class MainWindow(QMainWindow):
         similarity maps are displayed for the first time.
 
         :param index: The index of the currently selected tab.
-                    - `2`: Neurons tab
-                    - `3`: Timecourses tab
         :type index: int
         :return: None
         :rtype: None
@@ -2357,7 +2431,7 @@ class MainWindow(QMainWindow):
                     self.ensembles_compare_similarity(component="Neurons", first_show=True)
                     self.ensembles_compare_similarity(component="Timecourses", first_show=True)
                     self.tempvars["showed_sim_maps"] = True
-    def ensembles_compare_update_opts(self, algorithm):
+    def ensembles_compare_update_opts(self, algorithm: str):
         """
         Updates the option buttons with the data from the given analysis.
 
@@ -2402,7 +2476,7 @@ class MainWindow(QMainWindow):
         self.enscomp_combo_select_simil.setEnabled(True)
         self.enscomp_combo_select_simil_method.setEnabled(True)
         self.enscomp_combo_select_simil_colormap.setEnabled(True)
-    def ensembles_compare_update_combo_results(self, text):
+    def ensembles_compare_update_combo_results(self, text: str):
         """
         Updates the visualization options for the selected algorithm.
 
@@ -2431,7 +2505,7 @@ class MainWindow(QMainWindow):
         self.enscomp_check_coords.blockSignals(False)
         self.enscomp_check_ens.blockSignals(False)
         self.enscomp_check_neus.blockSignals(False)   
-    def update_enscomp_options(self, exp_data):
+    def update_enscomp_options(self, exp_data: str):
         """
         Loads the behavior or stimulation data into the `Ensemble Compare` tab.
 
@@ -2548,7 +2622,7 @@ class MainWindow(QMainWindow):
 
         self.ensembles_compare_update_map(ensembles_to_compare)
         self.ensembles_compare_update_timecourses(ensembles_to_compare)
-    def ensembles_compare_update_map(self, ensembles_to_compare):
+    def ensembles_compare_update_map(self, ensembles_to_compare: dict):
         """
         Updates the spatial map in ensembles compare.
 
@@ -2605,7 +2679,7 @@ class MainWindow(QMainWindow):
 
         map_plot = self.findChild(MatplotlibWidget, 'enscomp_plot_map')
         encore_plots.enscomp_update_map(map_plot, lims, members_idx, members_freq, members_coords, members_colors, neuron_size)
-    def ensembles_compare_update_timecourses(self, ensembles_to_compare):
+    def ensembles_compare_update_timecourses(self, ensembles_to_compare: dict):
         """
         Updates the timecourse plot in the ensembles compare tab.
 
@@ -2681,7 +2755,7 @@ class MainWindow(QMainWindow):
 
         plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_neusact')
         encore_plots.enscomp_update_timelines(plot_widget, new_ticks, cells_activities, [], timecourses, colors, self.cant_timepoints)
-    def ensembles_compare_get_elements_labels(self, criteria):
+    def ensembles_compare_get_elements_labels(self, criteria: dict):
         """
         Retrieves elements and their labels for ensembles comparison based on a given criterion.
 
@@ -2718,7 +2792,7 @@ class MainWindow(QMainWindow):
         # Convert to numpy array
         all_elements = np.array(all_elements)
         return all_elements, labels
-    def ensembles_compare_get_simmatrix(self, method, all_elements):
+    def ensembles_compare_get_simmatrix(self, method: str, all_elements: np.ndarray):
         """
         Calculates the similarity matrix for a set of elements using the specified method.
 
@@ -2797,7 +2871,7 @@ class MainWindow(QMainWindow):
             self.enscomp_visopts["sim_time"]['colormap'] = color
         
         encore_plots.enscomp_plot_similarity(plot_widget, similarity_matrix, labels, color)
-    def ensembles_compare_similarity_update_combbox(self, text):
+    def ensembles_compare_similarity_update_combbox(self, text: str):
         """
         Updates the combo boxes for similarity method and colormap based on the selected component.
 
@@ -2873,7 +2947,7 @@ class MainWindow(QMainWindow):
             self.ensembles_compare_update_ensembles()
 
     ## Ensembles performance
-    def performance_tabchange(self, index):
+    def performance_tabchange(self, index: int):
         """
         Handles tab changes in the performance analysis section of the GUI, triggering updates for the selected tab.
 
@@ -2923,7 +2997,7 @@ class MainWindow(QMainWindow):
         Updates the list of selected methods for performance comparison based on user input.
 
         This method checks the state of multiple checkboxes corresponding to different analysis methods 
-        (SVD, PCA, ICA, X2P, SGC) and updates the list of methods to compare. It also enables or disables 
+        and updates the list of methods to compare. It also enables or disables 
         the compare button based on whether any methods are selected.
 
         :return: None
@@ -2994,6 +3068,8 @@ class MainWindow(QMainWindow):
 
         :param plot_widget: The widget used to display the correlation plots.
         :type plot_widget: MatplotlibWidget
+        :param logger: Function to use to report the progress and error of the function
+            logger(srt, srt). The first string defines the message and the second the log level
         :return: None
         :rtype: None
         """
@@ -3040,6 +3116,8 @@ class MainWindow(QMainWindow):
 
         :param plot_widget: The widget used to display the correlation plots.
         :type plot_widget: MatplotlibWidget
+        :param logger: Function to use to report the progress and error of the function
+            logger(srt, srt). The first string defines the message and the second the log level
         :return: None
         :rtype: None
         """
@@ -3098,6 +3176,8 @@ class MainWindow(QMainWindow):
 
         :param plot_widget: The widget used to display the cross-correlation plots.
         :type plot_widget: MatplotlibWidget
+        :param logger: Function to use to report the progress and error of the function
+            logger(srt, srt). The first string defines the message and the second the log level
         :return: None
         :rtype: None
         """
@@ -3148,6 +3228,8 @@ class MainWindow(QMainWindow):
 
         :param plot_widget: The widget used to display the correlation plots.
         :type plot_widget: MatplotlibWidget
+        :param logger: Function to use to report the progress and error of the function
+            logger(srt, srt). The first string defines the message and the second the log level
         :return: None
         :rtype: None
         """
@@ -3219,6 +3301,9 @@ class MainWindow(QMainWindow):
 
     ## Saving
     def update_datetime(self):
+        """
+        Updates the date time object in the current session, used in the saved results files.
+        """
         now = datetime.now()
         formatted_time = now.strftime("%d%m%y_%H%M%S")
         self.ensgui_desc["date"] = formatted_time
@@ -3237,8 +3322,6 @@ class MainWindow(QMainWindow):
         - Parameters used in the analysis
         - Full algorithm results
         - Performance metrics for ensembles, including correlation with stimuli, behavior, and cross-correlation
-
-        The method also generates a timestamp and stores it in the data under the key "EnsemblesGUI".
 
         :return: A dictionary containing the data to be saved.
         :rtype: dict
@@ -3370,7 +3453,7 @@ class MainWindow(QMainWindow):
         The file is saved using the :meth:`MainWindow.save_data_to_hdf5` method to recursively write 
         the data into the file.
 
-        The file is named based on the current date and a prefix "EnsGUI", and the user is prompted 
+        The file is named based on the current date and a prefix "ENCORE", and the user is prompted 
         to choose a location and file name via a file dialog.
 
         :raises IOError: If the file could not be saved.
@@ -3400,9 +3483,29 @@ class MainWindow(QMainWindow):
                 except Exception as e:
                     self.update_console_log(f"Error saving file: {str(e)}", "error")
                     raise IOError(f"Could not save the file to {file_path}.")
-    def flatten_dict(self, d, parent_key="", sep="/"):
+    def flatten_dict(self, dict_to_flatten: dict, parent_key="", sep="/") -> dict:
+        """
+        Recunsively flattens the keys in a dictionary to create a new dictionary
+        where each key contains all the keys needed to get to the value.
+        For example, aplying this function to the dictionary:
+        input['first']['element_a'] = 1
+        input['first']['element_b'] = 2
+        input['second'] = 3
+        Will produce:
+        result['first/element_a'] == 1
+        result['first/element_b'] == 2
+        result['second'] == 3
+
+        Args:
+            dict_to_flatten (dict): Dictionary to flatten
+            parent_key (str, optional): Parent top key. Defaults to "".
+            sep (str, optional): Character to be used as separator. Defaults to "/".
+
+        Returns:
+            dict: Dictionary with the flatten keys and elements.
+        """
         items = {}
-        for k, v in d.items():
+        for k, v in dict_to_flatten.items():
             new_key = f"{parent_key}{sep}{k}" if parent_key else k
             if isinstance(v, dict):
                 items.update(self.flatten_dict(v, new_key, sep=sep))
@@ -3411,21 +3514,17 @@ class MainWindow(QMainWindow):
         return items
     def save_results_npz(self):
         """
-        Saves the current results to a Pickle (.pkl) file.
+        Saves the current results to a Numpy NPZ (.npz) file.
 
         This method retrieves the data to be saved using the :meth:`MainWindow.get_data_to_save()` method, 
         prompts the user to choose a location and file name using a file dialog, and then saves 
-        the retrieved data into a Pickle (.pkl) file. 
-        The Pickle format is a binary format used for serializing Python objects.
+        the retrieved data into a NPZ (.npz) file. 
 
-        The default file name is based on the current date and a prefix "EnsGUI". 
+        The default file name is based on the current date and a prefix "ENCORE". 
         If the user cancels or does not provide a file name, the function will not proceed.
 
-        If an error occurs while saving the file, an `IOError` is raised to notify the user that 
+        If an error occurs while saving the file, a message is shown to notify the user that 
         the file could not be saved.
-
-        :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
-            or the file cannot be written to.
         """
         
         self.update_datetime()
@@ -3440,7 +3539,6 @@ class MainWindow(QMainWindow):
                 self.update_console_log("Done saving.", "complete")
             except Exception as e:
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
-                #raise IOError(f"Could not save the file to {file_path}.")
     def save_results_pkl(self):
         """
         Saves the current results to a Pickle (.pkl) file.
@@ -3450,14 +3548,11 @@ class MainWindow(QMainWindow):
         the retrieved data into a Pickle (.pkl) file. 
         The Pickle format is a binary format used for serializing Python objects.
 
-        The default file name is based on the current date and a prefix "EnsGUI". 
+        The default file name is based on the current date and a prefix "ENCORE". 
         If the user cancels or does not provide a file name, the function will not proceed.
 
-        If an error occurs while saving the file, an `IOError` is raised to notify the user that 
+        If an error occurs while saving the file, a message is shown to notify the user that 
         the file could not be saved.
-
-        :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
-            or the file cannot be written to.
         """
         
         self.update_datetime()
@@ -3472,7 +3567,6 @@ class MainWindow(QMainWindow):
                 self.update_console_log("Done saving.", "complete")
             except Exception as e:
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
-                #raise IOError(f"Could not save the file to {file_path}.")
     def save_results_mat(self):
         """
         Saves the current results to a MATLAB (.mat) file.
@@ -3481,14 +3575,11 @@ class MainWindow(QMainWindow):
         prompts the user to choose a location and file name using a file dialog, and then saves 
         the retrieved data into a MATLAB .mat file using the `scipy.io.savemat()` function.
 
-        The default file name is based on the current date and a prefix "EnsGUI". 
+        The default file name is based on the current date and a prefix "ENCORE". 
         If the user cancels or does not provide a file name, the function will not proceed.
 
-        If an error occurs while saving the file, an `IOError` is raised to notify the user that the 
-        file could not be saved.
-
-        :raises IOError: If there is an error saving the file, for example, if the file path is invalid 
-            or the file cannot be written to.
+        If an error occurs while saving the file, a message is shown to notify the user that 
+        the file could not be saved.
         """
         self.update_datetime()
         proposed_name = f"ENCORE_{self.ensgui_desc['date']}_"
@@ -3501,7 +3592,6 @@ class MainWindow(QMainWindow):
                 self.update_console_log("Done saving.", "complete")
             except Exception as e:
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
-                #raise IOError(f"Could not save the file to {file_path}.")
 
 def main():
     parser = argparse.ArgumentParser()

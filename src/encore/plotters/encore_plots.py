@@ -3,6 +3,26 @@ from matplotlib.patches import Wedge
 import matplotlib.pyplot as plt
 
 def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
+    """
+    Runs a imshow plot in the plot_widget and applies the attributes specified in the arguments
+
+    :param plot_widget: Widget where the plot will be produced.
+    :type plot_widget: :class:`MatplotlibWidget`
+    :param dataset: Numpy matrix with the data to plot.
+    :type dataset: numpy.ndarray
+    :param xlabel: X label for the plot, defaults to 'Timepoint'
+    :type xlabel: str, optional
+    :param ylabel: Y label for the plot, defaults to 'Data'
+    :type ylabel: str, optional
+    :param title: Title for the plot, defaults to None
+    :type title: str, optional
+    :param cmap: Color map for the plot, compatible with Matplotlib, defaults to 'hot'
+    :type cmap: str, optional
+    :param aspect: Aspect ratio of the map, defaults to 'auto'
+    :type aspect: str, optional
+    :param yitems_labels: Custom y labels for the map, defaults to []
+    :type yitems_labels: list, optional
+    """
     plot_widget.axes.clear()
     n, t = dataset.shape
     plot_widget.axes.imshow(dataset, cmap=cmap, interpolation='nearest', aspect=aspect)
@@ -32,6 +52,14 @@ def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', tit
     plot_widget.canvas.flush_events()
 
 def preview_coordinates2D(plot_widget, dataset):
+    """
+    Creates a 2D plot in the plot_widget.
+
+    :param plot_widget: Widget where the plot will be produced.
+    :type plot_widget: :class:`MatplotlibWidget`
+    :param dataset: Numpy matrix with the data to plot.
+    :type dataset: numpy.ndarray
+    """
     plot_widget.axes.clear()
     plot_widget.axes.scatter(dataset[:,0], dataset[:,1], c='blue', marker='o')
     
@@ -53,6 +81,16 @@ def preview_coordinates2D(plot_widget, dataset):
     plot_widget.canvas.flush_events()
 
 def raster_plot(plot_widget, data_neuronal_activity):
+    """
+    Plots the time course for the passed neuronal activity.
+    Creates a vertical line for each value in the matrix equal to 1.
+    The rest are considered as no activity.
+
+    :param plot_widget: Widget where the plot will be produced.
+    :type plot_widget: :class:`MatplotlibWidget`
+    :param dataset: Numpy matrix with the data to plot.
+    :type dataset: numpy.ndarray
+    """
     plot_widget.axes.clear()
     
     n, t = data_neuronal_activity.shape
@@ -77,6 +115,16 @@ def raster_plot(plot_widget, data_neuronal_activity):
 
 # Plots for the SVD analysis
 def plot_singular_values(plot_widget, singulars, num_states):
+    """
+    Runs a imshow plot in the plot_widget and applies the attributes specified in the arguments
+
+    :param plot_widget: Widget where the plot will be produced.
+    :type plot_widget: :class:`MatplotlibWidget`
+    :param singulars: 1D numpy array with the singular values from the SVD.
+    :type singulars: numpy.ndarray
+    :param num_states: Cutoff for the number of states, a red dot is placed at this point.
+    :type num_states: int
+    """
     plot_widget.axes.clear()
     plot_widget.axes.semilogx(singulars, marker='o', linestyle='-', label='Singular values')
     # Add a vertical red dashed line at num_state
@@ -709,6 +757,23 @@ def plot_perf_cross_ens_stims(plot_widget, cross_corrs, lags, col_idx, row_idx, 
 # Plot function for the example algorithm
 
 def plot_for_example_simple_line(plot_widget, line):
+    """
+    Plot a single time series line on a MatplotlibWidget.
+
+    This helper function clears the current axes of the provided
+    :class:`MatplotlibWidget`, plots a one-dimensional signal, and
+    formats the figure with axis labels suitable for neuronal activity
+    visualization (e.g., dFFo traces).
+
+    It is intended to be used by algorithm-specific plotting functions
+    to ensure consistent styling and figure handling across the GUI.
+
+    :param plot_widget: Matplotlib widget where the line will be plotted.
+    :type plot_widget: MatplotlibWidget
+    :param line: One-dimensional array representing a time series signal.
+    :type line: array-like
+    """
+
     # Clean the figure
     plot_widget.axes.clear()
     

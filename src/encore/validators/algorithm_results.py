@@ -14,6 +14,12 @@ class ResultsBlock(BaseModel):
     @field_validator("timecourse", "neus_in_ens")
     @classmethod
     def validate_binary_matrix(cls, v: np.ndarray):
+        """
+        Validate that the input is a 2D binary NumPy array.
+
+        Ensures the array is a NumPy ndarray, has exactly two dimensions,
+        and contains only binary values (0 or 1).
+        """
         if not isinstance(v, np.ndarray):
             raise TypeError("Must be a numpy ndarray")
 
@@ -42,6 +48,13 @@ class AnalysisOutput(BaseModel):
 
     @model_validator(mode="after")
     def validate_shapes_with_context(self, info):
+        """
+        Validate result matrix shapes using contextual neuron and timepoint information.
+
+        Checks that ``results.neus_in_ens`` and ``results.timecourse`` match the expected
+        shapes derived from the number of ensembles and the validation context
+        (``neurons`` and ``timepoints``).
+        """
         ctx = info.context or {}
 
         neurons = ctx.get("neurons")
@@ -68,6 +81,22 @@ class AnalysisOutput(BaseModel):
         return self
 
 def validate_analysis_output(output: dict, neurons: int, timepoints: int) -> AnalysisOutput:
+    """
+    Validate and parse an analysis output dictionary.
+
+    Uses contextual information about neuron and timepoint counts to perform
+    shape validation and returns a fully validated :class:`AnalysisOutput` model.
+
+    :param output: Raw analysis output dictionary.
+    :type output: dict
+    :param neurons: Expected number of neurons.
+    :type neurons: int
+    :param timepoints: Expected number of timepoints.
+    :type timepoints: int
+    :raises RuntimeError: If validation fails.
+    :return: Validated analysis output model.
+    :rtype: AnalysisOutput
+    """
     try:
         return AnalysisOutput.model_validate(
             output,

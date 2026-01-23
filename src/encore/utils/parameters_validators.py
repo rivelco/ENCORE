@@ -9,7 +9,7 @@ def validate_params(params: dict, defaults: dict) -> dict:
     - Extra keys in params are ignored
 
     :param params: Parameters collected from the GUI
-    :param defaults: Default parameter values (type + fallback)
+    :param defaults: Default parameter values (type and fallback)
     :return: Validated parameter dictionary
     """
     

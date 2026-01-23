@@ -4,7 +4,26 @@ import numpy as np
 import csv
 
 class FileTreeItem:
-    def __init__(self, name, obj, mdl_type, MATLAB_available=False, parent=None):
+    """
+    Class to define a item for a FileTreeModel object.
+    """
+    def __init__(self, name: str, obj, mdl_type: str, MATLAB_available=False, parent=None):
+        """
+        Initializes a item for the file tree model. Recursively traverses structures with nested
+        data if the model available and selected supports it.
+
+        :param name: Name of the variable
+        :type name: str
+        :param obj: Variable as read by the loader.
+        :type obj: object
+        :param mdl_type: String with one of the supported models: "hdf5", "np_flatten", "pkl", "mat" or "csv"
+        :type mdl_type: str
+        :param MATLAB_available: True if MATLAB engine is available, defaults to False
+        :type MATLAB_available: bool, optional
+        :param parent: PArent of the current item for nested structures, defaults to None
+        :type parent: FileTreeItem, optional
+        :raises ValueError: Raises a ValueError if the data could not be loaded.
+        """
         self.name = name
         self.obj = obj
         self.parent_item = parent
@@ -167,6 +186,13 @@ class FileTreeItem:
         return self.name
     
     def item_path(self):
+        """
+        Returns the path of the variable in the file. Nested structures are separated
+        using the character "/"
+
+        :return: The path to the current variable
+        :rtype: string
+        """
         if self.parent_item:
             return self.parent_item.item_path() + "/" + self.name
         else:
@@ -176,13 +202,41 @@ class FileTreeItem:
         return self.obj_type
     
     def item_size(self):
+        """
+        Returns the shape of the current variable. If the variable is not a matrix
+        then the value -1 is returned.
+
+        :return: Shape of the variable
+        :rtype: tuple
+        """
         return self.obj_size
 
     def parent(self):
         return self.parent_item
 
 class FileTreeModel(QAbstractItemModel):
+    """
+    Generates an abstract item model to be used in a PyQt6 tree widget.
+    This produces a model with the structure of the variables in a file.
+
+    :param QAbstractItemModel: QAbstractItemModel from PyQt6
+    :type QAbstractItemModel: QAbstractItemModel
+    """
     def __init__(self, hdf5_file, model_type, parent=None, MATLAB_available=False):
+        """
+        Initializes the Tree model by passing the file, model type parent and MATLAB
+        engine availability to the recursive function that generates each element in the tree.
+
+        :param hdf5_file: Object from the data loader. May be a HDF5 file or different.
+        :type hdf5_file: Object
+        :param model_type: String with one of the supported models: "hdf5", "np_flatten", "pkl", "mat" or "csv"
+        :type model_type: str
+        :param parent: Initial parent for the first element in the tree, defaults to None
+        :type parent: FileTreeItem, optional
+        :param MATLAB_available: Boolean describing the availability of the MATLAB engine, defaults to False
+        :type MATLAB_available: bool, optional
+        """
+        
         super(FileTreeModel, self).__init__(parent)
         self.root_item = FileTreeItem("/", hdf5_file, model_type, MATLAB_available)
 

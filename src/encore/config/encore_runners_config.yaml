@@ -472,4 +472,4 @@ encore_runners:
         display_name: Secondary dFFo plot
       - name: example_plot_many_dFFo
         display_name: dFFo of many cells
-    source: ENCORE example algorithm
+    source: ENCORE example algorithm to demonstrate the integration of new custom algorithms. Also, allows the user to make a dry run of the analysis without installing the MATLAB engine. Check the documentation for more details on adding a new algorithm.

@@ -7,21 +7,25 @@ from importlib.resources import files
 def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data. 
-    This function also handles MATLAB path setup and data conversion to MATLAB.
+    This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+    the results in the standard for ENCORE.
 
-    :param raster: Matrix of neural activity data to be processed.
-    :type raster: numpy.ndarray
+    :param input_data: List with one element, the matrix of neural activity data to be processed.
+    :type input_data: list[numpy.ndarray]
     :param pars_validated: Dictionary with parameters for the SVD algorithm.
     :type pars_validated: dict
-    :param code_folder_name: String with the path to the analysis code. Defaults to 'SVD'
+    :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
+        the MATLAB code for this function. This value must be specified in the YAML config file. 
+        Defaults to 'SVD'
     :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
-        This function should receive two strings as parameters, just like MainWindow.update_console_log.
-        Defaults to None.
-    :type logger: function, optional
-    :return: Dictionary with the result of the algorithm. 
+        This function should receive two strings as parameters, just like `main.MainWindow.update_console_log`.
+        This function should receive two strings, the first one has the message and the second one the level.
+        Defaults to None. 
+    :type logger: function(str, str), optional
+    :return: Dictionary with the results of the algorithm. 
     :rtype: dict
     """
     svd_path = files("encore.analysis").joinpath(code_folder_name)
@@ -144,21 +148,25 @@ def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=T
 def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data. 
-    This function also handles MATLAB path setup and data conversion to MATLAB.
+    This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+    the results in the standard for ENCORE.
 
-    :param spikes: Matrix of neural activity data to be processed.
-    :type spikes: numpy.ndarray
-    :param pars_validated: Dictionary with parameters for the SVD algorithm.
+    :param input_data: List with one element, the matrix of neural activity data to be processed.
+    :type input_data: list[numpy.ndarray]
+    :param pars_validated: Dictionary with parameters for the PCA algorithm.
     :type pars_validated: dict
-    :param code_folder_name: String with the path to the analysis code. Defaults to 'NeuralEnsembles'
+    :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
+        the MATLAB code for this function. This value must be specified in the YAML config file. 
+        Defaults to 'NeuralEnsembles'
     :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
-        This function should receive two strings as parameters, just like MainWindow.update_console_log.
-        Defaults to None.
-    :type logger: function, optional
-    :return: Dictionary with the result of the algorithm. 
+        This function should receive two strings as parameters, just like `main.MainWindow.update_console_log`.
+        This function should receive two strings, the first one has the message and the second one the level.
+        Defaults to None. 
+    :type logger: function(str, str), optional
+    :return: Dictionary with the results of the algorithm. 
     :rtype: dict
     """
     pca_path = files("encore.analysis").joinpath(code_folder_name)
@@ -247,21 +255,25 @@ def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', incl
 def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detection', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data. 
-    This function also handles MATLAB path setup and data conversion to MATLAB.
+    This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+    the results in the standard for ENCORE.
 
-    :param raster: Matrix of neural activity data to be processed.
-    :type raster: numpy.ndarray
-    :param pars_validated: Dictionary with parameters for the SVD algorithm.
+    :param input_data: List with one element, the matrix of neural activity data to be processed.
+    :type input_data: list[numpy.ndarray]
+    :param pars_validated: Dictionary with parameters for the ICA algorithm.
     :type pars_validated: dict
-    :param code_folder_name: String with the path to the analysis code. Defaults to 'Cell-Assembly-Detection'
+    :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
+        the MATLAB code for this function. This value must be specified in the YAML config file. 
+        Defaults to 'Cell-Assembly-Detection'
     :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
-        This function should receive two strings as parameters, just like MainWindow.update_console_log.
-        Defaults to None.
-    :type logger: function, optional
-    :return: Dictionary with the result of the algorithm. 
+        This function should receive two strings as parameters, just like `main.MainWindow.update_console_log`.
+        This function should receive two strings, the first one has the message and the second one the level.
+        Defaults to None. 
+    :type logger: function(str, str), optional
+    :return: Dictionary with the results of the algorithm. 
     :rtype: dict
     """
     ica_path = files("encore.analysis").joinpath(code_folder_name)
@@ -403,21 +415,25 @@ def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detectio
 def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data. 
-    This function also handles MATLAB path setup and data conversion to MATLAB.
+    This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+    the results in the standard for ENCORE.
 
-    :param raster: Matrix of neural activity data to be processed.
-    :type raster: numpy.ndarray
-    :param pars_validated: Dictionary with parameters for the SVD algorithm.
+    :param input_data: List with one element, the matrix of neural activity data to be processed.
+    :type input_data: list[numpy.ndarray]
+    :param pars_validated: Dictionary with parameters for the Xsembles2P algorithm.
     :type pars_validated: dict
-    :param code_folder_name: String with the path to the analysis code. Defaults to 'Xsembles2P'
+    :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
+        the MATLAB code for this function. This value must be specified in the YAML config file. 
+        Defaults to 'Xsembles2P'
     :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
-        This function should receive two strings as parameters, just like MainWindow.update_console_log.
-        Defaults to None.
-    :type logger: function, optional
-    :return: Dictionary with the result of the algorithm. 
+        This function should receive two strings as parameters, just like `main.MainWindow.update_console_log`.
+        This function should receive two strings, the first one has the message and the second one the level.
+        Defaults to None. 
+    :type logger: function(str, str), optional
+    :return: Dictionary with the results of the algorithm. 
     :rtype: dict
     """
     x2p_path = files("encore.analysis").joinpath(code_folder_name)
@@ -538,21 +554,25 @@ def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_a
 def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_detection', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data. 
-    This function also handles MATLAB path setup and data conversion to MATLAB.
+    This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+    the results in the standard for ENCORE.
 
-    :param raster: Matrix of neural activity data to be processed.
-    :type raster: numpy.ndarray
-    :param pars_validated: Dictionary with parameters for the SVD algorithm.
+    :param input_data: List with one element, the matrix of fluorescence activity data to be processed.
+    :type input_data: list[numpy.ndarray]
+    :param pars_validated: Dictionary with parameters for the SGC algorithm.
     :type pars_validated: dict
-    :param code_folder_name: String with the path to the analysis code. Defaults to 'SGC_neural_assembly_detection'
+    :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
+        the MATLAB code for this function. This value must be specified in the YAML config file. 
+        Defaults to 'SGC_neural_assembly_detection'
     :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
     :param logger: Function to show the log of the function execution. 
-        This function should receive two strings as parameters, just like MainWindow.update_console_log.
-        Defaults to None.
-    :type logger: function, optional
-    :return: Dictionary with the result of the algorithm. 
+        This function should receive two strings as parameters, just like `main.MainWindow.update_console_log`.
+        This function should receive two strings, the first one has the message and the second one the level.
+        Defaults to None. 
+    :type logger: function(str, str), optional
+    :return: Dictionary with the results of the algorithm. 
     :rtype: dict
     """
     sgc_path = files("encore.analysis").joinpath(code_folder_name)
@@ -670,6 +690,47 @@ def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_de
     return results
 
 def run_example(input_data: list, params: dict, code_folder_name='', include_answer=True, logger=None):
+    """
+    Run the example algorithm and generate dummy results for GUI integration.
+
+    This function serves as a reference implementation for new algorithms
+    integrated into the ENCORE framework. It demonstrates the expected structure,
+    logging behavior, parameter handling, result packing, and timing measurement
+    required by the algorithm runner interface.
+
+    The function:
+    - Logs input data structure and parameters
+    - Measures execution time
+    - Computes a simple parameter update based on user-selected options
+    - Generates synthetic ensemble and neuronal activity data
+    - Prepares an ``answer`` dictionary used by example plotting functions
+    - Returns a standardized results dictionary consumed by the GUI
+
+    Algorithm developers should use this function as a template when implementing
+    new runners.
+
+    :param input_data: List of input arrays provided by the pipeline. Expected to
+        contain neuronal activity data with shape ``(neurons, timepoints)``.
+    :type input_data: list
+    :param params: Dictionary of parameters defined in the algorithm configuration
+        file and set via the GUI.
+    :type params: dict
+    :param code_folder_name: Name of the algorithm code folder (optional, used for
+        bookkeeping or logging).
+    :type code_folder_name: str, optional
+    :param include_answer: Whether to include the ``answer`` field in the output,
+         used for plotting example figures.
+    :type include_answer: bool, optional
+    :param logger: Function to show the log of the function execution. 
+        This function should receive two strings as parameters, just like `main.MainWindow.update_console_log`.
+        This function should receive two strings, the first one has the message and the second one the level.
+        Defaults to None. 
+    :type logger: function(str, str), optional
+    :return: Dictionary containing algorithm results, plotting data, updated
+            parameters, execution time, and success status.
+    :rtype: dict
+    """
+
     logger(f"Input data len: {len(input_data)}", "log")
     for idx, element in enumerate(input_data):
         logger(f" - Element at idx {idx} has shape {element.shape}", "log")

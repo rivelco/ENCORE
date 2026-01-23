@@ -8,6 +8,9 @@ def plot_svd(figures, answer):
     Plots and saves the results of the SVD algorithm, including similarity maps, singular values, 
     components, and ensemble timecourses.
 
+    :param figures: Dictionary mapping figure names (strings) to
+        :class:`MatplotlibWidget` instances created by the GUI.
+    :type figures: dict[str, MatplotlibWidget]
     :param answer: Dictionary containing the SVD output data from MATLAB, including matrices for 
                 similarity maps, singular values, component vectors, ensemble timecourses, 
                 and neuron groupings.
@@ -67,6 +70,9 @@ def plot_pca(figures, answer):
     Plots the results of the PCA algorithm, including eigen values, principal components, 
     rho and delta values, correlation of cells, core cells and ensembles time course.
 
+    :param figures: Dictionary mapping figure names (strings) to
+        :class:`MatplotlibWidget` instances created by the GUI.
+    :type figures: dict[str, MatplotlibWidget]
     :param answer: Dictionary containing the PCA output data from MATLAB, including
                     eigen values, principal components, rho and delta values, correlation of cells, 
                     core cells and ensembles time course.
@@ -143,6 +149,9 @@ def plot_ica(figures, answer):
     Plots the results of the ICA algorithm, including assembly templates, time projections, 
     binary assembly templates, core cells and binary assemblies.
 
+    :param figures: Dictionary mapping figure names (strings) to
+        :class:`MatplotlibWidget` instances created by the GUI.
+    :type figures: dict[str, MatplotlibWidget]
     :param answer: Dictionary containing the ICA output data from MATLAB, including
                     assembly templates, time projections, binary assembly templates, 
                     and binary assemblies.
@@ -178,6 +187,9 @@ def plot_x2p(figures, answer):
     Plots the results of the X2P algorithm, including similarity map, EPI, 
     onsemble activity, offsemble activity, activity, onsembles neurons and offsemble neurons.
 
+    :param figures: Dictionary mapping figure names (strings) to
+        :class:`MatplotlibWidget` instances created by the GUI.
+    :type figures: dict[str, MatplotlibWidget]
     :param answer: Dictionary containing the X2P output data from MATLAB, including similaty map,
                     EPI, onsemble activity, offsemble activity, activity, onnsembles neurons
                     and offsemble neurons.
@@ -222,6 +234,19 @@ def plot_x2p(figures, answer):
         encore_plots.plot_ensembles_timecourse(plot_widget, dataset, xlabel="Cell")
 
 def plot_sgc(figures, answer):
+    """
+    Plots the results of the SGC algorithm. Currently only the ensembles timecourse
+    and the neurons in ensembles are supported.
+    
+    :param figures: Dictionary mapping figure names (strings) to
+        :class:`MatplotlibWidget` instances created by the GUI.
+    :type figures: dict[str, MatplotlibWidget]
+    :param answer: Dictionary containing the keys 'timecourse' and 'neus_in_ens' from the 
+        SGC results.
+    :type answer: dict
+    :return: None
+    :rtype: None
+    """
     ensembles_timecourse = answer['timecourse']
     neurons_in_ensembles = answer['neus_in_ens']
 
@@ -235,6 +260,42 @@ def plot_sgc(figures, answer):
         encore_plots.plot_ensembles_timecourse(plot_widget, ensembles_timecourse, xlabel="Timepoint")
         
 def plot_example(figures, answer):
+    """
+    Example plotting function for ENCORE algorithms.
+
+    This function demonstrates how algorithm results ("answer") are mapped
+    to GUI figures defined in the configuration file. It retrieves
+    pre-created MatplotlibWidget instances from the ``figures`` dictionary
+    and populates them with visualizations derived from the analysis output.
+
+    Each figure is optional: if a figure name is not present in the
+    configuration or GUI, it is safely skipped.
+
+    Expected figure keys (as defined in the YAML configuration):
+
+    - ``example_plot_raster``: Raster-like representation of ensemble activity.
+    - ``example_plot_dFFo``: Single-neuron dFFo time series.
+    - ``example_plot_secondary_dFFo``: Secondary dFFo trace plotted manually.
+    - ``example_plot_many_dFFo``: Multiple dFFo traces displayed in subplots.
+
+    Expected entries in the ``answer`` dictionary:
+
+    - ``raster``: 2D array-like structure (ensembles, time).
+    - ``neuron_dFFo``: 1D array representing dFFo for a single neuron.
+    - ``other_dFFo``: 1D array representing an additional dFFo trace.
+    - ``many_neurons_dFFo``: 2D array (neurons, time) for multi-neuron plots.
+
+    This function serves as a reference template for developers implementing
+    custom plotting routines for new algorithms.
+
+    :param figures: Dictionary mapping figure names (strings) to
+        :class:`MatplotlibWidget` instances created by the GUI.
+    :type figures: dict[str, MatplotlibWidget]
+    :param answer: Dictionary containing the results produced by the
+        corresponding analysis function.
+    :type answer: dict
+    """
+
     raster = answer['raster']
     dFFo_single_neuron = answer['neuron_dFFo']
     secondary_line = answer['other_dFFo']
@@ -282,4 +343,3 @@ def plot_example(figures, answer):
         plot_widget.canvas.figure.tight_layout()
         plot_widget.canvas.draw()
         plot_widget.canvas.flush_events()
-    
