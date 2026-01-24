@@ -1,4 +1,4 @@
-sphinx>=8.0
+sphinx>=7.0
 furo==2024.8.6
 sphinx-copybutton==0.5.2
 sphinxcontrib-napoleon

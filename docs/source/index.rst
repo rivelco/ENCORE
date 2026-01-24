@@ -13,8 +13,8 @@ and electrophysiological recordings.
 The software provides:
 
 - A graphical user interface (GUI) for interactive analysis
-- A command-line interface (CLI) for reproducible workflows
 - A modular architecture that facilitates the integration of new algorithms
+- Supports running the algorithms of ENCORE directly from Python scripts
 - Support for multiple published ensemble detection methods
 
 ENCORE is designed to support both exploratory data analysis and reproducible
@@ -53,8 +53,15 @@ structure of ENCORE and its main components:
 - :doc:`api/runners`
 - :doc:`api/data/index`
 - :doc:`api/plotters/index`
-- :doc:`api/validators`
+- :doc:`api/validators/index`
 - :doc:`api/utils`
+
+Adding New Algorithms
+---------------------
+
+If you're interested in adding new algorithms to ENCORE go to:
+
+- :doc:`extending/adding_algorithms`
 
 Contents
 --------
@@ -73,7 +80,7 @@ Contents
    api/runners
    api/data/index
    api/plotters/index
-   api/validators
+   api/validators/index
    api/utils
 
    extending/adding_algorithms

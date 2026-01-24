@@ -6,6 +6,8 @@ The `validators` module provides utilities for validating input and output data 
 Module Reference
 ----------------
 
-.. automodule:: encore.validators.algorithm_results
-   :members:
-   :undoc-members:
+.. toctree::
+   :maxdepth: 1
+
+   algorithm_parameters
+   algorithm_results
