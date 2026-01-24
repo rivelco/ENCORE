@@ -1,6 +1,11 @@
 # Standard library
 import importlib
 import importlib.metadata
+try:
+    from importlib.resources import files
+    tmp = files('encore.gui')
+except (TypeError, ImportError):  # Python < 3.10
+    from importlib_resources import files
 import math
 import os
 import pickle
@@ -15,7 +20,6 @@ import numpy as np
 import qdarktheme
 import scipy.io
 import yaml
-from importlib.resources import files
 from scipy.spatial.distance import pdist, squareform
 from sklearn.metrics.pairwise import cosine_similarity
 # PyQt6
@@ -158,8 +162,11 @@ class MainWindow(QMainWindow):
         }
         self.update_console_log(f"ENCORE v{encore_version}")
         
+        
         gui_colors = gui_colors or {}
         self.gui_colors = gui_colors
+        if not len(gui_colors):
+            self.dark_mode.setEnabled(False)
 
         self.threadpool = QThreadPool()
         
@@ -3664,7 +3671,14 @@ def main():
         print(importlib.metadata.version("encore"))
         return
     
-    qdarktheme.enable_hi_dpi()
+    dark_available = True
+    try:
+        # Identify errors with pyqtdarktheme
+        # Like running ENCORE in python > 3.11
+        qdarktheme.enable_hi_dpi() 
+    except AttributeError:
+        dark_available = False
+        
     app = QApplication(sys.argv)
     custom_colors = {
         "[dark]": {
@@ -3676,9 +3690,12 @@ def main():
             "toolbar.background": "#c3b5cf"
         }
     }
-    qdarktheme.setup_theme("light",
-        custom_colors=custom_colors
-    )
+    if dark_available:
+        qdarktheme.setup_theme("light",
+            custom_colors=custom_colors
+        )
+    else:
+        custom_colors = None
     logo_path = files("encore.gui").joinpath("ENCORE_logo.png")
     app.setWindowIcon(QIcon(str(logo_path))) 
     window = MainWindow(gui_colors=custom_colors)
