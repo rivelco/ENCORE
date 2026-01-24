@@ -65,6 +65,7 @@ from encore.data.load_data import FileTreeModel
 from encore.data.assign_data import assign_data_from_file
 import encore.utils.metrics as metrics
 from encore.utils.text_formatting import format_nums_to_string
+from encore.utils.parameters_validators import validate_binary_matrix
 from encore.plotters.MatplotlibWidget import MatplotlibWidget
 import encore.plotters.encore_plots as encore_plots
 import encore.validators.algorithm_results as validate_results
@@ -87,7 +88,6 @@ class WorkerSignals(QObject):
     #: Signal emitted when the long running function emits a message.
     #: Arguments: message (str), message type (str).
     log = pyqtSignal(str, str)
-
 
 class WorkerRunnable(QRunnable):
     """
@@ -2755,7 +2755,7 @@ class MainWindow(QMainWindow):
         members_coords[0] = self.data_coordinates[members_idx, 0]
         members_coords[1] = self.data_coordinates[members_idx, 1]
 
-        neuron_size = float(self.enscomp_visopts_neusize.text())
+        neuron_size = float(self.enscomp_visopts_neusize.value())
 
         members_idx = []
         if self.enscomp_visopts_showcells.isChecked():
