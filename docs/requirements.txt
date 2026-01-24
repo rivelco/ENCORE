@@ -9,5 +9,5 @@ h5py
 matplotlib
 scikit-learn
 pyqt6>=6.5
-yaml
+pyyaml
 pydantic
