@@ -152,7 +152,7 @@ class MainWindow(QMainWindow):
         ui_path = str(files("encore.gui").joinpath("MainWindow.ui"))
         loadUi(ui_path, self)
         
-        encore_version = str(importlib.metadata.version("encore"))
+        encore_version = str(importlib.metadata.version("encore-toolkit"))
         self.setWindowTitle(f'ENCORE v{encore_version} - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
@@ -3707,7 +3707,7 @@ class MainWindow(QMainWindow):
         """
         Populate the About tab using metadata from pyproject.toml.
         """
-        package_name = "encore"
+        package_name = "encore-toolkit"
         meta = self.load_project_metadata(package_name)
         project_urls = self.parse_project_urls(meta["project_urls"])
 

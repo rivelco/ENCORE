@@ -49,7 +49,7 @@ To install ENCORE simply run:
 
 .. code-block:: console
 
-    pip install encore
+    pip install encore-toolkit
 
 
 Verifying the installation

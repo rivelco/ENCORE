@@ -73,7 +73,7 @@ conda activate encore
 To install ENCORE in the current environment simply run:
 
 ```bash
-pip install encore
+pip install encore-toolkit
 ```
 
 ## Verifying the installation
