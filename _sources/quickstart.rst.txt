@@ -5,7 +5,7 @@ Install:
 
 .. code-block:: bash
 
-   pip install encore
+   pip install encore-toolkit
 
 Launch GUI:
 
