@@ -2,7 +2,11 @@ import time
 import os
 import numpy as np
 import scipy.stats as stats
-from importlib.resources import files
+try:
+    from importlib.resources import files
+    tmp = files('encore.gui')
+except (TypeError, ImportError):  # Python < 3.10
+    from importlib_resources import files
 from encore.validators.algorithm_parameters import validate
 
 def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True, logger=None):
@@ -52,12 +56,19 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
         import matlab.engine
         import encore.utils.data_converters as converters
     except ImportError as exc:
-        logger("MATLAB engine not available, this function is not available.", "error")
+        if logger:
+            logger("MATLAB engine not available, this function is not available.", "error")
+        else:
+            print("ERROR: MATLAB engine not available, this function is not available.")
+        # Return empty object for tests
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'update_params': None, 'answer': None}
     except Exception as exc:
-        logger("Unexpected error handling MATLAB engine import.", "error")
-        logger(f"{exc}", "error")
-        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
-            
+        if logger:
+            logger("Unexpected error handling MATLAB engine import.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"ERROR with MATLAB: {exc}")
+   
     # The raster is at the first position
     raster = input_data['data_neuronal_activity']
     # Convert the raster to a MATLAB matrix
@@ -137,16 +148,22 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
         ensgui_results['neus_in_ens'] = neurons_in_ensembles
     else:
         success = False
+    
+    update_params = {} 
+    if answer:
+        update_params = {
+            'pks': int(answer['pks']),
+            'scut': answer['scut']
+        }
+    else:
+        success = False
 
     results = {
         "results": ensgui_results,
         "engine_time": engine_time,
         "algorithm_time": algorithm_time,
         "success": success,
-        "update_params": {
-            'pks': int(answer['pks']),
-            'scut': answer['scut']
-        }
+        "update_params": update_params
     }
 
     if include_answer: 
@@ -202,11 +219,18 @@ def run_pca(input_data, parameters, code_folder_name='NeuralEnsembles', include_
         import matlab.engine
         import encore.utils.data_converters as converters
     except ImportError as exc:
-        logger("MATLAB engine not available, this function is not available.", "error")
+        if logger:
+            logger("MATLAB engine not available, this function is not available.", "error")
+        else:
+            print("ERROR: MATLAB engine not available, this function is not available.")
+        # Return empty object for tests
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'answer': None}
     except Exception as exc:
-        logger("Unexpected error handling MATLAB engine import.", "error")
-        logger(f"{exc}", "error")
-        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
+        if logger:
+            logger("Unexpected error handling MATLAB engine import.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"ERROR with MATLAB: {exc}")
         
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
@@ -318,11 +342,19 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
         import matlab.engine
         import encore.utils.data_converters as converters
     except ImportError as exc:
-        logger("MATLAB engine not available, this function is not available.", "error")
+        if logger:
+            logger("MATLAB engine not available, this function is not available.", "error")
+        else:
+            print("ERROR: MATLAB engine not available, this function is not available.")
+        # Return empty object for tests
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'original_answer': None, 'answer': None}
     except Exception as exc:
-        logger("Unexpected error handling MATLAB engine import.", "error")
-        logger(f"{exc}", "error")
-        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
+        if logger:
+            logger("Unexpected error handling MATLAB engine import.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"ERROR with MATLAB: {exc}")
+    
     # Convert the raster
     raster = input_data['data_neuronal_activity']
     raster_mat = matlab.double(raster.tolist())
@@ -488,11 +520,19 @@ def run_x2p(input_data, parameters, code_folder_name='Xsembles2P', include_answe
         import matlab.engine
         import encore.utils.data_converters as converters
     except ImportError as exc:
-        logger("MATLAB engine not available, this function is not available.", "error")
+        if logger:
+            logger("MATLAB engine not available, this function is not available.", "error")
+        else:
+            print("ERROR: MATLAB engine not available, this function is not available.")
+        # Return empty object for tests
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'original_answer': None, 'answer': None}
     except Exception as exc:
-        logger("Unexpected error handling MATLAB engine import.", "error")
-        logger(f"{exc}", "error")
-        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
+        if logger:
+            logger("Unexpected error handling MATLAB engine import.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"ERROR with MATLAB: {exc}")
+        
     # Convert the raster to logical MATLAB
     raster = input_data['data_neuronal_activity']
     raster_mat = matlab.logical(raster.tolist())
@@ -638,11 +678,19 @@ def run_sgc(input_data, parameters, code_folder_name='SGC', include_answer=True,
         import matlab.engine
         import encore.utils.data_converters as converters
     except ImportError as exc:
-        logger("MATLAB engine not available, this function is not available.", "error")
+        if logger:
+            logger("MATLAB engine not available, this function is not available.", "error")
+        else:
+            print("ERROR: MATLAB engine not available, this function is not available.")
+        # Return empty object for tests
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'answer': None}
     except Exception as exc:
-        logger("Unexpected error handling MATLAB engine import.", "error")
-        logger(f"{exc}", "error")
-        logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
+        if logger:
+            logger("Unexpected error handling MATLAB engine import.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"ERROR with MATLAB: {exc}")
+        
     # Check for the first derivative flag
     dFFo = input_data['data_dFFo']
     if pars_validated['use_first_derivative']:
@@ -726,6 +774,9 @@ def run_sgc(input_data, parameters, code_folder_name='SGC', include_answer=True,
 
     else:
         success = False
+        answer = {}
+        ensembles_timecourse = []
+        neurons_in_ensembles = []
 
     results = {
         "results": ensgui_results,
@@ -785,13 +836,20 @@ def run_example(input_data: dict, parameters: dict, code_folder_name='', include
             parameters, execution time, and success status.
     :rtype: dict
     """
-
-    logger(f"Input data len: {len(input_data)}", "log")
-    for idx, element in enumerate(input_data):
-        logger(f" - Element at idx {idx} has shape {element.shape}", "log")
+    log_flag = "Example:"
     
-    logger("Parameters passed:", "log")
-    logger(f"{params}")
+    if logger:
+        logger(f"{log_flag} Input data keys: {len(input_data.keys())}", "log")
+    
+    if logger:
+        logger(f"{log_flag} Parameters passed:", "log")
+        logger(f"{parameters}")
+    
+    if logger:
+        logger(f"{log_flag} Validating parameters...", "log")
+    pars_validated = validate('example', parameters)
+    if logger:
+        logger(f"{log_flag} Parameters validated.", "complete")
     
     # This is to measure the algorithm running time
     start_time = time.time()
