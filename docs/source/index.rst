@@ -3,31 +3,87 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-ENCORE documentation
+ENCORE Documentation
 ====================
 
-Graphic User Interface to perform a variety of neuronal ensembles identification's methods using calcium or electrical recordings.
+**ENCORE** is an open-source software tool for the identification and comparison
+of neuronal ensembles from population activity data, including calcium imaging
+and electrophysiological recordings.
+
+The software provides:
+
+- A graphical user interface (GUI) for interactive analysis
+- A modular architecture that facilitates the integration of new algorithms
+- Supports running the algorithms of ENCORE directly from Python scripts
+- Support for multiple published ensemble detection methods
+
+ENCORE is designed to support both exploratory data analysis and reproducible
+scientific research, with a strong emphasis on transparency, extensibility, and
+community contributions.
 
 .. note::
-   This project is under current development.
+   ENCORE is under active development. The current version already supports
+   multiple published ensemble identification algorithms, with ongoing efforts
+   to expand functionality and documentation.
 
-This GUI currently incorporates five different algorithms:
+Getting Started
+---------------
 
-- SVD based method: Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal Ensembles from Similarity Maps Using Singular Value Decomposition. In: Carrillo-Reid, L. (eds) Identification, Characterization, and Manipulation of Neuronal Ensembles. Neuromethods, vol 215. Humana, New York, NY. https://doi.org/10.1007/978-1-0716-4208-5_5
-- PCA based method: Herzog et al. (2021) "Scalable and accurate automated method for neuronal ensemble detection in spiking neural networks. https://pubmed.ncbi.nlm.nih.gov/34329314/ Rubén Herzog Dec 2021
-- ICA based method: Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large neuronal populations. J Neurosci Methods 220(2):149-66. 10.1016/j.jneumeth.2013.04.010
-- Xsembles2P method: Pérez-Ortega, J., Akrouh, A. & Yuste, R. (2024). Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x
-- Similarity Graph Clustering method: L. Avitan et al. "Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience". Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056
+If you are new to ENCORE, start here:
 
+- :doc:`installation`
+- :doc:`quickstart`
+- :doc:`user_guide/usage`
+
+Conceptual Background
+---------------------
+
+To understand the theoretical and methodological foundations of the software,
+see:
+
+- :doc:`concepts/overview`
+
+API Reference
+-------------
+
+For developers and advanced users, the API documentation describes the internal
+structure of ENCORE and its main components:
+
+- :doc:`api/main_window`
+- :doc:`api/runners`
+- :doc:`api/data/index`
+- :doc:`api/plotters/index`
+- :doc:`api/validators/index`
+- :doc:`api/utils`
+
+Adding New Algorithms
+---------------------
+
+If you're interested in adding new algorithms to ENCORE go to:
+
+- :doc:`extending/adding_algorithms`
 
 Contents
 --------
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Documentation
 
    installation
-   usage
-   codeFunctions
+   quickstart
+   user_guide/usage
+
+   concepts/overview
+
+   api/main_window
+   api/runners
+   api/data/index
+   api/plotters/index
+   api/validators/index
+   api/utils
+
+   extending/adding_algorithms
+
    acknowledgments
+

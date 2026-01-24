@@ -1,0 +1,81 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ENCORE"
+version = "2.0.0"
+description = "GUI for Ensembles Comparison and Recognition"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "GPL-3.0-only"
+license-files = [
+    "LICENSE",
+]
+authors = [
+    { name = "Ricardo Velazquez Contreras", email = "rivel_co@hotmail.com" }
+]
+dependencies = [
+    "PyQt6>=6.0",
+    "numpy",
+    "matplotlib",
+    "scipy",
+    "h5py",
+    "scikit-learn",
+    "pyqtdarktheme",
+    "pyyaml",
+    "pydantic"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent"
+]
+
+[project.optional-dependencies]
+dev = ["pyqt6-tools", 
+    "pytest",
+    "build"
+]
+docs = [
+    "sphinx>=7.0",
+    "furo",
+    "sphinx-copybutton",
+    "sphinxcontrib-napoleon",
+    "sphinx-autodoc-typehints"
+]
+matlab = ["numpy"]
+all = [
+    "pyqt6-tools", 
+    "pytest",
+    "build",
+    "sphinx>=7.0",
+    "furo",
+    "sphinx-copybutton",
+    "sphinxcontrib-napoleon",
+    "sphinx-autodoc-typehints"
+]
+
+[project.scripts]
+encore = "encore.main:main"
+
+[project.urls]
+Homepage = "https://github.com/rivelco/ENCORE"
+Documentation = "https://rivelco.github.io/ENCORE/"
+Issues = "https://github.com/rivelco/ENCORE/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+encore = [
+    "analysis/**/*.m"
+]

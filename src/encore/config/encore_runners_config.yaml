@@ -1,0 +1,475 @@
+encore_runners:
+  svd:
+    enabled: True
+    full_name: Singular Value Decomposition
+    language: MATLAB
+    folder_path: 'SVD'
+    analysis_function: run_svd
+    plot_function: plot_svd
+    ensemble_color: red
+    needed_data:
+      - data_neuronal_activity
+    parameters:
+      pks:
+        object_name: svd_edit_pks
+        display_name: pks
+        description: Minimum amount of active neurons in a single population vector to be considered as significative. Leave it empty for an automatic threshold.
+        default_value: 3
+        min_value: 0
+        max_value: MAX_INT
+      scut:
+        object_name: svd_edit_scut
+        display_name: scut
+        description: This is a threshold of co-activity. Suggested range 0.22-0.25 Leave it empty if you want an automated threshold.
+        default_value: 0.22
+        min_value: 0
+        max_value: MAX_INT
+      hcut:
+        object_name: svd_edit_hcut
+        display_name: hcut
+        description: Another threshold for co-activity. Further removes noise.
+        default_value: 0.22
+        min_value: 0
+        max_value: MAX_INT
+      state_cut:
+        object_name: svd_edit_statecut
+        display_name: state_cut
+        description: The maximum number of states is a fraction  of the total number of cells. This defines the maximum number of states.
+        default_value: 6
+        min_value: 0
+        max_value: MAX_INT
+      csi_start:
+        object_name: svd_edit_csistart
+        display_name: csi_vec_start
+        description: This is the csi start
+        default_value: 0.01
+        min_value: 0
+        max_value: MAX_INT
+      csi_step:
+        object_name: svd_lbl_csistep
+        display_name: csi_vec_step
+        description: This is the csi step
+        default_value: 0.01
+        min_value: 0
+        max_value: MAX_INT
+      csi_end:
+        object_name: svd_edit_csiend
+        display_name: csi_vec_end
+        description: This is the csi end
+        default_value: 0.10
+        min_value: 0
+        max_value: MAX_INT
+      tf_idf_norm:
+        object_name: svd_check_tfidf
+        display_name: Perform TF-IDF normalization
+        description: Whether of not to perform TF-IDF normalization. This normalization removes neurons that may appear in two or more different ensembles.
+        default_value: True
+      parallel_processing:
+        object_name: svd_check_parallel
+        display_name: Perform parallel
+        description: Check this box to calculate the similarity matrix  using parallel computing.
+        default_value: False
+    figures:
+      - name: svd_plot_similaritymap
+        display_name: Similarity map
+      - name: svd_plot_binarysimmap
+        display_name: Binarized similarity map
+      - name: svd_plot_singularvalues
+        display_name: Singular Values
+      - name: svd_plot_components
+        display_name: Components
+      - name: svd_plot_timecourse
+        display_name: Ensembles timecourse
+      - name: svd_plot_cellsinens
+        display_name: Cells in ensembles
+    source: 'For details about this method, see the following chapter: Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal Ensembles from Similarity Maps Using Singular Value Decomposition. In: Carrillo-Reid, L. (eds) Identification, Characterization, and Manipulation of Neuronal Ensembles. Neuromethods, vol 215. Humana, New York, NY. https://doi.org/10.1007/978-1-0716-4208-5_5'
+  pca:
+    enabled: True
+    full_name: Principal Component Analysis
+    language: MATLAB
+    folder_path: 'NeuralEnsembles'
+    analysis_function: run_pca
+    plot_function: plot_pca
+    ensemble_color: blue
+    needed_data:
+      - data_neuronal_activity
+    parameters:
+      dc:
+        object_name: pca_edit_dc
+        display_name: dc
+        description: Cut off for distances.
+        default_value: 0.01
+        min_value: 0.0
+        max_value: MAX_INT
+      npcs:
+        object_name: pca_edit_npcs
+        display_name: Num. of principal components
+        description: Number of principal components to use to extract ensembles.
+        default_value: 3
+        min_value: 0
+        max_value: MAX_INT
+      minspk:
+        object_name: pca_edit_minspk
+        display_name: Min population spike
+        description: Minimum number of active neurons to be considered part of the analysis
+        default_value: 3
+        min_value: 0
+        max_value: MAX_INT
+      nsur:
+        object_name: pca_edit_nsur
+        display_name: Number of surrogates
+        description: Surrogates for core-cells, should be 1000 or more.
+        default_value: 1000
+        min_value: 0
+        max_value: MAX_INT
+      prct:
+        object_name: pca_edit_prct
+        display_name: Percentile for core-cells
+        description: Percentile on the core cell distribution.
+        default_value: 99.90
+        min_value: 0
+        max_value: 100
+      cent_thr:
+        object_name: pca_edit_centthr
+        display_name: Centroid detection threshold
+        description: Centroid detection threshold
+        default_value: 99.90
+        min_value: 0
+        max_value: 100
+      inner_corr:
+        object_name: pca_edit_innercorr
+        display_name: Inter-assembly correlation threshold
+        description: Inter-assembly correlation threshold
+        default_value: 5.0
+        min_value: 0
+        max_value: MAX_INT
+      minsize:
+        object_name: pca_edit_minsize
+        display_name: Min assembly size
+        description: Minimum number of cells that can form an ensemble.
+        default_value: 3
+        min_value: 1
+        max_value: MAX_INT
+    figures:
+      - name: pca_plot_eigs
+        display_name: Eigen values
+      - name: pca_plot_pca
+        display_name: Principal components
+      - name: pca_plot_rhodelta
+        display_name: rho vs delta
+      - name: pca_plot_corrne
+        display_name: Corr n,e
+      - name: pca_plot_corecells
+        display_name: Core cells
+      - name: pca_plot_innerens
+        display_name: Inner ensemble correlations
+      - name: pca_plot_timecourse
+        display_name: Ensembles timecourse
+      - name: pca_plot_cellsinens
+        display_name: Cells in ensembles
+      
+    source: 'For details about this method, see the following paper: Herzog et al. 2021 "Scalable and accurate automated method for neuronal ensemble detection in spiking neural networks. https://pubmed.ncbi.nlm.nih.gov/34329314/ Rubén Herzog Dec 2021'
+  ica:
+    enabled: True
+    full_name: Independent Component Analysis
+    language: MATLAB
+    folder_path: 'Cell-Assembly-Detection'
+    analysis_function: run_ica
+    plot_function: plot_ica
+    ensemble_color: green
+    needed_data:
+      - data_neuronal_activity
+    parameters:
+      threshold_method:
+        object_name: ica_threshold_method
+        display_name: Threshold method to identify patterns
+        description: Metric used to identify activity patterns
+        type: enum
+        default_value: MarcenkoPastur
+        options:
+          - value: MarcenkoPastur
+            label: MarcenkoPastur
+            description: Uses the analytical bound
+          - value: binshuffling
+            label: binshuffling
+            description: Estimate eigenvalue distribution for independent activity from surrogate matrices generated by shuffling time bins.
+          - value: circularshift
+            label: circularshift
+            description: Estimate eigenvalue distribution for independent activity from surrogate matrices generated by random circular shifts of original spike matrix.
+      permutations_percentile:
+        object_name: ica_edit_perpercentile
+        display_name: Permutation percentile
+        description: Defines which percentile of the surrogate distribution of maximal eigenvalues is used as statistical threshold. It must be a number between 0 and 100 (95 or larger recommended). Not used when MarcenkoPastur is chosen.
+        default_value: 95.0
+        min_value: 0
+        max_value: 100
+      number_of_permutations:
+        object_name: ica_edit_percant
+        display_name: Number of permutations
+        description: Defines how many surrogate matrices are generated (100 or more recommended). Not used when MarcenkoPastur is chosen.
+        default_value: 20
+        min_value: 0
+        max_value: MAX_INT
+      patterns_method:
+        object_name: ica_radio_method
+        display_name: Threshold method to select patterns
+        description: Method to select patterns
+        type: enum
+        default_value: ICA
+        options:
+          - value: ICA
+            label: ICA
+            description: Uses Independent Component Analysis
+          - value: PCA
+            label: PCA
+            description: Uses Principal Component Analysis
+      number_of_iterations:
+        object_name: ica_edit_iterations
+        display_name: Number of iterations
+        description: Number of iterations for fastICA algorithm (100 or more recommended). Not used when PCA is chosen.
+        default_value: 500
+        min_value: 0
+        max_value: MAX_INT
+        
+    figures:
+      - name: ica_plot_assemblys
+        display_name: Assembly patterns
+      - name: ica_plot_activity
+        display_name: Activity of cells assemblies
+      - name: ica_plot_binary_patterns
+        display_name: Binary assembly patterns
+      - name: ica_plot_binary_assemblies
+        display_name: Binary cell assemblies
+      
+    source: "For details about this method, see the following paper: Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large neuronal populations. J Neurosci Methods 220(2):149-66. 10.1016/j.jneumeth.2013.04.010"
+  x2p:
+    enabled: True
+    full_name: Xsembles2P
+    language: MATLAB
+    folder_path: 'Xsembles2P'
+    analysis_function: run_x2p
+    plot_function: plot_x2p
+    ensemble_color: orange
+    needed_data:
+      - data_neuronal_activity
+    parameters:
+      NetworkBin:
+        object_name: x2p_edit_bin
+        display_name: Network bin
+        description: Defines the size of the bin for the raster
+        default_value: 1
+        min_value: 1
+        max_value: MAX_INT
+      NetworkIterations:
+        object_name: x2p_edit_iterations
+        display_name: Network iterations
+        description: Number of iterations for the network
+        default_value: 1000
+        min_value: 1
+        max_value: MAX_INT
+      NetworkSignificance:
+        object_name: x2p_edit_significance
+        display_name: Network significance
+        description: Significance threshold to identify different states
+        default_value: 0.05
+        min_value: 0
+        max_value: 1
+      CoactiveNeuronsThreshold:
+        object_name: x2p_edit_threshold
+        display_name: Coactive neurons threshold
+        description: Minimum number of neurons to be active at the same time to consider that population vector
+        default_value: 2
+        min_value: 1
+        max_value: MAX_INT
+      ClusteringRangeStart:
+        object_name: x2p_edit_rangestart
+        display_name: Clustering range start
+        description: Clustering range start value
+        default_value: 3
+        min_value: 1
+        max_value: MAX_INT
+      ClusteringRangeEnd:
+        object_name: x2p_edit_rangeend
+        display_name: Clustering range end
+        description: Clustering range end value
+        default_value: 10
+        min_value: 1
+        max_value: MAX_INT
+      ClusteringFixed:
+        object_name: 'x2p_edit_fixed'
+        display_name: Clustering fixed
+        description: Clustering fixed
+        default_value: 1
+        min_value: 1
+        max_value: MAX_INT
+      EnsembleIterations:
+        object_name: x2p_edit_itensemble
+        display_name: Iterations ensemble
+        description: Iterations ensemble
+        default_value: 1000
+        min_value: 1
+        max_value: MAX_INT
+      ParallelProcessing:
+        object_name: x2p_check_parallel
+        display_name: Parallel processing
+        description: Whether or not to use a parallel pool to do calculations
+        default_value: False
+        
+    figures:
+      - name: x2p_plot_similarity
+        display_name: Similarity
+      - name: x2p_plot_epi
+        display_name: Ensemble participation index
+      - name: x2p_plot_onsemact
+        display_name: Onsemble activity
+      - name: x2p_plot_offsemact
+        display_name: Offsemble activity
+      - name: x2p_plot_activity
+        display_name: Activity
+      - name: x2p_plot_onsemneu
+        display_name: Onsemble neurons
+      - name: x2p_plot_offsemneu
+        display_name: Offsemble neurons
+      
+    source: "For details about this method, see the following paper: Perez-Ortega, J., Akrouh, A. & Yuste, R. 2024. Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x"
+  sgc:
+    enabled: True
+    full_name: Similarity Graph Clustering
+    language: MATLAB
+    folder_path: 'SGC'
+    analysis_function: run_sgc
+    plot_function: plot_sgc
+    ensemble_color: pink
+    needed_data:
+      - data_dFFo
+    parameters:
+      use_first_derivative:
+        object_name: sgc_check_firstderiv
+        display_name: Use first derivative of dFFo
+        description: Check this box to use the first derivative of the calcium signals instead of the calcium signal
+        default_value: False
+      standard_deviations_threshold:
+        object_name: sgc_edit_stdthreshold
+        display_name: Standard deviations threshold
+        description: This threshold will be used to identify moments of neuronal activity
+        default_value: 2
+        min_value: 1
+        max_value: MAX_INT
+      shuffling_rounds:
+        object_name: sgc_edit_shuff
+        display_name: Shuffling rounds
+        description: Number of times the data will be shuffled before identifying activity patterns
+        default_value: 1000
+        min_value: 1
+        max_value: MAX_INT
+      coactivity_significance_level:
+        object_name: sgc_edit_sig
+        display_name: Coactivivity significance level
+        description: Alpha value to determine a coactivation moment as significative
+        default_value: 0.05
+        min_value: 0.0000001
+        max_value: 1
+      montecarlo_rounds:
+        object_name: sgc_edit_monterounds
+        display_name: Montecarlo rounds
+        description: Number of Montecarlo rounds to use for the data
+        default_value: 5
+        min_value: 1
+        max_value: MAX_INT
+      montecarlo_steps:
+        object_name: sgc_edit_montesteps
+        display_name: Montecarlo steps
+        description: Montecarlo steps
+        default_value: 10000
+        min_value: 1
+        max_value: MAX_INT
+      affinity_threshold:
+        object_name: sgc_edit_affthres
+        display_name: Affinity threshold
+        description: Affinity threshold
+        default_value: 0.2
+        min_value: 0.00001
+        max_value: MAX_INT
+        
+    figures:
+      - name: sgc_plot_timecourse
+        display_name: Ensembles timecourse
+      - name: sgc_plot_cellsinens
+        display_name: Cells in ensembles
+      
+    source: "For details about this method, see the following paper: L. Avitan et al. 'Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience'. Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056"
+  example:
+    enabled: True
+    full_name: Example Algorithm
+    language: Python
+    folder_path: ''
+    analysis_function: run_example
+    plot_function: plot_example
+    ensemble_color: pink
+    needed_data:
+      - data_dFFo
+      - data_neuronal_activity
+    parameters:
+      int_parameter_ensembles:
+          object_name: example_int_ensembles
+          display_name: Number of ensembles
+          description: Integer values from 0 to 8.
+          default_value: 5
+          min_value: 1
+          max_value: 8
+      int_parameter_A:
+        object_name: example_int_parameter_A
+        display_name: Integer parameter A
+        description: Integer values from -10 to 50.
+        default_value: 5
+        min_value: -10
+        max_value: 50
+      int_parameter_B:
+        object_name: example_int_parameter_B
+        display_name: Integer parameter B
+        description: Integer values from 0 to 100.
+        default_value: 8
+        min_value: 0
+        max_value: 100
+      float_parameter:
+        object_name: example_float_parameter
+        display_name: Result A with B
+        description: Integer values from -1000 to "infinity".
+        default_value: 0.0
+        min_value: -1000
+        max_value: MAX_INT
+      threshold_parameter:
+        object_name: example_threshold_parameter
+        display_name: Threshold parameter
+        description: Decimal values from 0 to 1, used as threshold for the dummy procedure.
+        default_value: 0.5
+        min_value: 0
+        max_value: 1
+      bool_parameter:
+        object_name: example_bool_parameter
+        display_name: Boolean parameter
+        description: This box checked means True, unchecked means False
+        default_value: False
+      selection_parameter:
+        object_name: example_selection
+        display_name: Multiple selection parameter
+        description: This parameters selects only one of many
+        type: enum
+        default_value: SUM
+        options:
+          - value: SUM
+            label: Sum the parameters A and B
+            description: The values will be summed
+          - value: MEAN
+            label: Mean of the parameters A and B
+            description: The mean of the values will be used
+    figures:
+      - name: example_plot_raster
+        display_name: Raster of the activity
+      - name: example_plot_dFFo
+        display_name: dFFo of a neuron
+      - name: example_plot_secondary_dFFo
+        display_name: Secondary dFFo plot
+      - name: example_plot_many_dFFo
+        display_name: dFFo of many cells
+    source: ENCORE example algorithm to demonstrate the integration of new custom algorithms. Also, allows the user to make a dry run of the analysis without installing the MATLAB engine. Check the documentation for more details on adding a new algorithm.
