@@ -294,6 +294,9 @@ class MainWindow(QMainWindow):
         self.save_btn_npz.clicked.connect(self.save_results_npz)
         self.save_btn_pkl.clicked.connect(self.save_results_pkl)
         self.save_btn_mat.clicked.connect(self.save_results_mat)
+        
+        # Set the About tab
+        self.setup_about_tab()
 
     def reset_gui(self):
         """
@@ -3674,6 +3677,93 @@ class MainWindow(QMainWindow):
             except Exception as e:
                 self.update_console_log(f"Error saving file: {str(e)}", "error")
 
+    ## About tab
+    def load_project_metadata(self, package_name: str) -> dict:
+        """
+        Load project metadata from the installed package.
+
+        :param package_name: Name of the installed package (e.g. 'encore')
+        :type package_name: str
+        :return: Project metadata dictionary
+        :rtype: dict
+        """
+        md = importlib.metadata.metadata(package_name)
+    
+        return {
+            "name": md.get("Name", ""),
+            "version": importlib.metadata.version(package_name),
+            "summary": md.get("Summary", ""),
+            "home_page": md.get("Home-page", ""),
+            "project_urls": md.get_all("Project-URL") or [],
+            "license": md.get("License-Expression", ""),
+        }
+    def parse_project_urls(self, project_urls: list[str]) -> dict:
+        urls = {}
+        for entry in project_urls:
+            if "," in entry:
+                name, url = entry.split(",", 1)
+                urls[name.strip()] = url.strip()
+        return urls
+    def setup_about_tab(self):
+        """
+        Populate the About tab using metadata from pyproject.toml.
+        """
+        package_name = "encore"
+        meta = self.load_project_metadata(package_name)
+        project_urls = self.parse_project_urls(meta["project_urls"])
+
+        layout = QVBoxLayout()
+        layout.setSpacing(6)
+
+        # Title
+        title = QLabel(f"<b>{meta['name']} {meta['version']}</b>")
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title.setStyleSheet("font-size: 16px;")
+        layout.addWidget(title)
+
+        # Description
+        if meta["summary"]:
+            desc = QLabel(meta["summary"])
+            desc.setWordWrap(True)
+            desc.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            desc.setStyleSheet("font-style: italic;")
+            layout.addWidget(desc)
+
+        # Author
+        author = QLabel(f"<b>Author:</b> <a href='https://github.com/rivelco'>rivel_co</a>")
+        author.setOpenExternalLinks(True)
+        author.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(author)
+
+        # License
+        if meta["license"]:
+            license_lbl = QLabel(f"<b>License:</b> {meta['license']}")
+            license_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(license_lbl)
+
+        # Links
+        if project_urls:
+            layout.addSpacing(6)
+            header_label = QLabel("<b>Project links:</b>")
+            header_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            layout.addWidget(header_label)
+
+            full_links_label = ""
+            for name, url in project_urls.items():
+                full_links_label += f'<a href="{url}">{name}</a>  |  '
+                
+            link = QLabel(full_links_label[:-5])
+            link.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            link.setOpenExternalLinks(True)
+            layout.addWidget(link)
+
+        layout.addStretch()
+
+        self.main_about_box.setLayout(layout)
+
+
+
+    
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", action="store_true")
