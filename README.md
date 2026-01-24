@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/rivelco/ENCORE">
-    <img src="src/encore/gui/ENCORE_logo.png" alt="Logo" width="80" height="80">
+    <img src="https://raw.githubusercontent.com/rivelco/ENCORE/main/src/encore/gui/ENCORE_logo.png"" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">ENCORE - Ensembles Comparison and Recognition</h3>
