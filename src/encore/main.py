@@ -1419,7 +1419,7 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "coordinates"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=2, lim_sup_y=self.data_coordinates.shape[0])
+        self.update_edit_validators(lim_sup_x=2, lim_sup_y=self.data_coordinates.shape[0], xl="dims", yl="cells")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         encore_plots.preview_coordinates2D(plot_widget, self.data_coordinates)
         self.varlabels_setup_tab(self.data_coordinates.shape[0])
@@ -1435,7 +1435,7 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0])
+        self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0], yl="stims")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_stims
         if len(preview_data.shape) == 1:
@@ -1483,7 +1483,7 @@ class MainWindow(QMainWindow):
         else:
             timepoints = self.data_behavior.shape[0]
             behaviors = 1
-        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=behaviors)
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=behaviors, yl="behavs")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
         if len(preview_data.shape) == 1:
@@ -1550,14 +1550,18 @@ class MainWindow(QMainWindow):
             self.data_behavior = self.data_behavior.T
             self.update_console_log(f"Updated Behavior dataset. Please, verify the data preview.", "warning")
             self.view_behavior()
-    def update_edit_validators(self, lim_sup_x=10000000, lim_sup_y=10000000):
+    def update_edit_validators(self, lim_sup_x=10000000, lim_sup_y=10000000, xl="time", yl="cells"):
         """
-        Update the validators for bining and slicing.
+        Update the validators for bining and slicing. Also reports to the corresponding labels.
 
         :param lim_sup_x: Maximum value possible for the x dimention, defaults to 10000000
         :type lim_sup_x: int, optional
         :param lim_sup_y: Mavimum value possible for the y dimention, defaults to 10000000
         :type lim_sup_y: int, optional
+        :param xl: Optional label to describe the meaning of the items in x, defaults to "time"
+        :type xl: str, optional
+        :param yl: Optional label to describe the meaning of the items in y, defaults to "cells"
+        :type yl: int, optional
         """
         # For the edit options
         self.edit_edit_binsize.setRange(1, lim_sup_x)
@@ -1565,6 +1569,13 @@ class MainWindow(QMainWindow):
         self.edit_edit_xend.setRange(1, lim_sup_x)
         self.edit_edit_ystart.setRange(0, lim_sup_y)
         self.edit_edit_yend.setRange(1, lim_sup_y)
+        
+        # Report the shape to the labels
+        base = f"X dim ({xl})"
+        self.edit_trim_x_lbl.setText(f"{base}, {lim_sup_x} items")
+        base = f"Y dim ({yl})"
+        self.edit_trim_y_lbl.setText(f"{base}, {lim_sup_y} items")
+        
     def bin_matrix(self, mat, bin_size, bin_method):
         """
         Bins the input matrix along the timepoints dimension using the specified binning method.
