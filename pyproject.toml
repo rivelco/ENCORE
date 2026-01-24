@@ -8,7 +8,10 @@ version = "2.0.0"
 description = "GUI for Ensembles Comparison and Recognition"
 readme = "README.md"
 requires-python = ">=3.9"
-license = { text = "GPL-3.0-only" }
+license = "GPL-3.0-only"
+license-files = [
+    "LICENSE",
+]
 authors = [
     { name = "Ricardo Velazquez Contreras", email = "rivel_co@hotmail.com" }
 ]
@@ -29,7 +32,6 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Bio-Informatics",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Topic :: Scientific/Engineering :: Information Analysis",
-    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
     "Programming Language :: Python :: 3.9",
@@ -38,10 +40,10 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 
-
 [project.optional-dependencies]
 dev = ["pyqt6-tools", 
-    "pytest"
+    "pytest",
+    "build"
 ]
 docs = [
     "sphinx>=7.0",
@@ -51,6 +53,16 @@ docs = [
     "sphinx-autodoc-typehints"
 ]
 matlab = ["numpy"]
+all = [
+    "pyqt6-tools", 
+    "pytest",
+    "build",
+    "sphinx>=7.0",
+    "furo",
+    "sphinx-copybutton",
+    "sphinxcontrib-napoleon",
+    "sphinx-autodoc-typehints"
+]
 
 [project.scripts]
 encore = "encore.main:main"

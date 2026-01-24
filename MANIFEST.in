@@ -1,4 +1,4 @@
-recursive-include src/ENCORE/config *.yaml
-recursive-include src/ENCORE/gui *.ui
-recursive-include src/ENCORE/gui *.png
-recursive-include src/ENCORE/analysis *.m
+recursive-include src/encore/config *.yaml
+recursive-include src/encore/gui *.ui
+recursive-include src/encore/gui *.png
+recursive-include src/encore/analysis *.m
