@@ -3,6 +3,7 @@ import os
 import numpy as np
 import scipy.stats as stats
 from importlib.resources import files
+from encore.validators.algorithm_parameters import validate
 
 def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True, logger=None):
     """
@@ -36,6 +37,12 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
     
     log_flag = "SVD:"
     success = True
+    
+    if logger:
+        logger(f"{log_flag} Validating parameters...", "log")
+    pars_validated = validate('svd', parameters)
+    if logger:
+        logger(f"{log_flag} Parameters validated.", "complete")
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
@@ -182,6 +189,12 @@ def run_pca(input_data, parameters, code_folder_name='NeuralEnsembles', include_
     success = True
     
     if logger:
+        logger(f"{log_flag} Validating parameters...", "log")
+    pars_validated = validate('pca', parameters)
+    if logger:
+        logger(f"{log_flag} Parameters validated.", "complete")
+    
+    if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     
     # Check if MATLAB is available
@@ -291,6 +304,12 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
     ica_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "ICA:"
     success = True
+    
+    if logger:
+        logger(f"{log_flag} Validating parameters...", "log")
+    pars_validated = validate('ica', parameters)
+    if logger:
+        logger(f"{log_flag} Parameters validated.", "complete")
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
@@ -457,6 +476,12 @@ def run_x2p(input_data, parameters, code_folder_name='Xsembles2P', include_answe
     success = True
     
     if logger:
+        logger(f"{log_flag} Validating parameters...", "log")
+    pars_validated = validate('x2p', parameters)
+    if logger:
+        logger(f"{log_flag} Parameters validated.", "complete")
+    
+    if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
     # Check if MATLAB is available
     try:
@@ -598,6 +623,13 @@ def run_sgc(input_data, parameters, code_folder_name='SGC', include_answer=True,
     sgc_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "SGC:"
     success = True
+    
+    if logger:
+        logger(f"{log_flag} Validating parameters...", "log")
+    pars_validated = validate('sgc', parameters)
+    if logger:
+        logger(f"{log_flag} Parameters validated.", "complete")
+    
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")

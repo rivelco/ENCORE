@@ -1,4 +1,5 @@
 import warnings
+import numpy as np
 
 def validate_params(params: dict, defaults: dict) -> dict:
     """
@@ -48,3 +49,17 @@ def validate_params(params: dict, defaults: dict) -> dict:
             validated[key] = default_value
 
     return validated
+
+def validate_binary_matrix(matrix: np.ndarray) -> bool:
+    """
+    Validates if a numpy matrix is a binary matrix
+
+    :param matrix: Numpy matrix to validate
+    :type matrix: np.ndarray
+    :return: Bool value describing if it's binary
+    :rtype: bool
+    """
+    unique_vals = np.unique(matrix)
+    if set(unique_vals).issubset({0, 1}):
+        return True
+    return False
