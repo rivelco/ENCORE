@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" />
 
-    <!-- Generated with Sphinx 8.0.2 and Furo 2024.08.06 -->
-        <title>ENCORE 1.0 documentation</title>
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>ENCORE 2.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">ENCORE 1.0 documentation</div></a>
+      <a href="#"><div class="brand">ENCORE 2.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
   
   
-  <span class="sidebar-brand-text">ENCORE 1.0 documentation</span>
+  <span class="sidebar-brand-text">ENCORE 2.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -199,11 +199,32 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+  <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="codeFunctions.html">Code functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/main_window.html">Main Window (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/runners.html">Analysis Runners</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/data/assign_data.html">Assign data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data/load_data.html">Load data</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/MatplotlibWidget.html">MatplotlibWidget definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/encore_plots.html">Default plot functions for ENCORE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/encore.html">ENCORE runners plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/validators/index.html">Data Validators</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Data Validators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/algorithm_parameters.html">Validator of algorithm parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/algorithm_results.html">Validator of algorithm results</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/utils.html">Utility functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
 <li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgments</a></li>
 </ul>
 
@@ -246,48 +267,125 @@
         </div>
         <article role="main" id="furo-main-content">
           <section id="encore-documentation">
-<h1>ENCORE documentation<a class="headerlink" href="#encore-documentation" title="Link to this heading">¶</a></h1>
-<p>Graphic User Interface to perform a variety of neuronal ensembles identification’s methods using calcium or electrical recordings.</p>
+<h1>ENCORE Documentation<a class="headerlink" href="#encore-documentation" title="Link to this heading">¶</a></h1>
+<p><strong>ENCORE</strong> is an open-source software tool for the identification and comparison
+of neuronal ensembles from population activity data, including calcium imaging
+and electrophysiological recordings.</p>
+<p>The software provides:</p>
+<ul class="simple">
+<li><p>A graphical user interface (GUI) for interactive analysis</p></li>
+<li><p>A modular architecture that facilitates the integration of new algorithms</p></li>
+<li><p>Supports running the algorithms of ENCORE directly from Python scripts</p></li>
+<li><p>Support for multiple published ensemble detection methods</p></li>
+</ul>
+<p>ENCORE is designed to support both exploratory data analysis and reproducible
+scientific research, with a strong emphasis on transparency, extensibility, and
+community contributions.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This project is under current development.</p>
+<p>ENCORE is under active development. The current version already supports
+multiple published ensemble identification algorithms, with ongoing efforts
+to expand functionality and documentation.</p>
 </div>
-<p>This GUI currently incorporates five different algorithms:</p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<p>If you are new to ENCORE, start here:</p>
 <ul class="simple">
-<li><p>SVD based method: Velazquez-Contreras, R., Carrillo-Reid, L. (2025). Identification of Neuronal Ensembles from Similarity Maps Using Singular Value Decomposition. In: Carrillo-Reid, L. (eds) Identification, Characterization, and Manipulation of Neuronal Ensembles. Neuromethods, vol 215. Humana, New York, NY. <a class="reference external" href="https://doi.org/10.1007/978-1-0716-4208-5_5">https://doi.org/10.1007/978-1-0716-4208-5_5</a></p></li>
-<li><p>PCA based method: Herzog et al. (2021) “Scalable and accurate automated method for neuronal ensemble detection in spiking neural networks. <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/34329314/">https://pubmed.ncbi.nlm.nih.gov/34329314/</a> Rubén Herzog Dec 2021</p></li>
-<li><p>ICA based method: Lopes-dos-Santos V, Ribeiro S, Tort AB (2013) Detecting cell assemblies in large neuronal populations. J Neurosci Methods 220(2):149-66. 10.1016/j.jneumeth.2013.04.010</p></li>
-<li><p>Xsembles2P method: Pérez-Ortega, J., Akrouh, A. &amp; Yuste, R. (2024). Stimulus encoding by specific inactivation of cortical neurons. Nat Commun 15, 3192. doi: 10.1038/s41467-024-47515-x</p></li>
-<li><p>Similarity Graph Clustering method: L. Avitan et al. “Spontaneous Activity in the Zebrafish Tectum Reorganizes over Development and Is Influenced by Visual Experience”. Curr. Biol. 27 (2017). DOI: 10.1016/j.cub.2017.06.056</p></li>
+<li><p><a class="reference internal" href="installation.html"><span class="doc">Installation</span></a></p></li>
+<li><p><a class="reference internal" href="quickstart.html"><span class="doc">Quickstart</span></a></p></li>
+<li><p><a class="reference internal" href="user_guide/usage.html"><span class="doc">Usage</span></a></p></li>
 </ul>
+</section>
+<section id="conceptual-background">
+<h2>Conceptual Background<a class="headerlink" href="#conceptual-background" title="Link to this heading">¶</a></h2>
+<p>To understand the theoretical and methodological foundations of the software,
+see:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="concepts/overview.html"><span class="doc">Overview</span></a></p></li>
+</ul>
+</section>
+<section id="api-reference">
+<h2>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading">¶</a></h2>
+<p>For developers and advanced users, the API documentation describes the internal
+structure of ENCORE and its main components:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/main_window.html"><span class="doc">Main Window (GUI)</span></a></p></li>
+<li><p><a class="reference internal" href="api/runners.html"><span class="doc">Analysis Runners</span></a></p></li>
+<li><p><a class="reference internal" href="api/data/index.html"><span class="doc">Data Handling</span></a></p></li>
+<li><p><a class="reference internal" href="api/plotters/index.html"><span class="doc">Figures and Plotters</span></a></p></li>
+<li><p><a class="reference internal" href="api/validators/index.html"><span class="doc">Data Validators</span></a></p></li>
+<li><p><a class="reference internal" href="api/utils.html"><span class="doc">Utility functions</span></a></p></li>
+</ul>
+</section>
+<section id="adding-new-algorithms">
+<h2>Adding New Algorithms<a class="headerlink" href="#adding-new-algorithms" title="Link to this heading">¶</a></h2>
+<p>If you’re interested in adding new algorithms to ENCORE go to:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="extending/adding_algorithms.html"><span class="doc">Adding New Algorithms to ENCORE</span></a></p></li>
+</ul>
+</section>
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Link to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#system-requirements">System requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installation-of-the-python-environment">Installation of the python environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#verifying-the-installation">Verifying the installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installation-of-the-matlab-engine-for-python">Installation of the MATLAB engine for Python</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#run-the-gui">Run the GUI</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#references">References</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#execute-encore">1. Execute ENCORE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#load-your-data">2. Load Your Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#run-analyses">3. Run Analyses</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#visualize-results">4. Visualize Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#compare-results">5. Compare Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#evaluate-algorithm-performance">6. Evaluate Algorithm Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#save-results">7. Save Results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#additional-tips">Additional Tips</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/usage.html">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#execute-encore">1. Execute ENCORE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#load-your-data">2. Load Your Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#run-analyses">3. Run Analyses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#visualize-results">4. Visualize Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#compare-results">5. Compare Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#evaluate-algorithm-performance">6. Evaluate Algorithm Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#save-results">7. Save Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user_guide/usage.html#additional-tips">Additional Tips</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="codeFunctions.html">Code functions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="codeFunctions.html#encore.MainWindow"><code class="docutils literal notranslate"><span class="pre">MainWindow</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="codeFunctions.html#encore.WorkerRunnable"><code class="docutils literal notranslate"><span class="pre">WorkerRunnable</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="codeFunctions.html#encore.WorkerSignals"><code class="docutils literal notranslate"><span class="pre">WorkerSignals</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/main_window.html">Main Window (GUI)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/main_window.html#module-encore.main">Class Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/runners.html">Analysis Runners</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/runners.html#module-encore.runners.encore">Module Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/data/index.html">Data Handling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/data/assign_data.html">Assign data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data/load_data.html">Load data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/plotters/index.html">Figures and Plotters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/index.html#module-reference">Module Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/validators/index.html">Data Validators</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/index.html#module-reference">Module Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/utils.html">Utility functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/utils.html#module-encore.utils.data_converters">Module Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#clone-or-download-the-repo">Clone or download the repo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#algorithm-configuration">Algorithm Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#key-configuration-fields">Key configuration fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#implementing-the-analysis-function">Implementing the Analysis Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#implementing-the-plotting-function">Implementing the Plotting Function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#execution-and-integration">Execution and Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#example-algorithm">Example Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#community-contributions">Community Contributions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="extending/adding_algorithms.html#references">References</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgments</a></li>
@@ -348,7 +446,11 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">ENCORE documentation</a><ul>
+<li><a class="reference internal" href="#">ENCORE Documentation</a><ul>
+<li><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li><a class="reference internal" href="#conceptual-background">Conceptual Background</a></li>
+<li><a class="reference internal" href="#api-reference">API Reference</a></li>
+<li><a class="reference internal" href="#adding-new-algorithms">Adding New Algorithms</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>
 </ul>
 </li>
@@ -361,8 +463,8 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
-    <script src="_static/doctools.js?v=9a2dae69"></script>
+</div><script src="_static/documentation_options.js?v=51b770b3"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
