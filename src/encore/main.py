@@ -253,13 +253,8 @@ class MainWindow(QMainWindow):
 
         self.enscomp_combo_select_result.currentTextChanged.connect(self.ensembles_compare_update_combo_results)
 
-        ## Numeric validator
-        double_validator = QDoubleValidator()
-        double_validator.setNotation(QDoubleValidator.Notation.StandardNotation)
-
-        # Populate the similarity maps combo box
-        double_validator.setRange(0.0, 100.0, 2)
-        self.enscomp_visopts_neusize.setValidator(double_validator)
+        self.enscomp_visopts_neusize.setValue(6)
+        self.enscomp_visopts_neusize.setRange(1, 50)
 
         similarity_items = ["Neurons", "Timecourses"]
         similarity_methods = ["Cosine", "Euclidean", "Correlation", "Jaccard"]
@@ -1031,6 +1026,9 @@ class MainWindow(QMainWindow):
         :type index: int
         """
         current_tab_name = self.main_tabs.tabText(index)
+        
+        if current_tab_name != "Load data":
+            self.validate_loaded_data()
 
         if current_tab_name == "Ensembles compare":
             if len(self.results) > 0:
@@ -1069,6 +1067,56 @@ class MainWindow(QMainWindow):
             run_button = self.findChild(QWidget, f"{short_name}_run_analysis_button")
             if run_button:
                 run_button.setEnabled(needed_loaded)
+    
+    ## Validate the loaded data by the user
+    def validate_loaded_data(self):
+        """
+        Validates if the loaded data has consistency taken as reference the binary
+        activity data or the dFFo. This is, the stimulation and/or behavioral data
+        should have the same number of timepoints,, the cells same number of neurons
+        or the dFFo the same neurons and time as the binary data.
+        """
+        ref = ""
+        if hasattr(self, 'data_neuronal_activity'):
+            self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+            ref = "activity"
+        elif hasattr(self, 'data_dFFo'):
+            self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
+            ref = "dFFo"
+        else:
+            return
+            
+        if hasattr(self, 'data_dFFo'):
+            neurons, timepoints = self.data_dFFo.shape
+            if neurons != self.cant_neurons:
+                self.update_console_log(f"The number of neurons in the dFFo does not match the {ref}, the dFFo will be descarted for now.", "warning")
+                self.clear_dFFo()
+            if timepoints != self.cant_timepoints:
+                self.update_console_log(f"The number of timepoints in the dFFo does not match the {ref}, the dFFo will be descarted for now.", "warning")
+                self.clear_dFFo()
+        if hasattr(self, 'data_coordinates'):
+            neurons, dims = self.data_coordinates.shape
+            if neurons != self.cant_neurons:
+                self.update_console_log(f"The number of neurons in the coordinates does not match the {ref}, the coordinates will be descarted for now.", "warning")
+                self.clear_coordinates()
+        if hasattr(self, 'data_stims'):
+            stims, timepoints = self.data_stims.shape
+            if timepoints != self.cant_timepoints:
+                self.update_console_log(f"The number of timepoints in the stimulation does not match the {ref}, the stimulation will be descarted for now.", "warning")
+                self.clear_stims()
+        if hasattr(self, 'data_cells'):
+            neurons, timepoints = self.data_cells.shape
+            if neurons != self.cant_neurons:
+                self.update_console_log(f"The number of neurons in the Cells does not match the {ref}, the Cells matrix will be descarted for now.", "warning")
+                self.clear_cells()
+            if timepoints != self.cant_timepoints:
+                self.update_console_log(f"The number of timepoints in the Cells does not match the {ref}, the Cells matrix will be descarted for now.", "warning")
+                self.clear_cells()
+        if hasattr(self, 'data_behavior'):
+            behaviors, timepoints = self.data_behavior.shape
+            if timepoints != self.cant_timepoints:
+                self.update_console_log(f"The number of timepoints in the behavior does not match the {ref}, the behavior will be descarted for now.", "warning")
+                self.clear_behavior()
 
     ## Set variables from input file
     def set_dFFo(self):
@@ -1103,6 +1151,9 @@ class MainWindow(QMainWindow):
         :return: None
         """
         self.data_neuronal_activity = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
+        if not validate_binary_matrix(self.data_neuronal_activity):
+            self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
+            self.data_neuronal_activity = (self.data_neuronal_activity >= 1.0).astype(np.int_)
         self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
         self.btn_clear_neuronal_activity.setEnabled(True)
         self.btn_view_neuronal_activity.setEnabled(True)
@@ -1145,6 +1196,9 @@ class MainWindow(QMainWindow):
         At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
         """
         data_stims = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
+        if not validate_binary_matrix(data_stims):
+            self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
+            data_stims = (data_stims >= 1.0).astype(np.int_)
         self.data_stims = data_stims
         stims, timepoints = data_stims.shape
         self.btn_clear_stim.setEnabled(True)
@@ -1166,6 +1220,9 @@ class MainWindow(QMainWindow):
         At the end the function shows the loaded data in the :attr:`MainWindow.data_preview` widget.
         """
         data_cells = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
+        if not validate_binary_matrix(data_cells):
+            self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
+            data_cells = (data_cells >= 1.0).astype(np.int_)
         self.data_cells = data_cells
         stims, cells = data_cells.shape
         self.btn_clear_cells.setEnabled(True)
@@ -1212,15 +1269,16 @@ class MainWindow(QMainWindow):
         This function also updates the buttons related to load and clear the variable
         At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
         """
-        delattr(self, "data_dFFo")
-        self.set_able_edit_options(False)
-        self.btn_clear_dFFo.setEnabled(False)
-        self.btn_view_dFFo.setEnabled(False)
-        self.lbl_dffo_select.setText("Nothing")
-        self.lbl_dffo_select_name.setText("")
-        default_txt = "Load or select a variable\nto see a preview here"
-        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted dFFo dataset", "complete")       
+        if hasattr(self, "data_dFFo"):
+            delattr(self, "data_dFFo")
+            self.set_able_edit_options(False)
+            self.btn_clear_dFFo.setEnabled(False)
+            self.btn_view_dFFo.setEnabled(False)
+            self.lbl_dffo_select.setText("Nothing")
+            self.lbl_dffo_select_name.setText("")
+            default_txt = "Load or select a variable\nto see a preview here"
+            self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+            self.update_console_log(f"Deleted dFFo dataset", "complete")       
     def clear_neuronal_activity(self):
         """
         Deletes the value of the :attr:`MainWindow.data_neuronal_activity` variable.
@@ -1228,15 +1286,16 @@ class MainWindow(QMainWindow):
         This function also updates the buttons related to load and clear the variable
         At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
         """
-        delattr(self, "data_neuronal_activity")
-        self.set_able_edit_options(False)
-        self.btn_clear_neuronal_activity.setEnabled(False)
-        self.btn_view_neuronal_activity.setEnabled(False)
-        self.lbl_neuronal_activity_select.setText("Nothing")
-        self.lbl_neuronal_activity_select_name.setText("")
-        default_txt = "Load or select a variable\nto see a preview here"
-        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Binary Neuronal Activity dataset", "complete")
+        if hasattr(self, "data_neuronal_activity"):
+            delattr(self, "data_neuronal_activity")
+            self.set_able_edit_options(False)
+            self.btn_clear_neuronal_activity.setEnabled(False)
+            self.btn_view_neuronal_activity.setEnabled(False)
+            self.lbl_neuronal_activity_select.setText("Nothing")
+            self.lbl_neuronal_activity_select_name.setText("")
+            default_txt = "Load or select a variable\nto see a preview here"
+            self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+            self.update_console_log(f"Deleted Binary Neuronal Activity dataset", "complete")
     def clear_coordinates(self):
         """
         Deletes the value of the :attr:`MainWindow.data_coordinates` variable.
@@ -1244,15 +1303,16 @@ class MainWindow(QMainWindow):
         This function also updates the buttons related to load and clear the variable
         At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
         """
-        delattr(self, "data_coordinates")
-        self.set_able_edit_options(False)
-        self.btn_clear_coordinates.setEnabled(False)
-        self.btn_view_coordinates.setEnabled(False)
-        self.lbl_coordinates_select.setText("Nothing")
-        self.lbl_coordinates_select_name.setText("")
-        default_txt = "Load or select a variable\nto see a preview here"
-        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Coordinates dataset", "complete")
+        if hasattr(self, "data_coordinates"):
+            delattr(self, "data_coordinates")
+            self.set_able_edit_options(False)
+            self.btn_clear_coordinates.setEnabled(False)
+            self.btn_view_coordinates.setEnabled(False)
+            self.lbl_coordinates_select.setText("Nothing")
+            self.lbl_coordinates_select_name.setText("")
+            default_txt = "Load or select a variable\nto see a preview here"
+            self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+            self.update_console_log(f"Deleted Coordinates dataset", "complete")
     def clear_stims(self):
         """
         Deletes the value of the :attr:`MainWindow.data_stims` variable.
@@ -1260,15 +1320,16 @@ class MainWindow(QMainWindow):
         This function also updates the buttons related to load and clear the variable
         At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
         """
-        delattr(self, "data_stims")
-        self.set_able_edit_options(False)
-        self.btn_clear_stim.setEnabled(False)
-        self.btn_view_stim.setEnabled(False)
-        self.lbl_stim_select.setText("Nothing")
-        self.lbl_stim_select_name.setText("")
-        default_txt = "Load or select a variable\nto see a preview here"
-        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Stimuli dataset", "complete")
+        if hasattr(self, "data_stims"):
+            delattr(self, "data_stims")
+            self.set_able_edit_options(False)
+            self.btn_clear_stim.setEnabled(False)
+            self.btn_view_stim.setEnabled(False)
+            self.lbl_stim_select.setText("Nothing")
+            self.lbl_stim_select_name.setText("")
+            default_txt = "Load or select a variable\nto see a preview here"
+            self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+            self.update_console_log(f"Deleted Stimuli dataset", "complete")
     def clear_cells(self):
         """
         Deletes the value of the :attr:`MainWindow.data_cells` variable.
@@ -1276,15 +1337,16 @@ class MainWindow(QMainWindow):
         This function also updates the buttons related to load and clear the variable
         At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
         """
-        delattr(self, "data_cells")
-        self.set_able_edit_options(False)
-        self.btn_clear_cells.setEnabled(False)
-        self.btn_view_cells.setEnabled(False)
-        self.lbl_cells_select.setText("Nothing")
-        self.lbl_cells_select_name.setText("")
-        default_txt = "Load or select a variable\nto see a preview here"
-        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Selected cells dataset", "complete")
+        if hasattr(self, "data_cells"):
+            delattr(self, "data_cells")
+            self.set_able_edit_options(False)
+            self.btn_clear_cells.setEnabled(False)
+            self.btn_view_cells.setEnabled(False)
+            self.lbl_cells_select.setText("Nothing")
+            self.lbl_cells_select_name.setText("")
+            default_txt = "Load or select a variable\nto see a preview here"
+            self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+            self.update_console_log(f"Deleted Selected cells dataset", "complete")
     def clear_behavior(self):
         """
         Deletes the value of the :attr:`MainWindow.data_behavior` variable.
@@ -1292,15 +1354,16 @@ class MainWindow(QMainWindow):
         This function also updates the buttons related to load and clear the variable
         At the end the function clears visualization in the :attr:`MainWindow.data_preview` widget.
         """
-        delattr(self, "data_behavior")
-        self.set_able_edit_options(False)
-        self.btn_clear_behavior.setEnabled(False)
-        self.btn_view_behavior.setEnabled(False)
-        self.lbl_behavior_select.setText("Nothing")
-        self.lbl_behavior_select_name.setText("")
-        default_txt = "Load or select a variable\nto see a preview here"
-        self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
-        self.update_console_log(f"Deleted Behavior dataset", "complete")
+        if hasattr(self, "data_behavior"):
+            delattr(self, "data_behavior")
+            self.set_able_edit_options(False)
+            self.btn_clear_behavior.setEnabled(False)
+            self.btn_view_behavior.setEnabled(False)
+            self.lbl_behavior_select.setText("Nothing")
+            self.lbl_behavior_select_name.setText("")
+            default_txt = "Load or select a variable\nto see a preview here"
+            self.findChild(MatplotlibWidget, 'data_preview').reset(default_txt)
+            self.update_console_log(f"Deleted Behavior dataset", "complete")
         
     ## Visualize variables from input file
     def view_dFFo(self):
