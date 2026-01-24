@@ -2035,8 +2035,11 @@ class MainWindow(QMainWindow):
         :type algorithm_cfg: dict
         :param params: Validated parameters dictionary
         :type params: dict
-        :param data: NumPy data matrix
-        :type data: numpy.ndarray
+        :param data: Dict mapping variable name and data matrix provided by the pipeline. 
+            Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+            'data_stims', 'data_cells', 'data_behavior'.
+            Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+        :type data: dict[var_name] = numpy.ndarray
         :param logger: Function to use to report the progress and error of the function
             logger(srt, srt). The first string defines the message and the second the log level
         """
