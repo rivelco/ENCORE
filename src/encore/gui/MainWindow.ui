@@ -252,7 +252,7 @@ Use it to remove part of your dataset.</string>
                 </widget>
                </item>
                <item row="1" column="2">
-                <widget class="QLabel" name="label_17">
+                <widget class="QLabel" name="edit_trim_x_lbl">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -260,7 +260,7 @@ Use it to remove part of your dataset.</string>
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>x dimention (time)</string>
+                  <string>X dim (time)</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -407,7 +407,7 @@ Use it to remove part of your dataset.</string>
                 </widget>
                </item>
                <item row="3" column="2">
-                <widget class="QLabel" name="label_18">
+                <widget class="QLabel" name="edit_trim_y_lbl">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
@@ -415,7 +415,7 @@ Use it to remove part of your dataset.</string>
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>y dimention (cells)</string>
+                  <string>Y dim (cells)</string>
                  </property>
                  <property name="alignment">
                   <set>Qt::AlignCenter</set>
@@ -1957,15 +1957,15 @@ Use it to remove part of your dataset.</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLineEdit" name="enscomp_visopts_neusize">
-                   <property name="toolTip">
-                    <string>Number in pixels of the diameter of every neuron.</string>
-                   </property>
-                   <property name="text">
-                    <string>6</string>
-                   </property>
+                  <widget class="QDoubleSpinBox" name="enscomp_visopts_neusize">
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="decimals">
+                    <number>1</number>
+                   </property>
+                   <property name="value">
+                    <double>6.000000000000000</double>
                    </property>
                   </widget>
                  </item>
@@ -2415,176 +2415,207 @@ Use it to remove part of your dataset.</string>
          </spacer>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_26">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="title">
-           <string>Save results</string>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_45">
-           <item>
-            <widget class="QLabel" name="label_27">
-             <property name="text">
-              <string>Select the data to save to a file.</string>
+         <widget class="QWidget" name="widget" native="true">
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0" rowspan="2">
+            <widget class="QGroupBox" name="groupBox_26">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="alignment">
-              <set>Qt::AlignCenter</set>
+             <property name="minimumSize">
+              <size>
+               <width>400</width>
+               <height>0</height>
+              </size>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="save_check_input">
-             <property name="toolTip">
-              <string>Select to add the user input data to the file.</string>
+             <property name="title">
+              <string>Save results</string>
              </property>
-             <property name="text">
-              <string>Input user data</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="save_check_minimal">
-             <property name="toolTip">
-              <string>Select to add the minimal analysis results used by this GUI to the file.</string>
-             </property>
-             <property name="text">
-              <string>Minimal results used by Ensembles GUI</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="save_check_params">
-             <property name="toolTip">
-              <string>Select to add the analysis parameters to the file.</string>
-             </property>
-             <property name="text">
-              <string>Analysis parameters</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="save_check_full">
-             <property name="toolTip">
-              <string>Select to add all the results of every analysis to the file, even those that are not used by the GUI.</string>
-             </property>
-             <property name="text">
-              <string>Full results of every analysis</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="save_check_enscomp">
-             <property name="toolTip">
-              <string>Select to add the similarity matrix of the analysis results to the file.</string>
-             </property>
-             <property name="text">
-              <string>Ensembles Compare analysis</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="save_check_perf">
-             <property name="toolTip">
-              <string>Select to add the performance comparission matrix to the file.</string>
-             </property>
-             <property name="text">
-              <string>Performance Comparison</string>
-             </property>
-             <property name="checked">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QWidget" name="widget_23" native="true">
-             <layout class="QVBoxLayout" name="verticalLayout_68">
+             <layout class="QVBoxLayout" name="verticalLayout_45">
               <item>
-               <widget class="QPushButton" name="save_btn_hdf5">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="toolTip">
-                 <string>Save the selected data to an HDF5 file, useful for quick visualization of the results and to use across different platforms.</string>
-                </property>
+               <widget class="QLabel" name="label_27">
                 <property name="text">
-                 <string>Save as HDF5 file (.h5)</string>
+                 <string>Select the data to save to a file.</string>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignCenter</set>
                 </property>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="save_btn_npz">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
+               <widget class="QCheckBox" name="save_check_input">
                 <property name="toolTip">
-                 <string>Numpy NPZ format useful for later analysis in Python.
+                 <string>Select to add the user input data to the file.</string>
+                </property>
+                <property name="text">
+                 <string>Input user data</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="save_check_minimal">
+                <property name="toolTip">
+                 <string>Select to add the minimal analysis results used by this GUI to the file.</string>
+                </property>
+                <property name="text">
+                 <string>Minimal results used by Ensembles GUI</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="save_check_params">
+                <property name="toolTip">
+                 <string>Select to add the analysis parameters to the file.</string>
+                </property>
+                <property name="text">
+                 <string>Analysis parameters</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="save_check_full">
+                <property name="toolTip">
+                 <string>Select to add all the results of every analysis to the file, even those that are not used by the GUI.</string>
+                </property>
+                <property name="text">
+                 <string>Full results of every analysis</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="save_check_enscomp">
+                <property name="toolTip">
+                 <string>Select to add the similarity matrix of the analysis results to the file.</string>
+                </property>
+                <property name="text">
+                 <string>Ensembles Compare analysis</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="save_check_perf">
+                <property name="toolTip">
+                 <string>Select to add the performance comparission matrix to the file.</string>
+                </property>
+                <property name="text">
+                 <string>Performance Comparison</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QWidget" name="widget_23" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_68">
+                 <item>
+                  <widget class="QPushButton" name="save_btn_hdf5">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>Save the selected data to an HDF5 file, useful for quick visualization of the results and to use across different platforms.</string>
+                   </property>
+                   <property name="text">
+                    <string>Save as HDF5 file (.h5)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="save_btn_npz">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>Numpy NPZ format useful for later analysis in Python.
 NPZ is a lightweight numerical format</string>
-                </property>
-                <property name="text">
-                 <string>Save as NPZ file (.npz)</string>
-                </property>
+                   </property>
+                   <property name="text">
+                    <string>Save as NPZ file (.npz)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="save_btn_mat">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="toolTip">
+                    <string>Save the selected data as a MATLAB file, useful for later use in MATLAB.</string>
+                   </property>
+                   <property name="text">
+                    <string>Save as MATLAB file (.mat)</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
               <item>
-               <widget class="QPushButton" name="save_btn_mat">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="save_btn_pkl">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="toolTip">
-                 <string>Save the selected data as a MATLAB file, useful for later use in MATLAB.</string>
+                 <string>Save selected data as Pickle file.
+Pickle files are not guaranteed to be stable across Python versions
+and should not be used for long term storage or sharing.</string>
                 </property>
                 <property name="text">
-                 <string>Save as MATLAB file (.mat)</string>
+                 <string>Save session cache (.pkl)</string>
                 </property>
                </widget>
               </item>
              </layout>
             </widget>
            </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="main_about_box">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QPushButton" name="save_btn_pkl">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="toolTip">
-              <string>Save selected data as Pickle file.
-Pickle files are not guaranteed to be stable across Python versions
-and should not be used for long term storage or sharing.</string>
-             </property>
-             <property name="text">
-              <string>Save session cache (.pkl)</string>
+             <property name="title">
+              <string>About this program</string>
              </property>
             </widget>
            </item>
