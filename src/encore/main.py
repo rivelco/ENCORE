@@ -1961,25 +1961,21 @@ class MainWindow(QMainWindow):
             collected_params[param_name] = value
 
         return collected_params
-    def collect_algorithm_data(self, algorithm_cfg: dict) -> list:
+    def collect_algorithm_data(self, algorithm_cfg: dict) -> dict:
         """
         Collect the needed data for one algorithm using YAML configuration.
 
         :param algorithm_cfg: Dictionary with the algorithm definition as described 
             in :file:`encore/config/encore_runners_config.yaml`
         :type algorithm_cfg: dict
-        :return: list of requested data in the same order as defined in the config file.
-        :rtype: list
+        :return: Dict mapping the requested data in config file, mapping name of parameter and value
+        :rtype: dict
         """
-        requested_data = []
+        requested_data = {}
         needed_data = algorithm_cfg.get("needed_data", [])
         for data_key in needed_data:
             if hasattr(self, data_key):
-                requested_data.append(getattr(self, data_key))
-                if data_key == 'data_dFFo':
-                    self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
-                elif data_key == 'data_neuronal_activity':
-                    self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+                requested_data[data_key] = getattr(self, data_key)
             else:
                 self.update_console_log(f"The requested data key '{data_key}' has not been loaded", "error")
             
@@ -2030,7 +2026,7 @@ class MainWindow(QMainWindow):
         worker.signals.log.connect(self.update_console_log)
 
         self.threadpool.start(worker)
-    def run_analysis_function(self, algorithm_cfg: dict, params: dict, data: np.ndarray, logger=None):
+    def run_analysis_function(self, algorithm_cfg: dict, params: dict, data: dict, logger=None):
         """
         Dynamically load and execute an analysis function.
 

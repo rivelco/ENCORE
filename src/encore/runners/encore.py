@@ -4,16 +4,20 @@ import numpy as np
 import scipy.stats as stats
 from importlib.resources import files
 
-def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=True, logger=None):
+def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
     the results in the standard for ENCORE.
 
-    :param input_data: List with one element, the matrix of neural activity data to be processed.
-    :type input_data: list[numpy.ndarray]
-    :param pars_validated: Dictionary with parameters for the SVD algorithm.
-    :type pars_validated: dict
+    :param input_data: Dict mapping variable name and data matrix provided by the pipeline.
+        This function expects only the key 'data_neuronal_activity' with binary neuronal activity.
+        Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+        'data_stims', 'data_cells', 'data_behavior'.
+        Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+    :type input_data: dict[var_name] = numpy.ndarray
+    :param parameters: Dictionary with parameters for the SVD algorithm.
+    :type parameters: dict
     :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
         the MATLAB code for this function. This value must be specified in the YAML config file. 
         Defaults to 'SVD'
@@ -48,7 +52,7 @@ def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=T
         logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
             
     # The raster is at the first position
-    raster = input_data[0]
+    raster = input_data['data_neuronal_activity']
     # Convert the raster to a MATLAB matrix
     raster_mat = matlab.double(raster.tolist())
     #Prepare dummy data
@@ -145,16 +149,20 @@ def run_svd(input_data, pars_validated, code_folder_name='SVD', include_answer=T
 
     return results
 
-def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', include_answer=True, logger=None):
+def run_pca(input_data, parameters, code_folder_name='NeuralEnsembles', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
     the results in the standard for ENCORE.
 
-    :param input_data: List with one element, the matrix of neural activity data to be processed.
-    :type input_data: list[numpy.ndarray]
-    :param pars_validated: Dictionary with parameters for the PCA algorithm.
-    :type pars_validated: dict
+    :param input_data: Dict mapping variable name and data matrix provided by the pipeline. 
+        This function expects only the key 'data_neuronal_activity' with binary neuronal activity.
+        Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+        'data_stims', 'data_cells', 'data_behavior'.
+        Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+    :type input_data: dict[var_name] = numpy.ndarray
+    :param parameters: Dictionary with parameters for the PCA algorithm.
+    :type parameters: dict
     :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
         the MATLAB code for this function. This value must be specified in the YAML config file. 
         Defaults to 'NeuralEnsembles'
@@ -190,7 +198,7 @@ def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', incl
     # Prepare the parameters
     pars_matlab = converters.dict_to_matlab_struct(pars_validated)
     # Prepare the raster
-    raster = input_data[0]
+    raster = input_data['data_neuronal_activity']
     raster_mat = matlab.double(raster.tolist())
     if logger:
         logger(f"{log_flag} Done converting.", "complete")
@@ -252,16 +260,20 @@ def run_pca(input_data, pars_validated, code_folder_name='NeuralEnsembles', incl
 
     return results
 
-def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detection', include_answer=True, logger=None):
+def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
     the results in the standard for ENCORE.
 
-    :param input_data: List with one element, the matrix of neural activity data to be processed.
-    :type input_data: list[numpy.ndarray]
-    :param pars_validated: Dictionary with parameters for the ICA algorithm.
-    :type pars_validated: dict
+    :param input_data: Dict mapping variable name and data matrix provided by the pipeline. 
+        This function expects only the key 'data_neuronal_activity' with binary neuronal activity.
+        Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+        'data_stims', 'data_cells', 'data_behavior'.
+        Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+    :type input_data: dict[var_name] = numpy.ndarray
+    :param parameters: Dictionary with parameters for the ICA algorithm.
+    :type parameters: dict
     :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
         the MATLAB code for this function. This value must be specified in the YAML config file. 
         Defaults to 'Cell-Assembly-Detection'
@@ -293,7 +305,7 @@ def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detectio
         logger(f"{exc}", "error")
         logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
     # Convert the raster
-    raster = input_data[0]
+    raster = input_data['data_neuronal_activity']
     raster_mat = matlab.double(raster.tolist())
     # Convert the parameters
     
@@ -412,16 +424,20 @@ def run_ica(input_data, pars_validated, code_folder_name='Cell-Assembly-Detectio
 
     return results
 
-def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_answer=True, logger=None):
+def run_x2p(input_data, parameters, code_folder_name='Xsembles2P', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
     the results in the standard for ENCORE.
 
-    :param input_data: List with one element, the matrix of neural activity data to be processed.
-    :type input_data: list[numpy.ndarray]
-    :param pars_validated: Dictionary with parameters for the Xsembles2P algorithm.
-    :type pars_validated: dict
+    :param input_data: Dict mapping variable name and data matrix provided by the pipeline. 
+        This function expects only the key 'data_neuronal_activity' with binary neuronal activity.
+        Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+        'data_stims', 'data_cells', 'data_behavior'.
+        Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+    :type input_data: dict[var_name] = numpy.ndarray
+    :param parameters: Dictionary with parameters for the Xsembles2P algorithm.
+    :type parameters: dict
     :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
         the MATLAB code for this function. This value must be specified in the YAML config file. 
         Defaults to 'Xsembles2P'
@@ -453,7 +469,7 @@ def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_a
         logger(f"{exc}", "error")
         logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
     # Convert the raster to logical MATLAB
-    raster = input_data[0]
+    raster = input_data['data_neuronal_activity']
     raster_mat = matlab.logical(raster.tolist())
     # Convert the parameters
     pars_validated['FileLog'] = ''
@@ -551,19 +567,23 @@ def run_x2p(input_data, pars_validated, code_folder_name='Xsembles2P', include_a
 
     return results
 
-def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_detection', include_answer=True, logger=None):
+def run_sgc(input_data, parameters, code_folder_name='SGC', include_answer=True, logger=None):
     """
     Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data. 
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
     the results in the standard for ENCORE.
 
-    :param input_data: List with one element, the matrix of fluorescence activity data to be processed.
-    :type input_data: list[numpy.ndarray]
-    :param pars_validated: Dictionary with parameters for the SGC algorithm.
-    :type pars_validated: dict
+    :param input_data: Dict mapping variable name and data matrix provided by the pipeline. 
+        This function expects only the key 'data_dFFo' with binary neuronal activity.
+        Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+        'data_stims', 'data_cells', 'data_behavior'.
+        Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+    :type input_data: dict[var_name] = numpy.ndarray
+    :param parameters: Dictionary with parameters for the SGC algorithm.
+    :type parameters: dict
     :param code_folder_name: String with the name of the folder inside `src/analysis` that contains
         the MATLAB code for this function. This value must be specified in the YAML config file. 
-        Defaults to 'SGC_neural_assembly_detection'
+        Defaults to 'SGC'
     :type code_folder_name: str, optional
     :param include_answer: Flag to indicate wether or not the original full answer of the algorithm. Defaults to True
     :type include_answer: bool, optional
@@ -592,7 +612,7 @@ def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_de
         logger(f"{exc}", "error")
         logger("If you just installed the engine successfully try re-opening ENCORE", "warning")
     # Check for the first derivative flag
-    dFFo = input_data[0]
+    dFFo = input_data['data_dFFo']
     if pars_validated['use_first_derivative']:
         dx = np.gradient(dFFo, axis=1) # Axis 1 to get the derivative of the signal of every neuron
         dFFo_mat = matlab.double(dx.tolist())
@@ -689,7 +709,7 @@ def run_sgc(input_data, pars_validated, code_folder_name='SGC_neural_assembly_de
 
     return results
 
-def run_example(input_data: list, params: dict, code_folder_name='', include_answer=True, logger=None):
+def run_example(input_data: dict, parameters: dict, code_folder_name='', include_answer=True, logger=None):
     """
     Run the example algorithm and generate dummy results for GUI integration.
 
@@ -709,12 +729,15 @@ def run_example(input_data: list, params: dict, code_folder_name='', include_ans
     Algorithm developers should use this function as a template when implementing
     new runners.
 
-    :param input_data: List of input arrays provided by the pipeline. Expected to
-        contain neuronal activity data with shape ``(neurons, timepoints)``.
-    :type input_data: list
-    :param params: Dictionary of parameters defined in the algorithm configuration
+    :param input_data: Dict mapping variable name and data matrix provided by the pipeline. 
+        This example expects two keys 'data_neuronal_activity' and 'data_dFFo'.
+        Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
+        'data_stims', 'data_cells', 'data_behavior'.
+        Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
+    :type input_data: dict[var_name] = numpy.ndarray
+    :param parameters: Dictionary of parameters defined in the algorithm configuration
         file and set via the GUI.
-    :type params: dict
+    :type parameters: dict
     :param code_folder_name: Name of the algorithm code folder (optional, used for
         bookkeeping or logging).
     :type code_folder_name: str, optional
@@ -741,20 +764,20 @@ def run_example(input_data: list, params: dict, code_folder_name='', include_ans
     # This is to measure the algorithm running time
     start_time = time.time()
     
-    num_neurons, time_points = input_data[1].shape
+    num_neurons, time_points = input_data['data_neuronal_activity'].shape
     
     ## Calculate the data used to update fields in the GUI
-    value_A = params['int_parameter_A']
-    value_B = params['int_parameter_B']
+    value_A = pars_validated['int_parameter_A']
+    value_B = pars_validated['int_parameter_B']
     variable_to_update_name = 'float_parameter'
-    if params['selection_parameter'] == "SUM":  
+    if pars_validated['selection_parameter'] == "SUM":  
         new_value = value_A + value_B
-    elif params['selection_parameter'] == "MEAN":
+    elif pars_validated['selection_parameter'] == "MEAN":
         new_value = (value_A + value_B)/2
 
     ## Generate the dummy results data
-    number_of_ensembles = int(params['int_parameter_ensembles'])
-    threshold = params['threshold_parameter'] # To binarize the data
+    number_of_ensembles = int(pars_validated['int_parameter_ensembles'])
+    threshold = pars_validated['threshold_parameter'] # To binarize the data
     # Generate dummy ensembles activation data
     timecourse = np.random.rand(number_of_ensembles, time_points)
     timecourse_thresholded = (timecourse > threshold).astype(np.int_)
@@ -764,7 +787,7 @@ def run_example(input_data: list, params: dict, code_folder_name='', include_ans
     
     ## Create data for the 'answer' field
     data_for_raster = timecourse * 2
-    dFFo_data = input_data[0]
+    dFFo_data = input_data['data_dFFo']
     data_for_neuron_dFFo = dFFo_data[0,:]   # dFFo signal for neuron 0
     secondary_dFFo = dFFo_data[1,:]
     many_dFFo = dFFo_data[0:4,:]
