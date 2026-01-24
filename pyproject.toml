@@ -13,7 +13,7 @@ license-files = [
     "LICENSE",
 ]
 authors = [
-    { name = "Ricardo Velazquez Contreras", email = "rivel_co@hotmail.com" }
+    { name = "Ricardo Velazquez Contreras" }
 ]
 dependencies = [
     "PyQt6>=6.0",
