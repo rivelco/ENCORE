@@ -3768,7 +3768,7 @@ def main():
     parser.add_argument("--version", action="store_true")
     args = parser.parse_args()
     if args.version:
-        print(importlib.metadata.version("encore"))
+        print(importlib.metadata.version("encore-toolkit"))
         return
     
     dark_available = True
