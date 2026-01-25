@@ -39,6 +39,13 @@ class ParameterOption(BaseModel):
     value: str
     label: str
     description: str
+    
+BoundValue = Union[
+    int,
+    float,
+    Dict[str, Union[int, float, str]],
+    Literal["MIN_VAL", "MAX_VAL"]
+]
 
 class ParameterConfig(BaseModel):
     object_name: str
@@ -49,8 +56,12 @@ class ParameterConfig(BaseModel):
     type: Optional[str] = None
     options: Optional[List[ParameterOption]] = None
 
+    min_value: Optional[BoundValue] = None
+    max_value: Optional[BoundValue] = None
+
     @model_validator(mode="after")
-    def validate_enum_options(self):
+    def validate_parameter_config(self):
+        # Enum validation
         if self.type == "enum":
             if not self.options or len(self.options) == 0:
                 raise ValueError(
@@ -63,7 +74,34 @@ class ParameterConfig(BaseModel):
                     f"default_value '{self.default_value}' is not among enum options {allowed_values}"
                 )
 
+        # MIN MAX validation
+        self._validate_bounds()
+
         return self
+
+    def _validate_bounds(self):
+        """
+        Validate min_value and max_value logic when possible.
+        """
+
+        # If both are numeric then require order
+        if isinstance(self.min_value, (int, float)) and isinstance(self.max_value, (int, float)):
+            if self.min_value > self.max_value:
+                raise ValueError(
+                    f"min_value ({self.min_value}) cannot be greater than max_value ({self.max_value})"
+                )
+
+        # Validate default_value against numeric limits when possible
+        if isinstance(self.default_value, (int, float)):
+            if isinstance(self.min_value, (int, float)) and self.default_value < self.min_value:
+                raise ValueError(
+                    f"default_value ({self.default_value}) is less than min_value ({self.min_value})"
+                )
+
+            if isinstance(self.max_value, (int, float)) and self.default_value > self.max_value:
+                raise ValueError(
+                    f"default_value ({self.default_value}) is greater than max_value ({self.max_value})"
+                )
 
 class AlgorithmConfig(BaseModel):
     enabled: bool

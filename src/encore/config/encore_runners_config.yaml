@@ -13,52 +13,52 @@ encore_runners:
       pks:
         object_name: svd_edit_pks
         display_name: pks
-        description: Minimum amount of active neurons in a single population vector to be considered as significative. Leave it empty for an automatic threshold.
+        description: Minimum amount of active neurons in a single population vector to be considered as significative.
         default_value: 3
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       scut:
         object_name: svd_edit_scut
         display_name: scut
-        description: This is a threshold of co-activity. Suggested range 0.22-0.25 Leave it empty if you want an automated threshold.
+        description: This is a threshold of co-activity. Suggested range 0.22-0.25
         default_value: 0.22
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       hcut:
         object_name: svd_edit_hcut
         display_name: hcut
         description: Another threshold for co-activity. Further removes noise.
         default_value: 0.22
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       state_cut:
         object_name: svd_edit_statecut
         display_name: state_cut
         description: The maximum number of states is a fraction  of the total number of cells. This defines the maximum number of states.
         default_value: 6
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       csi_start:
         object_name: svd_edit_csistart
         display_name: csi_vec_start
         description: This is the csi start
         default_value: 0.01
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       csi_step:
         object_name: svd_lbl_csistep
         display_name: csi_vec_step
         description: This is the csi step
         default_value: 0.01
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       csi_end:
         object_name: svd_edit_csiend
         display_name: csi_vec_end
         description: This is the csi end
         default_value: 0.10
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       tf_idf_norm:
         object_name: svd_check_tfidf
         display_name: Perform TF-IDF normalization
@@ -100,28 +100,28 @@ encore_runners:
         description: Cut off for distances.
         default_value: 0.01
         min_value: 0.0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       npcs:
         object_name: pca_edit_npcs
         display_name: Num. of principal components
         description: Number of principal components to use to extract ensembles.
         default_value: 3
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       minspk:
         object_name: pca_edit_minspk
         display_name: Min population spike
         description: Minimum number of active neurons to be considered part of the analysis
         default_value: 3
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       nsur:
         object_name: pca_edit_nsur
         display_name: Number of surrogates
         description: Surrogates for core-cells, should be 1000 or more.
         default_value: 1000
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       prct:
         object_name: pca_edit_prct
         display_name: Percentile for core-cells
@@ -142,14 +142,14 @@ encore_runners:
         description: Inter-assembly correlation threshold
         default_value: 5.0
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       minsize:
         object_name: pca_edit_minsize
         display_name: Min assembly size
         description: Minimum number of cells that can form an ensemble.
         default_value: 3
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
     figures:
       - name: pca_plot_eigs
         display_name: Eigen values
@@ -209,7 +209,7 @@ encore_runners:
         description: Defines how many surrogate matrices are generated (100 or more recommended). Not used when MarcenkoPastur is chosen.
         default_value: 20
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
       patterns_method:
         object_name: ica_radio_method
         display_name: Threshold method to select patterns
@@ -229,7 +229,7 @@ encore_runners:
         description: Number of iterations for fastICA algorithm (100 or more recommended). Not used when PCA is chosen.
         default_value: 500
         min_value: 0
-        max_value: MAX_INT
+        max_value: MAX_VAL
         
     figures:
       - name: ica_plot_assemblys
@@ -259,14 +259,14 @@ encore_runners:
         description: Defines the size of the bin for the raster
         default_value: 1
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       NetworkIterations:
         object_name: x2p_edit_iterations
         display_name: Network iterations
         description: Number of iterations for the network
         default_value: 1000
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       NetworkSignificance:
         object_name: x2p_edit_significance
         display_name: Network significance
@@ -280,35 +280,35 @@ encore_runners:
         description: Minimum number of neurons to be active at the same time to consider that population vector
         default_value: 2
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       ClusteringRangeStart:
         object_name: x2p_edit_rangestart
         display_name: Clustering range start
         description: Clustering range start value
         default_value: 3
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       ClusteringRangeEnd:
         object_name: x2p_edit_rangeend
         display_name: Clustering range end
         description: Clustering range end value
         default_value: 10
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       ClusteringFixed:
         object_name: 'x2p_edit_fixed'
         display_name: Clustering fixed
         description: Clustering fixed
         default_value: 1
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       EnsembleIterations:
         object_name: x2p_edit_itensemble
         display_name: Iterations ensemble
         description: Iterations ensemble
         default_value: 1000
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       ParallelProcessing:
         object_name: x2p_check_parallel
         display_name: Parallel processing
@@ -354,14 +354,14 @@ encore_runners:
         description: This threshold will be used to identify moments of neuronal activity
         default_value: 2
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       shuffling_rounds:
         object_name: sgc_edit_shuff
         display_name: Shuffling rounds
         description: Number of times the data will be shuffled before identifying activity patterns
         default_value: 1000
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       coactivity_significance_level:
         object_name: sgc_edit_sig
         display_name: Coactivivity significance level
@@ -375,21 +375,21 @@ encore_runners:
         description: Number of Montecarlo rounds to use for the data
         default_value: 5
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       montecarlo_steps:
         object_name: sgc_edit_montesteps
         display_name: Montecarlo steps
         description: Montecarlo steps
         default_value: 10000
         min_value: 1
-        max_value: MAX_INT
+        max_value: MAX_VAL
       affinity_threshold:
         object_name: sgc_edit_affthres
         display_name: Affinity threshold
         description: Affinity threshold
         default_value: 0.2
         min_value: 0.00001
-        max_value: MAX_INT
+        max_value: MAX_VAL
         
     figures:
       - name: sgc_plot_timecourse
@@ -437,7 +437,7 @@ encore_runners:
         description: Integer values from -1000 to "infinity".
         default_value: 0.0
         min_value: -1000
-        max_value: MAX_INT
+        max_value: MAX_VAL
       threshold_parameter:
         object_name: example_threshold_parameter
         display_name: Threshold parameter

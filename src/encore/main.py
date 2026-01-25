@@ -33,7 +33,7 @@ from PyQt6.QtCore import (
     pyqtSignal,
     pyqtSlot,
 )
-from PyQt6.QtGui import QDoubleValidator, QFont, QIcon, QTextCursor
+from PyQt6.QtGui import QFont, QIcon, QTextCursor
 from PyQt6.QtWidgets import (
     QApplication,
     QButtonGroup,
@@ -57,6 +57,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QAbstractSpinBox
 )
 from PyQt6.uic import loadUi
 
@@ -664,7 +665,9 @@ class MainWindow(QMainWindow):
         min_val = cfg.get("min_value")
         max_val = cfg.get("max_value")
         
-        MAX_INT = 250000000
+        # This values are hardcoded for the current limitations of PyQt SpinBox fields
+        MAX_VAL = 2147483646
+        MIN_VAL = -2147483647
         
         if cfg.get("type", "") == "enum":
             widget = QWidget()
@@ -673,8 +676,6 @@ class MainWindow(QMainWindow):
 
             button_group = QButtonGroup(widget)
             button_group.setExclusive(True)
-
-            default = cfg.get("default_value")
 
             for option in cfg.get("options", []):
                 radio = QRadioButton(option["label"])
@@ -705,10 +706,12 @@ class MainWindow(QMainWindow):
         elif isinstance(default, int):
             widget = QSpinBox()
             if min_val is not None:
+                if max_val == 'MIN_VAL':
+                    max_val = MIN_VAL 
                 widget.setMinimum(min_val)
             if max_val is not None:
-                if max_val == 'MAX_INT':
-                    max_val = MAX_INT
+                if max_val == 'MAX_VAL':
+                    max_val = MAX_VAL
                 widget.setMaximum(max_val)
             widget.setValue(default)
 
@@ -717,10 +720,12 @@ class MainWindow(QMainWindow):
             widget = QDoubleSpinBox()
             widget.setDecimals(3)
             if min_val is not None:
+                if max_val == 'MIN_VAL':
+                    max_val = MIN_VAL 
                 widget.setMinimum(min_val)
             if max_val is not None:
-                if max_val == 'MAX_INT':
-                    max_val = MAX_INT
+                if max_val == 'MAX_VAL':
+                    max_val = MAX_VAL  
                 widget.setMaximum(max_val)
             widget.setValue(default)
 
