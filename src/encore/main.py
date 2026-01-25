@@ -69,6 +69,7 @@ from encore.utils.parameters_validators import validate_binary_matrix
 from encore.plotters.MatplotlibWidget import MatplotlibWidget
 import encore.plotters.encore_plots as encore_plots
 import encore.validators.algorithm_results as validate_results
+from encore.validators.runners_config import validate_encore_algorithm_config
 
 class QtLoggerAdapter:
     def __init__(self, log_signal):
@@ -509,9 +510,17 @@ class MainWindow(QMainWindow):
         runners = config.get("encore_runners", {})
         to_delete = []
         for runner_key, runner_cfg in runners.items():
-            enabled = runner_cfg.get("enabled", False)
-            if not enabled:
+            # Validate encore config file for runners
+            try:
+                validated_cfg = validate_encore_algorithm_config(runner_cfg)
+                enabled = runner_cfg.get("enabled", False)
+                if not enabled:
+                    to_delete.append(runner_key)
+            except RuntimeError as exc:
+                self.update_console_log(f"Invalid algorithm config for {runner_key}", "warning")
+                self.update_console_log(f"{exc}")
                 to_delete.append(runner_key)
+            
         for key in to_delete:
             del runners[key]
             
@@ -3760,9 +3769,6 @@ class MainWindow(QMainWindow):
 
         self.main_about_box.setLayout(layout)
 
-
-
-    
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", action="store_true")
