@@ -33,7 +33,7 @@ from PyQt6.QtCore import (
     pyqtSignal,
     pyqtSlot,
 )
-from PyQt6.QtGui import QDoubleValidator, QFont, QIcon, QTextCursor
+from PyQt6.QtGui import QFont, QIcon, QTextCursor
 from PyQt6.QtWidgets import (
     QApplication,
     QButtonGroup,
@@ -57,6 +57,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QAbstractSpinBox
 )
 from PyQt6.uic import loadUi
 
@@ -69,6 +70,7 @@ from encore.utils.parameters_validators import validate_binary_matrix
 from encore.plotters.MatplotlibWidget import MatplotlibWidget
 import encore.plotters.encore_plots as encore_plots
 import encore.validators.algorithm_results as validate_results
+from encore.validators.runners_config import validate_encore_algorithm_config
 
 class QtLoggerAdapter:
     def __init__(self, log_signal):
@@ -509,9 +511,17 @@ class MainWindow(QMainWindow):
         runners = config.get("encore_runners", {})
         to_delete = []
         for runner_key, runner_cfg in runners.items():
-            enabled = runner_cfg.get("enabled", False)
-            if not enabled:
+            # Validate encore config file for runners
+            try:
+                validated_cfg = validate_encore_algorithm_config(runner_cfg)
+                enabled = runner_cfg.get("enabled", False)
+                if not enabled:
+                    to_delete.append(runner_key)
+            except RuntimeError as exc:
+                self.update_console_log(f"Invalid algorithm config for {runner_key}", "warning")
+                self.update_console_log(f"{exc}")
                 to_delete.append(runner_key)
+            
         for key in to_delete:
             del runners[key]
             
@@ -584,14 +594,7 @@ class MainWindow(QMainWindow):
 
         needed_data = algorithm_cfg.get("needed_data", [])
         
-        needed_data_names = {
-            'data_neuronal_activity': 'Binary Neuronal Activity',
-            'data_dFFo': 'dFFo Activity',
-            'data_coordinates': 'Coordinates',
-            'data_stims': 'Stimulation data',
-            'data_cells': 'Cells data',
-            'data_behavior': 'Behavior data'
-        }
+        from encore.validators.runners_config import NEEDED_DATA as needed_data_names
         
         for data_key in needed_data:
             data_name = needed_data_names.get(data_key, f"Unknown: {data_key}")
@@ -662,7 +665,9 @@ class MainWindow(QMainWindow):
         min_val = cfg.get("min_value")
         max_val = cfg.get("max_value")
         
-        MAX_INT = 250000000
+        # This values are hardcoded for the current limitations of PyQt SpinBox fields
+        MAX_VAL = 2147483646
+        MIN_VAL = -2147483647
         
         if cfg.get("type", "") == "enum":
             widget = QWidget()
@@ -671,8 +676,6 @@ class MainWindow(QMainWindow):
 
             button_group = QButtonGroup(widget)
             button_group.setExclusive(True)
-
-            default = cfg.get("default_value")
 
             for option in cfg.get("options", []):
                 radio = QRadioButton(option["label"])
@@ -703,24 +706,30 @@ class MainWindow(QMainWindow):
         elif isinstance(default, int):
             widget = QSpinBox()
             if min_val is not None:
+                if max_val == 'MIN_VAL':
+                    max_val = MIN_VAL 
                 widget.setMinimum(min_val)
             if max_val is not None:
-                if max_val == 'MAX_INT':
-                    max_val = MAX_INT
+                if max_val == 'MAX_VAL':
+                    max_val = MAX_VAL
                 widget.setMaximum(max_val)
             widget.setValue(default)
+            widget.setCorrectionMode(QAbstractSpinBox.CorrectionMode.CorrectToNearestValue)
 
         # Float
         elif isinstance(default, float):
             widget = QDoubleSpinBox()
             widget.setDecimals(3)
             if min_val is not None:
+                if max_val == 'MIN_VAL':
+                    max_val = MIN_VAL 
                 widget.setMinimum(min_val)
             if max_val is not None:
-                if max_val == 'MAX_INT':
-                    max_val = MAX_INT
+                if max_val == 'MAX_VAL':
+                    max_val = MAX_VAL  
                 widget.setMaximum(max_val)
             widget.setValue(default)
+            widget.setCorrectionMode(QAbstractSpinBox.CorrectionMode.CorrectToNearestValue)
 
         # Fallback: string
         else:
@@ -3760,15 +3769,12 @@ class MainWindow(QMainWindow):
 
         self.main_about_box.setLayout(layout)
 
-
-
-    
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--version", action="store_true")
     args = parser.parse_args()
     if args.version:
-        print(importlib.metadata.version("encore"))
+        print(importlib.metadata.version("encore-toolkit"))
         return
     
     dark_available = True
