@@ -593,14 +593,7 @@ class MainWindow(QMainWindow):
 
         needed_data = algorithm_cfg.get("needed_data", [])
         
-        needed_data_names = {
-            'data_neuronal_activity': 'Binary Neuronal Activity',
-            'data_dFFo': 'dFFo Activity',
-            'data_coordinates': 'Coordinates',
-            'data_stims': 'Stimulation data',
-            'data_cells': 'Cells data',
-            'data_behavior': 'Behavior data'
-        }
+        from encore.validators.runners_config import NEEDED_DATA as needed_data_names
         
         for data_key in needed_data:
             data_name = needed_data_names.get(data_key, f"Unknown: {data_key}")
