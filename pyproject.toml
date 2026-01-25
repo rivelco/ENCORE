@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "encore-toolkit"
-version = "2.0.0"
+version = "2.1.0"
 description = "GUI for Ensembles Comparison and Recognition"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -52,7 +52,6 @@ docs = [
     "sphinxcontrib-napoleon",
     "sphinx-autodoc-typehints"
 ]
-matlab = ["numpy"]
 all = [
     "pyqt6-tools", 
     "pytest",
