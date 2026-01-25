@@ -385,7 +385,11 @@ Use it to remove part of your dataset.</string>
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QSpinBox" name="edit_edit_xstart"/>
+                   <widget class="QSpinBox" name="edit_edit_xstart">
+                    <property name="correctionMode">
+                     <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <widget class="QLabel" name="label_40">
@@ -401,7 +405,11 @@ Use it to remove part of your dataset.</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="edit_edit_xend"/>
+                   <widget class="QSpinBox" name="edit_edit_xend">
+                    <property name="correctionMode">
+                     <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -444,7 +452,11 @@ Use it to remove part of your dataset.</string>
                    <number>0</number>
                   </property>
                   <item>
-                   <widget class="QSpinBox" name="edit_edit_ystart"/>
+                   <widget class="QSpinBox" name="edit_edit_ystart">
+                    <property name="correctionMode">
+                     <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <widget class="QLabel" name="label_41">
@@ -460,7 +472,11 @@ Use it to remove part of your dataset.</string>
                    </widget>
                   </item>
                   <item>
-                   <widget class="QSpinBox" name="edit_edit_yend"/>
+                   <widget class="QSpinBox" name="edit_edit_yend">
+                    <property name="correctionMode">
+                     <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                    </property>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -1138,6 +1154,9 @@ Use it to remove part of your dataset.</string>
                     <property name="toolTip">
                      <string>Select the index of the ensemble to visualize.</string>
                     </property>
+                    <property name="correctionMode">
+                     <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                    </property>
                     <property name="keyboardTracking">
                      <bool>false</bool>
                     </property>
@@ -1413,8 +1432,8 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
-                 <height>89</height>
+                 <width>1113</width>
+                 <height>513</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -1604,7 +1623,11 @@ Use it to remove part of your dataset.</string>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QSpinBox" name="enscomp_spinbox_stim"/>
+                        <widget class="QSpinBox" name="enscomp_spinbox_stim">
+                         <property name="correctionMode">
+                          <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                         </property>
+                        </widget>
                        </item>
                        <item>
                         <widget class="QLabel" name="label_38">
@@ -1757,7 +1780,11 @@ Use it to remove part of your dataset.</string>
                         </widget>
                        </item>
                        <item>
-                        <widget class="QSpinBox" name="enscomp_spinbox_behavior"/>
+                        <widget class="QSpinBox" name="enscomp_spinbox_behavior">
+                         <property name="correctionMode">
+                          <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                         </property>
+                        </widget>
                        </item>
                        <item>
                         <widget class="QLabel" name="label_39">
@@ -1960,6 +1987,9 @@ Use it to remove part of your dataset.</string>
                   <widget class="QDoubleSpinBox" name="enscomp_visopts_neusize">
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
+                   </property>
+                   <property name="correctionMode">
+                    <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
                    </property>
                    <property name="decimals">
                     <number>1</number>
@@ -2263,7 +2293,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>89</height>
                 </rect>
                </property>
@@ -2299,7 +2329,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2335,7 +2365,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>
@@ -2371,7 +2401,7 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>89</width>
+                 <width>98</width>
                  <height>210</height>
                 </rect>
                </property>

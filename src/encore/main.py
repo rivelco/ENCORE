@@ -714,6 +714,7 @@ class MainWindow(QMainWindow):
                     max_val = MAX_VAL
                 widget.setMaximum(max_val)
             widget.setValue(default)
+            widget.setCorrectionMode(QAbstractSpinBox.CorrectionMode.CorrectToNearestValue)
 
         # Float
         elif isinstance(default, float):
@@ -728,6 +729,7 @@ class MainWindow(QMainWindow):
                     max_val = MAX_VAL  
                 widget.setMaximum(max_val)
             widget.setValue(default)
+            widget.setCorrectionMode(QAbstractSpinBox.CorrectionMode.CorrectToNearestValue)
 
         # Fallback: string
         else:
