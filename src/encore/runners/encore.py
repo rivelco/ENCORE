@@ -8,6 +8,7 @@ try:
 except (TypeError, ImportError):  # Python < 3.10
     from importlib_resources import files
 from encore.validators.algorithm_parameters import validate
+from encore.validators.algorithm_inputs import simple_validate
 
 def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True, logger=None):
     """
@@ -42,6 +43,21 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
     log_flag = "SVD:"
     success = True
     
+    # Check the validity of the input data
+    if logger:
+        logger(f"{log_flag} Validating input data...", "log")
+    try:
+        input_data = simple_validate('svd', input_data)
+    except RuntimeError as exc:
+        if logger:
+            logger(f"{log_flag} Invalid input data.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"{log_flag} ERROR with the input data: {exc}")
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'update_params': None, 'answer': None}
+    if logger:
+        logger(f"{log_flag} Input data validated.", "complete")
+    
     if logger:
         logger(f"{log_flag} Validating parameters...", "log")
     pars_validated = validate('svd', parameters)
@@ -68,8 +84,8 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
             logger(f"{exc}", "error")
         else:
             print(f"ERROR with MATLAB: {exc}")
-   
-    # The raster is at the first position
+            
+    # Extract the raster
     raster = input_data['data_neuronal_activity']
     # Convert the raster to a MATLAB matrix
     raster_mat = matlab.double(raster.tolist())
@@ -205,6 +221,21 @@ def run_pca(input_data, parameters, code_folder_name='NeuralEnsembles', include_
     log_flag = "PCA:"
     success = True
     
+    # Check the validity of the input data
+    if logger:
+        logger(f"{log_flag} Validating input data...", "log")
+    try:
+        input_data = simple_validate('pca', input_data)
+    except RuntimeError as exc:
+        if logger:
+            logger(f"{log_flag} Invalid input data.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"{log_flag} ERROR with the input data: {exc}")
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'answer': None}
+    if logger:
+        logger(f"{log_flag} Input data validated.", "complete")
+    
     if logger:
         logger(f"{log_flag} Validating parameters...", "log")
     pars_validated = validate('pca', parameters)
@@ -329,6 +360,21 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
     log_flag = "ICA:"
     success = True
     
+    # Check the validity of the input data
+    if logger:
+        logger(f"{log_flag} Validating input data...", "log")
+    try:
+        input_data = simple_validate('ica', input_data)
+    except RuntimeError as exc:
+        if logger:
+            logger(f"{log_flag} Invalid input data.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"{log_flag} ERROR with the input data: {exc}")
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'original_answer': None, 'answer': None}
+    if logger:
+        logger(f"{log_flag} Input data validated.", "complete")
+    
     if logger:
         logger(f"{log_flag} Validating parameters...", "log")
     pars_validated = validate('ica', parameters)
@@ -337,6 +383,7 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
     
     if logger:
         logger(f"{log_flag} Converting Python data to MATLAB data...", "log")
+    
     # Check if MATLAB is available
     try:
         import matlab.engine
@@ -507,6 +554,21 @@ def run_x2p(input_data, parameters, code_folder_name='Xsembles2P', include_answe
     log_flag = "X2P:"
     success = True
     
+    # Check the validity of the input data
+    if logger:
+        logger(f"{log_flag} Validating input data...", "log")
+    try:
+        input_data = simple_validate('x2p', input_data)
+    except RuntimeError as exc:
+        if logger:
+            logger(f"{log_flag} Invalid input data.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"{log_flag} ERROR with the input data: {exc}")
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'original_answer': None, 'answer': None}
+    if logger:
+        logger(f"{log_flag} Input data validated.", "complete")
+    
     if logger:
         logger(f"{log_flag} Validating parameters...", "log")
     pars_validated = validate('x2p', parameters)
@@ -574,10 +636,10 @@ def run_x2p(input_data, parameters, code_folder_name='Xsembles2P', include_answe
         logger(f"{log_flag} Done.", "complete")
         
     ensgui_results = {}
+    clean_answer = {}
     
     if answer != None:
         start_time = time.time()
-        clean_answer = {}
         clean_answer['similarity'] = np.array(answer['Clustering']['Similarity'])
         clean_answer['EPI'] = np.array(answer['Ensembles']['EPI'])
         clean_answer['OnsembleActivity'] = np.array(answer['Ensembles']['OnsembleActivity'])
@@ -663,6 +725,21 @@ def run_sgc(input_data, parameters, code_folder_name='SGC', include_answer=True,
     sgc_path = files("encore.analysis").joinpath(code_folder_name)
     log_flag = "SGC:"
     success = True
+    
+    # Check the validity of the input data
+    if logger:
+        logger(f"{log_flag} Validating input data...", "log")
+    try:
+        input_data = simple_validate('sgc', input_data)
+    except RuntimeError as exc:
+        if logger:
+            logger(f"{log_flag} Invalid input data.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"{log_flag} ERROR with the input data: {exc}")
+        return {'results': None, 'engine_time': None, 'algorithm_time': None, 'success': None, 'answer': None}
+    if logger:
+        logger(f"{log_flag} Input data validated.", "complete")
     
     if logger:
         logger(f"{log_flag} Validating parameters...", "log")
@@ -844,7 +921,23 @@ def run_example(input_data: dict, parameters: dict, code_folder_name='', include
     if logger:
         logger(f"{log_flag} Parameters passed:", "log")
         logger(f"{parameters}")
+        
+    # Check the validity of the input data
+    if logger:
+        logger(f"{log_flag} Validating input data...", "log")
+    try:
+        input_data = simple_validate('pca', input_data)
+    except RuntimeError as exc:
+        if logger:
+            logger(f"{log_flag} Invalid input data.", "error")
+            logger(f"{exc}", "error")
+        else:
+            print(f"{log_flag} ERROR with the input data: {exc}")
+        return
+    if logger:
+        logger(f"{log_flag} Input data validated.", "complete")
     
+    # Check the validity of the given parameters
     if logger:
         logger(f"{log_flag} Validating parameters...", "log")
     pars_validated = validate('example', parameters)
@@ -852,6 +945,7 @@ def run_example(input_data: dict, parameters: dict, code_folder_name='', include
         logger(f"{log_flag} Parameters validated.", "complete")
     
     # This is to measure the algorithm running time
+    # Your code may start here
     start_time = time.time()
     
     num_neurons, time_points = input_data['data_neuronal_activity'].shape
@@ -883,10 +977,12 @@ def run_example(input_data: dict, parameters: dict, code_folder_name='', include
     many_dFFo = dFFo_data[0:4,:]
     
     ## Finish taking the time for the algorithm
+    # Your algorithm may end here
     end_time = time.time()
     algorithm_time = end_time - start_time
     
     # Pack the results
+    # The GUI will validate this results dict structure
     results = {
         "results": {
             'timecourse': timecourse_thresholded,
