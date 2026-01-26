@@ -56,6 +56,11 @@ structure of ENCORE and its main components:
 - :doc:`api/validators/index`
 - :doc:`api/utils`
 
+Running batch analyses
+----------------------
+
+- :doc:`extending/running_batch_analyses`
+
 Adding New Algorithms
 ---------------------
 
@@ -84,6 +89,7 @@ Contents
    api/utils
 
    extending/adding_algorithms
+   extending/running_batch_analyses
 
    acknowledgments
 

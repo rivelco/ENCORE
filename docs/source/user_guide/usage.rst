@@ -6,7 +6,7 @@ A general workflow using ENCORE would look like this:
 1. Execute ENCORE
 -----------------
 
-    Once you have ENCORE installed in your system, run `encore`
+    Once you have ENCORE installed in your system, run `encore` or `python -m encore`.
 
 2. Load Your Data
 -----------------
@@ -23,7 +23,7 @@ A general workflow using ENCORE would look like this:
 3. Run Analyses
 ---------------
 
-#. Open any analysis tab, such as SVD, PCA, ICA, Xsembles2P, or SGC.
+#. Open any analysis tab, such as SVD, PCA, ICA, Xsembles2P, or SGC in the "ENCORE Algorithms" tab.
 #. Ensure the "Input data" panel shows "Loaded" for the required data. If not, return to step 2.
 #. Use the "Load default values" button to explore the analysis or adjust parameters as needed.
 #. Click "Run analysis" to begin.

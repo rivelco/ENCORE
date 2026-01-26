@@ -313,7 +313,8 @@ class MainWindow(QMainWindow):
         self.varlabels = {}
         self.tempvars = {}
         if hasattr(self, "data_coordinates_generated"):
-            delattr(self, "data_coordinates")
+            if hasattr(self, "data_coordinates"):
+                delattr(self, "data_coordinates")
             self.data_coordinates_generated = False
             
         # Update buttons for ensemble visualization, performance and comparison

@@ -13,7 +13,7 @@ sys.path.insert(0, pathlib.Path(__file__).parents[2].resolve().as_posix())
 import encore
 
 project = 'ENCORE'
-copyright = '2025, rivelco'
+copyright = '2026, rivelco'
 author = 'rivelco'
 release = encore.__version__
 
