@@ -87,6 +87,73 @@ You can find more help regarding MATLAB engine install in the `official MATLAB s
 
 It's also possible to install the MATLAB engine from pip, check the `versions history <https://pypi.org/project/matlabengine/#history>`_ to install the correct version of the MATLAB engine.
 
+Use this table as a reference of compatibility between MATLAB and python versions. These versions may be installed from an elevated terminal using pip.
+
+MATLAB-Python Compatibility
+---------------------------
+
+.. list-table:: MATLAB Engine for Python compatibility
+   :header-rows: 1
+   :stub-columns: 1
+   :widths: 15 20 20 20 20
+
+   * - MATLAB
+     - Python 3.9
+     - Python 3.10
+     - Python 3.11
+     - Python 3.12
+   * - 2021b
+     - 9.11.23
+     - —
+     - —
+     - —
+   * - 2022a
+     - 9.12.21
+     - —
+     - —
+     - —
+   * - 2022b
+     - 9.13.11
+     - 9.13.11
+     - —
+     - —
+   * - 2023a
+     - 9.14.7
+     - 9.14.7
+     - —
+     - —
+   * - 2023b
+     - 23.2.2
+     - 23.2.2
+     - 23.2.2
+     - —
+   * - 2024a
+     - 24.1.4
+     - 24.1.4
+     - 24.1.4
+     - —
+   * - 2024b
+     - 24.2.2
+     - 24.2.2
+     - 24.2.2
+     - 24.2.2
+   * - 2025a
+     - 25.1.2
+     - 25.1.2
+     - 25.1.2
+     - 25.1.2
+   * - 2025b
+     - 25.2.2
+     - 25.2.2
+     - 25.2.2
+     - 25.2.2
+
+For example, to install the MATLAB engine for python 3.10 and MATLAB R2023a use the command:
+
+.. code-block:: console
+
+    pip install matlabengine==9.14.7
+
 Run the GUI
 -----------
 
