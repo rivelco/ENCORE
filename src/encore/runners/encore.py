@@ -129,6 +129,8 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
         logger(f"{log_flag} Done.", "complete")
 
     ensgui_results = {}
+    
+    ensembles_timecourse = []
 
     if answer != None:
         cant_neurons = raster.shape[0]
