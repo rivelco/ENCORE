@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Overview" href="../concepts/overview.html" /><link rel="prev" title="Quickstart" href="../quickstart.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Acknowledgments" href="../acknowledgments.html" /><link rel="prev" title="Adding New Algorithms to ENCORE" href="adding_algorithms.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Usage - ENCORE 2.1.0 documentation</title>
+        <title>Running batch analyses using the ENCORE Python API - ENCORE 2.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -203,7 +203,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/main_window.html">Main Window (GUI)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/runners.html">Analysis Runners</a></li>
@@ -226,8 +226,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../api/utils.html">Utility functions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Running batch analyses using the ENCORE Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
 </ul>
 
@@ -249,7 +249,7 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="../_sources/user_guide/usage.rst.txt" title="View this page">
+  <a class="muted-link" href="../_sources/extending/running_batch_analyses.rst.txt" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
@@ -269,94 +269,75 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
-<p>A general workflow using ENCORE would look like this:</p>
-<section id="execute-encore">
-<h2>1. Execute ENCORE<a class="headerlink" href="#execute-encore" title="Link to this heading">¶</a></h2>
-<blockquote>
-<div><p>Once you have ENCORE installed in your system, run <cite>encore</cite> or <cite>python -m encore</cite>.</p>
-</div></blockquote>
+          <section id="running-batch-analyses-using-the-encore-python-api">
+<h1>Running batch analyses using the ENCORE Python API<a class="headerlink" href="#running-batch-analyses-using-the-encore-python-api" title="Link to this heading">¶</a></h1>
+<p>In addition to the graphical interface, ENCORE provides a Python API that allows users to run ensemble identification algorithms programmatically. This is particularly useful for batch analyses, parameter sweeps, or automated pipelines where multiple datasets must be analyzed consistently.</p>
+<p>The example below demonstrates how to organize multiple datasets and parameter sets, run the same algorithm across them, and collect the results in a structured dictionary. This approach enables reproducible analyses and facilitates downstream comparison across datasets or parameter configurations.</p>
+<section id="simple-batch-analysis-script">
+<h2>Simple batch analysis script<a class="headerlink" href="#simple-batch-analysis-script" title="Link to this heading">¶</a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">encore.runners.encore</span> <span class="kn">import</span> <span class="n">run_svd</span>
+
+<span class="c1"># Generate example datasets</span>
+<span class="n">datasets</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;session_1&quot;</span><span class="p">,</span> <span class="s2">&quot;session_2&quot;</span><span class="p">,</span> <span class="s2">&quot;session_3&quot;</span><span class="p">]:</span>
+    <span class="n">neurons</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">timepoints</span> <span class="o">=</span> <span class="mi">2000</span>
+
+    <span class="n">raster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
+    <span class="n">raster</span> <span class="o">=</span> <span class="p">(</span><span class="n">raster</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+
+    <span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;data_neuronal_activity&#39;</span><span class="p">:</span> <span class="n">raster</span>
+    <span class="p">}</span>
+
+<span class="c1"># Define algorithm parameters</span>
+<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;pks&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s1">&#39;scut&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
+    <span class="s1">&#39;hcut&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
+    <span class="s1">&#39;state_cut&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+    <span class="s1">&#39;csi_start&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s1">&#39;csi_step&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s1">&#39;csi_end&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="s1">&#39;tf_idf_norm&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;parallel_processing&#39;</span><span class="p">:</span> <span class="kc">False</span>
+<span class="p">}</span>
+
+<span class="c1"># Run batch analysis</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+
+<span class="k">for</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datasets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">run_svd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+
+    <span class="n">results</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;algorithm_time&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;algorithm_time&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;engine_time&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;engine_time&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;answer&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span>
+    <span class="p">}</span>
+
+<span class="c1"># Example access</span>
+<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;]</span>
+<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;][&#39;timecourse&#39;]</span>
+<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;][&#39;ensembles_cant&#39;]</span>
+<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;][&#39;neus_in_ens&#39;]</span>
+<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;algorithm_time&#39;]</span>
+</pre></div>
+</div>
 </section>
-<section id="load-your-data">
-<h2>2. Load Your Data<a class="headerlink" href="#load-your-data" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Navigate to the “Load data” tab.</p></li>
-<li><p>Click “Open file” and select your data file.</p></li>
-<li><p>Use the “File structure preview” panel to locate the variable you wish to load.</p></li>
-<li><p>In the “Set the selected variable as” panel, select the variable name to assign it.</p></li>
-<li><p>Preview the data in the “Input data preview” panel.</p></li>
-<li><p>If needed, modify the loaded variable using the “Edit variable” panel.</p></li>
-<li><p>Optionally, assign labels to the variable’s elements.</p></li>
-<li><p>Repeat this process until all necessary variables are loaded.</p></li>
-</ol>
-</section>
-<section id="run-analyses">
-<h2>3. Run Analyses<a class="headerlink" href="#run-analyses" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Open any analysis tab, such as SVD, PCA, ICA, Xsembles2P, or SGC in the “ENCORE Algorithms” tab.</p></li>
-<li><p>Ensure the “Input data” panel shows “Loaded” for the required data. If not, return to step 2.</p></li>
-<li><p>Use the “Load default values” button to explore the analysis or adjust parameters as needed.</p></li>
-<li><p>Click “Run analysis” to begin.</p></li>
-<li><p>Monitor the “Console log” panel and the terminal for additional information.</p></li>
-<li><p>Review the plots and adjust parameters as needed. Refer to the cited papers in each analysis tab for further understanding.</p></li>
-<li><p>Repeat this process for each analysis.</p></li>
-</ol>
-</section>
-<section id="visualize-results">
-<h2>4. Visualize Results<a class="headerlink" href="#visualize-results" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Go to the “Ensembles visualizer” tab.</p></li>
-<li><p>Click on the name of the analysis you wish to review. Only completed analyses will be clickable.</p></li>
-<li><p>Explore the spatial distributions of neurons and the dFFo signal (if available).</p></li>
-<li><p>Use the slider in the “General” tab to select ensembles for visualization.</p></li>
-<li><p>Examine all visualizations, including the spatial distributions of recorded cells, their activations, and identified ensembles.</p></li>
-</ol>
-</section>
-<section id="compare-results">
-<h2>5. Compare Results<a class="headerlink" href="#compare-results" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Open the “Ensemble compare” tab.</p></li>
-<li><p>Use the “Similarities in members” or “Similarities in timecourses” tabs to identify similar results across algorithms.</p></li>
-<li><p>Adjust the sliders on the left to select ensembles for each algorithm.</p></li>
-<li><p>Optionally, filter by stimuli or behavior.</p></li>
-<li><p>Explore the “Space map” and “Time profiles” tabs to compare selected ensembles.</p></li>
-<li><p>Customize visualizations using the “Visualization options” panel.</p></li>
-</ol>
-</section>
-<section id="evaluate-algorithm-performance">
-<h2>6. Evaluate Algorithm Performance<a class="headerlink" href="#evaluate-algorithm-performance" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Go to the “Performance Comparison” tab.</p></li>
-<li><p>If stimuli or behavior data are loaded, view performance comparisons. Missing data will be indicated in the plots.</p></li>
-<li><p>Check the “Correlation between cells” tab to view correlations within ensembles.</p></li>
-<li><p>Select the most suitable analysis or adjust parameters as needed.</p></li>
-</ol>
-</section>
-<section id="save-results">
-<h2>7. Save Results<a class="headerlink" href="#save-results" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Open the “Save” tab.</p></li>
-<li><dl class="simple">
-<dt>Choose the data to save:</dt><dd><ul class="simple">
-<li><p>Minimal results used by ENCORE: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.</p></li>
-<li><p>Full results of every analysis: Includes additional data used by the original algorithms.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Select the desired export format.</p></li>
-</ol>
-</section>
-<section id="additional-tips">
-<h2>Additional Tips<a class="headerlink" href="#additional-tips" title="Link to this heading">¶</a></h2>
+<section id="notes-for-this-example">
+<h2>Notes for this example<a class="headerlink" href="#notes-for-this-example" title="Link to this heading">¶</a></h2>
 <ul class="simple">
-<li><p>Hover over any option or button to view tooltips with detailed explanations.</p></li>
-<li><p>Save plots using the “Save” icon below each figure.</p></li>
-<li><p>Interact with visualizations by moving or zooming with the cursor.</p></li>
-<li><p>Plots will display helpful messages if additional data or analyses are required.</p></li>
-<li><p>Check the “ENCORE log” panel and Python console for additional information during analysis.</p></li>
+<li><p>Each dataset is stored as a dictionary matching the expected ENCORE input format.</p></li>
+<li><p>Parameters are defined once and reused across all datasets, ensuring consistent analysis.</p></li>
+<li><p>Parameter validation occurs inside the same algorithm.</p></li>
+<li><p>Results are collected in a single dictionary (results[‘results’]), making it easy to iterate, compare, or serialize outputs.</p></li>
+<li><p>This workflow allows users to analyze multiple datasets sequentially, even though the GUI operates on one dataset at a time.</p></li>
 </ul>
+<p>For advanced use cases, such as parameter sweeps, cross-algorithm comparisons, or integration with custom preprocessing pipelines, refer to the full API documentation for <a class="reference internal" href="../api/runners.html"><span class="doc">Analysis Runners</span></a>.</p>
 </section>
 </section>
 
@@ -365,23 +346,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../concepts/overview.html">
+          <a class="next-page" href="../acknowledgments.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Overview</div>
+                <div class="title">Acknowledgments</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../quickstart.html">
+          <a class="prev-page" href="adding_algorithms.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Quickstart</div>
+                <div class="title">Adding New Algorithms to ENCORE</div>
                 
               </div>
             </a>
@@ -422,15 +403,9 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Usage</a><ul>
-<li><a class="reference internal" href="#execute-encore">1. Execute ENCORE</a></li>
-<li><a class="reference internal" href="#load-your-data">2. Load Your Data</a></li>
-<li><a class="reference internal" href="#run-analyses">3. Run Analyses</a></li>
-<li><a class="reference internal" href="#visualize-results">4. Visualize Results</a></li>
-<li><a class="reference internal" href="#compare-results">5. Compare Results</a></li>
-<li><a class="reference internal" href="#evaluate-algorithm-performance">6. Evaluate Algorithm Performance</a></li>
-<li><a class="reference internal" href="#save-results">7. Save Results</a></li>
-<li><a class="reference internal" href="#additional-tips">Additional Tips</a></li>
+<li><a class="reference internal" href="#">Running batch analyses using the ENCORE Python API</a><ul>
+<li><a class="reference internal" href="#simple-batch-analysis-script">Simple batch analysis script</a></li>
+<li><a class="reference internal" href="#notes-for-this-example">Notes for this example</a></li>
 </ul>
 </li>
 </ul>
