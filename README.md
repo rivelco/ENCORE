@@ -21,6 +21,12 @@
   </p>
 </div>
 
+## Demo
+
+<p align="center">
+<img align="center" src="docs/source/_static/demo_usage.gif" width="100%" alt="ENCORE demo usage"/>
+</p>
+
 ## About ENCORE
 
 Graphic User Interface to perform a variety of neuronal ensembles identification's methods.
