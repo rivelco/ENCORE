@@ -73,13 +73,16 @@ Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Documentation
+   :caption: The basics
 
    installation
    quickstart
    user_guide/usage
+   acknowledgments
 
-   concepts/overview
+.. toctree::
+   :maxdepth: 2
+   :caption: API documentation
 
    api/main_window
    api/runners
@@ -88,8 +91,15 @@ Contents
    api/validators/index
    api/utils
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Advanced use
+
    extending/adding_algorithms
    extending/running_batch_analyses
 
-   acknowledgments
+.. toctree::
+   :maxdepth: 2
+   :caption: Conceptual background
 
+   concepts/overview
