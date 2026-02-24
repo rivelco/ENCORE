@@ -10,6 +10,9 @@ ENCORE Documentation
 of neuronal ensembles from population activity data, including calcium imaging
 and electrophysiological recordings.
 
+.. hint::
+   Check the :doc:`quickstart` for a demo.
+
 The software provides:
 
 - A graphical user interface (GUI) for interactive analysis
@@ -21,18 +24,20 @@ ENCORE is designed to support both exploratory data analysis and reproducible
 scientific research, with a strong emphasis on transparency, extensibility, and
 community contributions.
 
+.. seealso::
+   Read the associated book `Identification, Characterization, and Manipulation of Neuronal Ensembles <https://link.springer.com/book/10.1007/978-1-0716-4208-5>`_ 
+   for a better understanding of neuronal ensembles.
+
 .. note::
-   ENCORE is under active development. The current version already supports
-   multiple published ensemble identification algorithms, with ongoing efforts
-   to expand functionality and documentation.
+   ENCORE is under active development and improvement.
 
 Getting Started
 ---------------
 
 If you are new to ENCORE, start here:
 
-- :doc:`installation`
 - :doc:`quickstart`
+- :doc:`installation`
 - :doc:`user_guide/usage`
 
 Conceptual Background
@@ -75,8 +80,8 @@ Contents
    :maxdepth: 2
    :caption: The basics
 
-   installation
    quickstart
+   installation
    user_guide/usage
    acknowledgments
 
