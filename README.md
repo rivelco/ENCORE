@@ -13,6 +13,9 @@
     <a href="https://rivelco.github.io/ENCORE/"><strong>Read the documentation</strong></a>
     <br />
     <br />
+    <a href="https://doi.org/10.1016/j.xpro.2026.104443">Read the paper</a>
+    &middot;
+    <br />
     <a href="https://link.springer.com/book/10.1007/978-1-0716-4208-5">Read the book</a>
     &middot;
     <a href="https://github.com/rivelco/ENCORE/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
@@ -157,6 +160,22 @@ Binary matrix with shape `[behaviors, timepoints]`. The value `[behavior, timpoi
 ## Contribute to this project
 
 The main goal of this project is to be easily used to identify neuronal ensembles using different approaches. If you have suggestions, feature requests or bug reports, don't hesitate to use the Issues section of this repo.
+
+## Cite ENCORE
+
+To cite ENCORE you can use:
+
+```
+Ricardo Velazquez-Contreras, Luis Carrillo-Reid,
+Protocol for identifying and comparing neuronal ensembles using different algorithms within a graphical user interface,
+STAR Protocols,
+Volume 7, Issue 2,
+2026,
+104443,
+ISSN 2666-1667,
+https://doi.org/10.1016/j.xpro.2026.104443.
+(https://www.sciencedirect.com/science/article/pii/S2666166726000961)
+```
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [repo-link]: https://github.com/rivelco/ENCORE

@@ -25,6 +25,10 @@ scientific research, with a strong emphasis on transparency, extensibility, and
 community contributions.
 
 .. seealso::
+   Read the associated paper `Protocol for identifying and comparing neuronal ensembles using different algorithms within a graphical user interface <https://doi.org/10.1016/j.xpro.2026.104443>`_ 
+   for a better understanding of the software.
+
+.. seealso::
    Read the associated book `Identification, Characterization, and Manipulation of Neuronal Ensembles <https://link.springer.com/book/10.1007/978-1-0716-4208-5>`_ 
    for a better understanding of neuronal ensembles.
 
