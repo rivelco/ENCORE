@@ -13,6 +13,12 @@ Launch GUI:
 
    encore
 
+Identify and compare ensembles:
+
+.. image:: _static/demo_usage.gif
+   :alt: Demo usage
+   :align: center
+
 Alternative launch:
 
 .. code-block:: bash

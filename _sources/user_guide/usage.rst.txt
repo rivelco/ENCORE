@@ -6,7 +6,17 @@ A general workflow using ENCORE would look like this:
 1. Execute ENCORE
 -----------------
 
-    Once you have ENCORE installed in your system, run `encore` or `python -m encore`.
+Once you have ENCORE installed in your system, run:
+
+.. code-block:: bash
+
+    encore
+    
+You can also use:
+
+.. code-block:: bash
+
+    python -m encore
 
 2. Load Your Data
 -----------------
@@ -20,6 +30,12 @@ A general workflow using ENCORE would look like this:
 #. Optionally, assign labels to the variable's elements.
 #. Repeat this process until all necessary variables are loaded.
 
+
+.. image:: ../_static/demo_loading.gif
+   :alt: Demo loading files
+   :align: center
+
+
 3. Run Analyses
 ---------------
 
@@ -31,6 +47,10 @@ A general workflow using ENCORE would look like this:
 #. Review the plots and adjust parameters as needed. Refer to the cited papers in each analysis tab for further understanding.
 #. Repeat this process for each analysis.
 
+.. image:: ../_static/demo_run.gif
+   :alt: Demo running algorithms
+   :align: center
+
 4. Visualize Results
 --------------------
 
@@ -39,6 +59,10 @@ A general workflow using ENCORE would look like this:
 #. Explore the spatial distributions of neurons and the dFFo signal (if available).
 #. Use the slider in the "General" tab to select ensembles for visualization.
 #. Examine all visualizations, including the spatial distributions of recorded cells, their activations, and identified ensembles.
+
+.. image:: ../_static/demo_visualization.gif
+   :alt: Demo visualizing results
+   :align: center
 
 5. Compare Results
 ------------------
@@ -50,6 +74,10 @@ A general workflow using ENCORE would look like this:
 #. Explore the "Space map" and "Time profiles" tabs to compare selected ensembles.
 #. Customize visualizations using the "Visualization options" panel.
 
+.. image:: ../_static/demo_compare.gif
+   :alt: Demo comparing results
+   :align: center
+
 6. Evaluate Algorithm Performance
 ---------------------------------
 
@@ -57,6 +85,10 @@ A general workflow using ENCORE would look like this:
 #. If stimuli or behavior data are loaded, view performance comparisons. Missing data will be indicated in the plots.
 #. Check the "Correlation between cells" tab to view correlations within ensembles.
 #. Select the most suitable analysis or adjust parameters as needed.
+
+.. image:: ../_static/demo_performance.gif
+   :alt: Demo evaluating performance
+   :align: center
 
 7. Save Results
 ---------------
@@ -66,6 +98,10 @@ A general workflow using ENCORE would look like this:
     - Minimal results used by ENCORE: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.
     - Full results of every analysis: Includes additional data used by the original algorithms.
 #. Select the desired export format.
+
+.. image:: ../_static/demo_save.gif
+   :alt: Demo saving results
+   :align: center
 
 Additional Tips
 ---------------
