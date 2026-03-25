@@ -41,6 +41,9 @@ You can install ENCORE using pip. It's still recommended that you do this using 
 .. code-block:: console
 
     conda create -n encore python=3.10
+
+.. code-block:: console
+
     conda activate encore
 
 The above command will create a new environment called `encore` and with python 3.10 installed. You can choose the name of the environment replacing `encore` with the name you prefer. After the environment is created it must be activated.

@@ -2,7 +2,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/rivelco/ENCORE">
-    <img src="https://raw.githubusercontent.com/rivelco/ENCORE/main/src/encore/gui/ENCORE_logo.png"" alt="Logo" width="80" height="80">
+    <img src="https://raw.githubusercontent.com/rivelco/ENCORE/main/src/encore/gui/ENCORE_logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">ENCORE - Ensembles Comparison and Recognition</h3>
@@ -12,6 +12,8 @@
     <br />
     <a href="https://rivelco.github.io/ENCORE/"><strong>Read the documentation</strong></a>
     <br />
+    <a href="https://doi.org/10.1016/j.xpro.2026.104443">Read the paper</a>
+    <br />
     <br />
     <a href="https://link.springer.com/book/10.1007/978-1-0716-4208-5">Read the book</a>
     &middot;
@@ -20,6 +22,12 @@
     <a href="https://github.com/rivelco/ENCORE/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
   </p>
 </div>
+
+## Demo
+
+<p align="center">
+<img align="center" src="docs/source/_static/demo_usage.gif" width="100%" alt="ENCORE demo usage"/>
+</p>
 
 ## About ENCORE
 
@@ -35,6 +43,7 @@ This GUI currently incorporates five different algorithms:
 
 **More analysis and features coming soon...**
 
+> [!IMPORTANT]
 > For detailed instructions about installation and usage, go to the [documentation website](https://rivelco.github.io/ENCORE/)
 
 ## Installation
@@ -43,7 +52,7 @@ This GUI currently incorporates five different algorithms:
 
 The GUI is very low resource demanding. It is advisable to run it in a screen at least 1170 x 660 pixels to see al the buttons clearly. For the system requirements it is recommended a modern CPU and at least 16Gb of RAM. This for agile tuning and execution of the analysis.
 
-This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI an the included analysis.
+This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI and the included analysis.
 
 ## Needed dependencies
 
@@ -56,12 +65,12 @@ This specs, while recommended, are not mandatory. If you can run MATLAB 2020A th
 - Statistics and Machine Learning Toolbox
 - Curve Fitting Toolbox
 
-## Installation 
+## Installation process
 
 The recommended installation method relies on Conda to manage your Python environments. I highly recommend using conda for this purpose. 
-To install using this method simple open your terminal and type this commands.
+To install using this method simple open your terminal and type these commands.
 
-This commands creates a conda environment called `encore` and then activates it.
+These commands creates a conda environment called `encore` with Python 3.10 and then activates it.
 
 ```bash
 conda env create -n encore python=3.10
@@ -86,7 +95,7 @@ python -c "import encore; print(encore.__version__)"
 
 ## Install the MATLAB engine for Python
 
-To run the algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path, to something like this:
+To run the currently available algorithms it is necessary to install in the python environment the MATLAB engine. This can be done by looking for yor MATLAB installation path, to something like this:
 
 ```bash
 cd C:\Program Files\MATLAB\R2023a\extern\engines\python
@@ -102,9 +111,12 @@ python -m pip install .
 
 It is possible that you need to run that command from an elevated terminal.
 
+> [!TIP]
+> More information about the MATLAB engine installation is available [in the docs](https://rivelco.github.io/ENCORE/installation).
+
 ## Run the GUI
 
-To run the GUI you now just need to call main.py from your configured python environment. Make sure your in the path where you downloaded the repo.
+To run the GUI you now just need to run a command from your terminal:
 
 ```bash
 encore
@@ -116,41 +128,57 @@ You can also run:
 python -m encore
 ```
 
-## Needed data.
+## Needed data
 
-This GUI requires just matrices for all of the input data that can be loaded from different files. This matrix all follow the same logic. For data that shows a timeseries like the recording of neurons of the recording of stimulation then the matrix must have a shape `[elements, timepoints]`. Every element (neuron or stimulation or even behavior) should has the recording of their activity over time.
+This GUI requires just matrices for all the input data that can be loaded from different files. All these matrices follow the same logic. For data that shows a timeseries like the recording of neurons or the recording of stimulation then the matrix must have a shape `[elements, timepoints]`. Every element (neuron or stimulation or even behavior) should have the recording of their activity over time.
 
-The datasets that must provide belonging to a group must have the format of a binary matrix with shape `[groups, elements]`.
+The datasets that indicates belonging to a group must have the format of a binary matrix with shape `[groups, elements]`.
 
-Consider that any of this matrices could be transposed in your file and you can re-transpose it using the GUI. Just make sure that the axes labels match your data.
+Consider that any of these matrices could be transposed in your file and you can re-transpose it using the GUI. Just make sure that the axes labels match your data.
 
 ### Variable `dFFo/FFo`
 
-Matrix with the shape `[neurons, timepoints]` that stores continous values describing the flourescence activity of each neuron.
+Matrix with the shape `[neurons, timepoints]` that stores continuous values describing the fluorescence activity of each neuron.
 
 ### Variable `Binary cell activity`
 
-This should be a binary matrix with shape `[neurons, timepoints]`, where if the element `[neuron, timpeoint] == 1` then this indicates that that neuron was active in that timepoint.
+This should be a binary matrix with shape `[neurons, timepoints]`. If the element `[neuron, timpeoint] == 1` then this indicates that that neuron was active in that timepoint.
 
 ### Variable `Coordinates`
 
-This variable should be a matrix with shape `[neuron, dimentions]`, where for each neuron it is specified its coordinates for 2 dimentions, `x` and `y`. The current version only supports 2 dimentions.
+This variable should be a matrix with shape `[neuron, dimentions]`, where for each neuron it is specified its coordinates for 2 dimensions, `x` and `y`. The current version only supports 2 dimensions.
 
 ### Variable `stimulation`
 
-Binary matrix with shape `[stimuli, timepoints]`. The value `[stim, timpoint] == 1` indicates that the stimulation `stim` was present in the timepoint `timepoint`. 
+Binary matrix with shape `[stimuli, timepoints]`. The value `[stim, timpoint] == 1` indicates if the stimulation `stim` was present at the timepoint `timepoint`. 
 
 ### Variable `cells`
 
-Binary matrix with shape `[groups, cell]`. The value `[group, cell] == 1` indicates that the group `group` includes the cell `cell`.
+Binary matrix with shape `[groups, cell]`. The value `[group, cell] == 1` indicates if the group `group` includes the cell `cell`.
 
 ### Variable `behavior`
 
-Binary matrix with shape `[behaviors, timepoints]`. The value `[behavior, timpoint] == 1` indicates that the behavior `behavior` was present in the timepoint `timepoint`. 
+Binary matrix with shape `[behaviors, timepoints]`. The value `[behavior, timepoint] == 1` indicates that the behavior `behavior` was present in the timepoint `timepoint`. 
 
 ## Contribute to this project
 
 The main goal of this project is to be easily used to identify neuronal ensembles using different approaches. If you have suggestions, feature requests or bug reports, don't hesitate to use the Issues section of this repo.
+
+## Cite ENCORE
+
+To cite ENCORE you can use:
+
+```
+Ricardo Velazquez-Contreras, Luis Carrillo-Reid,
+Protocol for identifying and comparing neuronal ensembles using different algorithms within a graphical user interface,
+STAR Protocols,
+Volume 7, Issue 2,
+2026,
+104443,
+ISSN 2666-1667,
+https://doi.org/10.1016/j.xpro.2026.104443.
+(https://www.sciencedirect.com/science/article/pii/S2666166726000961)
+```
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [repo-link]: https://github.com/rivelco/ENCORE

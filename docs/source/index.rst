@@ -10,6 +10,9 @@ ENCORE Documentation
 of neuronal ensembles from population activity data, including calcium imaging
 and electrophysiological recordings.
 
+.. hint::
+   Check the :doc:`quickstart` for a demo.
+
 The software provides:
 
 - A graphical user interface (GUI) for interactive analysis
@@ -21,18 +24,24 @@ ENCORE is designed to support both exploratory data analysis and reproducible
 scientific research, with a strong emphasis on transparency, extensibility, and
 community contributions.
 
+.. seealso::
+   Read the associated paper `Protocol for identifying and comparing neuronal ensembles using different algorithms within a graphical user interface <https://doi.org/10.1016/j.xpro.2026.104443>`_ 
+   for a better understanding of the software.
+
+.. seealso::
+   Read the associated book `Identification, Characterization, and Manipulation of Neuronal Ensembles <https://link.springer.com/book/10.1007/978-1-0716-4208-5>`_ 
+   for a better understanding of neuronal ensembles.
+
 .. note::
-   ENCORE is under active development. The current version already supports
-   multiple published ensemble identification algorithms, with ongoing efforts
-   to expand functionality and documentation.
+   ENCORE is under active development and improvement.
 
 Getting Started
 ---------------
 
 If you are new to ENCORE, start here:
 
-- :doc:`installation`
 - :doc:`quickstart`
+- :doc:`installation`
 - :doc:`user_guide/usage`
 
 Conceptual Background
@@ -73,13 +82,16 @@ Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Documentation
+   :caption: The basics
 
-   installation
    quickstart
+   installation
    user_guide/usage
+   acknowledgments
 
-   concepts/overview
+.. toctree::
+   :maxdepth: 2
+   :caption: API documentation
 
    api/main_window
    api/runners
@@ -88,8 +100,15 @@ Contents
    api/validators/index
    api/utils
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Advanced use
+
    extending/adding_algorithms
    extending/running_batch_analyses
 
-   acknowledgments
+.. toctree::
+   :maxdepth: 2
+   :caption: Conceptual background
 
+   concepts/overview
