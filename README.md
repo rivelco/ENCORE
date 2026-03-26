@@ -8,6 +8,22 @@
   <h3 align="center">ENCORE - Ensembles Comparison and Recognition</h3>
 
   <p align="center">
+    <a href="https://github.com/rivelco/ENCORE/actions/workflows/windows-compatibility.yml">
+      <img src="https://github.com/rivelco/ENCORE/actions/workflows/windows-compatibility.yml/badge.svg" alt="Windows Compatibility">
+    </a>
+    &middot;
+    <a href="https://github.com/rivelco/ENCORE/actions/workflows/linux-compatibility.yml">
+      <img src="https://github.com/rivelco/ENCORE/actions/workflows/linux-compatibility.yml/badge.svg" alt="Linux Compatibility">
+    </a>
+    &middot;
+    <a href="https://github.com/rivelco/ENCORE/actions/workflows/macos-compatibility.yml">
+      <img src="https://github.com/rivelco/ENCORE/actions/workflows/macos-compatibility.yml/badge.svg" alt="macOS Compatibility">
+    </a>
+  </p>
+
+  <br />
+
+  <p align="center">
     GUI to identify and compare neuronal ensembles in calcium or electrical recordings using five different algorithms.
     <br />
     <a href="https://rivelco.github.io/ENCORE/"><strong>Read the documentation</strong></a>
