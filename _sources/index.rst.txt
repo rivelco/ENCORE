@@ -1,10 +1,17 @@
-.. ENCORE documentation master file, created by
-   sphinx-quickstart on Fri Oct  4 13:38:59 2024.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 ENCORE Documentation
 ====================
+
+.. image:: https://github.com/rivelco/ENCORE/actions/workflows/linux-compatibility.yml/badge.svg
+   :target: https://github.com/rivelco/ENCORE/actions/workflows/linux-compatibility.yml
+   :alt: Linux
+
+.. image:: https://github.com/rivelco/ENCORE/actions/workflows/windows-compatibility.yml/badge.svg
+   :target: https://github.com/rivelco/ENCORE/actions/workflows/windows-compatibility.yml
+   :alt: Windows
+
+.. image:: https://github.com/rivelco/ENCORE/actions/workflows/macos-compatibility.yml/badge.svg
+   :target: https://github.com/rivelco/ENCORE/actions/workflows/macos-compatibility.yml
+   :alt: macOS
 
 **ENCORE** is an open-source software tool for the identification and comparison
 of neuronal ensembles from population activity data, including calcium imaging
