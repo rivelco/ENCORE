@@ -6,7 +6,7 @@ def test_entry_point():
     import sys
 
     result = subprocess.run(
-        [sys.executable, "-m", "encore", "--help"],
+        [sys.executable, "-m", "encore", "--version"],
         capture_output=True,
         text=True,
     )

@@ -1,6 +1,20 @@
 Quickstart
 ==========
 
+Check the compatibility with your OS:
+
+.. image:: https://github.com/rivelco/ENCORE/actions/workflows/linux-compatibility.yml/badge.svg
+   :target: https://github.com/rivelco/ENCORE/actions/workflows/linux-compatibility.yml
+   :alt: Linux
+
+.. image:: https://github.com/rivelco/ENCORE/actions/workflows/windows-compatibility.yml/badge.svg
+   :target: https://github.com/rivelco/ENCORE/actions/workflows/windows-compatibility.yml
+   :alt: Windows
+
+.. image:: https://github.com/rivelco/ENCORE/actions/workflows/macos-compatibility.yml/badge.svg
+   :target: https://github.com/rivelco/ENCORE/actions/workflows/macos-compatibility.yml
+   :alt: macOS
+
 Install:
 
 .. code-block:: bash
