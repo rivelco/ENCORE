@@ -57,7 +57,8 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
-    QAbstractSpinBox
+    QAbstractSpinBox,
+    QComboBox
 )
 from PyQt6.uic import loadUi
 
@@ -671,32 +672,27 @@ class MainWindow(QMainWindow):
         MIN_VAL = -2147483647
         
         if cfg.get("type", "") == "enum":
-            widget = QWidget()
-            layout = QVBoxLayout(widget)
-            layout.setContentsMargins(0, 0, 0, 0)
-
-            button_group = QButtonGroup(widget)
-            button_group.setExclusive(True)
-
+            widget = QComboBox()
             for option in cfg.get("options", []):
-                radio = QRadioButton(option["label"])
+                label = option["label"]
                 value = option["value"]
+                # Display the label, but store the actual value as user data
+                widget.addItem(label, userData=value)
+            # Set the default based on the stored value
+            index = widget.findData(default)
+            if index >= 0:
+                widget.setCurrentIndex(index)
+            def update_tooltip(index):
+                # This updates the tooltip of the combobox to display the help
+                # for the selected option
+                options = cfg.get("options", [])
+                if 0 <= index < len(options):
+                    widget.setToolTip(options[index].get("description", ""))
 
-                # Store value in Qt user data
-                radio.setProperty("value", value)
-
-                if value == default:
-                    radio.setChecked(True)
-                
-                # Add a unique name for each radial button
-                button_name = cfg.get("object_name", "") + f"_{value}"
-                radio.setObjectName(button_name)
-
-                button_group.addButton(radio)
-                layout.addWidget(radio)
-
-            # Keep reference for later retrieval
-            widget.button_group = button_group
+            widget.currentIndexChanged.connect(update_tooltip)
+            update_tooltip(widget.currentIndex())
+            # Keep the object name from the config
+            widget.setObjectName(cfg.get("object_name", ""))
         
         # Boolean
         elif isinstance(default, bool):
@@ -1944,12 +1940,7 @@ class MainWindow(QMainWindow):
             # Type aware extraction
             try:
                 if param_cfg.get("type", "") == "enum":
-                    for btn in widget.button_group.buttons():
-                        if btn.isChecked():
-                            value = btn.property("value")
-                            break
-                    else:
-                        value = default
+                    value = widget.currentData()
                 elif isinstance(default, bool) and isinstance(widget, QCheckBox):
                     value = widget.isChecked()
                 elif isinstance(default, int) and isinstance(widget, QSpinBox):
