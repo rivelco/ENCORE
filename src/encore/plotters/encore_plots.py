@@ -456,6 +456,7 @@ def enscomp_update_timelines(plot_widget, ticks, cell_activities, ensemble_dffo,
                 valid_activities = np.vstack([valid_activities, method])
             use_colors.append(colors[method_idx])
 
+    move_ens = stim_or_behav > 0
     if not first_flag:
         Fmi = np.min(valid_activities)
         Fma = np.max(valid_activities)
@@ -465,7 +466,7 @@ def enscomp_update_timelines(plot_widget, ticks, cell_activities, ensemble_dffo,
             if len(cells_acts) > 0:
                 cant_timepoints = len(cells_acts)
                 cells_acts = ((cells_acts - Fmi) / (Fma - Fmi)) + stim_or_behav
-                plot_widget.axes.plot(np.arange(1, cant_timepoints + 1), acts + cells_acts, linewidth=1, color='black', alpha=0.6)
+                plot_widget.axes.plot(np.arange(1, cant_timepoints + 1), acts - move_ens + cells_acts, linewidth=1, color='black', alpha=0.6)
                 #plot_widget.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
 
     plot_widget.axes.set_xlim([0, limx])
