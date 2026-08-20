@@ -65,6 +65,7 @@ from PyQt6.uic import loadUi
 # ENCORE
 from encore.data.load_data import FileTreeModel
 from encore.data.assign_data import assign_data_from_file
+from encore.data.save_data import save_dict_to_hdf5
 import encore.utils.metrics as metrics
 from encore.utils.text_formatting import format_nums_to_string
 from encore.utils.parameters_validators import validate_binary_matrix
@@ -3497,44 +3498,13 @@ class MainWindow(QMainWindow):
                             cross_corrs.append(cross_corr)
                         data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_behavior"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
         return data
-    def save_data_to_hdf5(self, group, data):
-        """
-        Recursively saves data to an HDF5 file group.
-
-        This method iterates through a dictionary and saves its contents to the provided HDF5 group. 
-        If a value in the dictionary is another dictionary, it creates a subgroup and recursively saves 
-        its contents. 
-        If the value is a list, it attempts to create a dataset in the group, catching exceptions 
-        if the data cannot be saved. 
-        For other data types, the method directly stores the value in the group.
-
-        :param group: The HDF5 group to which the data will be saved.
-        :type group: h5py.Group
-        :param data: The data to be saved, which can be a dictionary, list, or other types.
-        :type data: dict
-        """
-
-        for key, value in data.items():
-            if key in group:
-                del group[key]
-                
-            if isinstance(value, dict):
-                subgroup = group.create_group(str(key))
-                self.save_data_to_hdf5(subgroup, value)
-            elif isinstance(value, list):
-                try:
-                    group.create_dataset(key, data=value)
-                except:
-                    print(f" ENCORE Saving: Could not save a variable called {key}, maybe it is not a matrix nor scalar.")
-            else:
-                group[key] = value
     def save_results_hdf5(self):
         """
         Saves the current results to an HDF5 file.
 
         This method retrieves the data to be saved using :meth:`MainWindow.get_data_to_save()`, 
         prompts the user to choose a location and name for the file, and then saves the data in HDF5 format. 
-        The file is saved using the :meth:`MainWindow.save_data_to_hdf5` method to recursively write 
+        The file is saved using the :meth:`encore.data.save_data.save_dict_to_hdf5` method to recursively write 
         the data into the file.
 
         The file is named based on the current date and a prefix "ENCORE", and the user is prompted 
@@ -3553,7 +3523,7 @@ class MainWindow(QMainWindow):
                 try:
                     self.update_console_log("Saving results in HDF5 file...")
                     with h5py.File(file_path, 'a') as hdf_file:
-                        self.save_data_to_hdf5(hdf_file, data_to_save)
+                        save_dict_to_hdf5(hdf_file, data_to_save)
                     self.update_console_log("Done saving.", "complete")
                 except Exception as e:
                     self.update_console_log(f"Error saving file: {str(e)}", "error")
@@ -3562,7 +3532,7 @@ class MainWindow(QMainWindow):
                 try:
                     self.update_console_log("Saving results in HDF5 file...")
                     with h5py.File(file_path, 'w') as hdf_file:
-                        self.save_data_to_hdf5(hdf_file, data_to_save)
+                        save_dict_to_hdf5(hdf_file, data_to_save)
                     self.update_console_log("Done saving.", "complete")
                 except Exception as e:
                     self.update_console_log(f"Error saving file: {str(e)}", "error")
