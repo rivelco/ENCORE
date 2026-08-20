@@ -164,9 +164,9 @@ disp("  > Running SVD...")
 
 %% find sequences
 % find the sequence between states
-sec_Pk_edos_act = SRactive(sec_Pk_edos');
-sec_Pk_edos_act = sec_Pk_edos_act';
-sec_Pk_edos_Ren = SRasRen(sec_Pk_edos_act);
+% sec_Pk_edos_act = SRactive(sec_Pk_edos');
+% sec_Pk_edos_act = sec_Pk_edos_act';
+% sec_Pk_edos_Ren = SRasRen(sec_Pk_edos_act);
 
 %Para encontrar sec_Pk_frames dado que no todos los picos fueron asignados
 %a un estado
