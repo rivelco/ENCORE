@@ -2877,37 +2877,6 @@ class MainWindow(QMainWindow):
         # Convert to numpy array
         all_elements = np.array(all_elements)
         return all_elements, labels
-    def ensembles_compare_get_simmatrix(self, method: str, all_elements: np.ndarray):
-        """
-        Calculates the similarity matrix for a set of elements using the specified method.
-
-        This method computes pairwise similarity or distance metrics (e.g., cosine, Euclidean, 
-        correlation, Jaccard) and formats the result as a similarity matrix.
-
-        :param method: The similarity or distance metric to use. Valid options are:
-                    'Cosine', 'Euclidean', 'Correlation', 'Jaccard'.
-        :type method: string
-        :param all_elements: A numpy array containing the elements to compare. Each row represents 
-                            a single element, and columns represent features.
-        :type all_elements: numpy.ndarray
-        :raises ValueError: If an unsupported method is provided.
-        :return: A similarity matrix where each entry represents the pairwise similarity between elements.
-        :rtype: numpy.ndarray
-        """
-
-        similarity_matrix = []
-        if method == 'Cosine':
-            similarity_matrix = cosine_similarity(all_elements)
-        elif method == 'Euclidean':
-            similarity_matrix = squareform(pdist(all_elements, metric='euclidean'))
-        elif method == 'Correlation':
-            similarity_matrix = np.corrcoef(all_elements)
-        elif method == 'Jaccard':
-            jaccard_distances = pdist(all_elements, metric='jaccard')
-            similarity_matrix = 1 - squareform(jaccard_distances)
-        else:
-            raise ValueError(f"Unsupported similarity method: {method}")
-        return similarity_matrix
     def ensembles_compare_similarity(self, component=None, first_show=False):
         """
         Computes and visualizes the similarity matrix for ensembles based on a selected component.
@@ -2944,7 +2913,7 @@ class MainWindow(QMainWindow):
             method = self.enscomp_visopts[key]['method']
             color = self.enscomp_visopts[key]['colormap']
 
-        similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
+        similarity_matrix = metrics.compute_similarity_matrix(method, all_elements)
 
         if component == "Neurons":
             plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements')
@@ -3446,7 +3415,7 @@ class MainWindow(QMainWindow):
                 data["ENCORE"]["ensembles_compare"][criteria] = {}
                 all_elements, labels = self.ensembles_compare_get_elements_labels(criteria)
                 for method in ["Cosine", "Euclidean", "Correlation", "Jaccard"]:
-                    similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
+                    similarity_matrix = metrics.compute_similarity_matrix(method, all_elements)
                     data["ENCORE"]["ensembles_compare"][criteria][method] = similarity_matrix
             data["ENCORE"]["ensembles_compare"]["labels"] = labels
         if self.save_check_perf.isChecked() and self.save_check_perf.isEnabled():

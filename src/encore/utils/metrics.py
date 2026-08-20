@@ -1,5 +1,8 @@
 import numpy as np
 from sklearn.metrics import roc_curve, auc
+from scipy.spatial.distance import pdist, squareform
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def compute_correlation_with_stimuli(ensembles_timecourse, data_stims):
     """
@@ -109,3 +112,36 @@ def compute_cross_correlations(ensemble_timecourse, stimuli):
     cross_correlation = np.correlate(ensemble_timecourse, stimuli, mode='full')
     lags = np.arange(-len(ensemble_timecourse) + 1, len(stimuli))
     return cross_correlation, lags
+
+
+def compute_similarity_matrix(method: str, all_elements: np.ndarray):
+    """
+    Calculates the similarity matrix for a set of elements using the specified method.
+
+    This method computes pairwise similarity or distance metrics (e.g., cosine, Euclidean,
+    correlation, Jaccard) and formats the result as a similarity matrix.
+
+    :param method: The similarity or distance metric to use. Valid options are:
+                'Cosine', 'Euclidean', 'Correlation', 'Jaccard'.
+    :type method: string
+    :param all_elements: A numpy array containing the elements to compare. Each row represents
+                        a single element, and columns represent features.
+    :type all_elements: numpy.ndarray
+    :raises ValueError: If an unsupported method is provided.
+    :return: A similarity matrix where each entry represents the pairwise similarity between elements.
+    :rtype: numpy.ndarray
+    """
+
+    similarity_matrix = []
+    if method == "Cosine":
+        similarity_matrix = cosine_similarity(all_elements)
+    elif method == "Euclidean":
+        similarity_matrix = squareform(pdist(all_elements, metric="euclidean"))
+    elif method == "Correlation":
+        similarity_matrix = np.corrcoef(all_elements)
+    elif method == "Jaccard":
+        jaccard_distances = pdist(all_elements, metric="jaccard")
+        similarity_matrix = 1 - squareform(jaccard_distances)
+    else:
+        raise ValueError(f"Unsupported similarity method: {method}")
+    return similarity_matrix
