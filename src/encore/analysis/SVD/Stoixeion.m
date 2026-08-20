@@ -78,9 +78,10 @@ csi_vec = csi_vec_start:csi_vec_step:csi_vec_end;
 
 %% find similarity structure
 % find high-activity frames
-calcualte_pks = isempty(pks);
+calcualte_pks = pks == 0;
 if calcualte_pks
-    disp("> Calculating pks...")
+    pks = [];
+    disp("  > Calculating pks...")
 end
 [Rasterbin,Pks_Frame,pks] = findHighactFrames(Spikes,pks);
 if calcualte_pks
@@ -117,8 +118,8 @@ else
 end
 
 % threshold of noise
-if isempty(scut)
-    disp("> Calculating scut...")
+if scut == 0.0
+    disp("  > Calculating scut...")
     scut = calc_scut(tf_idf_Rasterbin);
     fprintf("   - Value for scut calculated: %d\n", scut)
 end
