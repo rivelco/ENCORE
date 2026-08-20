@@ -326,6 +326,7 @@ class MainWindow(QMainWindow):
                 button.setEnabled(False)
             check = self.findChild(QWidget, f'performance_check_{algorithm_key}')
             if check:
+                check.setChecked(False)
                 check.setEnabled(False)
             spinbox = self.findChild(QWidget, f"enscomp_spinbox_{algorithm_key}")
             if spinbox:
