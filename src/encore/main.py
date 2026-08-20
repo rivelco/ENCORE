@@ -2147,6 +2147,7 @@ class MainWindow(QMainWindow):
                 "error"
             )
             logger(str(exc), "error")
+            return [np.nan, np.nan, np.nan, 0]
     def plot_algorithm_plots(self, algorithm_cfg: dict, answer: dict):
         """
         Runs the plot function for a given algorithm
