@@ -27,6 +27,7 @@ disp(" -> Running Stoixeion")
 
 % Unpack parameters from GUI
 pks = pars.pks;
+fixed_states_cant = pars.fixed_ens_cant;
 scut = pars.scut;
 hcut = pars.hcut;
 statecut = pars.state_cut;
@@ -144,8 +145,8 @@ S_indexp = (H_indexb>hcut)*1; %Second Moment (Hamilton's Similarity). Defines st
 
 %% do SVD, find states and cells
 % Find the peaks in the states and the cells in the states
-disp("> Performing SVD...")
-[C_edos,sec_Pk_edos, S_svd, num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut); %,edos_size_cut,edos_svd_cut,rep_svd);
+disp("  > Running SVD...")
+[C_edos,sec_Pk_edos, S_svd, num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut,fixed_states_cant); %,edos_size_cut,edos_svd_cut,rep_svd);
 % the returned C_edos is a binary num_sig_frame-by-num_state matrix, where
 % 1s indicate the timing of corresponding state; sec_Pk_edos is a
 % 1-by-num_sig_frame vector, containing numbers indicating the active state

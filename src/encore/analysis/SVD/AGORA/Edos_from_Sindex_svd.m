@@ -1,4 +1,4 @@
-function [C_edos,sec_Pk_edos,S_svd,num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut)
+function [C_edos,sec_Pk_edos,S_svd,num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut,fixed_states_cant)
 % 
 %LC2014. Feb 7
 %Deteccion de estados usando conceptos de algebra lineal
@@ -42,7 +42,11 @@ while dlt > 0
 
     edos_temp1=floor(sqrt(fac_count));
     edos_temp2=find(edos_temp1./sum(edos_temp1)>=p);
-    num_state=size(edos_temp2,1);
+    if fixed_states_cant > 0
+        num_state = fixed_states_cant;
+    else
+        num_state=size(edos_temp2,1);
+    end
 
     % find cells for each state
     svd_sig = zeros(sz,sz,num_state);

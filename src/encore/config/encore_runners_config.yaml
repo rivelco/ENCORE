@@ -40,6 +40,15 @@ encore_runners:
         default_value: 0.22
         min_value: 0
         max_value: MAX_VAL
+      fixed_ens_cant:
+        object_name: svd_edit_fixed_states_cant
+        display_name: Fix number of ensembles
+        description: |
+          When different from 0, fixed the number of ensembles
+          identified, taking that amount of the main singular values.
+        default_value: 0
+        min_value: 0
+        max_value: MAX_VAL
       state_cut:
         object_name: svd_edit_statecut
         display_name: state_cut
