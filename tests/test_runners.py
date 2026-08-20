@@ -15,6 +15,7 @@ def test_svd():
         'pks': 3,
         'scut': 0.22,
         'hcut': 0.22,
+        'fixed_ens_cant': 0,
         'state_cut': 6,
         'csi_start': 0.01,
         'csi_step': 0.01,
@@ -84,8 +85,11 @@ def test_ica():
         'threshold_method': 'MarcenkoPastur',
         'permutations_percentile': 95.0,
         'number_of_permutations': 20,
+        'min_ensembles_cant': 0,
+        'max_ensembles_cant': 0,
         'patterns_method': 'ICA',
-        'number_of_iterations': 500
+        'number_of_iterations': 500,
+        'threshold_for_p_value': 1.96,
     }
     
     result = run_ica({'data_neuronal_activity': raster}, parameters)
