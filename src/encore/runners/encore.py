@@ -578,13 +578,14 @@ def run_ica(
             tmp = np.abs(z_scores) > threshold
             binary_time_projection[a_idx, :] = [int(v) for v in tmp]
 
-        answer = {
-            "assembly_templates": assembly_templates,
-            "time_projection": time_projection,
-            "binary_assembly_templates": binary_assembly_templates,
-            "binary_time_projection": binary_time_projection,
-            "eigen_values": np.array(original_results["original_answer"]["patterns"]["eigenvalues"])
-        }
+        if include_answer:
+            answer = {
+                "assembly_templates": assembly_templates,
+                "time_projection": time_projection,
+                "binary_assembly_templates": binary_assembly_templates,
+                "binary_time_projection": binary_time_projection,
+                "eigen_values": np.array(original_results["original_answer"]["patterns"]["eigenvalues"])
+            }
 
         # Save the results
         ensgui_results["timecourse"] = binary_time_projection
