@@ -74,6 +74,8 @@ encore_runners:
         display_name: Similarity map
       - name: svd_plot_binarysimmap
         display_name: Binarized similarity map
+      - name: svd_plot_activity_spikes
+        display_name: Activity spikes
       - name: svd_plot_singularvalues
         display_name: Singular Values
       - name: svd_plot_components

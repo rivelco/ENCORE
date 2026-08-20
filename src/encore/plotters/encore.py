@@ -25,11 +25,31 @@ def plot_svd(figures, answer):
         encore_plots.preview_dataset(plot_widget, simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='jet', aspect='equal')
     
     # Binary similarity map
-    bin_simmap = np.array(answer['S_indexp'])
-    plot_widget = figures.get('svd_plot_binarysimmap')
+    bin_simmap = np.array(answer["S_indexp"])
+    plot_widget = figures.get("svd_plot_binarysimmap")
     if plot_widget:
-        encore_plots.preview_dataset(plot_widget, bin_simmap, xlabel="Significant population vector", ylabel="Significant population vector", cmap='gray', aspect='equal')
-    
+        encore_plots.preview_dataset(
+            plot_widget,
+            bin_simmap,
+            xlabel="Significant population vector",
+            ylabel="Significant population vector",
+            cmap="gray",
+            aspect="equal",
+        )
+
+    # Activity spikes
+    raster = np.array(answer["raster"])
+    activity_spikes = np.sum(raster, axis=0)
+    plot_widget = figures.get("svd_plot_activity_spikes")
+    if plot_widget:
+        encore_plots.line_with_threshold_plot(
+            plot_widget,
+            activity_spikes,
+            answer["pks"],
+            xlabel="Timepoint",
+            ylabel="Co-active cells",
+        )
+
     # Singular values plot
     singular_vals = np.diagonal(np.array(answer['S_svd']))
     num_state = int(answer['num_state'])

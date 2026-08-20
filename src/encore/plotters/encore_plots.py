@@ -113,6 +113,29 @@ def raster_plot(plot_widget, data_neuronal_activity):
     plot_widget.canvas.draw()
     plot_widget.canvas.flush_events()
 
+def line_with_threshold_plot(plot_widget, line_y, threshold, xlabel="Time", ylabel="Neuron"):
+    """
+    Plots a line plot.
+    
+    :param plot_widget: Widget where the plot will be produced.
+    :type plot_widget: :class:`MatplotlibWidget`
+    :param dataset: Numpy array with the data to plot.
+    :type dataset: numpy.ndarray
+    """
+    plot_widget.axes.clear()
+    
+    plot_widget.axes.plot(line_y, color='black')
+    plot_widget.axes.axhline(y=threshold, color='r', linestyle='-')
+
+    for side in ['top', 'right']:
+        plot_widget.axes.spines[side].set_visible(False)
+    plot_widget.axes.set_xlabel(xlabel)
+    plot_widget.axes.set_ylabel(ylabel)
+
+    plot_widget.canvas.figure.tight_layout()
+    plot_widget.canvas.draw()
+    plot_widget.canvas.flush_events()
+    
 # Plots for the SVD analysis
 def plot_singular_values(plot_widget, singulars, num_states):
     """
