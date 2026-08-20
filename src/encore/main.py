@@ -2878,6 +2878,16 @@ class MainWindow(QMainWindow):
                     else:
                         stim_label = f"Stim {stim}"
                     labels.append(stim_label)
+            if hasattr(self, "data_behavior"):
+                behavs, timepoints = self.data_behavior.shape
+                for stim in range(behavs):
+                    all_elements.append(self.data_behavior[stim,:])
+                    if "behavior" in self.varlabels:
+                        stim_labels = list(self.varlabels["behavior"].values())
+                        stim_label = f"Behav {stim_labels[stim]}"
+                    else:
+                        stim_label = f"Behav {stim}"
+                    labels.append(stim_label)
         # Convert to numpy array
         all_elements = np.array(all_elements)
         return all_elements, labels
