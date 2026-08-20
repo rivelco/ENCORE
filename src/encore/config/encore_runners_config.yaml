@@ -302,9 +302,9 @@ encore_runners:
       ClusteringFixed:
         object_name: 'x2p_edit_fixed'
         display_name: Clustering fixed
-        description: Clustering fixed
-        default_value: 1
-        min_value: 1
+        description: When different from 0, sets an exact number of ensembles to select.
+        default_value: 0
+        min_value: 0
         max_value: MAX_VAL
       EnsembleIterations:
         object_name: x2p_edit_itensemble
