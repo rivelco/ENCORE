@@ -135,7 +135,10 @@ def run_svd(input_data, parameters, code_folder_name='SVD', include_answer=True,
     if answer != None:
         cant_neurons = raster.shape[0]
         cant_timepoints = raster.shape[1]
-        num_state = int(answer['num_state'])
+        num_state = int(answer["num_state"])
+
+        # Save the raster to the answer too to plot the activity spikes
+        answer["raster"] = raster
 
         # Get the ensembles timecourse
         Pks_Frame = np.array(answer['Pks_Frame'])
