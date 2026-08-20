@@ -503,10 +503,11 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
             binary_time_projection[a_idx,:] = [int(v) for v in tmp]
 
         answer = {
-            'assembly_templates': assembly_templates,
-            'time_projection': time_projection,
-            'binary_assembly_templates': binary_assembly_templates,
-            'binary_time_projection': binary_time_projection
+            "assembly_templates": assembly_templates,
+            "time_projection": time_projection,
+            "binary_assembly_templates": binary_assembly_templates,
+            "binary_time_projection": binary_time_projection,
+            "eigen_values": np.array(original_results["original_answer"]["patterns"]["eigenvalues"])
         }
 
         # Save the results
