@@ -2376,11 +2376,10 @@ class MainWindow(QMainWindow):
             self.ensvis_check_onlycont.setEnabled(True)
             self.ensvis_check_cellnum.setEnabled(True)
             self.update_ens_vis_coords()
-
-        if hasattr(self, "data_dFFo"):
-            plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
-            dFFo_ens = self.data_dFFo[idx_corrected_members, :]
-            encore_plots.plot_ensemble_dFFo(plot_widget, dFFo_ens, idx_corrected_members, ensemble_timecourse)
+        
+        plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
+        dFFo_ens = self.data_dFFo[idx_corrected_members, :] if hasattr(self, "data_dFFo") else self.data_neuronal_activity[idx_corrected_members, :]
+        encore_plots.plot_ensemble_dFFo(plot_widget, dFFo_ens, idx_corrected_members, ensemble_timecourse)
     
     def update_ens_vis_coords(self):
         """
