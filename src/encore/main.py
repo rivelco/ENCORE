@@ -1458,7 +1458,7 @@ class MainWindow(QMainWindow):
         preview_data = self.data_stims
         if stims == 1:
             zeros_array = np.zeros_like(preview_data)
-            preview_data = np.row_stack((preview_data, zeros_array))
+            preview_data = np.vstack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("stims")
         stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
@@ -1481,7 +1481,7 @@ class MainWindow(QMainWindow):
         preview_data = self.data_cells
         if groups == 1:
             zeros_array = np.zeros_like(preview_data)
-            preview_data = np.row_stack((preview_data, zeros_array))
+            preview_data = np.vstack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         selectcell_labels = list(self.varlabels["selected_cell"].values()) if "selected_cell" in self.varlabels else []
         encore_plots.preview_dataset(plot_widget, preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
@@ -1503,7 +1503,7 @@ class MainWindow(QMainWindow):
         preview_data = self.data_behavior
         if behaviors == 1:
             zeros_array = np.zeros_like(preview_data)
-            preview_data = np.row_stack((preview_data, zeros_array))
+            preview_data = np.vstack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("behavior")
         behavior_labels = list(self.varlabels["behavior"].values()) if "behavior" in self.varlabels else []
