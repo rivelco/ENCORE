@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib.patches import Wedge
 import matplotlib.pyplot as plt
 
-def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
+def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[], xlim_start=0):
     """
     Runs a imshow plot in the plot_widget and applies the attributes specified in the arguments
 
@@ -30,7 +30,7 @@ def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', tit
         plot_widget.axes.set_title(title)
     plot_widget.axes.set_xlabel(xlabel)
     plot_widget.axes.set_ylabel(ylabel)
-    plot_widget.axes.set_xlim([0, t])
+    plot_widget.axes.set_xlim([xlim_start, t])
     plot_widget.axes.set_ylim([-0.5, n-0.5])
     num_user_labels = len(yitems_labels)
     if num_user_labels > 0:
