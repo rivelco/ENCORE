@@ -426,7 +426,7 @@ def enscomp_update_timelines(plot_widget, ticks, cell_activities, ensemble_dffo,
         if act_lenght > 0:
             if "Behav" in current_label:
                 cells_acts = cells_acts/np.max(cells_acts)
-                plot_widget.axes.plot(time_axis, cells_acts, color=colors[acts], alpha=1)
+                plot_widget.axes.plot(time_axis, cells_acts + acts, color=colors[acts], alpha=1)
                 stim_or_behav += 1
             else:
                 band_it = 0
