@@ -1086,6 +1086,15 @@ class MainWindow(QMainWindow):
                 run_button.setEnabled(needed_loaded)
     
     ## Validate the loaded data by the user
+    def safe_var_dimentions(self, var_name: str) -> tuple:
+        var = getattr(self, var_name)
+        if var.ndim == 1:
+            return (1, var.size)
+        elif var.ndim == 2:
+            return var.shape
+        else:
+            return (0, 0)
+        
     def validate_loaded_data(self):
         """
         Validates if the loaded data has consistency taken as reference the binary
@@ -1095,16 +1104,16 @@ class MainWindow(QMainWindow):
         """
         ref = ""
         if hasattr(self, 'data_neuronal_activity'):
-            self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+            self.cant_neurons, self.cant_timepoints = self.safe_var_dimentions("data_neuronal_activity")
             ref = "activity"
         elif hasattr(self, 'data_dFFo'):
-            self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
+            self.cant_neurons, self.cant_timepoints = self.safe_var_dimentions("data_dFFo")
             ref = "dFFo"
         else:
             return
             
         if hasattr(self, 'data_dFFo'):
-            neurons, timepoints = self.data_dFFo.shape
+            neurons, timepoints = self.safe_var_dimentions("data_dFFo")
             if neurons != self.cant_neurons:
                 self.update_console_log(f"The number of neurons in the dFFo does not match the {ref}, the dFFo will be descarted for now.", "warning")
                 self.clear_dFFo()
@@ -1112,17 +1121,17 @@ class MainWindow(QMainWindow):
                 self.update_console_log(f"The number of timepoints in the dFFo does not match the {ref}, the dFFo will be descarted for now.", "warning")
                 self.clear_dFFo()
         if hasattr(self, 'data_coordinates'):
-            neurons, dims = self.data_coordinates.shape
+            neurons, dims = self.safe_var_dimentions("data_coordinates")
             if neurons != self.cant_neurons:
                 self.update_console_log(f"The number of neurons in the coordinates does not match the {ref}, the coordinates will be descarted for now.", "warning")
                 self.clear_coordinates()
         if hasattr(self, 'data_stims'):
-            stims, timepoints = self.data_stims.shape
+            stims, timepoints = self.safe_var_dimentions("data_stims")
             if timepoints != self.cant_timepoints:
                 self.update_console_log(f"The number of timepoints in the stimulation does not match the {ref}, the stimulation will be descarted for now.", "warning")
                 self.clear_stims()
         if hasattr(self, 'data_cells'):
-            neurons, timepoints = self.data_cells.shape
+            neurons, timepoints = self.safe_var_dimentions("data_cells")
             if neurons != self.cant_neurons:
                 self.update_console_log(f"The number of neurons in the Cells does not match the {ref}, the Cells matrix will be descarted for now.", "warning")
                 self.clear_cells()
@@ -1130,7 +1139,7 @@ class MainWindow(QMainWindow):
                 self.update_console_log(f"The number of timepoints in the Cells does not match the {ref}, the Cells matrix will be descarted for now.", "warning")
                 self.clear_cells()
         if hasattr(self, 'data_behavior'):
-            behaviors, timepoints = self.data_behavior.shape
+            behaviors, timepoints = self.safe_var_dimentions("data_behavior")
             if timepoints != self.cant_timepoints:
                 self.update_console_log(f"The number of timepoints in the behavior does not match the {ref}, the behavior will be descarted for now.", "warning")
                 self.clear_behavior()
@@ -1147,7 +1156,7 @@ class MainWindow(QMainWindow):
         :return: None
         """
         self.data_dFFo = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
-        neus, frames = self.data_dFFo.shape
+        neus, frames = self.safe_var_dimentions("data_dFFo")
         self.btn_clear_dFFo.setEnabled(True)
         self.btn_view_dFFo.setEnabled(True)
         self.lbl_dffo_select.setText("Assigned")
@@ -1171,7 +1180,7 @@ class MainWindow(QMainWindow):
         if not validate_binary_matrix(self.data_neuronal_activity):
             self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
             self.data_neuronal_activity = (self.data_neuronal_activity >= 1.0).astype(np.int_)
-        self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+        self.cant_neurons, self.cant_timepoints = self.safe_var_dimentions("data_neuronal_activity")
         self.btn_clear_neuronal_activity.setEnabled(True)
         self.btn_view_neuronal_activity.setEnabled(True)
         self.lbl_neuronal_activity_select.setText("Assigned")
@@ -1193,7 +1202,7 @@ class MainWindow(QMainWindow):
         """
         data_coordinates = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_coordinates = data_coordinates[:, 0:2]
-        neus, dims = self.data_coordinates.shape
+        neus, dims = self.safe_var_dimentions("data_coordinates")
         self.btn_clear_coordinates.setEnabled(True)
         self.btn_view_coordinates.setEnabled(True)
         self.lbl_coordinates_select.setText("Assigned")
@@ -1217,7 +1226,7 @@ class MainWindow(QMainWindow):
             self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
             data_stims = (data_stims >= 1.0).astype(np.int_)
         self.data_stims = data_stims
-        stims, timepoints = data_stims.shape
+        stims, timepoints = self.safe_var_dimentions("data_stims")
         self.btn_clear_stim.setEnabled(True)
         self.btn_view_stim.setEnabled(True)
         self.lbl_stim_select.setText("Assigned")
@@ -1241,7 +1250,7 @@ class MainWindow(QMainWindow):
             self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
             data_cells = (data_cells >= 1.0).astype(np.int_)
         self.data_cells = data_cells
-        stims, cells = data_cells.shape
+        stims, cells = self.safe_var_dimentions("data_cells")
         self.btn_clear_cells.setEnabled(True)
         self.btn_view_cells.setEnabled(True)
         self.lbl_cells_select.setText("Assigned")
@@ -1262,12 +1271,7 @@ class MainWindow(QMainWindow):
         """
         data_behavior = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_behavior = data_behavior
-        behav_shape = data_behavior.shape
-        if len(behav_shape) > 1:
-            behaviors, timepoints = data_behavior.shape
-        else:
-            timepoints = data_behavior.shape[0]
-            behaviors = 1
+        behaviors, timepoints = self.safe_var_dimentions("data_behavior")
         self.btn_clear_behavior.setEnabled(True)
         self.btn_view_behavior.setEnabled(True)
         self.lbl_behavior_select.setText("Assigned")
@@ -1395,11 +1399,12 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "dFFo"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_dFFo.shape[1], lim_sup_y=self.data_dFFo.shape[0])
+        neurons, timepoints = self.safe_var_dimentions("data_dFFo")
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=neurons)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
         encore_plots.preview_dataset(plot_widget, self.data_dFFo, ylabel='Cell', yitems_labels=cell_labels)
-        self.varlabels_setup_tab(self.data_dFFo.shape[0])
+        self.varlabels_setup_tab(neurons)
     def view_neuronal_activity(self):
         """
         Displays the data saved in the :attr:`MainWindow.data_neuronal_activity` variable.
@@ -1412,11 +1417,12 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "neuronal_activity"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_neuronal_activity.shape[1], lim_sup_y=self.data_neuronal_activity.shape[0])
+        neurons, timepoints = self.safe_var_dimentions("data_neuronal_activity")
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=neurons)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
         encore_plots.preview_dataset(plot_widget, self.data_neuronal_activity==0, ylabel='Cell', cmap='gray', yitems_labels=cell_labels)
-        self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
+        self.varlabels_setup_tab(neurons)
     def view_coordinates(self):
         """
         Displays the data saved in the :attr:`MainWindow.data_coordinates` variable.
@@ -1445,10 +1451,11 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0], yl="stims")
+        stims, timepoints = self.safe_var_dimentions("data_stims")
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=stims, yl="stims")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_stims
-        if len(preview_data.shape) == 1:
+        if stims == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
@@ -1467,10 +1474,11 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "cells"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_cells.shape[1], lim_sup_y=self.data_cells.shape[0])
+        groups, cells = self.safe_var_dimentions("data_cells")
+        self.update_edit_validators(lim_sup_x=cells, lim_sup_y=groups)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_cells
-        if len(preview_data.shape) == 1:
+        if groups == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
@@ -1488,15 +1496,11 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
-        if len(self.data_behavior.shape) > 1:
-            behaviors, timepoints = self.data_behavior.shape
-        else:
-            timepoints = self.data_behavior.shape[0]
-            behaviors = 1
+        behaviors, timepoints = self.safe_var_dimentions("data_behavior")
         self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=behaviors, yl="behavs")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
-        if len(preview_data.shape) == 1:
+        if behaviors == 1:
             zeros_array = np.zeros_like(preview_data)
             preview_data = np.row_stack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
