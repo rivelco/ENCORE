@@ -489,7 +489,7 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
         
         time_projection = np.array(answer["time_projection"])
         ## Identify the significative values to binarize the matrix
-        threshold = 1.96    # p < 0.05 for the z-score
+        threshold = pars_validated['threshold_for_p_value']  # 1.96 to p < 0.05 for the z-score
         binary_assembly_templates = np.zeros(assembly_templates.shape)
         for a_idx, assembly in enumerate(assembly_templates):
             z_scores = stats.zscore(assembly)

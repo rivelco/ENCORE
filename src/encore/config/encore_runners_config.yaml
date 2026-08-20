@@ -282,6 +282,16 @@ encore_runners:
         default_value: 500
         min_value: 0
         max_value: MAX_VAL
+      threshold_for_p_value:
+        object_name: threshold_for_p_value
+        display_name: Threshold for neurons in ensembles
+        description: | 
+          Identify the significative values to binarize the z-score weight matrix.
+          This selects the neurons in each ensemble
+          A value of 1.96 equals a 0.05 p value.
+        default_value: 1.96
+        min_value: 0.001
+        max_value: 2.000
         
     figures:
       - name: ica_plot_assemblys_heatmap
