@@ -238,6 +238,26 @@ encore_runners:
         default_value: 20
         min_value: 0
         max_value: MAX_VAL
+      min_ensembles_cant:
+        object_name: ica_edit_min_ensembles_cant
+        display_name: Minimum number of ensembles
+        description: |
+          Set a minimum number of ensembles.
+          Use 0 for to remove the limit.
+          This may override the result from the shuffling algorithms.
+        default_value: 0
+        min_value: 0
+        max_value: MAX_VAL
+      max_ensembles_cant:
+        object_name: ica_edit_max_ensembles_cant
+        display_name: Maximum number of ensembles
+        description: |
+          Set a maximum number of ensembles.
+          Use 0 for to remove the limit.
+          This may override the result from the shuffling algorithms.
+        default_value: 0
+        min_value: 0
+        max_value: MAX_VAL
       patterns_method:
         object_name: ica_radio_method
         display_name: Method to extract the ensemble's activity

@@ -414,9 +414,11 @@ def run_ica(input_data, parameters, code_folder_name='Cell-Assembly-Detection', 
     
     parameters_reformatted = {
         "threshold": {
-            "method": pars_validated['threshold_method'],
-            "permutations_percentile": pars_validated['permutations_percentile'],
-            "number_of_permutations": pars_validated['number_of_permutations'],
+            "method": pars_validated["threshold_method"],
+            "permutations_percentile": pars_validated["permutations_percentile"],
+            "number_of_permutations": pars_validated["number_of_permutations"],
+            "min_ensembles_cant": pars_validated["min_ensembles_cant"],
+            "max_ensembles_cant": pars_validated["max_ensembles_cant"],
         },
         "Patterns": {
             "method": pars_validated['patterns_method'],

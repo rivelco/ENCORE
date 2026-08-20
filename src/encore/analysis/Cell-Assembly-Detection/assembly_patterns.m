@@ -94,6 +94,15 @@ switch opts.threshold.method
 end
 NumberOfAssemblies = sum(eigenvalues>lambda_max);
 fprintf(['Number of assemblies detected: ' num2str(NumberOfAssemblies) '\n'])
+
+if (opts.threshold.min_ensembles_cant > 0) && (NumberOfAssemblies < opts.threshold.min_ensembles_cant)
+    NumberOfAssemblies = opts.threshold.min_ensembles_cant;
+    fprintf(['Number of assemblies set to: ' num2str(NumberOfAssemblies) ' by min boundary.\n'])
+elseif (opts.threshold.max_ensembles_cant > 0) && (NumberOfAssemblies > opts.threshold.max_ensembles_cant)
+    NumberOfAssemblies = opts.threshold.max_ensembles_cant;
+    fprintf(['Number of assemblies set to: ' num2str(NumberOfAssemblies) ' by max boundary.\n'])
+end
+
 if NumberOfAssemblies<1
     AssemblyTemplates=[];
     return
