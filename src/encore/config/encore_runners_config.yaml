@@ -232,12 +232,14 @@ encore_runners:
         max_value: MAX_VAL
         
     figures:
+      - name: ica_plot_assemblys_heatmap
+        display_name: Weight of neurons in ensembles
+      - name: ica_plot_binary_patterns
+        display_name: Neurons in ensembles
       - name: ica_plot_assemblys
         display_name: Assembly patterns
       - name: ica_plot_activity
         display_name: Activity of cells assemblies
-      - name: ica_plot_binary_patterns
-        display_name: Binary assembly patterns
       - name: ica_plot_binary_assemblies
         display_name: Binary cell assemblies
       

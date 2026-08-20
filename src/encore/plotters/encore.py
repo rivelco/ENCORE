@@ -160,13 +160,37 @@ def plot_ica(figures, answer):
     :rtype: None
     """
     # Plot the assembly templates
-    plot_widget = figures.get('ica_plot_assemblys')
+    plot_widget = figures.get("ica_plot_assemblys")
     if plot_widget:
-        plot_widget.set_subplots(answer['assembly_templates'].shape[0], 1)
-        total_assemblies = answer['assembly_templates'].shape[0]
-        for e_idx, ens in enumerate(answer['assembly_templates']):
-            plot_xaxis = e_idx == total_assemblies-1
-            encore_plots.plot_assembly_patterns(plot_widget, ens, e_idx, title=f"Ensemble {e_idx+1}", plot_xaxis=plot_xaxis)
+        total_assemblies = answer["assembly_templates"].shape[0]
+        plot_widget.canvas.setFixedHeight(150 * total_assemblies)
+        plot_widget.set_subplots(total_assemblies, 1)
+        for e_idx, ens in enumerate(answer["assembly_templates"]):
+            plot_xaxis = e_idx == total_assemblies - 1
+            encore_plots.plot_assembly_patterns(
+                plot_widget,
+                ens,
+                e_idx,
+                title=f"Ensemble {e_idx+1}",
+                plot_xaxis=plot_xaxis,
+            )
+
+    # Plot the assembly templates as heatmap
+    plot_widget = figures.get("ica_plot_assemblys_heatmap")
+    if plot_widget:
+        assembly_templates = answer["assembly_templates"]
+        z_score_mat = np.zeros(assembly_templates.shape)
+        for a_idx, assembly in enumerate(assembly_templates):
+            z_score_mat[a_idx, :] = stats.zscore(assembly)
+        encore_plots.preview_dataset(
+            plot_widget,
+            z_score_mat,
+            xlabel="Cell",
+            ylabel="Ensemble",
+            cmap="jet",
+            aspect="auto",
+            xlim_start=-1,
+        )
 
     # Plot the time projection
     plot_widget = figures.get('ica_plot_activity')
@@ -176,7 +200,13 @@ def plot_ica(figures, answer):
     # Plot binary assembly templates
     plot_widget = figures.get('ica_plot_binary_patterns')
     if plot_widget:
-        encore_plots.plot_ensembles_timecourse(plot_widget, answer['binary_assembly_templates'], xlabel="Cell")
+        encore_plots.preview_dataset(
+            plot_widget,
+            answer["binary_assembly_templates"],
+            xlabel="Cell",
+            ylabel="Ensemble",
+            xlim_start=-1,
+        )
 
     plot_widget = figures.get('ica_plot_binary_assemblies')
     if plot_widget:
