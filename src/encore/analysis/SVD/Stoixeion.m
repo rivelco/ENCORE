@@ -188,9 +188,9 @@ sec_Pk_frames = sum(C_edos_temp,2);
 % disp("Time course saved.")
 
 % print detected cycles
-if cycles_search
-    [Ciclos_nums,Ciclos_H_E] = CyFolds(sec_Pk_edos_Ren);
-end
+% if cycles_search
+%    [Ciclos_nums,Ciclos_H_E] = CyFolds(sec_Pk_edos_Ren);
+% end
 
 % find most significant cells for each state
 % csi_num_temp: columns indicate neuron members of each state
