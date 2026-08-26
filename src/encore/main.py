@@ -1088,6 +1088,14 @@ class MainWindow(QMainWindow):
     
     ## Validate the loaded data by the user
     def safe_var_dimentions(self, var_name: str) -> tuple:
+        """Returns the dimentions of a matrix in a safe way.
+        Used to identify 2D matrix and handle 1D vectors as well.
+
+        :param var_name: Name of the variable in the self object.
+        :type var_name: str
+        :return: Tuple with the dimentions (x, y) of the variable.
+        :rtype: tuple
+        """
         var = getattr(self, var_name)
         if var.ndim == 1:
             return (1, var.size)

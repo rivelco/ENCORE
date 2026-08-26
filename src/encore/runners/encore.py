@@ -825,7 +825,7 @@ def run_sgc(
     the results in the standard for ENCORE.
 
     :param input_data: Dict mapping variable name and data matrix provided by the pipeline.
-        This function expects only the key 'data_dFFo' with binary neuronal activity.
+        This function expects only the key 'data_dFFo' with fluorescence neuronal activity.
         Available variables are 'data_neuronal_activity', 'data_dFFo', 'data_coordinates'
         'data_stims', 'data_cells', 'data_behavior'.
         Each variable is expected to contain numpy matrix with shape ``(items, timepoints)``.
