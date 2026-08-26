@@ -6,7 +6,7 @@ System requirements
 
 The GUI is very low resource demanding. It is advisable to run it in a screen at least 1170 x 660 pixels to see all the buttons clearly. Full HD screens (1920 x 1080) or above are recommended. For the system requirements it is recommended a modern CPU and at least 16Gb of RAM. This for agile tuning and execution of the analysis.
 
-This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI and the included analysis.
+This specs, while recommended, are not mandatory. If you can run MATLAB 2020A then you can run this GUI and the included analyses.
 
 Platform compatibility
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -50,7 +50,7 @@ Needed dependencies
 
 The general requirements are MATLAB and Python. The limiting factor here is the communication between those two. Because Python is easier to install, I recommend installing the most recent version of python that your MATLAB installation can communicate with. Check `the MATLAB site <https://www.mathworks.com/support/requirements/python-compatibility.html>`_ for the versions of Python that are compatible with MATLAB.
 
-Here we are going to be using Python 3.10, which is compatible with MATLAB R2022b and above.
+Here we will be using Python 3.10, which is compatible with MATLAB R2022b and above.
 
 .. seealso::
     Python 3.9 is compatible with MATLAB from R2021b to R2024b.

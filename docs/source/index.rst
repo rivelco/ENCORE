@@ -49,7 +49,7 @@ If you are new to ENCORE, start here:
 
 - :doc:`quickstart`
 - :doc:`installation`
-- :doc:`user_guide/usage`
+- :doc:`user_guide/usage_gui`
 
 Conceptual Background
 ---------------------
@@ -72,10 +72,12 @@ structure of ENCORE and its main components:
 - :doc:`api/validators/index`
 - :doc:`api/utils`
 
-Running batch analyses
-----------------------
+Advanced use
+------------
 
+- :doc:`extending/usage_api`
 - :doc:`extending/running_batch_analyses`
+- :doc:`extending/parallel_databases_api`
 
 Adding New Algorithms
 ---------------------
@@ -93,8 +95,20 @@ Contents
 
    quickstart
    installation
-   user_guide/usage
-   acknowledgments
+   user_guide/usage_gui
+   results/gui_results
+   upgrading
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Advanced use
+
+   extending/algorithms_config_file
+   extending/usage_api
+   extending/running_batch_analyses
+   extending/parallel_databases_api
+   extending/adding_algorithms
+   changelog
 
 .. toctree::
    :maxdepth: 2
@@ -102,6 +116,7 @@ Contents
 
    api/main_window
    api/runners
+   api/parallel_runners
    api/data/index
    api/plotters/index
    api/validators/index
@@ -109,13 +124,7 @@ Contents
 
 .. toctree::
    :maxdepth: 2
-   :caption: Advanced use
-
-   extending/adding_algorithms
-   extending/running_batch_analyses
-
-.. toctree::
-   :maxdepth: 2
    :caption: Conceptual background
 
    concepts/overview
+   acknowledgments

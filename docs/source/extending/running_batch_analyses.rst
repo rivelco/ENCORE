@@ -5,6 +5,14 @@ In addition to the graphical interface, ENCORE provides a Python API that allows
 
 The example below demonstrates how to organize multiple datasets and parameter sets, run the same algorithm across them, and collect the results in a structured dictionary. This approach enables reproducible analyses and facilitates downstream comparison across datasets or parameter configurations.
 
+.. seealso::
+
+    This example uses the Python API to analyze sequentially different databases. Read :doc:`/extending/usage_api` for a better understanding on the Python API.
+
+.. seealso::
+
+    To analyze databases in parallel read :doc:`/extending/parallel_databases_api`
+
 Simple batch analysis script
 ----------------------------
 
