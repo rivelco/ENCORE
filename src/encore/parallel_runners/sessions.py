@@ -1,21 +1,38 @@
-import os
 import numpy as np
-from pathlib import Path
+import importlib.metadata
+from datetime import datetime
 from concurrent.futures import ProcessPoolExecutor, as_completed
-
-from encore.runners.encore import (
-    run_svd,
-    run_ica,
-    run_pca,
-    run_sgc,
-    run_x2p,
-    run_example,
-)
-from encore.data.save_data import save_data_to_hdf5_file
 from encore.utils.metrics import compute_similarity_matrix
 
 
-def run_single_session(args):
+def run_single_session(
+    args: tuple[str, str, dict[str, np.ndarray], dict[str, str], dict, bool, list[str]],
+) -> tuple[str, dict, dict]:
+    """
+    Auxiliary function to identify the algorithm to run, organize the user's data and
+    organize the result for this run.
+    This is an internal function expected to be used only by
+    :meth:`encore.parallel_runners.sessions.run_parallel_sessions`
+    Every worker uses this function.
+
+    :param args: Tuple with the arguments for the runner. This is:
+        **algorithm**: str, The 3-chars name of the algorithm, e.g. 'ica', 'svd', 'pca', 'sgc', 'x2p'
+        **database_name**: str, The name of the database used. This is to reference asynchronously the results
+        with the correct database.
+        **database_data**: dict[str, np.ndarray], The data for the analysis.
+        **data_names**: dict[str, str], The names of the API variables.
+        **parameters**: dict, The dictionary with the parameters for the algorithm.
+        **eval_similarity**: bool, whether or not to perform the evaluation of similarities.
+        **similarity_elements**: list[str], List with the names of the variables to compute similarities with.
+    :type args: tuple[str, str, dict[str, np.ndarray], dict[str, str], dict, bool, list[str]]
+    :raises RuntimeError: If the selected algorithm is not known.
+    :return: Tuple with the results of the run. This is:
+        **database_name**: str, the name of the database as it was received
+        **parameters**: dict, the parameters for the algorithm
+        **result**: dict, contains the fields
+        "success": bool, "results": dict, "similarity": dict, "similarity_labels": list[str],
+    :rtype: tuple[str, dict, dict]
+    """
     algorithm = args[0]
     database_name = args[1]
     database_data = args[2]
@@ -33,55 +50,35 @@ def run_single_session(args):
     # Run algorithm
     output = {"success": False}
     try:
-        if algorithm == "svd":
-            output = run_svd(
-                data,
-                parameters,
-                include_answer=False,
-            )
-        elif algorithm == "ica":
-            output = run_ica(
-                data,
-                parameters,
-                include_answer=False,
-            )
-        elif algorithm == "x2p":
-            output = run_x2p(
-                data,
-                parameters,
-                include_answer=False,
-            )
-        elif algorithm == "pca":
-            output = run_pca(
-                data,
-                parameters,
-                include_answer=False,
-            )
-        elif algorithm == "sgc":
-            output = run_sgc(
-                data,
-                parameters,
-                include_answer=False,
-            )
-        elif algorithm == "example":
-            output = run_example(
-                data,
-                parameters,
-                include_answer=False,
-            )
-        else:
+        # Dynamic load of the module and function
+        module_path = "encore.runners.encore"
+        module = importlib.import_module(module_path)
+        function_name = f"run_{algorithm}"
+        func = getattr(module, function_name, None)
+        
+        if func is None or not callable(func):
             raise RuntimeError(f"The specified algorithm {algorithm} is not defined.")
+        
+        output = func(
+            data,
+            parameters,
+            include_answer=False,
+        )
     except Exception as exc:
         print(f"Error for db {database_name}: ", exc)
 
     # Failed run
     if not output["success"]:
-        return database_name, parameters, {
-            "success": False,
-            "results": None,
-            "similarity": None,
-            "similarity_labels": None,
-        }
+        return (
+            database_name,
+            parameters,
+            {
+                "success": False,
+                "results": None,
+                "similarity": None,
+                "similarity_labels": None,
+            },
+        )
 
     # Compute similarity
     similarities = {}
@@ -99,7 +96,9 @@ def run_single_session(args):
             for element in similarity_elements:
                 # Look for the labels, like "orientation_labels"
                 label_name = f"{element}_labels"
-                element_labels = database_data.get(label_name, [])
+                element_labels = database_data.get(
+                    label_name, list(range(database_data[element].shape[0]))
+                )
                 # Append each new label for each element like "ori 90"
                 compare_labels.extend(f"{label_name[0:3]} {i}" for i in element_labels)
 
@@ -130,19 +129,69 @@ def run_single_session(args):
 def run_parallel_sessions(
     data: dict[str, dict[str, np.ndarray]],
     parameters: dict[str, dict],
-    output_folder: Path,
     max_workers_cant: int,
-    file_name="sessions_batch_results.h5",
     default_key="default",
 ):
+    """
+    Run ensembles identification algorithms in parallel for different databases.
+    The parameters for the analysis can be defined for each database or use a default one
+    as a fallback.
 
-    # Make sure the output folder exists
-    os.makedirs(output_folder, exist_ok=True)
+    :param data: Dictionary containing the data for each database.
+        The keys for the first dictionary is a string with the name or ID or the database.
+        Each value at this level contains a dictionary with the data of that database.
+        In this dictionary each key is a specific identifier for a numpy array containing experimental data,
+        e.g. matrix of spikes, fluorescence traces, stimulation, behavior.
+        You can use any name for these variables.
+    :type data: dict[str, dict[str, np.ndarray]]
+    :param parameters: Dictionary where each key is the ID of a database or a fallback name.
+        The dictionary inside should contain the keys:
+        - "analysis", with the 3-letter name of the algorithm to use.
+        - "data_names", This is a dict[str, str] The keys should be one the name of the variables used by the algorithm,
+        e.g "data_neuronal_activity", "data_dFFo" and the value is the name of that variable in the `data` parameter.
+        - "parameters" with another dictionary with the parameters for that specific algorithm, as used by the API.
+        - "evaluate_similarity", a bool variable to evaluate similarity metrics between results/data
+        - "similarity_elements", a list of strings, each string is the key of variables in `data`. When `evaluate_similarity`
+        is True, the batch processing will also calculate the similarity between the ensembles timecourse and this other variables, so
+        these variables should be of the same length as the recording. This is useful to evaluate the performance of each
+        algorithm in every database.
+    :type parameters: dict[str, dict]
+    :param max_workers_cant: Number of workers to use for parallel processing.
+    :type max_workers_cant: int
+    :param default_key: Specific key of the fallback parameter key. These set of parameters
+        will be used for any database that is not explicitly in the keys of the `parameters` argument. Defaults to "default".
+    :type default_key: str, optional
 
-    print(f"\n{'=' * 70}\n" f"Running batch session analysis\n" f"{'=' * 70}")
+    :return: Dictionary with the results of the batch analyses. Contains the following keys.
+            **info**: dict[str, str], the date and version information of the analyzer
+            **parameters**: dict, The parameters used for the entire batch analysis.
+            This is a copy of the parameters passed by the user to the function.
+            **parameters_used**: dict, each key is the name of each database, contains the batch parameters used
+            by this database. If it used the default parameters then it's a copy of its contents.
+            **results**: dict, each key is the name of each database. Contains the minimal results of the ensembles algorithm
+            The matrix of similarity and the labels of each similarity matrix and a flag of success for the algorithm.
+    :rtype: dict[str, dict]
+
+    :raises RuntimeError: If no fallback parameter is assigned and a database was not in the `parameters` keys.
+    """
+
+    print(
+        f"\n{'=' * 70}\n" f" ENCORE: Running parallel session analysis\n" f"{'=' * 70}"
+    )
+
+    # Define the results info
+    now = datetime.now()
+    formatted_time = now.strftime("%d%m%y_%H%M%S")
+    encore_version = str(importlib.metadata.version("encore-toolkit"))
+    run_information = {
+        "analyzer": "ENCORE Parallel Sessions API",
+        "date": formatted_time,
+        "ENCORE_version": encore_version,
+    }
 
     # Define results
     results = {
+        "info": run_information,
         "parameters": parameters,
         "parameters_used": {},
         "results": {},
@@ -158,7 +207,7 @@ def run_parallel_sessions(
             parameters_set = parameters[default_key]
         else:
             raise RuntimeError(
-                f"No default parameters under key '{default_key}' set and those were needed."
+                f"No default parameters under key '{default_key}' set and it was needed."
             )
 
         results["parameters_used"][database_name] = parameters_set
@@ -192,11 +241,5 @@ def run_parallel_sessions(
             except Exception as exc:
                 print(f"[{completed}/{len(futures)}] " f"ERROR: {exc}")
 
-    # Save results
-    print("\n++++++++ Saving databases results file ++++++++")
-    file_name = f"{file_name}.h5" if not file_name.endswith(".h5") else file_name
-    result_path = output_folder / file_name
-    print(f"   -> Destination: {result_path}")
-    save_data_to_hdf5_file(result_path, results)
-
     print("     - Done with databases.")
+    return results
