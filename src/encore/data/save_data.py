@@ -1,9 +1,10 @@
 import h5py
 import numpy as np
 from pathlib import Path
+from typing import Union
 
 
-def save_dict_to_hdf5(group: h5py.Group, data: dict | list | int | float | str | np.ndarray):
+def save_dict_to_hdf5(group: h5py.Group, data: Union[dict, list, int, float, str, np.ndarray]):
     """
     Recursively saves data to an HDF5 file group.
 

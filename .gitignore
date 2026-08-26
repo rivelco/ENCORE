@@ -25,4 +25,6 @@ encore_toolkit.egg-info/
 
 *.cpython-310.pyc
 
+*.cpython-39.pyc
+
 dist/

@@ -2,6 +2,7 @@ import time
 import os
 import numpy as np
 import scipy.stats as stats
+from typing import Union
 
 try:
     from importlib.resources import files
@@ -15,7 +16,7 @@ from encore.validators.algorithm_inputs import simple_validate
 
 def run_svd(
     input_data, parameters, code_folder_name="SVD", include_answer=True, logger=None
-) -> dict[str, dict | None]:
+) -> dict[str, Union[dict, None]]:
     """
     Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data.
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
@@ -222,7 +223,7 @@ def run_pca(
     code_folder_name="NeuralEnsembles",
     include_answer=True,
     logger=None,
-) -> dict[str, dict | None]:
+) -> dict[str, Union[dict, None]]:
     """
     Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data.
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
@@ -387,7 +388,7 @@ def run_ica(
     code_folder_name="Cell-Assembly-Detection",
     include_answer=True,
     logger=None,
-) -> dict[str, dict | None]:
+) -> dict[str, Union[dict, None]]:
     """
     Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data.
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
@@ -614,7 +615,7 @@ def run_x2p(
     code_folder_name="Xsembles2P",
     include_answer=True,
     logger=None,
-) -> dict[str, dict | None]:
+) -> dict[str, Union[dict, None]]:
     """
     Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data.
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
@@ -818,7 +819,7 @@ def run_x2p(
 
 def run_sgc(
     input_data, parameters, code_folder_name="SGC", include_answer=True, logger=None
-) -> dict[str, dict | None]:
+) -> dict[str, Union[dict, None]]:
     """
     Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data.
     This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
@@ -1030,7 +1031,7 @@ def run_example(
     code_folder_name="",
     include_answer=True,
     logger=None,
-) -> dict[str, dict]:
+) -> dict[str, Union[dict, None]]:
     """
     Run the example algorithm and generate dummy results for GUI integration.
 
