@@ -15,6 +15,10 @@ Each runner implements a complete analysis workflow, including:
 - Execution
 - Result formatting
 
+.. seealso::
+
+   For a better understanding on how to use the API check out :doc:`/extending/usage_api`
+
 Module Reference
 ----------------
 

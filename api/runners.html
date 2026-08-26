@@ -3,14 +3,15 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Data Handling" href="data/index.html" /><link rel="prev" title="Main Window (GUI)" href="main_window.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Parallel Runners" href="parallel_runners.html" /><link rel="prev" title="Main Window (GUI)" href="main_window.html" />
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Analysis Runners - ENCORE 2.1.0 documentation</title>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>Analysis Runners - ENCORE 3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=7d770933" />
     
     
 
@@ -25,16 +26,16 @@
   }
   @media not print {
     body[data-theme="dark"] {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
-        --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
@@ -173,7 +174,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">ENCORE 2.1.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">ENCORE 3.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -200,7 +201,7 @@
     <img class="sidebar-logo" src="../_static/ENCORE_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ENCORE 2.1.0 documentation</span>
+  <span class="sidebar-brand-text">ENCORE 3.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,16 +213,27 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/usage_gui.html">GUI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/gui_results.html">GUI Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrading.html">Upgrading</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extending/algorithms_config_file.html">Algorithms configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/usage_api.html">Python API Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="main_window.html">Main Window (GUI)</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Analysis Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel_runners.html">Parallel Runners</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="data/assign_data.html">Assign data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data/load_data.html">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/save_data.html">Save data</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -239,14 +251,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">Utility functions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Conceptual background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
 </ul>
 
 </div>
@@ -306,11 +314,15 @@
 <li><p>Execution</p></li>
 <li><p>Result formatting</p></li>
 </ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For a better understanding on how to use the API check out <a class="reference internal" href="../extending/usage_api.html"><span class="doc">Python API Usage</span></a></p>
+</div>
 <section id="module-encore.runners.encore">
 <span id="module-reference"></span><h2>Module Reference<a class="headerlink" href="#module-encore.runners.encore" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="encore.runners.encore.run_example">
-<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.runners.encore.run_example" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_example</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.runners.encore.run_example" title="Link to this definition">¶</a></dt>
 <dd><p>Run the example algorithm and generate dummy results for GUI integration.</p>
 <p>This function serves as a reference implementation for new algorithms
 integrated into the ENCORE framework. It demonstrates the expected structure,
@@ -328,7 +340,7 @@ new runners.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline. 
+<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline.
 This example expects two keys ‘data_neuronal_activity’ and ‘data_dFFo’.
 Available variables are ‘data_neuronal_activity’, ‘data_dFFo’, ‘data_coordinates’
 ‘data_stims’, ‘data_cells’, ‘data_behavior’.
@@ -339,7 +351,7 @@ file and set via the GUI.</p></li>
 bookkeeping or logging).</p></li>
 <li><p><strong>include_answer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include the <code class="docutils literal notranslate"><span class="pre">answer</span></code> field in the output,
 used for plotting example figures.</p></li>
-<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution. 
+<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution.
 This function should receive two strings as parameters, just like <cite>main.MainWindow.update_console_log</cite>.
 This function should receive two strings, the first one has the message and the second one the level.
 Defaults to None.</p></li>
@@ -357,24 +369,24 @@ parameters, execution time, and success status.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="encore.runners.encore.run_ica">
-<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_ica</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cell-Assembly-Detection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.runners.encore.run_ica" title="Link to this definition">¶</a></dt>
-<dd><p>Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data. 
-This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_ica</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Cell-Assembly-Detection'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.runners.encore.run_ica" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the ICA algorithm on neural activity data.
+This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
 the results in the standard for ENCORE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline. 
+<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline.
 This function expects only the key ‘data_neuronal_activity’ with binary neuronal activity.
 Available variables are ‘data_neuronal_activity’, ‘data_dFFo’, ‘data_coordinates’
 ‘data_stims’, ‘data_cells’, ‘data_behavior’.
 Each variable is expected to contain numpy matrix with shape <code class="docutils literal notranslate"><span class="pre">(items,</span> <span class="pre">timepoints)</span></code>.</p></li>
 <li><p><strong>parameters</strong> (<em>dict</em>) – Dictionary with parameters for the ICA algorithm.</p></li>
 <li><p><strong>code_folder_name</strong> (<em>str</em><em>, </em><em>optional</em>) – String with the name of the folder inside <cite>src/analysis</cite> that contains
-the MATLAB code for this function. This value must be specified in the YAML config file. 
+the MATLAB code for this function. This value must be specified in the YAML config file.
 Defaults to ‘Cell-Assembly-Detection’</p></li>
 <li><p><strong>include_answer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to indicate wether or not the original full answer of the algorithm. Defaults to True</p></li>
-<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution. 
+<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution.
 This function should receive two strings as parameters, just like <cite>main.MainWindow.update_console_log</cite>.
 This function should receive two strings, the first one has the message and the second one the level.
 Defaults to None.</p></li>
@@ -391,24 +403,24 @@ Defaults to None.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="encore.runners.encore.run_pca">
-<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NeuralEnsembles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.runners.encore.run_pca" title="Link to this definition">¶</a></dt>
-<dd><p>Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data. 
-This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_pca</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NeuralEnsembles'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.runners.encore.run_pca" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the PCA algorithm on neural activity data.
+This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
 the results in the standard for ENCORE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline. 
+<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline.
 This function expects only the key ‘data_neuronal_activity’ with binary neuronal activity.
 Available variables are ‘data_neuronal_activity’, ‘data_dFFo’, ‘data_coordinates’
 ‘data_stims’, ‘data_cells’, ‘data_behavior’.
 Each variable is expected to contain numpy matrix with shape <code class="docutils literal notranslate"><span class="pre">(items,</span> <span class="pre">timepoints)</span></code>.</p></li>
 <li><p><strong>parameters</strong> (<em>dict</em>) – Dictionary with parameters for the PCA algorithm.</p></li>
 <li><p><strong>code_folder_name</strong> (<em>str</em><em>, </em><em>optional</em>) – String with the name of the folder inside <cite>src/analysis</cite> that contains
-the MATLAB code for this function. This value must be specified in the YAML config file. 
+the MATLAB code for this function. This value must be specified in the YAML config file.
 Defaults to ‘NeuralEnsembles’</p></li>
 <li><p><strong>include_answer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to indicate wether or not the original full answer of the algorithm. Defaults to True</p></li>
-<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution. 
+<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution.
 This function should receive two strings as parameters, just like <cite>main.MainWindow.update_console_log</cite>.
 This function should receive two strings, the first one has the message and the second one the level.
 Defaults to None.</p></li>
@@ -425,24 +437,24 @@ Defaults to None.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="encore.runners.encore.run_sgc">
-<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_sgc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SGC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.runners.encore.run_sgc" title="Link to this definition">¶</a></dt>
-<dd><p>Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data. 
-This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_sgc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SGC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.runners.encore.run_sgc" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the SGC algorithm on neural activity data.
+This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
 the results in the standard for ENCORE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline. 
-This function expects only the key ‘data_dFFo’ with binary neuronal activity.
+<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline.
+This function expects only the key ‘data_dFFo’ with fluorescence neuronal activity.
 Available variables are ‘data_neuronal_activity’, ‘data_dFFo’, ‘data_coordinates’
 ‘data_stims’, ‘data_cells’, ‘data_behavior’.
 Each variable is expected to contain numpy matrix with shape <code class="docutils literal notranslate"><span class="pre">(items,</span> <span class="pre">timepoints)</span></code>.</p></li>
 <li><p><strong>parameters</strong> (<em>dict</em>) – Dictionary with parameters for the SGC algorithm.</p></li>
 <li><p><strong>code_folder_name</strong> (<em>str</em><em>, </em><em>optional</em>) – String with the name of the folder inside <cite>src/analysis</cite> that contains
-the MATLAB code for this function. This value must be specified in the YAML config file. 
+the MATLAB code for this function. This value must be specified in the YAML config file.
 Defaults to ‘SGC’</p></li>
 <li><p><strong>include_answer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to indicate wether or not the original full answer of the algorithm. Defaults to True</p></li>
-<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution. 
+<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution.
 This function should receive two strings as parameters, just like <cite>main.MainWindow.update_console_log</cite>.
 This function should receive two strings, the first one has the message and the second one the level.
 Defaults to None.</p></li>
@@ -459,9 +471,9 @@ Defaults to None.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="encore.runners.encore.run_svd">
-<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SVD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.runners.encore.run_svd" title="Link to this definition">¶</a></dt>
-<dd><p>Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data. 
-This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'SVD'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.runners.encore.run_svd" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the SVD algorithm on neural activity data.
+This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
 the results in the standard for ENCORE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -473,10 +485,10 @@ Available variables are ‘data_neuronal_activity’, ‘data_dFFo’, ‘data_c
 Each variable is expected to contain numpy matrix with shape <code class="docutils literal notranslate"><span class="pre">(items,</span> <span class="pre">timepoints)</span></code>.</p></li>
 <li><p><strong>parameters</strong> (<em>dict</em>) – Dictionary with parameters for the SVD algorithm.</p></li>
 <li><p><strong>code_folder_name</strong> (<em>str</em><em>, </em><em>optional</em>) – String with the name of the folder inside <cite>src/analysis</cite> that contains
-the MATLAB code for this function. This value must be specified in the YAML config file. 
+the MATLAB code for this function. This value must be specified in the YAML config file.
 Defaults to ‘SVD’</p></li>
 <li><p><strong>include_answer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to indicate wether or not the original full answer of the algorithm. Defaults to True</p></li>
-<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution. 
+<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution.
 This function should receive two strings as parameters, just like <cite>main.MainWindow.update_console_log</cite>.
 This function should receive two strings, the first one has the message and the second one the level.
 Defaults to None.</p></li>
@@ -493,24 +505,24 @@ Defaults to None.</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="encore.runners.encore.run_x2p">
-<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_x2p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Xsembles2P'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.runners.encore.run_x2p" title="Link to this definition">¶</a></dt>
-<dd><p>Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data. 
-This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs 
+<span class="sig-prename descclassname"><span class="pre">encore.runners.encore.</span></span><span class="sig-name descname"><span class="pre">run_x2p</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">code_folder_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Xsembles2P'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_answer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.runners.encore.run_x2p" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes and runs the MATLAB engine to execute the Xsembles2P algorithm on neural activity data.
+This function also handles MATLAB path setup and data conversion to MATLAB. At the end packs
 the results in the standard for ENCORE.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline. 
+<li><p><strong>input_data</strong> (<em>dict</em><em>[</em><em>var_name</em><em>] </em><em>= numpy.ndarray</em>) – Dict mapping variable name and data matrix provided by the pipeline.
 This function expects only the key ‘data_neuronal_activity’ with binary neuronal activity.
 Available variables are ‘data_neuronal_activity’, ‘data_dFFo’, ‘data_coordinates’
 ‘data_stims’, ‘data_cells’, ‘data_behavior’.
 Each variable is expected to contain numpy matrix with shape <code class="docutils literal notranslate"><span class="pre">(items,</span> <span class="pre">timepoints)</span></code>.</p></li>
 <li><p><strong>parameters</strong> (<em>dict</em>) – Dictionary with parameters for the Xsembles2P algorithm.</p></li>
 <li><p><strong>code_folder_name</strong> (<em>str</em><em>, </em><em>optional</em>) – String with the name of the folder inside <cite>src/analysis</cite> that contains
-the MATLAB code for this function. This value must be specified in the YAML config file. 
+the MATLAB code for this function. This value must be specified in the YAML config file.
 Defaults to ‘Xsembles2P’</p></li>
 <li><p><strong>include_answer</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to indicate wether or not the original full answer of the algorithm. Defaults to True</p></li>
-<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution. 
+<li><p><strong>logger</strong> (<em>function</em><em>(</em><em>str</em><em>, </em><em>str</em><em>)</em><em>, </em><em>optional</em>) – Function to show the log of the function execution.
 This function should receive two strings as parameters, just like <cite>main.MainWindow.update_console_log</cite>.
 This function should receive two strings, the first one has the message and the second one the level.
 Defaults to None.</p></li>
@@ -533,12 +545,12 @@ Defaults to None.</p></li>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="data/index.html">
+          <a class="next-page" href="parallel_runners.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Data Handling</div>
+                <div class="title">Parallel Runners</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -643,7 +655,7 @@ Defaults to None.</p></li>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=20623aea"></script>
+</div><script src="../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

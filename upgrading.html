@@ -1,16 +1,17 @@
 <!doctype html>
-<html class="no-js" lang="en" data-content_root="../">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Acknowledgments" href="../acknowledgments.html" /><link rel="prev" title="Installation" href="../installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Algorithms configuration file" href="extending/algorithms_config_file.html" /><link rel="prev" title="GUI Results" href="results/gui_results.html" />
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Usage - ENCORE 2.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
-    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>Upgrading - ENCORE 3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=7d770933" />
     
     
 
@@ -25,16 +26,16 @@
   }
   @media not print {
     body[data-theme="dark"] {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
-        --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
@@ -173,7 +174,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">ENCORE 2.1.0 documentation</div></a>
+      <a href="index.html"><div class="brand">ENCORE 3.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -194,15 +195,15 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   <div class="sidebar-logo-container">
-    <img class="sidebar-logo" src="../_static/ENCORE_logo.png" alt="Logo"/>
+    <img class="sidebar-logo" src="_static/ENCORE_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ENCORE 2.1.0 documentation</span>
+  <span class="sidebar-brand-text">ENCORE 3.0.0 documentation</span>
   
-</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
   <input type="hidden" name="check_keywords" value="yes">
   <input type="hidden" name="area" value="default">
@@ -210,43 +211,50 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">The basics</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/main_window.html">Main Window (GUI)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/runners.html">Analysis Runners</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/data/assign_data.html">Assign data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/data/load_data.html">Load data</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/plotters/MatplotlibWidget.html">MatplotlibWidget definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/plotters/encore_plots.html">Default plot functions for ENCORE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/plotters/encore.html">ENCORE runners plots</a></li>
-</ul>
-</li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/validators/index.html">Data Validators</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Data Validators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_inputs.html">Validator of algorithm input data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_parameters.html">Validator of algorithm parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_results.html">Validator of algorithm results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/runners_config.html">Validator of algorithms config file</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../api/utils.html">Utility functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/usage_gui.html">GUI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results/gui_results.html">GUI Results</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Upgrading</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/algorithms_config_file.html">Algorithms configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/usage_api.html">Python API Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/main_window.html">Main Window (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/runners.html">Analysis Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/parallel_runners.html">Parallel Runners</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/data/assign_data.html">Assign data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data/load_data.html">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data/save_data.html">Save data</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/MatplotlibWidget.html">MatplotlibWidget definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/encore_plots.html">Default plot functions for ENCORE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/plotters/encore.html">ENCORE runners plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/validators/index.html">Data Validators</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Data Validators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/algorithm_inputs.html">Validator of algorithm input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/algorithm_parameters.html">Validator of algorithm parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/algorithm_results.html">Validator of algorithm results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/validators/runners_config.html">Validator of algorithms config file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/utils.html">Utility functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Conceptual background</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgments</a></li>
 </ul>
 
 </div>
@@ -267,12 +275,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/user_guide/usage.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/upgrading.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/user_guide/usage.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/upgrading.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -291,105 +299,40 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
-<p>A general workflow using ENCORE would look like this:</p>
-<section id="execute-encore">
-<h2>1. Execute ENCORE<a class="headerlink" href="#execute-encore" title="Link to this heading">¶</a></h2>
-<p>Once you have ENCORE installed in your system, run:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>encore
+          <section id="upgrading">
+<h1>Upgrading<a class="headerlink" href="#upgrading" title="Link to this heading">¶</a></h1>
+<p>Upgrading ENCORE depend on your installation method.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Check the <span class="xref std std-doc">/changelog</span> to review the main changes across versions. This is specially important when using the python API.</p>
+</div>
+<section id="from-a-pip-installation">
+<h2>From a pip installation<a class="headerlink" href="#from-a-pip-installation" title="Link to this heading">¶</a></h2>
+<p>If you installed ENCORE doing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>encore-toolkit
 </pre></div>
 </div>
-<p>You can also use:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>encore
+<p>Then the upgrading process is very straightforward:</p>
+<ol class="arabic simple">
+<li><p>Activate the environment where ENCORE is installed:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>encore
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Run the standard pip upgrade:</p></li>
+</ol>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>encore-toolkit<span class="w"> </span>--upgrade
 </pre></div>
 </div>
 </section>
-<section id="load-your-data">
-<h2>2. Load Your Data<a class="headerlink" href="#load-your-data" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Navigate to the “Load data” tab.</p></li>
-<li><p>Click “Open file” and select your data file.</p></li>
-<li><p>Use the “File structure preview” panel to locate the variable you wish to load.</p></li>
-<li><p>In the “Set the selected variable as” panel, select the variable name to assign it.</p></li>
-<li><p>Preview the data in the “Input data preview” panel.</p></li>
-<li><p>If needed, modify the loaded variable using the “Edit variable” panel.</p></li>
-<li><p>Optionally, assign labels to the variable’s elements.</p></li>
-<li><p>Repeat this process until all necessary variables are loaded.</p></li>
+<section id="from-the-source-code">
+<h2>From the source code<a class="headerlink" href="#from-the-source-code" title="Link to this heading">¶</a></h2>
+<p>If you installed ENCORE from the source code, for example cloning the <a class="reference external" href="https://github.com/rivelco/ENCORE">GitHub repository</a> and then doing <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code>, then the recommended way to upgrade is:</p>
+<ol class="upperalpha simple">
+<li><p>Make a <cite>git pull</cite> from the source repository (recommended).</p></li>
+<li><p>Download the repository again.</p></li>
 </ol>
-<img alt="Demo loading files" class="align-center" src="../_images/demo_loading.gif" />
-</section>
-<section id="run-analyses">
-<h2>3. Run Analyses<a class="headerlink" href="#run-analyses" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Open any analysis tab, such as SVD, PCA, ICA, Xsembles2P, or SGC in the “ENCORE Algorithms” tab.</p></li>
-<li><p>Ensure the “Input data” panel shows “Loaded” for the required data. If not, return to step 2.</p></li>
-<li><p>Use the “Load default values” button to explore the analysis or adjust parameters as needed.</p></li>
-<li><p>Click “Run analysis” to begin.</p></li>
-<li><p>Monitor the “Console log” panel and the terminal for additional information.</p></li>
-<li><p>Review the plots and adjust parameters as needed. Refer to the cited papers in each analysis tab for further understanding.</p></li>
-<li><p>Repeat this process for each analysis.</p></li>
-</ol>
-<img alt="Demo running algorithms" class="align-center" src="../_images/demo_run.gif" />
-</section>
-<section id="visualize-results">
-<h2>4. Visualize Results<a class="headerlink" href="#visualize-results" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Go to the “Ensembles visualizer” tab.</p></li>
-<li><p>Click on the name of the analysis you wish to review. Only completed analyses will be clickable.</p></li>
-<li><p>Explore the spatial distributions of neurons and the dFFo signal (if available).</p></li>
-<li><p>Use the slider in the “General” tab to select ensembles for visualization.</p></li>
-<li><p>Examine all visualizations, including the spatial distributions of recorded cells, their activations, and identified ensembles.</p></li>
-</ol>
-<img alt="Demo visualizing results" class="align-center" src="../_images/demo_visualization.gif" />
-</section>
-<section id="compare-results">
-<h2>5. Compare Results<a class="headerlink" href="#compare-results" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Open the “Ensemble compare” tab.</p></li>
-<li><p>Use the “Similarities in members” or “Similarities in timecourses” tabs to identify similar results across algorithms.</p></li>
-<li><p>Adjust the sliders on the left to select ensembles for each algorithm.</p></li>
-<li><p>Optionally, filter by stimuli or behavior.</p></li>
-<li><p>Explore the “Space map” and “Time profiles” tabs to compare selected ensembles.</p></li>
-<li><p>Customize visualizations using the “Visualization options” panel.</p></li>
-</ol>
-<img alt="Demo comparing results" class="align-center" src="../_images/demo_compare.gif" />
-</section>
-<section id="evaluate-algorithm-performance">
-<h2>6. Evaluate Algorithm Performance<a class="headerlink" href="#evaluate-algorithm-performance" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Go to the “Performance Comparison” tab.</p></li>
-<li><p>If stimuli or behavior data are loaded, view performance comparisons. Missing data will be indicated in the plots.</p></li>
-<li><p>Check the “Correlation between cells” tab to view correlations within ensembles.</p></li>
-<li><p>Select the most suitable analysis or adjust parameters as needed.</p></li>
-</ol>
-<img alt="Demo evaluating performance" class="align-center" src="../_images/demo_performance.gif" />
-</section>
-<section id="save-results">
-<h2>7. Save Results<a class="headerlink" href="#save-results" title="Link to this heading">¶</a></h2>
-<ol class="arabic simple">
-<li><p>Open the “Save” tab.</p></li>
-<li><dl class="simple">
-<dt>Choose the data to save:</dt><dd><ul class="simple">
-<li><p>Minimal results used by ENCORE: Three matrices for each algorithm—neuron membership in ensembles, ensemble activation, and the total number of ensembles.</p></li>
-<li><p>Full results of every analysis: Includes additional data used by the original algorithms.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>Select the desired export format.</p></li>
-</ol>
-<img alt="Demo saving results" class="align-center" src="../_images/demo_save.gif" />
-</section>
-<section id="additional-tips">
-<h2>Additional Tips<a class="headerlink" href="#additional-tips" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>Hover over any option or button to view tooltips with detailed explanations.</p></li>
-<li><p>Save plots using the “Save” icon below each figure.</p></li>
-<li><p>Interact with visualizations by moving or zooming with the cursor.</p></li>
-<li><p>Plots will display helpful messages if additional data or analyses are required.</p></li>
-<li><p>Check the “ENCORE log” panel and Python console for additional information during analysis.</p></li>
-</ul>
 </section>
 </section>
 
@@ -398,23 +341,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../acknowledgments.html">
+          <a class="next-page" href="extending/algorithms_config_file.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Acknowledgments</div>
+                <div class="title">Algorithms configuration file</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="../installation.html">
+          <a class="prev-page" href="results/gui_results.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Installation</div>
+                <div class="title">GUI Results</div>
                 
               </div>
             </a>
@@ -487,15 +430,9 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Usage</a><ul>
-<li><a class="reference internal" href="#execute-encore">1. Execute ENCORE</a></li>
-<li><a class="reference internal" href="#load-your-data">2. Load Your Data</a></li>
-<li><a class="reference internal" href="#run-analyses">3. Run Analyses</a></li>
-<li><a class="reference internal" href="#visualize-results">4. Visualize Results</a></li>
-<li><a class="reference internal" href="#compare-results">5. Compare Results</a></li>
-<li><a class="reference internal" href="#evaluate-algorithm-performance">6. Evaluate Algorithm Performance</a></li>
-<li><a class="reference internal" href="#save-results">7. Save Results</a></li>
-<li><a class="reference internal" href="#additional-tips">Additional Tips</a></li>
+<li><a class="reference internal" href="#">Upgrading</a><ul>
+<li><a class="reference internal" href="#from-a-pip-installation">From a pip installation</a></li>
+<li><a class="reference internal" href="#from-the-source-code">From the source code</a></li>
 </ul>
 </li>
 </ul>
@@ -507,11 +444,11 @@
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=20623aea"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
-    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
-    <script src="../_static/copybutton.js?v=f281be69"></script>
+</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
     </body>
 </html>

@@ -3,14 +3,15 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Adding New Algorithms to ENCORE" href="../extending/adding_algorithms.html" /><link rel="prev" title="Validator of algorithms config file" href="validators/runners_config.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Overview" href="../concepts/overview.html" /><link rel="prev" title="Validator of algorithms config file" href="validators/runners_config.html" />
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Utility functions - ENCORE 2.1.0 documentation</title>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>Utility functions - ENCORE 3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=7d770933" />
     
     
 
@@ -25,16 +26,16 @@
   }
   @media not print {
     body[data-theme="dark"] {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
-        --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
@@ -173,7 +174,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">ENCORE 2.1.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">ENCORE 3.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -200,7 +201,7 @@
     <img class="sidebar-logo" src="../_static/ENCORE_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ENCORE 2.1.0 documentation</span>
+  <span class="sidebar-brand-text">ENCORE 3.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -212,16 +213,27 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../user_guide/usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/usage_gui.html">GUI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/gui_results.html">GUI Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrading.html">Upgrading</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extending/algorithms_config_file.html">Algorithms configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/usage_api.html">Python API Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="main_window.html">Main Window (GUI)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="runners.html">Analysis Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel_runners.html">Parallel Runners</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="data/assign_data.html">Assign data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="data/load_data.html">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/save_data.html">Save data</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -239,14 +251,10 @@
 </li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Utility functions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Conceptual background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
 </ul>
 
 </div>
@@ -302,7 +310,7 @@
 <dd><p>Converts a Python dictionary to a MATLAB struct.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>pars_dict</strong> (<em>dict</em>) – A dictionary where keys represent the names of fields in the MATLAB struct and the values 
+<dd class="field-odd"><p><strong>pars_dict</strong> (<em>dict</em>) – A dictionary where keys represent the names of fields in the MATLAB struct and the values
 represent the corresponding field values.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -312,8 +320,8 @@ represent the corresponding field values.</p>
 <dd class="field-odd"><p>dict</p>
 </dd>
 </dl>
-<p>This function recursively converts a Python dictionary to a MATLAB struct. It handles nested dictionaries by 
-recursively calling the conversion function. Numeric values (integers or floats) are converted into MATLAB 
+<p>This function recursively converts a Python dictionary to a MATLAB struct. It handles nested dictionaries by
+recursively calling the conversion function. Numeric values (integers or floats) are converted into MATLAB
 double type, while other data types are kept unchanged.</p>
 </dd></dl>
 
@@ -451,6 +459,33 @@ double type, while other data types are kept unchanged.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="encore.utils.metrics.compute_similarity_matrix">
+<span class="sig-prename descclassname"><span class="pre">encore.utils.metrics.</span></span><span class="sig-name descname"><span class="pre">compute_similarity_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all_elements</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.utils.metrics.compute_similarity_matrix" title="Link to this definition">¶</a></dt>
+<dd><p>Calculates the similarity matrix for a set of elements using the specified method.</p>
+<p>This method computes pairwise similarity or distance metrics (e.g., cosine, Euclidean,
+correlation, Jaccard) and formats the result as a similarity matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>string</em>) – The similarity or distance metric to use. Valid options are:
+‘Cosine’, ‘Euclidean’, ‘Correlation’, ‘Jaccard’.</p></li>
+<li><p><strong>all_elements</strong> (<em>numpy.ndarray</em>) – A numpy array containing the elements to compare. Each row represents
+a single element, and columns represent features.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If an unsupported method is provided.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A similarity matrix where each entry represents the pairwise similarity between elements.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>numpy.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py function" id="module-encore.utils.parameters_validators">
 <dt class="sig sig-object py" id="encore.utils.parameters_validators.validate_binary_matrix">
 <span class="sig-prename descclassname"><span class="pre">encore.utils.parameters_validators.</span></span><span class="sig-name descname"><span class="pre">validate_binary_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#encore.utils.parameters_validators.validate_binary_matrix" title="Link to this definition">¶</a></dt>
@@ -516,12 +551,12 @@ double type, while other data types are kept unchanged.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="../extending/adding_algorithms.html">
+          <a class="next-page" href="../concepts/overview.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Adding New Algorithms to ENCORE</div>
+                <div class="title">Overview</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -615,6 +650,7 @@ double type, while other data types are kept unchanged.</p>
 <li><a class="reference internal" href="#encore.utils.metrics.compute_correlation_inside_ensemble"><code class="docutils literal notranslate"><span class="pre">compute_correlation_inside_ensemble()</span></code></a></li>
 <li><a class="reference internal" href="#encore.utils.metrics.compute_correlation_with_stimuli"><code class="docutils literal notranslate"><span class="pre">compute_correlation_with_stimuli()</span></code></a></li>
 <li><a class="reference internal" href="#encore.utils.metrics.compute_cross_correlations"><code class="docutils literal notranslate"><span class="pre">compute_cross_correlations()</span></code></a></li>
+<li><a class="reference internal" href="#encore.utils.metrics.compute_similarity_matrix"><code class="docutils literal notranslate"><span class="pre">compute_similarity_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#encore.utils.parameters_validators.validate_binary_matrix"><code class="docutils literal notranslate"><span class="pre">validate_binary_matrix()</span></code></a></li>
 <li><a class="reference internal" href="#encore.utils.parameters_validators.validate_params"><code class="docutils literal notranslate"><span class="pre">validate_params()</span></code></a></li>
 <li><a class="reference internal" href="#encore.utils.text_formatting.format_nums_to_string"><code class="docutils literal notranslate"><span class="pre">format_nums_to_string()</span></code></a></li>
@@ -631,7 +667,7 @@ double type, while other data types are kept unchanged.</p>
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=20623aea"></script>
+</div><script src="../_static/documentation_options.js?v=acc74ff5"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=5fa4622c"></script>

@@ -1,0 +1,719 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Running batch analyses using the ENCORE Python API" href="running_batch_analyses.html" /><link rel="prev" title="Algorithms configuration file" href="algorithms_config_file.html" />
+
+    <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>Python API Usage - ENCORE 3.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=7d770933" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  --color-brand-primary: #652d90;
+  --color-brand-content: #652d90;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #9a44dc;
+  --color-brand-content: #9a44dc;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
+  --color-brand-primary: #9a44dc;
+  --color-brand-content: #9a44dc;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">ENCORE 3.0.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  <div class="sidebar-logo-container">
+    <img class="sidebar-logo" src="../_static/ENCORE_logo.png" alt="Logo"/>
+  </div>
+  
+  <span class="sidebar-brand-text">ENCORE 3.0.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">The basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../user_guide/usage_gui.html">GUI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../results/gui_results.html">GUI Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../upgrading.html">Upgrading</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="algorithms_config_file.html">Algorithms configuration file</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Python API Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/main_window.html">Main Window (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/runners.html">Analysis Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/parallel_runners.html">Parallel Runners</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/data/assign_data.html">Assign data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data/load_data.html">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/data/save_data.html">Save data</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/plotters/MatplotlibWidget.html">MatplotlibWidget definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/plotters/encore_plots.html">Default plot functions for ENCORE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/plotters/encore.html">ENCORE runners plots</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../api/validators/index.html">Data Validators</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Data Validators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_inputs.html">Validator of algorithm input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_parameters.html">Validator of algorithm parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_results.html">Validator of algorithm results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/validators/runners_config.html">Validator of algorithms config file</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/utils.html">Utility functions</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Conceptual background</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../acknowledgments.html">Acknowledgments</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/extending/usage_api.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/extending/usage_api.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="python-api-usage">
+<h1>Python API Usage<a class="headerlink" href="#python-api-usage" title="Link to this heading">¶</a></h1>
+<p>The <a class="reference internal" href="../api/runners.html"><span class="doc">Analysis Runners</span></a> module contains the Python API to analyze an algorithm using the Python API, programmatically from another program or script.</p>
+<p>Each runner implements a complete analysis workflow for a set of databases, including:</p>
+<ul class="simple">
+<li><p>Input validation</p></li>
+<li><p>Algorithm selection</p></li>
+<li><p>Execution</p></li>
+<li><p>Result formatting</p></li>
+</ul>
+<p>Each algorithm needs two arguments, the data needed to identify the ensembles, usually just <strong>a raster of activity</strong>, and the <strong>parameters</strong> for the algorithm.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Check the detail of the arguments for the analyses in the docs <a class="reference internal" href="../api/runners.html"><span class="doc">Analysis Runners</span></a>.</p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Check the needed data and parameters for each algorithm in the <a class="reference internal" href="algorithms_config_file.html"><span class="doc">Algorithms configuration file</span></a></p>
+</div>
+<section id="data-examples">
+<h2>Data examples<a class="headerlink" href="#data-examples" title="Link to this heading">¶</a></h2>
+<p>Each algorithm needs different data inputs. This inputs should be inside a python dictionary with specific names:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 2</span>
+<span class="linenos"> 3</span><span class="c1"># Dummy data</span>
+<span class="linenos"> 4</span><span class="n">neurons</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="linenos"> 5</span><span class="n">timepoints</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="linenos"> 6</span><span class="n">behaviors</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="linenos"> 7</span><span class="n">stimuli</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="linenos"> 8</span><span class="n">neurons_sets</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="c1"># The binary activity raster</span>
+<span class="linenos">11</span><span class="n">neuronal_activity</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
+<span class="linenos">12</span><span class="n">neuronal_activity</span> <span class="o">=</span> <span class="p">(</span><span class="n">neuronal_activity</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="c1"># The continuous fluorescence raster</span>
+<span class="linenos">15</span><span class="n">dFFo</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
+<span class="linenos">16</span>
+<span class="linenos">17</span><span class="c1"># The 2D coordinates</span>
+<span class="linenos">18</span><span class="n">coordinates</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="linenos">19</span>
+<span class="linenos">20</span><span class="c1"># The binary stimuli matrix</span>
+<span class="linenos">21</span><span class="n">stims</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">stimuli</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
+<span class="linenos">22</span><span class="n">stims</span> <span class="o">=</span> <span class="p">(</span><span class="n">stims</span> <span class="o">&gt;</span> <span class="mf">0.25</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+<span class="linenos">23</span>
+<span class="linenos">24</span><span class="c1"># The binary groups of neurons</span>
+<span class="linenos">25</span><span class="n">cells</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">neurons_sets</span><span class="p">,</span> <span class="n">neurons</span><span class="p">)</span>
+<span class="linenos">26</span><span class="n">cells</span> <span class="o">=</span> <span class="p">(</span><span class="n">cells</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span><span class="c1"># The continuous behavior matrix</span>
+<span class="linenos">29</span><span class="n">behavior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">behaviors</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">32</span>    <span class="s2">&quot;data_neuronal_activity&quot;</span><span class="p">:</span>  <span class="n">neuronal_activity</span><span class="p">,</span>
+<span class="linenos">33</span>    <span class="s2">&quot;data_dFFo&quot;</span><span class="p">:</span>  <span class="n">dFFo</span><span class="p">,</span>
+<span class="linenos">34</span>    <span class="s2">&quot;data_coordinates&quot;</span><span class="p">:</span> <span class="n">coordinates</span><span class="p">,</span>
+<span class="linenos">35</span>    <span class="s2">&quot;data_stims&quot;</span><span class="p">:</span> <span class="n">stims</span><span class="p">,</span>
+<span class="linenos">36</span>    <span class="s2">&quot;data_cells&quot;</span><span class="p">:</span> <span class="n">cells</span><span class="p">,</span>
+<span class="linenos">37</span>    <span class="s2">&quot;data_behavior&quot;</span><span class="p">:</span> <span class="n">behavior</span><span class="p">,</span>
+<span class="linenos">38</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Those are the available names and variables, however most algorithms need only one.</p>
+<div class="table-wrapper colwidths-given docutils container" id="id1">
+<table class="docutils align-default" id="id1">
+<caption><span class="caption-text">Needed data for each algorithm</span><a class="headerlink" href="#id1" title="Link to this table">¶</a></caption>
+<colgroup>
+<col style="width: 26.3%" />
+<col style="width: 73.7%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head stub"><p>Algorithm</p></th>
+<th class="head"><p>Data needed</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><th class="stub"><p>SVD</p></th>
+<td><p>data_neuronal_activity</p></td>
+</tr>
+<tr class="row-odd"><th class="stub"><p>PCA</p></th>
+<td><p>data_neuronal_activity</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>ICA</p></th>
+<td><p>data_neuronal_activity</p></td>
+</tr>
+<tr class="row-odd"><th class="stub"><p>X2P</p></th>
+<td><p>data_neuronal_activity</p></td>
+</tr>
+<tr class="row-even"><th class="stub"><p>SGC</p></th>
+<td><p>data_dFFo</p></td>
+</tr>
+<tr class="row-odd"><th class="stub"><p>Example</p></th>
+<td><p>data_dFFo and data_neuronal_activity</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The other variables are available for possible new algorithms.</p>
+</div>
+</section>
+<section id="parameters-examples">
+<h2>Parameters examples<a class="headerlink" href="#parameters-examples" title="Link to this heading">¶</a></h2>
+<p>Each runner requires the parameter for the specific algorithm. You can check the parameters definitions in the <a class="reference external" href="https://github.com/rivelco/ENCORE/blob/main/src/encore/config/encore_runners_config.yaml">config file</a>.</p>
+<p>Here is an example of the definition of the parameters dictionary for each algorithm.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The description of each parameter, the accepted values for each and other names is also in the <a class="reference internal" href="algorithms_config_file.html"><span class="doc">Algorithms configuration file</span></a>.</p>
+</div>
+<section id="svd">
+<h3>SVD<a class="headerlink" href="#svd" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">parameters_svd</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;pks&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;scut&quot;</span><span class="p">:</span> <span class="mf">0.24</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;hcut&quot;</span><span class="p">:</span> <span class="mf">0.24</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;state_cut&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;csi_start&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">&quot;csi_step&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">&quot;csi_end&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">&quot;tf_idf_norm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="s2">&quot;parallel_processing&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos">11</span>    <span class="s2">&quot;fixed_ens_cant&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos">12</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="ica">
+<h3>ICA<a class="headerlink" href="#ica" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">parameters_ica</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;threshold_method&quot;</span><span class="p">:</span> <span class="s2">&quot;MarcenkoPastur&quot;</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;permutations_percentile&quot;</span><span class="p">:</span> <span class="mf">95.0</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;number_of_permutations&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;min_ensembles_cant&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;max_ensembles_cant&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">&quot;patterns_method&quot;</span><span class="p">:</span> <span class="s2">&quot;ICA&quot;</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">&quot;number_of_iterations&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">&quot;threshold_for_p_value&quot;</span><span class="p">:</span> <span class="mf">1.90</span><span class="p">,</span>
+<span class="linenos">10</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="x2p">
+<h3>X2P<a class="headerlink" href="#x2p" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">parameters_x2p</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;NetworkBin&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;NetworkIterations&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;NetworkSignificance&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;CoactiveNeuronsThreshold&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;ClusteringRangeStart&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">&quot;ClusteringRangeEnd&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">&quot;ClusteringFixed&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">&quot;EnsembleIterations&quot;</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span>
+<span class="linenos">10</span>    <span class="s2">&quot;ParallelProcessing&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos">11</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="pca">
+<h3>PCA<a class="headerlink" href="#pca" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">parameters_pca</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;dc&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;npcs&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;minspk&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;nsur&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;prct&quot;</span><span class="p">:</span> <span class="mf">99.90</span><span class="p">,</span>
+<span class="linenos"> 7</span>    <span class="s2">&quot;cent_thr&quot;</span><span class="p">:</span> <span class="mf">99.90</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="s2">&quot;inner_corr&quot;</span><span class="p">:</span> <span class="mf">5.0</span><span class="p">,</span>
+<span class="linenos"> 9</span>    <span class="s2">&quot;minsize&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos">10</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="sgc">
+<h3>SGC<a class="headerlink" href="#sgc" title="Link to this heading">¶</a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">parameters_sgc</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">2</span>    <span class="s2">&quot;use_first_derivative&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos">3</span>    <span class="s2">&quot;standard_deviations_threshold&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="linenos">4</span>    <span class="s2">&quot;shuffling_rounds&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="linenos">5</span>    <span class="s2">&quot;coactivity_significance_level&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+<span class="linenos">6</span>    <span class="s2">&quot;montecarlo_rounds&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+<span class="linenos">7</span>    <span class="s2">&quot;montecarlo_steps&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+<span class="linenos">8</span>    <span class="s2">&quot;affinity_threshold&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span>
+<span class="linenos">9</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="simple-analysis-script">
+<h2>Simple analysis script<a class="headerlink" href="#simple-analysis-script" title="Link to this heading">¶</a></h2>
+<p>In the following example I define a sample raster binary with <code class="docutils literal notranslate"><span class="pre">100</span></code> neurons and <code class="docutils literal notranslate"><span class="pre">2000</span></code> timepoints and analyze it using the <strong>SVD</strong> algorithm.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="linenos"> 2</span><span class="kn">from</span> <span class="nn">encore.runners.encore</span> <span class="kn">import</span> <span class="n">run_svd</span>
+<span class="linenos"> 3</span>
+<span class="linenos"> 4</span><span class="c1"># Dummy data for the analysis</span>
+<span class="linenos"> 5</span><span class="n">neurons</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="linenos"> 6</span><span class="n">timepoints</span> <span class="o">=</span> <span class="mi">2000</span>
+<span class="linenos"> 7</span><span class="n">raster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="n">raster</span> <span class="o">=</span> <span class="p">(</span><span class="n">raster</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
+<span class="linenos"> 9</span>
+<span class="linenos">10</span><span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">11</span>    <span class="s1">&#39;data_neuronal_activity&#39;</span><span class="p">:</span> <span class="n">raster</span>
+<span class="linenos">12</span><span class="p">}</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span><span class="c1"># Define algorithm parameters</span>
+<span class="linenos">15</span><span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos">16</span>    <span class="s2">&quot;pks&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos">17</span>    <span class="s2">&quot;scut&quot;</span><span class="p">:</span> <span class="mf">0.24</span><span class="p">,</span>
+<span class="linenos">18</span>    <span class="s2">&quot;hcut&quot;</span><span class="p">:</span> <span class="mf">0.24</span><span class="p">,</span>
+<span class="linenos">19</span>    <span class="s2">&quot;state_cut&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="linenos">20</span>    <span class="s2">&quot;csi_start&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos">21</span>    <span class="s2">&quot;csi_step&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+<span class="linenos">22</span>    <span class="s2">&quot;csi_end&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
+<span class="linenos">23</span>    <span class="s2">&quot;tf_idf_norm&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+<span class="linenos">24</span>    <span class="s2">&quot;parallel_processing&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="linenos">25</span>    <span class="s2">&quot;fixed_ens_cant&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+<span class="linenos">26</span><span class="p">}</span>
+<span class="linenos">27</span>
+<span class="linenos">28</span><span class="c1"># Run analysis</span>
+<span class="linenos">29</span><span class="n">results</span> <span class="o">=</span> <span class="n">run_svd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="analysis-output">
+<h2>Analysis output<a class="headerlink" href="#analysis-output" title="Link to this heading">¶</a></h2>
+<p>The output of every runner contains a dictionary like the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;success&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="c1"># Bool value indicating if the algorithm was executed successfully</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;algorithm_time&quot;</span><span class="p">:</span> <span class="mf">95.47</span><span class="p">,</span> <span class="c1"># Float with the running time of the algorithm in seconds</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;engine_time&quot;</span><span class="p">:</span> <span class="mf">11.42</span><span class="p">,</span> <span class="c1"># Float with the loading time for the MATLAB engine if used</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos"> 7</span>        <span class="c1"># Probably the most important one, the minimal results of the algorithm</span>
+<span class="linenos"> 8</span>        <span class="s2">&quot;ensembles_cant&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="c1"># int, number of ensembles identified</span>
+<span class="linenos"> 9</span>        <span class="s2">&quot;neus_in_ens&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>  <span class="c1"># 2D binary numpy array showing what neurons belong to each ensemble</span>
+<span class="linenos">10</span>                                    <span class="c1"># with shape (N, E) for N neurons and E identified ensembles</span>
+<span class="linenos">11</span>        <span class="s2">&quot;timecourse&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>   <span class="c1"># 2D binary array showing the activity of each ensemble in time</span>
+<span class="linenos">12</span>                                    <span class="c1"># with shape (T, E) for T timepoints and E ensembles.</span>
+<span class="linenos">13</span>    <span class="p">},</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>    <span class="s2">&quot;update_params&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos">16</span>        <span class="c1"># Contains parameters updated by the algorithm, e.g. during automatic parameter estimation</span>
+<span class="linenos">17</span>        <span class="c1"># these keys and values varies from each algorithm and parameter selection.</span>
+<span class="linenos">18</span>        <span class="s2">&quot;pks&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="linenos">19</span>        <span class="s2">&quot;scut&quot;</span><span class="p">:</span> <span class="mf">0.24</span><span class="p">,</span>
+<span class="linenos">20</span>    <span class="p">},</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>    <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="p">{</span>
+<span class="linenos">23</span>        <span class="c1"># Contains internal variables produced by the algorithm, this depends on the algorithm</span>
+<span class="linenos">24</span>        <span class="c1"># This variable is saved when the runner is executed with the argument include_answer=True</span>
+<span class="linenos">25</span>        <span class="s2">&quot;Pks_Frame&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="c1">#2D</span>
+<span class="linenos">26</span>        <span class="s2">&quot;Pools_coords&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="c1">#3D</span>
+<span class="linenos">27</span>        <span class="s2">&quot;num_state&quot;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+<span class="linenos">28</span>        <span class="s2">&quot;state_cut&quot;</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span>
+<span class="linenos">29</span>        <span class="c1"># etc ...</span>
+<span class="linenos">30</span>    <span class="p">}</span>
+<span class="linenos">31</span><span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The keys <code class="docutils literal notranslate"><span class="pre">&quot;success&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;algorithm_time&quot;</span></code>, <code class="docutils literal notranslate"><span class="pre">&quot;engine_time&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;results&quot;</span></code> are returned for every algorithm and have the same logic. The ones that change depending on the algorithm are <code class="docutils literal notranslate"><span class="pre">&quot;update_params&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;answer&quot;</span></code>.</p>
+</div>
+</section>
+<section id="saving-results-example">
+<h2>Saving results example<a class="headerlink" href="#saving-results-example" title="Link to this heading">¶</a></h2>
+<p>You can easily save the results of that analysis using the built in function <code class="docutils literal notranslate"><span class="pre">save_data_to_hdf5_file</span></code>, check <a class="reference internal" href="../api/data/save_data.html"><span class="doc">Save data</span></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span> <span class="nn">encore.data.save_data</span> <span class="kn">import</span> <span class="n">save_data_to_hdf5_file</span>
+<span class="linenos">2</span>
+<span class="linenos">3</span><span class="n">result_path</span> <span class="o">=</span> <span class="n">folder_path</span> <span class="o">/</span> <span class="s2">&quot;svd_results.h5&quot;</span>
+<span class="linenos">4</span><span class="n">save_data_to_hdf5_file</span><span class="p">(</span><span class="n">result_path</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Use a graphical HDF5 visualizer for a quick glance on the results.</p>
+</div>
+</section>
+<section id="using-a-logger">
+<h2>Using a logger<a class="headerlink" href="#using-a-logger" title="Link to this heading">¶</a></h2>
+<p>You can track the progress of the function by passing a logger function, for example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span> <span class="nf">logger_adapter</span><span class="p">(</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">level</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="linenos">2</span>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">level</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">3</span>
+<span class="linenos">4</span>
+<span class="linenos">5</span><span class="n">results</span> <span class="o">=</span> <span class="n">run_svd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">logger_adapter</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="running_batch_analyses.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Running batch analyses using the ENCORE Python API</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="algorithms_config_file.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Algorithms configuration file</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2026, rivelco
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            <div class="icons">
+              <a class="muted-link " href="https://www.kavlifoundation.org/" aria-label="The Kavli Foundation">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-award" viewBox="0 0 16 16">
+                    <path d="M9.669.864 8 0 6.331.864l-1.858.282-.842 1.68-1.337 1.32L2.6 6l-.306 1.854 1.337 1.32.842 1.68 1.858.282L8 12l1.669-.864 1.858-.282.842-1.68 1.337-1.32L13.4 6l.306-1.854-1.337-1.32-.842-1.68zm1.196 1.193.684 1.365 1.086 1.072L12.387 6l.248 1.506-1.086 1.072-.684 1.365-1.51.229L8 10.874l-1.355-.702-1.51-.229-.684-1.365-1.086-1.072L3.614 6l-.25-1.506 1.087-1.072.684-1.365 1.51-.229L8 1.126l1.356.702z"/>
+                    <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1z"/>
+                </svg>
+            </a>
+              <a class="muted-link " href="https://github.com/rivelco" aria-label="rivelco">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    >
+                    <path d="M12 3c1.918 0 3.52 1.35 3.91 3.151a4 4 0 0 1 2.09 7.723l0 7.126h-12v-7.126a4 4 0 1 1 2.092 -7.723a4 4 0 0 1 3.908 -3.151" />
+                    <path d="M6.161 17.009l11.839 -.009" />
+                </svg>
+            </a>
+              <a class="muted-link " href="https://github.com/rivelco/ENCORE" aria-label="ENCORE">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    >
+                    <path d="M9 19c-4.3 1.4 -4.3 -2.5 -6 -3m12 5v-3.5c0 -1 .1 -1.4 -.5 -2c2.8 -.3 5.5 -1.4 5.5 -6a4.6 4.6 0 0 0 -1.3 -3.2a4.2 4.2 0 0 0 -.1 -3.2s-1.1 -.3 -3.5 1.3a12.3 12.3 0 0 0 -6.2 0c-2.4 -1.6 -3.5 -1.3 -3.5 -1.3a4.2 4.2 0 0 0 -.1 3.2a4.6 4.6 0 0 0 -1.3 3.2c0 4.6 2.7 5.7 5.5 6c-.6 .6 -.6 1.2 -.5 2v3.5" />
+                </svg>
+            </a>
+              
+            </div>
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Python API Usage</a><ul>
+<li><a class="reference internal" href="#data-examples">Data examples</a></li>
+<li><a class="reference internal" href="#parameters-examples">Parameters examples</a><ul>
+<li><a class="reference internal" href="#svd">SVD</a></li>
+<li><a class="reference internal" href="#ica">ICA</a></li>
+<li><a class="reference internal" href="#x2p">X2P</a></li>
+<li><a class="reference internal" href="#pca">PCA</a></li>
+<li><a class="reference internal" href="#sgc">SGC</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#simple-analysis-script">Simple analysis script</a></li>
+<li><a class="reference internal" href="#analysis-output">Analysis output</a></li>
+<li><a class="reference internal" href="#saving-results-example">Saving results example</a></li>
+<li><a class="reference internal" href="#using-a-logger">Using a logger</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=acc74ff5"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    </body>
+</html>

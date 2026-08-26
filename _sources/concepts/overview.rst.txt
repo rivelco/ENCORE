@@ -5,6 +5,10 @@ Overview
    Read the associated book `Identification, Characterization, and Manipulation of Neuronal Ensembles <https://link.springer.com/book/10.1007/978-1-0716-4208-5>`_ 
    for a better understanding of neuronal ensembles.
 
+.. seealso::
+   Read the associated paper `Protocol for identifying and comparing neuronal ensembles using different algorithms within a graphical user interface <https://doi.org/10.1016/j.xpro.2026.104443>`_ 
+   for a better understanding of the software.
+
 Neuronal ensembles are groups of neurons with coordinated activity that are related to a specific brain function. We present a unified graphical user interface to identify and compare neuronal ensembles (ENCORE) from neuronal activity data obtained through two-photon microscopy or electrophysiological recordings, using five different algorithms. Behavioral and stimulation data can be used to select the algorithm that best represents the functional relevance of each neuronal ensemble. 
 
 Recent advances on simultaneous recordings of hundreds of neurons have allowed the development of complex and accurate models of brain functions. Some of these functions can be explained by groups of neurons with coordinated activity within a defined time window, known as neuronal ensembles. However, a standardized method to identify these neuronal ensembles across different research groups is still lacking. Various approaches have been proposed to find neuronal ensembles, each based on different principles and tested in different animal models and brain regions. Among the different methods are:

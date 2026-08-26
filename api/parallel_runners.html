@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Analyzing databases in parallel using the Python API" href="parallel_databases_api.html" /><link rel="prev" title="Python API Usage" href="usage_api.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Data Handling" href="data/index.html" /><link rel="prev" title="Analysis Runners" href="runners.html" />
 
     <link rel="shortcut icon" href="../_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Running batch analyses using the ENCORE Python API - ENCORE 3.0.0 documentation</title>
+        <title>Parallel Runners - ENCORE 3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
@@ -218,38 +218,38 @@
 <li class="toctree-l1"><a class="reference internal" href="../upgrading.html">Upgrading</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="algorithms_config_file.html">Algorithms configuration file</a></li>
-<li class="toctree-l1"><a class="reference internal" href="usage_api.html">Python API Usage</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Running batch analyses using the ENCORE Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extending/algorithms_config_file.html">Algorithms configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/usage_api.html">Python API Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/main_window.html">Main Window (GUI)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/runners.html">Analysis Runners</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/parallel_runners.html">Parallel Runners</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/data/assign_data.html">Assign data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/data/load_data.html">Load data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/data/save_data.html">Save data</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="main_window.html">Main Window (GUI)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="runners.html">Analysis Runners</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Parallel Runners</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="data/assign_data.html">Assign data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/load_data.html">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data/save_data.html">Save data</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/plotters/MatplotlibWidget.html">MatplotlibWidget definition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/plotters/encore_plots.html">Default plot functions for ENCORE</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/plotters/encore.html">ENCORE runners plots</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="plotters/MatplotlibWidget.html">MatplotlibWidget definition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotters/encore_plots.html">Default plot functions for ENCORE</a></li>
+<li class="toctree-l2"><a class="reference internal" href="plotters/encore.html">ENCORE runners plots</a></li>
 </ul>
 </li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../api/validators/index.html">Data Validators</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Data Validators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_inputs.html">Validator of algorithm input data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_parameters.html">Validator of algorithm parameters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/algorithm_results.html">Validator of algorithm results</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api/validators/runners_config.html">Validator of algorithms config file</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="validators/index.html">Data Validators</a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" role="switch" type="checkbox"/><label for="toctree-checkbox-3"><div class="visually-hidden">Toggle navigation of Data Validators</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="validators/algorithm_inputs.html">Validator of algorithm input data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validators/algorithm_parameters.html">Validator of algorithm parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validators/algorithm_results.html">Validator of algorithm results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="validators/runners_config.html">Validator of algorithms config file</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../api/utils.html">Utility functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Conceptual background</span></p>
 <ul>
@@ -275,12 +275,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/extending/running_batch_analyses.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/api/parallel_runners.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/extending/running_batch_analyses.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/api/parallel_runners.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -299,83 +299,109 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="running-batch-analyses-using-the-encore-python-api">
-<h1>Running batch analyses using the ENCORE Python API<a class="headerlink" href="#running-batch-analyses-using-the-encore-python-api" title="Link to this heading">¶</a></h1>
-<p>In addition to the graphical interface, ENCORE provides a Python API that allows users to run ensemble identification algorithms programmatically. This is particularly useful for batch analyses, parameter sweeps, or automated pipelines where multiple datasets must be analyzed consistently.</p>
-<p>The example below demonstrates how to organize multiple datasets and parameter sets, run the same algorithm across them, and collect the results in a structured dictionary. This approach enables reproducible analyses and facilitates downstream comparison across datasets or parameter configurations.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>This example uses the Python API to analyze sequentially different databases. Read <a class="reference internal" href="usage_api.html"><span class="doc">Python API Usage</span></a> for a better understanding on the Python API.</p>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>To analyze databases in parallel read <a class="reference internal" href="parallel_databases_api.html"><span class="doc">Analyzing databases in parallel using the Python API</span></a></p>
-</div>
-<section id="simple-batch-analysis-script">
-<h2>Simple batch analysis script<a class="headerlink" href="#simple-batch-analysis-script" title="Link to this heading">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">encore.runners.encore</span> <span class="kn">import</span> <span class="n">run_svd</span>
-
-<span class="c1"># Generate example datasets</span>
-<span class="n">datasets</span> <span class="o">=</span> <span class="p">{}</span>
-
-<span class="k">for</span> <span class="n">dataset_id</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;session_1&quot;</span><span class="p">,</span> <span class="s2">&quot;session_2&quot;</span><span class="p">,</span> <span class="s2">&quot;session_3&quot;</span><span class="p">]:</span>
-    <span class="n">neurons</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">timepoints</span> <span class="o">=</span> <span class="mi">2000</span>
-
-    <span class="n">raster</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">neurons</span><span class="p">,</span> <span class="n">timepoints</span><span class="p">)</span>
-    <span class="n">raster</span> <span class="o">=</span> <span class="p">(</span><span class="n">raster</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int_</span><span class="p">)</span>
-
-    <span class="n">datasets</span><span class="p">[</span><span class="n">dataset_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;data_neuronal_activity&#39;</span><span class="p">:</span> <span class="n">raster</span>
-    <span class="p">}</span>
-
-<span class="c1"># Define algorithm parameters</span>
-<span class="n">parameters</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;pks&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-    <span class="s1">&#39;scut&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
-    <span class="s1">&#39;hcut&#39;</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span>
-    <span class="s1">&#39;state_cut&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-    <span class="s1">&#39;csi_start&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
-    <span class="s1">&#39;csi_step&#39;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
-    <span class="s1">&#39;csi_end&#39;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span>
-    <span class="s1">&#39;tf_idf_norm&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="s1">&#39;parallel_processing&#39;</span><span class="p">:</span> <span class="kc">False</span>
-<span class="p">}</span>
-
-<span class="c1"># Run batch analysis</span>
-<span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="p">{}}</span>
-
-<span class="k">for</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">datasets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">output</span> <span class="o">=</span> <span class="n">run_svd</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
-
-    <span class="n">results</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">][</span><span class="n">dataset_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;success&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;success&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;algorithm_time&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;algorithm_time&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;engine_time&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;engine_time&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;results&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;answer&#39;</span><span class="p">:</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;answer&#39;</span><span class="p">]</span>
-    <span class="p">}</span>
-
-<span class="c1"># Example access</span>
-<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;]</span>
-<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;][&#39;timecourse&#39;]</span>
-<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;][&#39;ensembles_cant&#39;]</span>
-<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;results&#39;][&#39;neus_in_ens&#39;]</span>
-<span class="c1"># results[&#39;results&#39;][&#39;session_1&#39;][&#39;algorithm_time&#39;]</span>
-</pre></div>
-</div>
-</section>
-<section id="notes-for-this-example">
-<h2>Notes for this example<a class="headerlink" href="#notes-for-this-example" title="Link to this heading">¶</a></h2>
+          <section id="parallel-runners">
+<h1>Parallel Runners<a class="headerlink" href="#parallel-runners" title="Link to this heading">¶</a></h1>
+<p>The <cite>parallel_runners</cite> module contains the core analysis pipelines used to identify and compare neuronal ensembles.</p>
+<p>These functions can be executed exclusively from Python scripts.</p>
+<p>Each parallel runner implements a complete analysis workflow for a set of databases, including:</p>
 <ul class="simple">
-<li><p>Each dataset is stored as a dictionary matching the expected ENCORE input format.</p></li>
-<li><p>Parameters are defined once and reused across all datasets, ensuring consistent analysis.</p></li>
-<li><p>Parameter validation occurs inside the same algorithm.</p></li>
-<li><p>Results are collected in a single dictionary (results[‘results’]), making it easy to iterate, compare, or serialize outputs.</p></li>
-<li><p>This workflow allows users to analyze multiple datasets sequentially, even though the GUI operates on one dataset at a time.</p></li>
+<li><p>Input validation</p></li>
+<li><p>Algorithm selection</p></li>
+<li><p>Execution</p></li>
+<li><p>Result formatting</p></li>
 </ul>
-<p>For advanced use cases, such as parameter sweeps, cross-algorithm comparisons, or integration with custom preprocessing pipelines, refer to the full API documentation for <a class="reference internal" href="../api/runners.html"><span class="doc">Analysis Runners</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Check the example on the usage of the parallel runners: <a class="reference internal" href="../extending/parallel_databases_api.html"><span class="doc">Analyzing databases in parallel using the Python API</span></a>.</p>
+</div>
+<section id="module-encore.parallel_runners.sessions">
+<span id="module-reference"></span><h2>Module Reference<a class="headerlink" href="#module-encore.parallel_runners.sessions" title="Link to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="encore.parallel_runners.sessions.run_parallel_sessions">
+<span class="sig-prename descclassname"><span class="pre">encore.parallel_runners.sessions.</span></span><span class="sig-name descname"><span class="pre">run_parallel_sessions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_workers_cant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#encore.parallel_runners.sessions.run_parallel_sessions" title="Link to this definition">¶</a></dt>
+<dd><p>Run ensembles identification algorithms in parallel for different databases.
+The parameters for the analysis can be defined for each database or use a default one
+as a fallback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em><em>]</em>) – Dictionary containing the data for each database.
+The keys for the first dictionary is a string with the name or ID or the database.
+Each value at this level contains a dictionary with the data of that database.
+In this dictionary each key is a specific identifier for a numpy array containing experimental data,
+e.g. matrix of spikes, fluorescence traces, stimulation, behavior.
+You can use any name for these variables.</p></li>
+<li><p><strong>parameters</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>]</em>) – Dictionary where each key is the ID of a database or a fallback name.
+The dictionary inside should contain the keys:
+- “analysis”, with the 3-letter name of the algorithm to use.
+- “data_names”, This is a dict[str, str] The keys should be one the name of the variables used by the algorithm,
+e.g “data_neuronal_activity”, “data_dFFo” and the value is the name of that variable in the <cite>data</cite> parameter.
+- “parameters” with another dictionary with the parameters for that specific algorithm, as used by the API.
+- “evaluate_similarity”, a bool variable to evaluate similarity metrics between results/data
+- “similarity_elements”, a list of strings, each string is the key of variables in <cite>data</cite>. When <cite>evaluate_similarity</cite>
+is True, the batch processing will also calculate the similarity between the ensembles timecourse and this other variables, so
+these variables should be of the same length as the recording. This is useful to evaluate the performance of each
+algorithm in every database.</p></li>
+<li><p><strong>max_workers_cant</strong> (<em>int</em>) – Number of workers to use for parallel processing.</p></li>
+<li><p><strong>default_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Specific key of the fallback parameter key. These set of parameters
+will be used for any database that is not explicitly in the keys of the <cite>parameters</cite> argument. Defaults to “default”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary with the results of the batch analyses. Contains the following keys.
+<strong>info</strong>: dict[str, str], the date and version information of the analyzer
+<strong>parameters</strong>: dict, The parameters used for the entire batch analysis.
+This is a copy of the parameters passed by the user to the function.
+<strong>parameters_used</strong>: dict, each key is the name of each database, contains the batch parameters used
+by this database. If it used the default parameters then it’s a copy of its contents.
+<strong>results</strong>: dict, each key is the name of each database. Contains the minimal results of the ensembles algorithm
+The matrix of similarity and the labels of each similarity matrix and a flag of success for the algorithm.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, dict]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If no fallback parameter is assigned and a database was not in the <cite>parameters</cite> keys.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="encore.parallel_runners.sessions.run_single_session">
+<span class="sig-prename descclassname"><span class="pre">encore.parallel_runners.sessions.</span></span><span class="sig-name descname"><span class="pre">run_single_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#encore.parallel_runners.sessions.run_single_session" title="Link to this definition">¶</a></dt>
+<dd><p>Auxiliary function to identify the algorithm to run, organize the user’s data and
+organize the result for this run.
+This is an internal function expected to be used only by
+<a class="reference internal" href="#encore.parallel_runners.sessions.run_parallel_sessions" title="encore.parallel_runners.sessions.run_parallel_sessions"><code class="xref py py-meth docutils literal notranslate"><span class="pre">encore.parallel_runners.sessions.run_parallel_sessions()</span></code></a>
+Every worker uses this function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>args</strong> (<em>tuple</em><em>[</em><em>str</em><em>, </em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>np.ndarray</em><em>]</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>str</em><em>]</em><em>, </em><em>dict</em><em>, </em><em>bool</em><em>, </em><em>list</em><em>[</em><em>str</em><em>]</em><em>]</em>) – Tuple with the arguments for the runner. This is:
+<strong>algorithm</strong>: str, The 3-chars name of the algorithm, e.g. ‘ica’, ‘svd’, ‘pca’, ‘sgc’, ‘x2p’
+<strong>database_name</strong>: str, The name of the database used. This is to reference asynchronously the results
+with the correct database.
+<strong>database_data</strong>: dict[str, np.ndarray], The data for the analysis.
+<strong>data_names</strong>: dict[str, str], The names of the API variables.
+<strong>parameters</strong>: dict, The dictionary with the parameters for the algorithm.
+<strong>eval_similarity</strong>: bool, whether or not to perform the evaluation of similarities.
+<strong>similarity_elements</strong>: list[str], List with the names of the variables to compute similarities with.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If the selected algorithm is not known.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple with the results of the run. This is:
+<strong>database_name</strong>: str, the name of the database as it was received
+<strong>parameters</strong>: dict, the parameters for the algorithm
+<strong>result</strong>: dict, contains the fields
+“success”: bool, “results”: dict, “similarity”: dict, “similarity_labels”: list[str],</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple[str, dict, dict]</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 </section>
 
@@ -384,23 +410,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="parallel_databases_api.html">
+          <a class="next-page" href="data/index.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Analyzing databases in parallel using the Python API</div>
+                <div class="title">Data Handling</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="usage_api.html">
+          <a class="prev-page" href="runners.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Python API Usage</div>
+                <div class="title">Analysis Runners</div>
                 
               </div>
             </a>
@@ -473,9 +499,12 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Running batch analyses using the ENCORE Python API</a><ul>
-<li><a class="reference internal" href="#simple-batch-analysis-script">Simple batch analysis script</a></li>
-<li><a class="reference internal" href="#notes-for-this-example">Notes for this example</a></li>
+<li><a class="reference internal" href="#">Parallel Runners</a><ul>
+<li><a class="reference internal" href="#module-encore.parallel_runners.sessions">Module Reference</a><ul>
+<li><a class="reference internal" href="#encore.parallel_runners.sessions.run_parallel_sessions"><code class="docutils literal notranslate"><span class="pre">run_parallel_sessions()</span></code></a></li>
+<li><a class="reference internal" href="#encore.parallel_runners.sessions.run_single_session"><code class="docutils literal notranslate"><span class="pre">run_single_session()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

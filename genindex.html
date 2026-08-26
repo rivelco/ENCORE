@@ -4,11 +4,12 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="#" /><link rel="search" title="Search" href="search.html" />
 
-    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 --><title>Index - ENCORE 2.1.0 documentation</title>
+    <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 --><title>Index - ENCORE 3.0.0 documentation</title>
 <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=7d770933" />
     
     
 
@@ -23,16 +24,16 @@
   }
   @media not print {
     body[data-theme="dark"] {
-      --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+      --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
     }
     @media (prefers-color-scheme: dark) {
       body:not([data-theme="light"]) {
-        --color-code-background: #202020;
-  --color-code-foreground: #d0d0d0;
+        --color-code-background: #272822;
+  --color-code-foreground: #f8f8f2;
   --color-brand-primary: #9a44dc;
   --color-brand-content: #9a44dc;
   
@@ -171,7 +172,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">ENCORE 2.1.0 documentation</div></a>
+      <a href="index.html"><div class="brand">ENCORE 3.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -198,7 +199,7 @@
     <img class="sidebar-logo" src="_static/ENCORE_logo.png" alt="Logo"/>
   </div>
   
-  <span class="sidebar-brand-text">ENCORE 2.1.0 documentation</span>
+  <span class="sidebar-brand-text">ENCORE 3.0.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -210,16 +211,27 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="user_guide/usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide/usage_gui.html">GUI Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="results/gui_results.html">GUI Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrading.html">Upgrading</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="extending/algorithms_config_file.html">Algorithms configuration file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/usage_api.html">Python API Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="api/main_window.html">Main Window (GUI)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api/runners.html">Analysis Runners</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/parallel_runners.html">Parallel Runners</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/data/index.html">Data Handling</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Data Handling</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/data/assign_data.html">Assign data</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api/data/load_data.html">Load data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/data/save_data.html">Save data</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/plotters/index.html">Figures and Plotters</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Figures and Plotters</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -237,14 +249,10 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/utils.html">Utility functions</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
-</ul>
 <p class="caption" role="heading"><span class="caption-text">Conceptual background</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="concepts/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="acknowledgments.html">Acknowledgments</a></li>
 </ul>
 
 </div>
@@ -346,10 +354,10 @@
 </li>
         <li><a href="api/main_window.html#encore.main.MainWindow.clear_stims">clear_stims() (encore.main.MainWindow method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/main_window.html#encore.main.MainWindow.collect_algorithm_data">collect_algorithm_data() (encore.main.MainWindow method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/main_window.html#encore.main.MainWindow.collect_algorithm_parameters">collect_algorithm_parameters() (encore.main.MainWindow method)</a>
 </li>
         <li><a href="api/validators/algorithm_parameters.html#encore.validators.algorithm_parameters.collect_parameters">collect_parameters() (in module encore.validators.algorithm_parameters)</a>
@@ -367,6 +375,8 @@
         <li><a href="api/utils.html#encore.utils.metrics.compute_correlation_with_stimuli">compute_correlation_with_stimuli() (in module encore.utils.metrics)</a>
 </li>
         <li><a href="api/utils.html#encore.utils.metrics.compute_cross_correlations">compute_cross_correlations() (in module encore.utils.metrics)</a>
+</li>
+        <li><a href="api/utils.html#encore.utils.metrics.compute_similarity_matrix">compute_similarity_matrix() (in module encore.utils.metrics)</a>
 </li>
         <li><a href="api/plotters/MatplotlibWidget.html#encore.plotters.MatplotlibWidget.CustomNavigationToolbar">CustomNavigationToolbar (class in encore.plotters.MatplotlibWidget)</a>
 </li>
@@ -443,10 +453,24 @@
 </li>
         </ul></li>
         <li>
+    encore.data.save_data
+
+        <ul>
+          <li><a href="api/data/save_data.html#module-encore.data.save_data">module</a>
+</li>
+        </ul></li>
+        <li>
     encore.main
 
         <ul>
           <li><a href="api/main_window.html#module-encore.main">module</a>
+</li>
+        </ul></li>
+        <li>
+    encore.parallel_runners.sessions
+
+        <ul>
+          <li><a href="api/parallel_runners.html#module-encore.parallel_runners.sessions">module</a>
 </li>
         </ul></li>
         <li>
@@ -505,6 +529,8 @@
           <li><a href="api/utils.html#module-encore.utils.text_formatting">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     encore.validators.algorithm_inputs
 
@@ -512,8 +538,6 @@
           <li><a href="api/validators/algorithm_inputs.html#module-encore.validators.algorithm_inputs">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     encore.validators.algorithm_parameters
 
@@ -560,8 +584,6 @@
         <li><a href="api/validators/algorithm_results.html#encore.validators.algorithm_results.ResultsBlock.ensembles_cant">ensembles_cant (encore.validators.algorithm_results.ResultsBlock attribute)</a>
 </li>
         <li><a href="api/main_window.html#encore.main.MainWindow.ensembles_compare_get_elements_labels">ensembles_compare_get_elements_labels() (encore.main.MainWindow method)</a>
-</li>
-        <li><a href="api/main_window.html#encore.main.MainWindow.ensembles_compare_get_simmatrix">ensembles_compare_get_simmatrix() (encore.main.MainWindow method)</a>
 </li>
         <li><a href="api/main_window.html#encore.main.MainWindow.ensembles_compare_similarity">ensembles_compare_similarity() (encore.main.MainWindow method)</a>
 </li>
@@ -667,6 +689,8 @@
 </li>
         <li><a href="api/validators/runners_config.html#encore.validators.runners_config.AlgorithmConfig.language">language (encore.validators.runners_config.AlgorithmConfig attribute)</a>
 </li>
+        <li><a href="api/plotters/encore_plots.html#encore.plotters.encore_plots.line_with_threshold_plot">line_with_threshold_plot() (in module encore.plotters.encore_plots)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/main_window.html#encore.main.MainWindow.load_algorithm_defaults">load_algorithm_defaults() (encore.main.MainWindow method)</a>
@@ -721,7 +745,11 @@
 </li>
           <li><a href="api/data/load_data.html#module-encore.data.load_data">encore.data.load_data</a>
 </li>
+          <li><a href="api/data/save_data.html#module-encore.data.save_data">encore.data.save_data</a>
+</li>
           <li><a href="api/main_window.html#module-encore.main">encore.main</a>
+</li>
+          <li><a href="api/parallel_runners.html#module-encore.parallel_runners.sessions">encore.parallel_runners.sessions</a>
 </li>
           <li><a href="api/plotters/encore.html#module-encore.plotters.encore">encore.plotters.encore</a>
 </li>
@@ -906,10 +934,10 @@
 </li>
         <li><a href="api/data/load_data.html#encore.data.load_data.FileTreeModel.rowCount">rowCount() (encore.data.load_data.FileTreeModel method)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/main_window.html#encore.main.WorkerRunnable.run">run() (encore.main.WorkerRunnable method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api/main_window.html#encore.main.MainWindow.run_algorithm">run_algorithm() (encore.main.MainWindow method)</a>
 </li>
         <li><a href="api/main_window.html#encore.main.MainWindow.run_algorithm_end">run_algorithm_end() (encore.main.MainWindow method)</a>
@@ -920,9 +948,13 @@
 </li>
         <li><a href="api/runners.html#encore.runners.encore.run_ica">run_ica() (in module encore.runners.encore)</a>
 </li>
+        <li><a href="api/parallel_runners.html#encore.parallel_runners.sessions.run_parallel_sessions">run_parallel_sessions() (in module encore.parallel_runners.sessions)</a>
+</li>
         <li><a href="api/runners.html#encore.runners.encore.run_pca">run_pca() (in module encore.runners.encore)</a>
 </li>
         <li><a href="api/runners.html#encore.runners.encore.run_sgc">run_sgc() (in module encore.runners.encore)</a>
+</li>
+        <li><a href="api/parallel_runners.html#encore.parallel_runners.sessions.run_single_session">run_single_session() (in module encore.parallel_runners.sessions)</a>
 </li>
         <li><a href="api/runners.html#encore.runners.encore.run_svd">run_svd() (in module encore.runners.encore)</a>
 </li>
@@ -936,7 +968,11 @@
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api/main_window.html#encore.main.MainWindow.save_data_to_hdf5">save_data_to_hdf5() (encore.main.MainWindow method)</a>
+        <li><a href="api/main_window.html#encore.main.MainWindow.safe_var_dimentions">safe_var_dimentions() (encore.main.MainWindow method)</a>
+</li>
+        <li><a href="api/data/save_data.html#encore.data.save_data.save_data_to_hdf5_file">save_data_to_hdf5_file() (in module encore.data.save_data)</a>
+</li>
+        <li><a href="api/data/save_data.html#encore.data.save_data.save_dict_to_hdf5">save_dict_to_hdf5() (in module encore.data.save_data)</a>
 </li>
         <li><a href="api/plotters/MatplotlibWidget.html#encore.plotters.MatplotlibWidget.CustomNavigationToolbar.save_figure">save_figure() (encore.plotters.MatplotlibWidget.CustomNavigationToolbar method)</a>
 </li>
@@ -952,10 +988,10 @@
 </li>
         <li><a href="api/main_window.html#encore.main.MainWindow.set_behavior">set_behavior() (encore.main.MainWindow method)</a>
 </li>
-        <li><a href="api/main_window.html#encore.main.MainWindow.set_cells">set_cells() (encore.main.MainWindow method)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api/main_window.html#encore.main.MainWindow.set_cells">set_cells() (encore.main.MainWindow method)</a>
+</li>
         <li><a href="api/main_window.html#encore.main.MainWindow.set_coordinates">set_coordinates() (encore.main.MainWindow method)</a>
 </li>
         <li><a href="api/main_window.html#encore.main.MainWindow.set_dFFo">set_dFFo() (encore.main.MainWindow method)</a>
@@ -1203,7 +1239,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=20623aea"></script>
+</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
