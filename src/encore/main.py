@@ -160,7 +160,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f'ENCORE v{encore_version} - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
-            "analyzer": "ENCORE",
+            "analyzer": "ENCORE Single Database GUI",
             "date": "",
             "ENCORE_version": encore_version
         }
