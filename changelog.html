@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Algorithms configuration file" href="extending/algorithms_config_file.html" /><link rel="prev" title="GUI Results" href="results/gui_results.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Main Window (GUI)" href="api/main_window.html" /><link rel="prev" title="Adding New Algorithms to ENCORE" href="extending/adding_algorithms.html" />
 
     <link rel="shortcut icon" href="_static/favicon.ico"/><!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>Upgrading - ENCORE 3.0.0 documentation</title>
+        <title>Changelog - ENCORE 3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
@@ -210,21 +210,21 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">The basics</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user_guide/usage_gui.html">GUI Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="results/gui_results.html">GUI Results</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Upgrading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="upgrading.html">Upgrading</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced use</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="extending/algorithms_config_file.html">Algorithms configuration file</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending/usage_api.html">Python API Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending/running_batch_analyses.html">Running batch analyses using the ENCORE Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending/parallel_databases_api.html">Analyzing databases in parallel using the Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="extending/adding_algorithms.html">Adding New Algorithms to ENCORE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Changelog</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API documentation</span></p>
 <ul>
@@ -276,12 +276,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/upgrading.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/blob/main/docs/source/changelog.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/upgrading.rst" title="Edit this page">
+  <a class="muted-link" href="https://github.com/rivelco/ENCORE/edit/main/docs/source/changelog.rst" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -300,40 +300,89 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="upgrading">
-<h1>Upgrading<a class="headerlink" href="#upgrading" title="Link to this heading">¶</a></h1>
-<p>Upgrading ENCORE depend on your installation method.</p>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p>Check the <a class="reference internal" href="changelog.html"><span class="doc">Changelog</span></a> to review the main changes across versions. This is specially important when using the python API.</p>
-</div>
-<section id="from-a-pip-installation">
-<h2>From a pip installation<a class="headerlink" href="#from-a-pip-installation" title="Link to this heading">¶</a></h2>
-<p>If you installed ENCORE doing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>encore-toolkit
-</pre></div>
-</div>
-<p>Then the upgrading process is very straightforward:</p>
-<ol class="arabic simple">
-<li><p>Activate the environment where ENCORE is installed:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>activate<span class="w"> </span>encore
-</pre></div>
-</div>
-<ol class="arabic simple" start="2">
-<li><p>Run the standard pip upgrade:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>encore-toolkit<span class="w"> </span>--upgrade
-</pre></div>
-</div>
+          <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="encore-v3-0-0">
+<h2>ENCORE v3.0.0<a class="headerlink" href="#encore-v3-0-0" title="Link to this heading">¶</a></h2>
+<p>This version introduces new parameters for the <strong>SVD</strong> and <strong>ICA</strong> algorithms, providing greater flexibility for exploratory analysis and parameter selection. These changes modify the parameters expected by the Python API and may therefore <strong>break compatibility with existing API code</strong>.</p>
+<p>Please check <a class="reference internal" href="extending/algorithms_config_file.html"><span class="doc">Algorithms configuration file</span></a> for the updated algorithm parameters and their default values.</p>
+<section id="new-features">
+<h3>New features<a class="headerlink" href="#new-features" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Parallel analysis of multiple databases through the Python API.</strong> Different databases (e.g recording sessions) can now be analyzed in parallel. Users can specify different algorithms and parameter sets for each database, while also defining a default set of parameters to be used as a fallback. See the documentation for details.</p></li>
+</ul>
 </section>
-<section id="from-the-source-code">
-<h2>From the source code<a class="headerlink" href="#from-the-source-code" title="Link to this heading">¶</a></h2>
-<p>If you installed ENCORE from the source code, for example cloning the <a class="reference external" href="https://github.com/rivelco/ENCORE">GitHub repository</a> and then doing <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">.</span></code> or <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-e</span> <span class="pre">.</span></code>, then the recommended way to upgrade is:</p>
-<ol class="upperalpha simple">
-<li><p>Make a <cite>git pull</cite> from the source repository (recommended).</p></li>
-<li><p>Download the repository again.</p></li>
-</ol>
+<section id="additions-to-ensemble-algorithms">
+<h3>Additions to ensemble algorithms<a class="headerlink" href="#additions-to-ensemble-algorithms" title="Link to this heading">¶</a></h3>
+<p>The following additions were introduced to facilitate exploratory data analysis and provide greater flexibility in parameter selection. These are <strong>ENCORE-specific extensions to the original implementations of the algorithms</strong>.</p>
+<p><strong>ICA</strong></p>
+<ul class="simple">
+<li><p><strong>Configurable minimum and maximum number of ensembles.</strong> Users can specify the minimum and maximum number of ensembles to extract from the principal components of the activity matrix. When specified, these values override the number of ensembles determined by the original shuffling-based selection procedure.</p></li>
+<li><p><strong>Eigenvalues included in the algorithm output.</strong> The eigenvalues of the activity matrix are now included in the algorithm’s response structure and are therefore available when saving the analysis results.</p></li>
+<li><p><strong>New ensemble weight plot.</strong> Added a plot showing the contribution/weight of each neuron to each detected ensemble, providing a visual aid for evaluating ensemble membership.</p></li>
+<li><p><strong>New neuron inclusion threshold.</strong> Added a threshold parameter controlling which neurons are included in each ensemble. The new ensemble weight plot can be used to help determine an appropriate threshold.</p></li>
+</ul>
+<p><strong>SVD</strong></p>
+<ul class="simple">
+<li><p><strong>Fixed number of ensembles.</strong> Added a parameter that allows users to explicitly specify the number of ensembles to identify. When enabled, this overrides the standard selection pipeline and uses the specified number of singular values/components as ensembles.</p></li>
+<li><p><strong>New coordinated-activity plot.</strong> Added a plot showing the spikes contributing to coordinated activity, providing a visual aid for selecting an appropriate value for the <cite>pks</cite> parameter.</p></li>
+</ul>
+</section>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Fixed a crash in the <strong>Performance</strong> tab when starting a second analysis.</p></li>
+<li><p>Fixed crashes that occurred when <strong>loading 1D arrays</strong> into certain variables.</p></li>
+<li><p>Fixed an issue where the UI could become <strong>unresponsive after errors in MATLAB-based algorithms</strong>.</p></li>
+<li><p>Added <strong>missing similarity comparisons</strong> between ensemble activity and behavioral variables.</p></li>
+<li><p>Fixed the <strong>automatic calculation of `pks` and `scut`</strong> for SVD analysis. Setting either parameter to <cite>0</cite> now triggers its automatic calculation.</p></li>
+<li><p>Fixed <strong>display errors in the “Ensembles compare” plots</strong>. When behavioral or stimulation data were included in the time-course plot, some plots could overlap or be displayed in incorrect positions.</p></li>
+<li><p>Fixed an additional <strong>display error in the “Ensembles compare” plots</strong>. When <strong>Show neurons activity</strong> was enabled, neuronal activity could be displayed at an incorrect position in the plot.</p></li>
+<li><p>Fixed the <strong>ICA “Assembly patterns” plot</strong> when a large number of ensembles are detected. The plot size is now adjusted dynamically to maintain appropriate visibility and readability.</p></li>
+</ul>
+</section>
+<section id="enhancements">
+<h3>Enhancements<a class="headerlink" href="#enhancements" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>The <strong>Ensembles visualizer</strong> now displays the binary activity of individual neurons when dF/F data have not been loaded.</p></li>
+<li><p>Improved the <strong>parameter descriptions and legends</strong> for the <strong>SVD</strong>, <strong>ICA</strong>, and <strong>X2P</strong> algorithms to make their configuration and interpretation clearer.</p></li>
+<li><p>Changed the default <strong>X2P parameter</strong> that limited the maximum number of ensembles detected. The new default no longer imposes this limitation unless the user explicitly sets it.</p></li>
+<li><p>Improved code formatting using <strong>Black</strong> in several modules. Formatting will be progressively extended to the rest of the project.</p></li>
+<li><p><strong>Enum parameters</strong> for algorithms are now displayed as <strong>Combo Boxes</strong>, providing a cleaner and more compact user interface.</p></li>
+<li><p>Added a dedicated function for <strong>saving HDF5 files from dictionary structures</strong>, which is particularly useful when performing analyses in parallel through the Python API.</p></li>
+<li><p>Added a dedicated function for <strong>computing similarity matrices</strong>, which can be used when performing analyses in parallel through the Python API.</p></li>
+</ul>
+</section>
+</section>
+<section id="encore-v2-1-0">
+<h2>ENCORE v2.1.0<a class="headerlink" href="#encore-v2-1-0" title="Link to this heading">¶</a></h2>
+<p>This release introduces major improvements to ENCORE (Ensembles Comparison and Recognition), focusing on usability, extensibility, and robustness.</p>
+<p>Simplified installation via PyPI  <cite>pip install encore-toolkit</cite> and more.</p>
+<section id="id1">
+<h3>New features<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>ENCORE is now distributed as a standard PyPI package <cite>pip install encore-toolkit</cite> with no mandatory MATLAB dependency.</p></li>
+<li><p>Added a Python API enabling batch analyses and programmatic use without the GUI.</p></li>
+<li><p>Introduced a plugin-style system to add new algorithms via a YAML config + analysis function (no GUI recompilation).</p></li>
+<li><p>Significantly expanded documentation with full API reference, tutorials, and examples.</p></li>
+<li><p>Added Pydantic-based validation for data, parameters, and user-defined algorithms to prevent crashes and improve error reporting.</p></li>
+</ul>
+</section>
+</section>
+<section id="encore-v1-0-0">
+<h2>ENCORE v1.0.0<a class="headerlink" href="#encore-v1-0-0" title="Link to this heading">¶</a></h2>
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Unified and user-friendly platform for identifying neuronal ensembles from calcium imaging and electrophysiology data.</p></li>
+<li><p>Five validated algorithms into a single graphical interface, enabling streamlined analysis and direct comparison of neuronal ensembles and activation dynamics.</p></li>
+<li><p>Browse and format variables from .mat, .pkl, .h5, and .nwb files interactively</p></li>
+<li><p>Visualize ensemble activity through descriptive plots, and assess the biological relevance of results using behavioral or stimulation data.</p></li>
+<li><p>Flexible export options support downstream processing and reporting, making ENCORE a versatile tool for neuroscience research.</p></li>
+</ul>
+<p>For a detailed description of each algorithm included check the <a class="reference external" href="https://link.springer.com/book/10.1007/978-1-0716-4208-5">book</a>.
+For a deeper understanding of the code, read the <a class="reference external" href="https://rivelco.github.io/ENCORE/">documentation</a>.</p>
+</section>
 </section>
 </section>
 
@@ -342,23 +391,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="extending/algorithms_config_file.html">
+          <a class="next-page" href="api/main_window.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Algorithms configuration file</div>
+                <div class="title">Main Window (GUI)</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="results/gui_results.html">
+          <a class="prev-page" href="extending/adding_algorithms.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">GUI Results</div>
+                <div class="title">Adding New Algorithms to ENCORE</div>
                 
               </div>
             </a>
@@ -431,9 +480,22 @@
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Upgrading</a><ul>
-<li><a class="reference internal" href="#from-a-pip-installation">From a pip installation</a></li>
-<li><a class="reference internal" href="#from-the-source-code">From the source code</a></li>
+<li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#encore-v3-0-0">ENCORE v3.0.0</a><ul>
+<li><a class="reference internal" href="#new-features">New features</a></li>
+<li><a class="reference internal" href="#additions-to-ensemble-algorithms">Additions to ensemble algorithms</a></li>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+<li><a class="reference internal" href="#enhancements">Enhancements</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#encore-v2-1-0">ENCORE v2.1.0</a><ul>
+<li><a class="reference internal" href="#id1">New features</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#encore-v1-0-0">ENCORE v1.0.0</a><ul>
+<li><a class="reference internal" href="#features">Features</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
