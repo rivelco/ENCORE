@@ -25,7 +25,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx_copybutton',
+    'sphinx.ext.napoleon',
 ]
+
+pygments_dark_style = "monokai"
 
 # Mock MATLAB during doc build
 autodoc_mock_imports = ["matlab", "matlab.engine", "qdarktheme"]
