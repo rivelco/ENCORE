@@ -43,7 +43,8 @@ classifiers = [
 [project.optional-dependencies]
 dev = ["pyqt6-tools", 
     "pytest",
-    "build"
+    "build",
+    "setuptools==81.0.0",
 ]
 docs = [
     "sphinx>=7.0",
@@ -64,7 +65,8 @@ all = [
     "furo",
     "sphinx-copybutton",
     "sphinxcontrib-napoleon",
-    "sphinx-autodoc-typehints"
+    "sphinx-autodoc-typehints",
+    "setuptools==81.0.0",
 ]
 
 [project.scripts]
