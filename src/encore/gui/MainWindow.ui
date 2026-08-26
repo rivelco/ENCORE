@@ -1432,8 +1432,8 @@ Use it to remove part of your dataset.</string>
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>1113</width>
-                 <height>513</height>
+                 <width>98</width>
+                 <height>89</height>
                 </rect>
                </property>
                <layout class="QVBoxLayout" name="verticalLayout_59">
@@ -2494,7 +2494,7 @@ Use it to remove part of your dataset.</string>
                  <string>Select to add the minimal analysis results used by this GUI to the file.</string>
                 </property>
                 <property name="text">
-                 <string>Minimal results used by Ensembles GUI</string>
+                 <string>Minimal results used by ENCORE</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>

@@ -2,7 +2,7 @@ import numpy as np
 from matplotlib.patches import Wedge
 import matplotlib.pyplot as plt
 
-def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[]):
+def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', title=None, cmap='hot', aspect='auto', yitems_labels=[], xlim_start=0):
     """
     Runs a imshow plot in the plot_widget and applies the attributes specified in the arguments
 
@@ -30,7 +30,7 @@ def preview_dataset(plot_widget, dataset, xlabel='Timepoint', ylabel='Data', tit
         plot_widget.axes.set_title(title)
     plot_widget.axes.set_xlabel(xlabel)
     plot_widget.axes.set_ylabel(ylabel)
-    plot_widget.axes.set_xlim([0, t])
+    plot_widget.axes.set_xlim([xlim_start, t])
     plot_widget.axes.set_ylim([-0.5, n-0.5])
     num_user_labels = len(yitems_labels)
     if num_user_labels > 0:
@@ -113,6 +113,29 @@ def raster_plot(plot_widget, data_neuronal_activity):
     plot_widget.canvas.draw()
     plot_widget.canvas.flush_events()
 
+def line_with_threshold_plot(plot_widget, line_y, threshold, xlabel="Time", ylabel="Neuron"):
+    """
+    Plots a line plot.
+    
+    :param plot_widget: Widget where the plot will be produced.
+    :type plot_widget: :class:`MatplotlibWidget`
+    :param dataset: Numpy array with the data to plot.
+    :type dataset: numpy.ndarray
+    """
+    plot_widget.axes.clear()
+    
+    plot_widget.axes.plot(line_y, color='black')
+    plot_widget.axes.axhline(y=threshold, color='r', linestyle='-')
+
+    for side in ['top', 'right']:
+        plot_widget.axes.spines[side].set_visible(False)
+    plot_widget.axes.set_xlabel(xlabel)
+    plot_widget.axes.set_ylabel(ylabel)
+
+    plot_widget.canvas.figure.tight_layout()
+    plot_widget.canvas.draw()
+    plot_widget.canvas.flush_events()
+    
 # Plots for the SVD analysis
 def plot_singular_values(plot_widget, singulars, num_states):
     """
@@ -426,7 +449,7 @@ def enscomp_update_timelines(plot_widget, ticks, cell_activities, ensemble_dffo,
         if act_lenght > 0:
             if "Behav" in current_label:
                 cells_acts = cells_acts/np.max(cells_acts)
-                plot_widget.axes.plot(time_axis, cells_acts, color=colors[acts], alpha=1)
+                plot_widget.axes.plot(time_axis, cells_acts + acts, color=colors[acts], alpha=1)
                 stim_or_behav += 1
             else:
                 band_it = 0
@@ -456,6 +479,7 @@ def enscomp_update_timelines(plot_widget, ticks, cell_activities, ensemble_dffo,
                 valid_activities = np.vstack([valid_activities, method])
             use_colors.append(colors[method_idx])
 
+    move_ens = stim_or_behav > 0
     if not first_flag:
         Fmi = np.min(valid_activities)
         Fma = np.max(valid_activities)
@@ -465,7 +489,7 @@ def enscomp_update_timelines(plot_widget, ticks, cell_activities, ensemble_dffo,
             if len(cells_acts) > 0:
                 cant_timepoints = len(cells_acts)
                 cells_acts = ((cells_acts - Fmi) / (Fma - Fmi)) + stim_or_behav
-                plot_widget.axes.plot(np.arange(1, cant_timepoints + 1), acts + cells_acts, linewidth=1, color='black', alpha=0.6)
+                plot_widget.axes.plot(np.arange(1, cant_timepoints + 1), acts - move_ens + cells_acts, linewidth=1, color='black', alpha=0.6)
                 #plot_widget.axes.text(cant_timepoints * 1.02, ii, str(cell_names[ii]+1), fontsize=8)
 
     plot_widget.axes.set_xlim([0, limx])

@@ -1,0 +1,4 @@
+/*Reduce the size of the image logo*/
+.sidebar-logo{
+    max-width: 50%;
+}

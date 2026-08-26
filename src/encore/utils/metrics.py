@@ -1,5 +1,8 @@
 import numpy as np
 from sklearn.metrics import roc_curve, auc
+from scipy.spatial.distance import pdist, squareform
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def compute_correlation_with_stimuli(ensembles_timecourse, data_stims):
     """
@@ -16,8 +19,9 @@ def compute_correlation_with_stimuli(ensembles_timecourse, data_stims):
     for e_idx, ensemble in enumerate(ensembles_timecourse):
         for s_idx, stim in enumerate(data_stims):
             similarity = np.corrcoef(ensemble, stim)[0, 1]
-            correlation[e_idx][s_idx] =  similarity
+            correlation[e_idx][s_idx] = similarity
     return correlation
+
 
 # Function to calculate neuron overlap between two methods
 def calculate_neuron_overlap_ratio(m1_neus_in_ens, m2_neus_in_ens):
@@ -38,6 +42,7 @@ def calculate_neuron_overlap_ratio(m1_neus_in_ens, m2_neus_in_ens):
             overlaps[e1_idx, e2_idx] = overlap
     return overlaps
 
+
 def calculate_neuron_overlap_shared(m1_neus_in_ens, m2_neus_in_ens):
     """
     Compute the number of shared neurons between ensembles from two methods.
@@ -56,6 +61,7 @@ def calculate_neuron_overlap_shared(m1_neus_in_ens, m2_neus_in_ens):
             shared[e1_idx, e2_idx] = overlap
     return shared
 
+
 def compute_correlation_inside_ensemble(activity_neus_in_ens):
     """
     Compute correlation matrix between neurons within an ensemble.
@@ -68,6 +74,7 @@ def compute_correlation_inside_ensemble(activity_neus_in_ens):
     correlation = np.corrcoef(activity_neus_in_ens)
     return correlation
 
+
 def compute_correlation_between_ensembles(ensembles_timecourse):
     """
     Compute correlation matrix between ensemble timecourses.
@@ -79,6 +86,7 @@ def compute_correlation_between_ensembles(ensembles_timecourse):
     """
     correlation = np.corrcoef(ensembles_timecourse)
     return correlation
+
 
 def compute_auc_roc_ensemble_stimuli(ensemble_timecourse, stimuli):
     """
@@ -95,6 +103,7 @@ def compute_auc_roc_ensemble_stimuli(ensemble_timecourse, stimuli):
     roc_auc = auc(fpr, tpr)
     return fpr, tpr, thresholds, roc_auc
 
+
 def compute_cross_correlations(ensemble_timecourse, stimuli):
     """
     Compute cross-correlation between ensemble activity and stimuli.
@@ -106,6 +115,39 @@ def compute_cross_correlations(ensemble_timecourse, stimuli):
     :return: Cross-correlation values and corresponding lags.
     :rtype: tuple
     """
-    cross_correlation = np.correlate(ensemble_timecourse, stimuli, mode='full')
+    cross_correlation = np.correlate(ensemble_timecourse, stimuli, mode="full")
     lags = np.arange(-len(ensemble_timecourse) + 1, len(stimuli))
     return cross_correlation, lags
+
+
+def compute_similarity_matrix(method: str, all_elements: np.ndarray):
+    """
+    Calculates the similarity matrix for a set of elements using the specified method.
+
+    This method computes pairwise similarity or distance metrics (e.g., cosine, Euclidean,
+    correlation, Jaccard) and formats the result as a similarity matrix.
+
+    :param method: The similarity or distance metric to use. Valid options are:
+                'Cosine', 'Euclidean', 'Correlation', 'Jaccard'.
+    :type method: string
+    :param all_elements: A numpy array containing the elements to compare. Each row represents
+                        a single element, and columns represent features.
+    :type all_elements: numpy.ndarray
+    :raises ValueError: If an unsupported method is provided.
+    :return: A similarity matrix where each entry represents the pairwise similarity between elements.
+    :rtype: numpy.ndarray
+    """
+
+    similarity_matrix = []
+    if method == "Cosine":
+        similarity_matrix = cosine_similarity(all_elements)
+    elif method == "Euclidean":
+        similarity_matrix = squareform(pdist(all_elements, metric="euclidean"))
+    elif method == "Correlation":
+        similarity_matrix = np.corrcoef(all_elements)
+    elif method == "Jaccard":
+        jaccard_distances = pdist(all_elements, metric="jaccard")
+        similarity_matrix = 1 - squareform(jaccard_distances)
+    else:
+        raise ValueError(f"Unsupported similarity method: {method}")
+    return similarity_matrix

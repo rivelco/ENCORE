@@ -1,5 +1,5 @@
-Usage
-=====
+GUI Usage
+=========
 
 A general workflow using ENCORE would look like this:
 
@@ -102,6 +102,33 @@ You can also use:
 .. image:: ../_static/demo_save.gif
    :alt: Demo saving results
    :align: center
+
+
+8. Explore the results
+----------------------
+
+.. seealso::
+
+   For a better understanding of the results and guides on how to load .h5 files in other python scripts, read the :doc:`/results/gui_results`.
+
+
+#. Explore the results saved to the HDF5 (`.h5`) file.
+
+.. tip::
+
+   You can use a graphical visualizer of HDF5 files to review your results.
+
+.. image:: ../_static/demo_open_h5.gif
+   :alt: Demo open h5 file
+   :align: center
+
+
+#. Explore the results saved to the MATLAB (`.mat`) file.
+
+.. image:: ../_static/demo_open_mat.gif
+   :alt: Demo open h5 file
+   :align: center
+
 
 Additional Tips
 ---------------

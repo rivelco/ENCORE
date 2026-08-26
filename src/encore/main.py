@@ -57,13 +57,15 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
-    QAbstractSpinBox
+    QAbstractSpinBox,
+    QComboBox
 )
 from PyQt6.uic import loadUi
 
 # ENCORE
 from encore.data.load_data import FileTreeModel
 from encore.data.assign_data import assign_data_from_file
+from encore.data.save_data import save_dict_to_hdf5
 import encore.utils.metrics as metrics
 from encore.utils.text_formatting import format_nums_to_string
 from encore.utils.parameters_validators import validate_binary_matrix
@@ -158,7 +160,7 @@ class MainWindow(QMainWindow):
         self.setWindowTitle(f'ENCORE v{encore_version} - Ensembles Comparison and Recognition')
 
         self.ensgui_desc = {
-            "analyzer": "ENCORE",
+            "analyzer": "ENCORE Single Database GUI",
             "date": "",
             "ENCORE_version": encore_version
         }
@@ -324,6 +326,7 @@ class MainWindow(QMainWindow):
                 button.setEnabled(False)
             check = self.findChild(QWidget, f'performance_check_{algorithm_key}')
             if check:
+                check.setChecked(False)
                 check.setEnabled(False)
             spinbox = self.findChild(QWidget, f"enscomp_spinbox_{algorithm_key}")
             if spinbox:
@@ -671,32 +674,27 @@ class MainWindow(QMainWindow):
         MIN_VAL = -2147483647
         
         if cfg.get("type", "") == "enum":
-            widget = QWidget()
-            layout = QVBoxLayout(widget)
-            layout.setContentsMargins(0, 0, 0, 0)
-
-            button_group = QButtonGroup(widget)
-            button_group.setExclusive(True)
-
+            widget = QComboBox()
             for option in cfg.get("options", []):
-                radio = QRadioButton(option["label"])
+                label = option["label"]
                 value = option["value"]
+                # Display the label, but store the actual value as user data
+                widget.addItem(label, userData=value)
+            # Set the default based on the stored value
+            index = widget.findData(default)
+            if index >= 0:
+                widget.setCurrentIndex(index)
+            def update_tooltip(index):
+                # This updates the tooltip of the combobox to display the help
+                # for the selected option
+                options = cfg.get("options", [])
+                if 0 <= index < len(options):
+                    widget.setToolTip(options[index].get("description", ""))
 
-                # Store value in Qt user data
-                radio.setProperty("value", value)
-
-                if value == default:
-                    radio.setChecked(True)
-                
-                # Add a unique name for each radial button
-                button_name = cfg.get("object_name", "") + f"_{value}"
-                radio.setObjectName(button_name)
-
-                button_group.addButton(radio)
-                layout.addWidget(radio)
-
-            # Keep reference for later retrieval
-            widget.button_group = button_group
+            widget.currentIndexChanged.connect(update_tooltip)
+            update_tooltip(widget.currentIndex())
+            # Keep the object name from the config
+            widget.setObjectName(cfg.get("object_name", ""))
         
         # Boolean
         elif isinstance(default, bool):
@@ -1089,6 +1087,23 @@ class MainWindow(QMainWindow):
                 run_button.setEnabled(needed_loaded)
     
     ## Validate the loaded data by the user
+    def safe_var_dimentions(self, var_name: str) -> tuple:
+        """Returns the dimentions of a matrix in a safe way.
+        Used to identify 2D matrix and handle 1D vectors as well.
+
+        :param var_name: Name of the variable in the self object.
+        :type var_name: str
+        :return: Tuple with the dimentions (x, y) of the variable.
+        :rtype: tuple
+        """
+        var = getattr(self, var_name)
+        if var.ndim == 1:
+            return (1, var.size)
+        elif var.ndim == 2:
+            return var.shape
+        else:
+            return (0, 0)
+        
     def validate_loaded_data(self):
         """
         Validates if the loaded data has consistency taken as reference the binary
@@ -1098,16 +1113,16 @@ class MainWindow(QMainWindow):
         """
         ref = ""
         if hasattr(self, 'data_neuronal_activity'):
-            self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+            self.cant_neurons, self.cant_timepoints = self.safe_var_dimentions("data_neuronal_activity")
             ref = "activity"
         elif hasattr(self, 'data_dFFo'):
-            self.cant_neurons, self.cant_timepoints = self.data_dFFo.shape
+            self.cant_neurons, self.cant_timepoints = self.safe_var_dimentions("data_dFFo")
             ref = "dFFo"
         else:
             return
             
         if hasattr(self, 'data_dFFo'):
-            neurons, timepoints = self.data_dFFo.shape
+            neurons, timepoints = self.safe_var_dimentions("data_dFFo")
             if neurons != self.cant_neurons:
                 self.update_console_log(f"The number of neurons in the dFFo does not match the {ref}, the dFFo will be descarted for now.", "warning")
                 self.clear_dFFo()
@@ -1115,17 +1130,17 @@ class MainWindow(QMainWindow):
                 self.update_console_log(f"The number of timepoints in the dFFo does not match the {ref}, the dFFo will be descarted for now.", "warning")
                 self.clear_dFFo()
         if hasattr(self, 'data_coordinates'):
-            neurons, dims = self.data_coordinates.shape
+            neurons, dims = self.safe_var_dimentions("data_coordinates")
             if neurons != self.cant_neurons:
                 self.update_console_log(f"The number of neurons in the coordinates does not match the {ref}, the coordinates will be descarted for now.", "warning")
                 self.clear_coordinates()
         if hasattr(self, 'data_stims'):
-            stims, timepoints = self.data_stims.shape
+            stims, timepoints = self.safe_var_dimentions("data_stims")
             if timepoints != self.cant_timepoints:
                 self.update_console_log(f"The number of timepoints in the stimulation does not match the {ref}, the stimulation will be descarted for now.", "warning")
                 self.clear_stims()
         if hasattr(self, 'data_cells'):
-            neurons, timepoints = self.data_cells.shape
+            neurons, timepoints = self.safe_var_dimentions("data_cells")
             if neurons != self.cant_neurons:
                 self.update_console_log(f"The number of neurons in the Cells does not match the {ref}, the Cells matrix will be descarted for now.", "warning")
                 self.clear_cells()
@@ -1133,7 +1148,7 @@ class MainWindow(QMainWindow):
                 self.update_console_log(f"The number of timepoints in the Cells does not match the {ref}, the Cells matrix will be descarted for now.", "warning")
                 self.clear_cells()
         if hasattr(self, 'data_behavior'):
-            behaviors, timepoints = self.data_behavior.shape
+            behaviors, timepoints = self.safe_var_dimentions("data_behavior")
             if timepoints != self.cant_timepoints:
                 self.update_console_log(f"The number of timepoints in the behavior does not match the {ref}, the behavior will be descarted for now.", "warning")
                 self.clear_behavior()
@@ -1150,7 +1165,7 @@ class MainWindow(QMainWindow):
         :return: None
         """
         self.data_dFFo = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
-        neus, frames = self.data_dFFo.shape
+        neus, frames = self.safe_var_dimentions("data_dFFo")
         self.btn_clear_dFFo.setEnabled(True)
         self.btn_view_dFFo.setEnabled(True)
         self.lbl_dffo_select.setText("Assigned")
@@ -1174,7 +1189,7 @@ class MainWindow(QMainWindow):
         if not validate_binary_matrix(self.data_neuronal_activity):
             self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
             self.data_neuronal_activity = (self.data_neuronal_activity >= 1.0).astype(np.int_)
-        self.cant_neurons, self.cant_timepoints = self.data_neuronal_activity.shape
+        self.cant_neurons, self.cant_timepoints = self.safe_var_dimentions("data_neuronal_activity")
         self.btn_clear_neuronal_activity.setEnabled(True)
         self.btn_view_neuronal_activity.setEnabled(True)
         self.lbl_neuronal_activity_select.setText("Assigned")
@@ -1196,7 +1211,7 @@ class MainWindow(QMainWindow):
         """
         data_coordinates = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_coordinates = data_coordinates[:, 0:2]
-        neus, dims = self.data_coordinates.shape
+        neus, dims = self.safe_var_dimentions("data_coordinates")
         self.btn_clear_coordinates.setEnabled(True)
         self.btn_view_coordinates.setEnabled(True)
         self.lbl_coordinates_select.setText("Assigned")
@@ -1220,7 +1235,7 @@ class MainWindow(QMainWindow):
             self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
             data_stims = (data_stims >= 1.0).astype(np.int_)
         self.data_stims = data_stims
-        stims, timepoints = data_stims.shape
+        stims, timepoints = self.safe_var_dimentions("data_stims")
         self.btn_clear_stim.setEnabled(True)
         self.btn_view_stim.setEnabled(True)
         self.lbl_stim_select.setText("Assigned")
@@ -1244,7 +1259,7 @@ class MainWindow(QMainWindow):
             self.update_console_log("The matrix is not binary, will be binarized as (matrix >= 1.0).astype(np.int_)", "warning")
             data_cells = (data_cells >= 1.0).astype(np.int_)
         self.data_cells = data_cells
-        stims, cells = data_cells.shape
+        stims, cells = self.safe_var_dimentions("data_cells")
         self.btn_clear_cells.setEnabled(True)
         self.btn_view_cells.setEnabled(True)
         self.lbl_cells_select.setText("Assigned")
@@ -1265,12 +1280,7 @@ class MainWindow(QMainWindow):
         """
         data_behavior = assign_data_from_file(self.file_selected_var_path, self.source_filename, self.file_model_type)
         self.data_behavior = data_behavior
-        behav_shape = data_behavior.shape
-        if len(behav_shape) > 1:
-            behaviors, timepoints = data_behavior.shape
-        else:
-            timepoints = data_behavior.shape[0]
-            behaviors = 1
+        behaviors, timepoints = self.safe_var_dimentions("data_behavior")
         self.btn_clear_behavior.setEnabled(True)
         self.btn_view_behavior.setEnabled(True)
         self.lbl_behavior_select.setText("Assigned")
@@ -1398,11 +1408,12 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "dFFo"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_dFFo.shape[1], lim_sup_y=self.data_dFFo.shape[0])
+        neurons, timepoints = self.safe_var_dimentions("data_dFFo")
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=neurons)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
         encore_plots.preview_dataset(plot_widget, self.data_dFFo, ylabel='Cell', yitems_labels=cell_labels)
-        self.varlabels_setup_tab(self.data_dFFo.shape[0])
+        self.varlabels_setup_tab(neurons)
     def view_neuronal_activity(self):
         """
         Displays the data saved in the :attr:`MainWindow.data_neuronal_activity` variable.
@@ -1415,11 +1426,12 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "neuronal_activity"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_neuronal_activity.shape[1], lim_sup_y=self.data_neuronal_activity.shape[0])
+        neurons, timepoints = self.safe_var_dimentions("data_neuronal_activity")
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=neurons)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         cell_labels = list(self.varlabels["cell"].values()) if "cell" in self.varlabels else []
         encore_plots.preview_dataset(plot_widget, self.data_neuronal_activity==0, ylabel='Cell', cmap='gray', yitems_labels=cell_labels)
-        self.varlabels_setup_tab(self.data_neuronal_activity.shape[0])
+        self.varlabels_setup_tab(neurons)
     def view_coordinates(self):
         """
         Displays the data saved in the :attr:`MainWindow.data_coordinates` variable.
@@ -1448,12 +1460,13 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "stims"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_stims.shape[1], lim_sup_y=self.data_stims.shape[0], yl="stims")
+        stims, timepoints = self.safe_var_dimentions("data_stims")
+        self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=stims, yl="stims")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_stims
-        if len(preview_data.shape) == 1:
+        if stims == 1:
             zeros_array = np.zeros_like(preview_data)
-            preview_data = np.row_stack((preview_data, zeros_array))
+            preview_data = np.vstack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("stims")
         stim_labels = list(self.varlabels["stim"].values()) if "stim" in self.varlabels else []
@@ -1470,12 +1483,13 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "cells"
         self.set_able_edit_options(True)
-        self.update_edit_validators(lim_sup_x=self.data_cells.shape[1], lim_sup_y=self.data_cells.shape[0])
+        groups, cells = self.safe_var_dimentions("data_cells")
+        self.update_edit_validators(lim_sup_x=cells, lim_sup_y=groups)
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_cells
-        if len(preview_data.shape) == 1:
+        if groups == 1:
             zeros_array = np.zeros_like(preview_data)
-            preview_data = np.row_stack((preview_data, zeros_array))
+            preview_data = np.vstack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         selectcell_labels = list(self.varlabels["selected_cell"].values()) if "selected_cell" in self.varlabels else []
         encore_plots.preview_dataset(plot_widget, preview_data==0, xlabel="Cell", ylabel='Group', cmap='gray', yitems_labels=selectcell_labels)
@@ -1491,17 +1505,13 @@ class MainWindow(QMainWindow):
         """
         self.currently_visualizing = "behavior"
         self.set_able_edit_options(True)
-        if len(self.data_behavior.shape) > 1:
-            behaviors, timepoints = self.data_behavior.shape
-        else:
-            timepoints = self.data_behavior.shape[0]
-            behaviors = 1
+        behaviors, timepoints = self.safe_var_dimentions("data_behavior")
         self.update_edit_validators(lim_sup_x=timepoints, lim_sup_y=behaviors, yl="behavs")
         plot_widget = self.findChild(MatplotlibWidget, 'data_preview')
         preview_data = self.data_behavior
-        if len(preview_data.shape) == 1:
+        if behaviors == 1:
             zeros_array = np.zeros_like(preview_data)
-            preview_data = np.row_stack((preview_data, zeros_array))
+            preview_data = np.vstack((preview_data, zeros_array))
         self.varlabels_setup_tab(preview_data.shape[0])
         self.update_enscomp_options("behavior")
         behavior_labels = list(self.varlabels["behavior"].values()) if "behavior" in self.varlabels else []
@@ -1944,12 +1954,7 @@ class MainWindow(QMainWindow):
             # Type aware extraction
             try:
                 if param_cfg.get("type", "") == "enum":
-                    for btn in widget.button_group.buttons():
-                        if btn.isChecked():
-                            value = btn.property("value")
-                            break
-                    else:
-                        value = default
+                    value = widget.currentData()
                 elif isinstance(default, bool) and isinstance(widget, QCheckBox):
                     value = widget.isChecked()
                 elif isinstance(default, int) and isinstance(widget, QSpinBox):
@@ -2150,6 +2155,7 @@ class MainWindow(QMainWindow):
                 "error"
             )
             logger(str(exc), "error")
+            return [np.nan, np.nan, np.nan, 0]
     def plot_algorithm_plots(self, algorithm_cfg: dict, answer: dict):
         """
         Runs the plot function for a given algorithm
@@ -2384,11 +2390,10 @@ class MainWindow(QMainWindow):
             self.ensvis_check_onlycont.setEnabled(True)
             self.ensvis_check_cellnum.setEnabled(True)
             self.update_ens_vis_coords()
-
-        if hasattr(self, "data_dFFo"):
-            plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
-            dFFo_ens = self.data_dFFo[idx_corrected_members, :]
-            encore_plots.plot_ensemble_dFFo(plot_widget, dFFo_ens, idx_corrected_members, ensemble_timecourse)
+        
+        plot_widget = self.findChild(MatplotlibWidget, 'ensvis_plot_raster')
+        dFFo_ens = self.data_dFFo[idx_corrected_members, :] if hasattr(self, "data_dFFo") else self.data_neuronal_activity[idx_corrected_members, :]
+        encore_plots.plot_ensemble_dFFo(plot_widget, dFFo_ens, idx_corrected_members, ensemble_timecourse)
     
     def update_ens_vis_coords(self):
         """
@@ -2882,40 +2887,19 @@ class MainWindow(QMainWindow):
                     else:
                         stim_label = f"Stim {stim}"
                     labels.append(stim_label)
+            if hasattr(self, "data_behavior"):
+                behavs, timepoints = self.data_behavior.shape
+                for stim in range(behavs):
+                    all_elements.append(self.data_behavior[stim,:])
+                    if "behavior" in self.varlabels:
+                        stim_labels = list(self.varlabels["behavior"].values())
+                        stim_label = f"Behav {stim_labels[stim]}"
+                    else:
+                        stim_label = f"Behav {stim}"
+                    labels.append(stim_label)
         # Convert to numpy array
         all_elements = np.array(all_elements)
         return all_elements, labels
-    def ensembles_compare_get_simmatrix(self, method: str, all_elements: np.ndarray):
-        """
-        Calculates the similarity matrix for a set of elements using the specified method.
-
-        This method computes pairwise similarity or distance metrics (e.g., cosine, Euclidean, 
-        correlation, Jaccard) and formats the result as a similarity matrix.
-
-        :param method: The similarity or distance metric to use. Valid options are:
-                    'Cosine', 'Euclidean', 'Correlation', 'Jaccard'.
-        :type method: string
-        :param all_elements: A numpy array containing the elements to compare. Each row represents 
-                            a single element, and columns represent features.
-        :type all_elements: numpy.ndarray
-        :raises ValueError: If an unsupported method is provided.
-        :return: A similarity matrix where each entry represents the pairwise similarity between elements.
-        :rtype: numpy.ndarray
-        """
-
-        similarity_matrix = []
-        if method == 'Cosine':
-            similarity_matrix = cosine_similarity(all_elements)
-        elif method == 'Euclidean':
-            similarity_matrix = squareform(pdist(all_elements, metric='euclidean'))
-        elif method == 'Correlation':
-            similarity_matrix = np.corrcoef(all_elements)
-        elif method == 'Jaccard':
-            jaccard_distances = pdist(all_elements, metric='jaccard')
-            similarity_matrix = 1 - squareform(jaccard_distances)
-        else:
-            raise ValueError(f"Unsupported similarity method: {method}")
-        return similarity_matrix
     def ensembles_compare_similarity(self, component=None, first_show=False):
         """
         Computes and visualizes the similarity matrix for ensembles based on a selected component.
@@ -2952,7 +2936,7 @@ class MainWindow(QMainWindow):
             method = self.enscomp_visopts[key]['method']
             color = self.enscomp_visopts[key]['colormap']
 
-        similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
+        similarity_matrix = metrics.compute_similarity_matrix(method, all_elements)
 
         if component == "Neurons":
             plot_widget = self.findChild(MatplotlibWidget, 'enscomp_plot_sim_elements')
@@ -3454,7 +3438,7 @@ class MainWindow(QMainWindow):
                 data["ENCORE"]["ensembles_compare"][criteria] = {}
                 all_elements, labels = self.ensembles_compare_get_elements_labels(criteria)
                 for method in ["Cosine", "Euclidean", "Correlation", "Jaccard"]:
-                    similarity_matrix = self.ensembles_compare_get_simmatrix(method, all_elements)
+                    similarity_matrix = metrics.compute_similarity_matrix(method, all_elements)
                     data["ENCORE"]["ensembles_compare"][criteria][method] = similarity_matrix
             data["ENCORE"]["ensembles_compare"]["labels"] = labels
         if self.save_check_perf.isChecked() and self.save_check_perf.isEnabled():
@@ -3506,44 +3490,13 @@ class MainWindow(QMainWindow):
                             cross_corrs.append(cross_corr)
                         data["ENCORE"]["ensembles_performance"]["crosscorr_ensembles_behavior"][method][f"Ensemble {ens_idx+1}"] = cross_corrs
         return data
-    def save_data_to_hdf5(self, group, data):
-        """
-        Recursively saves data to an HDF5 file group.
-
-        This method iterates through a dictionary and saves its contents to the provided HDF5 group. 
-        If a value in the dictionary is another dictionary, it creates a subgroup and recursively saves 
-        its contents. 
-        If the value is a list, it attempts to create a dataset in the group, catching exceptions 
-        if the data cannot be saved. 
-        For other data types, the method directly stores the value in the group.
-
-        :param group: The HDF5 group to which the data will be saved.
-        :type group: h5py.Group
-        :param data: The data to be saved, which can be a dictionary, list, or other types.
-        :type data: dict
-        """
-
-        for key, value in data.items():
-            if key in group:
-                del group[key]
-                
-            if isinstance(value, dict):
-                subgroup = group.create_group(str(key))
-                self.save_data_to_hdf5(subgroup, value)
-            elif isinstance(value, list):
-                try:
-                    group.create_dataset(key, data=value)
-                except:
-                    print(f" ENCORE Saving: Could not save a variable called {key}, maybe it is not a matrix nor scalar.")
-            else:
-                group[key] = value
     def save_results_hdf5(self):
         """
         Saves the current results to an HDF5 file.
 
         This method retrieves the data to be saved using :meth:`MainWindow.get_data_to_save()`, 
         prompts the user to choose a location and name for the file, and then saves the data in HDF5 format. 
-        The file is saved using the :meth:`MainWindow.save_data_to_hdf5` method to recursively write 
+        The file is saved using the :meth:`encore.data.save_data.save_dict_to_hdf5` method to recursively write 
         the data into the file.
 
         The file is named based on the current date and a prefix "ENCORE", and the user is prompted 
@@ -3562,7 +3515,7 @@ class MainWindow(QMainWindow):
                 try:
                     self.update_console_log("Saving results in HDF5 file...")
                     with h5py.File(file_path, 'a') as hdf_file:
-                        self.save_data_to_hdf5(hdf_file, data_to_save)
+                        save_dict_to_hdf5(hdf_file, data_to_save)
                     self.update_console_log("Done saving.", "complete")
                 except Exception as e:
                     self.update_console_log(f"Error saving file: {str(e)}", "error")
@@ -3571,7 +3524,7 @@ class MainWindow(QMainWindow):
                 try:
                     self.update_console_log("Saving results in HDF5 file...")
                     with h5py.File(file_path, 'w') as hdf_file:
-                        self.save_data_to_hdf5(hdf_file, data_to_save)
+                        save_dict_to_hdf5(hdf_file, data_to_save)
                     self.update_console_log("Done saving.", "complete")
                 except Exception as e:
                     self.update_console_log(f"Error saving file: {str(e)}", "error")

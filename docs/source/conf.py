@@ -25,7 +25,10 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
     'sphinx_copybutton',
+    'sphinx.ext.napoleon',
 ]
+
+pygments_dark_style = "monokai"
 
 # Mock MATLAB during doc build
 autodoc_mock_imports = ["matlab", "matlab.engine", "qdarktheme"]
@@ -42,6 +45,12 @@ html_theme = 'furo'
 html_static_path = ['_static']
 
 html_logo = "_static/ENCORE_logo.png"
+
+html_favicon = '_static/favicon.ico'
+
+html_css_files = [
+    'css/custom.css',
+]
 
 html_theme_options = {
     "footer_icons": [

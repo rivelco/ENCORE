@@ -1,5 +1,5 @@
 function [stoixeion_results] = Stoixeion(Spikes,Coord_active,pars)
-disp(" -> Running Stoixeion")
+disp(" # Running SVD analysis ...")
 % Find ensembles using SVD method.
 % INPUT:
 %     Spikes: N-by-T binary spike matrix, where N is the number of neurons,
@@ -27,6 +27,7 @@ disp(" -> Running Stoixeion")
 
 % Unpack parameters from GUI
 pks = pars.pks;
+fixed_states_cant = pars.fixed_ens_cant;
 scut = pars.scut;
 hcut = pars.hcut;
 statecut = pars.state_cut;
@@ -77,19 +78,20 @@ csi_vec = csi_vec_start:csi_vec_step:csi_vec_end;
 
 %% find similarity structure
 % find high-activity frames
-calcualte_pks = isempty(pks);
+calcualte_pks = pks == 0;
 if calcualte_pks
-    disp("> Calculating pks...")
+    pks = [];
+    disp("  > Calculating pks...")
 end
 [Rasterbin,Pks_Frame,pks] = findHighactFrames(Spikes,pks);
 if calcualte_pks
-    fprintf("   - Value for pks calculated: %d\n", pks)
+    fprintf("    - Value for pks calculated: %d\n", pks)
 end
 
 % run tf-idf - make this into a function
 
 if tf_idf_norm
-    disp("> Performing TF-IDF normalization...")
+    disp("  > Running TF-IDF normalization...")
     [tf_idf_Rasterbin] = Ras_tf_idf(Rasterbin);
 else
     tf_idf_Rasterbin = Rasterbin;
@@ -97,12 +99,11 @@ end
 
 % calculate cosine similarity of tf-idf matrix
 % S_index_ti = sindex(tf_idf_Rasterbin);
-disp("> Calculating cosine similarity...")
+disp("  > Calculating cosine similarity...")
 if parallel_processing
     tic
     parpool('local');
     toc
-    % Assuming rasterbin is your input matrix
     n = size(tf_idf_Rasterbin, 2); % Number of columns (vectors)
     S_index_ti = zeros(n, n); % Preallocate the result matrix
 
@@ -116,10 +117,10 @@ else
 end
 
 % threshold of noise
-if isempty(scut)
-    disp("> Calculating scut...")
+if scut == 0.0
+    disp("  > Calculating scut...")
     scut = calc_scut(tf_idf_Rasterbin);
-    fprintf("   - Value for scut calculated: %d\n", scut)
+    fprintf("    - Value for scut calculated: %d\n", scut)
 end
 
 % threshold with noise percentage, then the structure becomes clear
@@ -144,8 +145,8 @@ S_indexp = (H_indexb>hcut)*1; %Second Moment (Hamilton's Similarity). Defines st
 
 %% do SVD, find states and cells
 % Find the peaks in the states and the cells in the states
-disp("> Performing SVD...")
-[C_edos,sec_Pk_edos, S_svd, num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut); %,edos_size_cut,edos_svd_cut,rep_svd);
+disp("  > Running SVD...")
+[C_edos,sec_Pk_edos, S_svd, num_state, svd_sig] = Edos_from_Sindex_svd(S_indexp,state_cut,fixed_states_cant); %,edos_size_cut,edos_svd_cut,rep_svd);
 % the returned C_edos is a binary num_sig_frame-by-num_state matrix, where
 % 1s indicate the timing of corresponding state; sec_Pk_edos is a
 % 1-by-num_sig_frame vector, containing numbers indicating the active state
@@ -163,9 +164,9 @@ disp("> Performing SVD...")
 
 %% find sequences
 % find the sequence between states
-sec_Pk_edos_act = SRactive(sec_Pk_edos');
-sec_Pk_edos_act = sec_Pk_edos_act';
-sec_Pk_edos_Ren = SRasRen(sec_Pk_edos_act);
+% sec_Pk_edos_act = SRactive(sec_Pk_edos');
+% sec_Pk_edos_act = sec_Pk_edos_act';
+% sec_Pk_edos_Ren = SRasRen(sec_Pk_edos_act);
 
 %Para encontrar sec_Pk_frames dado que no todos los picos fueron asignados
 %a un estado
@@ -187,13 +188,13 @@ sec_Pk_frames = sum(C_edos_temp,2);
 % disp("Time course saved.")
 
 % print detected cycles
-if cycles_search
-    [Ciclos_nums,Ciclos_H_E] = CyFolds(sec_Pk_edos_Ren);
-end
+% if cycles_search
+%    [Ciclos_nums,Ciclos_H_E] = CyFolds(sec_Pk_edos_Ren);
+% end
 
 % find most significant cells for each state
 % csi_num_temp: columns indicate neuron members of each state
-disp("> Finding core cells...")
+disp("  > Finding core cells...")
 csi_num_temp = zeros(size(Cells_edos));
 %#figure(6); clf; set(gcf,'color','w')
 N = ceil(sqrt(edos));
@@ -236,7 +237,7 @@ csi_num=csi_num_temp(1:csi_ren,:); %Celulas mas representativas de cada estado
 
 %% Find the coordinates of the cells that belong to each state and
 % the most representative pools
-disp("> Packing final results...")
+disp("  > Packing final results...")
 [Cells_coords,Pools_coords] = Search_edos_coords(Cells_edos,sis_query,Coord_active);
 
 %% Pack the parameters and results
@@ -315,5 +316,5 @@ stoixeion_results.sec_Pk_Frame = sec_Pk_frames;
 %#        set(gca,'ytick',[]);
 %#    end
 %#end
-disp(" -> Done with Stoixeion")
+disp(" - Done with SVD analysis")
 end
