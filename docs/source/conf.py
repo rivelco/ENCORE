@@ -43,6 +43,12 @@ html_static_path = ['_static']
 
 html_logo = "_static/ENCORE_logo.png"
 
+html_favicon = '_static/favicon.ico'
+
+html_css_files = [
+    'css/custom.css',
+]
+
 html_theme_options = {
     "footer_icons": [
         {
